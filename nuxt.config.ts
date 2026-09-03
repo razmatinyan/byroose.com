@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 		},
 	},
 
-	css: ['~/assets/css/tailwind.css', '~/assets/css/main.css'],
+	css: ['~/assets/css/tailwind.css'],
 	fonts: {
 		families: [
 			{
@@ -30,6 +30,11 @@ export default defineNuxtConfig({
 				subsets: ['latin'],
 			},
 		],
+	},
+
+	// Avoid Nitro's Windows/NTFS external tracing bottleneck and keep deployment self-contained.
+	nitro: {
+		noExternals: true,
 	},
 
 	vite: {
@@ -52,4 +57,9 @@ export default defineNuxtConfig({
 	},
 
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@vueuse/nuxt', 'shadcn-nuxt'],
+
+	shadcn: {
+		prefix: 'Ui',
+		componentDir: '@/components/ui',
+	},
 })
