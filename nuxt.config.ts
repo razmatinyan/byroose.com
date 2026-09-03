@@ -31,8 +31,24 @@ export default defineNuxtConfig({
 			},
 		],
 	},
+	icon: {
+		mode: 'svg',
+		provider: 'none',
+		fallbackToApi: false,
+		serverBundle: false,
+		clientBundle: {
+			scan: true,
+			icons: [
+				'lucide:arrow-down',
+				'lucide:arrow-left',
+				'lucide:arrow-right',
+				'lucide:menu',
+				'lucide:plus',
+				'lucide:x',
+			],
+		},
+	},
 
-	// Avoid Nitro's Windows/NTFS external tracing bottleneck and keep deployment self-contained.
 	nitro: {
 		noExternals: true,
 	},

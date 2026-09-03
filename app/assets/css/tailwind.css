@@ -62,7 +62,12 @@
 	--radius-2xl: calc(var(--radius) * 1.8);
 	--radius-3xl: calc(var(--radius) * 2.2);
 	--radius-4xl: calc(var(--radius) * 2.6);
+	--radius-action: 1rem;
+	--radius-action-icon: calc(
+		var(--radius-action) - var(--spacing-action-inset)
+	);
 
+	--spacing-action-inset: 0.25rem;
 	--spacing-page: clamp(1.25rem, 4vw, 3.5rem);
 	--spacing-section: clamp(6rem, 10vw, 11rem);
 
@@ -74,7 +79,7 @@
 	--text-statement--line-height: 1.06;
 	--text-service: clamp(1.875rem, 4.6vw, 3.875rem);
 	--text-service--line-height: 1.06;
-	--text-journey: clamp(2.75rem, 11.2vw, 15rem);
+	--text-journey: clamp(2.75rem, 10.4vw, 15rem);
 	--text-journey--line-height: 0.86;
 	--text-step: clamp(4rem, 9vw, 9rem);
 	--text-step--line-height: 0.85;
@@ -224,7 +229,7 @@
 	}
 
 	.section-intro {
-		@apply m-0 max-w-[34ch] text-base leading-normal text-muted-foreground;
+		@apply m-0 max-w-[34ch] text-lg leading-normal text-muted-foreground;
 	}
 
 	.eyebrow {
@@ -245,11 +250,11 @@
 	}
 
 	.button-icon {
-		@apply grid size-11 shrink-0 place-items-center rounded-lg bg-primary-foreground text-lg text-foreground;
+		@apply grid size-11 shrink-0 place-items-center rounded-action-icon bg-primary-foreground text-foreground;
 	}
 
 	.button-icon-sm {
-		@apply size-9 text-base;
+		@apply size-9;
 	}
 
 	.button-icon-dark {
@@ -402,7 +407,7 @@
 	}
 
 	.studio-copy p {
-		@apply m-0 max-w-[46ch] text-xl leading-relaxed tracking-[-0.015em] text-brand-subtle md:text-2xl xl:text-3xl;
+		@apply m-0 max-w-[46ch] text-xl leading-relaxed tracking-tight font-medium first:mb-8 text-brand-subtle md:text-2xl xl:text-3xl;
 	}
 
 	.services,
@@ -415,7 +420,7 @@
 	}
 
 	.services-title {
-		@apply mb-10 max-w-[14ch] md:mb-14 xl:mb-18;
+		@apply mb-10 max-w-[15ch] md:mb-14 xl:mb-18;
 	}
 
 	.services-layout {
@@ -489,7 +494,7 @@
 	}
 
 	.case-list {
-		@apply mt-8 flex max-h-[74vh] flex-col gap-6 overflow-y-auto overflow-x-hidden py-2 pr-2 pl-2 md:mt-12 md:gap-8 md:pr-6 xl:mt-14 xl:gap-10;
+		@apply mt-8 flex flex-col gap-6 py-2 pr-2 pl-2 md:mt-12 md:gap-8 md:pr-6 xl:mt-14 xl:gap-10;
 	}
 
 	.case-pair {
@@ -732,7 +737,7 @@
 	}
 
 	.faq-answer {
-		@apply max-w-[56ch] pb-5.5 text-base leading-relaxed text-muted-foreground;
+		@apply max-w-[56ch] pb-5.5 text-lg leading-relaxed text-muted-foreground;
 	}
 
 	.contact {

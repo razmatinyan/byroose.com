@@ -2,6 +2,7 @@
 import { computed, shallowRef } from 'vue'
 import MediaPlaceholder from '@/components/shared/MediaPlaceholder.vue'
 import { Button } from '@/components/ui/button'
+import { appIcons } from '@/lib/icons'
 
 interface ClientStory {
 	quote: string
@@ -90,10 +91,10 @@ function showNextStory() {
 				<div class="client-story-controls">
 					<div class="client-story-arrows">
 						<Button variant="ghost" size="icon-sm" aria-label="Previous client story" @click="showPreviousStory">
-							←
+							<Icon :name="appIcons.arrowLeft" class="size-4.5" />
 						</Button>
 						<Button variant="ghost" size="icon-sm" aria-label="Next client story" @click="showNextStory">
-							→
+							<Icon :name="appIcons.arrowRight" class="size-4.5" />
 						</Button>
 					</div>
 					<span class="client-story-counter">{{ storyCounter }}</span>

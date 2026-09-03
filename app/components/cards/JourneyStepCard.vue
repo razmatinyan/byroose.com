@@ -37,27 +37,40 @@ const surfaceClasses: Record<Theme, string> = {
 	>
 		<div>
 			<span
-				:class="cn(
-					'journey-step-number',
-					theme === 'white' && 'text-primary',
-					theme === 'blue' && 'text-brand-cream',
-					theme === 'orange' && 'text-foreground',
-				)"
+				:class="
+					cn(
+						'journey-step-number',
+						theme === 'white' && 'text-foreground',
+						theme === 'blue' && 'text-brand-cream',
+						theme === 'orange' && 'text-white',
+					)
+				"
 			>
 				{{ number }}
 			</span>
 			<h3 class="journey-step-title">{{ title }}</h3>
-			<p :class="cn('journey-step-copy', theme === 'white' ? 'text-muted-foreground' : 'text-white/85')">
+			<p
+				:class="
+					cn(
+						'journey-step-copy',
+						theme === 'white'
+							? 'text-muted-foreground'
+							: 'text-white/85',
+					)
+				"
+			>
 				{{ body }}
 			</p>
 		</div>
 		<MediaPlaceholder
 			:label="visual"
-			:class="cn(
-				'journey-step-visual',
-				theme === 'blue' && 'pattern-blue',
-				theme === 'orange' && 'pattern-orange',
-			)"
+			:class="
+				cn(
+					'journey-step-visual',
+					theme === 'blue' && 'pattern-blue',
+					theme === 'orange' && 'pattern-orange',
+				)
+			"
 			:label-class="theme === 'white' ? undefined : 'text-white/75'"
 		/>
 	</Card>

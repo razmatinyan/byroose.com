@@ -24,12 +24,14 @@ const {
 				<div class="contact-copy">
 					<p>{{ body }}</p>
 					<div class="contact-actions">
-						<Button as="a" href="mailto:hello@byroose.com" variant="cream" size="cta-lg">
+						<Button
+							as="a"
+							href="mailto:hello@byroose.com"
+							variant="cream"
+							size="cta-lg"
+						>
 							{{ primary }}
 							<ButtonIcon tone="dark" />
-						</Button>
-						<Button as="a" href="#top" variant="inverse" size="cta-lg">
-							{{ secondary }}
 						</Button>
 					</div>
 				</div>

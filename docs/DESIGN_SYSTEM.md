@@ -42,6 +42,20 @@ Props use Vue's reactive destructuring syntax. Static primitive defaults can be
 declared directly in the destructure. Defaults that reference local arrays or
 objects should be resolved with `computed`, because `defineProps` is hoisted.
 
+## Icons and action buttons
+
+UI icons use the Lucide Iconify collection through Nuxt Icon. Canonical names
+live in `app/lib/icons.ts`; add shared semantic icons there instead of placing
+Unicode glyphs or package-specific icon components in templates. The collection
+is installed locally and the known icons are client-bundled, so rendering never
+depends on the public Iconify API.
+
+`ButtonIcon` owns the icon tile, tone, and icon-size contract. The `cta-sm` and
+`cta-lg` button variants keep a compact 4px top, right, and bottom inset so the
+tile sits against the action edge. The icon tile radius is derived from the
+button radius minus that shared inset, keeping both curves visually concentric
+at every supported button size.
+
 ## Responsive rules
 
 Build mobile-first with Tailwind's standard `sm`, `md`, `lg`, and `xl`
