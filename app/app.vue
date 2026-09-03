@@ -1,6 +1,8 @@
+<script setup lang="ts">
+import LandingPage from '~/components/landing/LandingPage.vue'
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <NuxtRouteAnnouncer />
+  <LandingPage />
 </template>
