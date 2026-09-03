@@ -2,36 +2,54 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
-  devtools: { enabled: false },
+	compatibilityDate: '2025-07-15',
+	devtools: { enabled: false },
 
-  app: {
-    head: {
-      title: 'byroose — Creative agency',
-      htmlAttrs: { lang: 'en' },
-      meta: [
-        {
-          name: 'description',
-          content:
-            'byroose is a creative agency for strategy, marketing, web and AI-assisted content.',
-        },
-      ],
-      link: [
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
-        },
-      ],
-    },
-  },
+	app: {
+		head: {
+			title: 'byroose — Creative agency',
+			htmlAttrs: { lang: 'en' },
+			meta: [
+				{
+					name: 'description',
+					content:
+						'byroose is a creative agency for strategy, marketing, web and AI-assisted content.',
+				},
+			],
+		},
+	},
 
-  css: ['~/assets/css/main.css'],
+	css: ['~/assets/css/tailwind.css', '~/assets/css/main.css'],
+	fonts: {
+		families: [
+			{
+				name: 'Inter',
+				provider: 'google',
+				weights: [400, 500, 600, 700, 800],
+				styles: ['normal'],
+				subsets: ['latin'],
+			},
+		],
+	},
 
-  vite: {
-    plugins: [tailwindcss()],
-  },
+	vite: {
+		plugins: [tailwindcss()],
+		optimizeDeps: {
+			include: [
+				'@vue/devtools-core',
+				'@vue/devtools-kit',
+				'@vueuse/core',
+				'zod',
+				'clsx',
+				'tailwind-merge',
+				'gsap',
+				'gsap/ScrollTrigger',
+				'gsap/SplitText',
+				'gsap/all',
+				'class-variance-authority',
+			],
+		},
+	},
 
-  modules: ['@nuxt/fonts', '@nuxt/icon', '@vueuse/nuxt'],
+	modules: ['@nuxt/fonts', '@nuxt/icon', '@vueuse/nuxt', 'shadcn-nuxt'],
 })
