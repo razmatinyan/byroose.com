@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/fonts": "^0.14.0",
+    "@nuxt/icon": "^2.5.1",
     "@tailwindcss/vite": "^4.3.3",
+    "@vueuse/nuxt": "^14.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gsap": "^3.15.0",
