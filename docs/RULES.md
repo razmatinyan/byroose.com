@@ -30,6 +30,14 @@ When two rules conflict, stop and ask one concise question before making an irre
 
 ## General code rules
 
+- At the start of every new session, read AGENTS.md, CLAUDE.md, README.md, every
+  project document under docs, and every applicable skill before planning,
+  proposing, or writing code.
+- Inspect git status, unstaged diffs, and staged diffs after the required reading.
+- Preserve user-authored working tree changes, review and verify them, and commit them in
+  a separate conventional commit from agent-authored work.
+- Do not commit secrets, generated output, temporary files, or changes whose
+  ownership or intent cannot be determined safely. Report the blocker instead.
 - Write the smallest complete solution that satisfies the requirement.
 - Prefer readable code over clever code.
 - Use descriptive names that explain purpose and domain meaning.
@@ -256,6 +264,7 @@ Do not edit documentation only to create activity. When behavior and durable gui
 - Do not fetch initial page data only on the client.
 - Do not mutate props.
 - Do not leak server secrets into public runtime configuration.
-- Do not commit generated build output, temporary files, local secrets, or unrelated changes.
+- Do not commit generated build output, temporary files, or local secrets.
+- Do not combine user-authored working tree changes with agent-authored changes in one commit.
 - Do not force push or rewrite shared Git history.
 - Do not add Co-Authored-by or AI attribution to commits.

@@ -2,17 +2,49 @@
 
 This workflow defines how AI agents plan, implement, verify, commit, push, and hand off changes in byroose.com.
 
-## 1. Understand the request
+## 1. Start every new session
 
-- Read AGENTS.md and the linked project documents.
-- Read every applicable skill file in .agents/skills and its required references.
+Complete this startup workflow before planning, proposing, or writing code:
+
+1. Read the root AGENTS.md file.
+2. Read the root CLAUDE.md file.
+3. Read README.md.
+4. Enumerate the complete docs directory and read every project document it contains.
+5. Read every applicable skill file in .agents/skills and its required references.
+6. Run git status, inspect unstaged diffs, and inspect staged diffs.
+7. Separate user-authored working tree changes from the requested agent work.
+
+Do not rely on documentation remembered from another session. Repeat the full
+startup workflow for every new session. If a required document changes while the
+session is active, reread it before planning or implementing affected work.
+
+### User-authored working tree changes
+
+Treat changes already present when the session starts, or changes that appear
+independently while the agent works, as user-owned unless there is clear evidence
+otherwise.
+
+- Review the diff to understand its scope without rewriting it.
+- Verify the affected behavior with checks proportionate to its risk.
+- Review its documentation impact and include any necessary documentation with
+  that user change set.
+- Commit the user change set with its own accurate conventional commit.
+- Keep it separate from every agent-authored implementation or documentation
+  commit.
+- Never amend, squash, reformat, discard, or silently absorb the user's work.
+- Do not commit secrets, generated output, temporary files, or an unsafe or
+  incomplete change. Report the exact blocker instead.
+- Ask one concise question when ownership or intended scope cannot be determined
+  safely.
+
+## 2. Understand the request
+
 - Inspect the current implementation, package versions, configuration, and relevant tests.
-- Run git status and inspect existing diffs before editing.
 - Restate the acceptance criteria internally in observable terms.
 - Ask one concise question if a missing answer would materially change behavior, architecture, visual direction, content meaning, or public data.
 - Continue with a safe assumption when the decision is minor and reversible.
 
-## 2. Plan the smallest complete change
+## 3. Plan the smallest complete change
 
 - Identify the files and boundaries that own the requested behavior.
 - Reuse existing components, class groups, tokens, composables, utilities, and schemas.
@@ -20,7 +52,7 @@ This workflow defines how AI agents plan, implement, verify, commit, push, and h
 - Identify likely failure modes and the verification needed for them.
 - Avoid speculative abstractions.
 
-## 3. Implement
+## 4. Implement
 
 - Keep the working tree focused on the task.
 - Preserve user changes and avoid formatting unrelated files.
@@ -29,7 +61,7 @@ This workflow defines how AI agents plan, implement, verify, commit, push, and h
 - Update types, empty states, error states, accessibility, responsive behavior, and reduced motion where the feature requires them.
 - Stop and ask before an irreversible choice or a change outside the requested scope.
 
-## 4. Synchronize documentation
+## 5. Synchronize documentation
 
 Documentation synchronization is required after every implementation change. Review the impact immediately after the code is stable, before final verification and commit.
 
@@ -60,20 +92,21 @@ A bug fix does not always need a new paragraph. Update documentation when the fi
 
 Do not maintain duplicate rules in multiple files. Update the canonical document and keep entry-point files concise.
 
-## 5. Review the diff
+## 6. Review the diff
 
 Before running final checks:
 
 - Inspect git diff and git diff --check.
 - Remove debug output, dead code, temporary files, and accidental formatting changes.
-- Confirm no unrelated files are staged or modified by the task.
+- Confirm user-authored working tree changes are staged only in their own separate change set.
+- Confirm the active agent change contains no unrelated files.
 - Search changed text for em dashes.
 - Confirm no code comments were added.
 - Confirm filenames, imports, links, and documentation paths are correct.
 - Confirm documentation matches the final implementation.
 - Confirm required documentation is included in the same change.
 
-## 6. Verify
+## 7. Verify
 
 Use the smallest set that proves the result:
 
@@ -90,9 +123,13 @@ Use the smallest set that proves the result:
 
 Do not report a check as passed unless it was executed. If a check cannot run, report the reason and the remaining risk.
 
-## 7. Commit
+## 8. Commit
 
 Create one focused commit after the requested change, documentation synchronization, and verification are complete. Stage the implementation and its documentation together. Stage only the files that belong to the task.
+
+If the working tree contains user-authored changes, commit those changes separately
+with their own documentation impact review and verification. Never combine them
+with the agent-authored change, even when both affect the same file.
 
 Use this format:
 
@@ -134,7 +171,7 @@ fix(header): prevent mobile menu overflow
 refactor(motion): centralize GSAP context cleanup
 ~~~
 
-## 8. Push
+## 9. Push
 
 After a successful commit, push the current branch to its normal remote when access is available and the user has not asked to keep the work local.
 
@@ -147,9 +184,9 @@ git push origin HEAD
 - Never switch the user to a different branch unless the task requires it.
 - Never push a failing or partially verified change.
 - If authentication, policy, or network access prevents a push, keep the local commit and report the exact blocker.
-- If the working tree contains unrelated user changes, do not include them in the commit.
+- Push each verified user and agent commit without rewriting or combining them.
 
-## 9. Handoff
+## 10. Handoff
 
 Lead with the completed outcome. Include:
 

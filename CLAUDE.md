@@ -6,16 +6,22 @@ Claude Code must follow AGENTS.md and every document it references. This file is
 
 byroose.com is a Nuxt 4 and Vue 3 website for the byroose creative agency. The current application is a responsive landing experience built with TypeScript, Tailwind CSS v4, Shadcn Vue source components, Nuxt Icon with Lucide, Nuxt Fonts, VueUse, and GSAP.
 
-## Read before editing
+## Required session startup
 
-1. AGENTS.md
-2. docs/RULES.md
-3. docs/ARCHITECTURE.md
-4. docs/DESIGN_SYSTEM.md
-5. docs/CONTENT_GUIDE.md
-6. docs/AI_WORKFLOW.md
+At the start of every new Claude Code session, before planning, proposing, or
+writing code:
 
-Inspect the relevant skill instructions in .agents/skills before implementation. Inspect the current file and git diff before changing it.
+1. Read AGENTS.md.
+2. Read CLAUDE.md.
+3. Read README.md.
+4. Enumerate the complete docs directory and read every project document it contains.
+5. Read every applicable skill in .agents/skills and its required references.
+6. Inspect git status, unstaged diffs, and staged diffs.
+
+Do not rely on documentation remembered from another session. Reread any required
+file that changes while the session is active. Treat user-authored working tree
+changes as a separate change set and follow docs/AI_WORKFLOW.md for review, verification,
+documentation impact, commit, and push behavior.
 
 ## Essential implementation rules
 

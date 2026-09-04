@@ -2,24 +2,32 @@
 
 This file is the entry point for every AI agent working in this repository. It applies to the entire project. User instructions and system instructions take priority. A more specific AGENTS.md file may add rules for its own directory, but it must not weaken the rules here.
 
-## Required reading
+## Required session startup
 
-Read these files before changing code:
+At the start of every new agent session, complete this reading before planning,
+proposing, or writing code:
 
-1. AGENTS.md
-2. docs/RULES.md
-3. docs/ARCHITECTURE.md
-4. docs/DESIGN_SYSTEM.md
-5. docs/CONTENT_GUIDE.md
-6. docs/AI_WORKFLOW.md
-7. README.md
+1. Read AGENTS.md.
+2. Read CLAUDE.md.
+3. Read README.md.
+4. Enumerate the complete docs directory and read every project document it contains.
+5. Read every applicable skill in .agents/skills and its required references.
 
-Read the relevant files in .agents/skills before implementation. Use only the skills that match the task. Nuxt and Vue work normally requires the Nuxt, Nuxt 4 patterns, and Vue best practices skills. Use the Tailwind design system skill for styling, the backend patterns skill for server work, the GSAP skills for animation, and the SEO skill for public content.
+Do not rely on memory from another session. Repeat this startup workflow whenever
+a new session begins. If a required file changes during the session, reread it
+before continuing with affected work.
+
+Use only the skills that match the task. Nuxt and Vue work normally requires the
+Nuxt, Nuxt 4 patterns, and Vue best practices skills. Use the Tailwind design
+system skill for styling, the backend patterns skill for server work, the GSAP
+skills for animation, and the SEO skill for public content.
 
 ## Start every task
 
 - Read the current implementation before proposing a change.
-- Inspect git status and preserve unrelated user work.
+- Inspect git status, unstaged diffs, and staged diffs before making changes.
+- Preserve user-authored working tree changes and commit them separately from
+  agent-authored work according to docs/AI_WORKFLOW.md.
 - Identify the smallest complete change that satisfies the request.
 - Ask one concise question when missing information would change the public behavior, data contract, design direction, or delivery scope.
 - Make a reasonable documented assumption when the decision is low risk and easy to reverse.
@@ -37,7 +45,8 @@ Read the relevant files in .agents/skills before implementation. Use only the sk
 - Keep browser-only behavior out of server rendering and avoid hydration mismatches.
 - Validate untrusted input at backend boundaries and keep secrets on the server.
 - Do not use any, suppress TypeScript errors, or introduce a dependency without a clear need.
-- Do not overwrite, discard, or include unrelated user changes.
+- Do not overwrite or discard user-authored working tree changes. Never include them in an
+  agent-authored commit.
 - Verify the affected behavior before delivery.
 - Treat documentation synchronization as part of every change. After each feature, refactor, bug fix, dependency update, configuration change, or design-system change, review the relevant documentation and update it in the same commit.
 - If no documentation content needs to change, state that the documentation impact was reviewed in the final handoff.
