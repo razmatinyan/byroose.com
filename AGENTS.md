@@ -39,10 +39,12 @@ Read the relevant files in .agents/skills before implementation. Use only the sk
 - Do not use any, suppress TypeScript errors, or introduce a dependency without a clear need.
 - Do not overwrite, discard, or include unrelated user changes.
 - Verify the affected behavior before delivery.
+- Treat documentation synchronization as part of every change. After each feature, refactor, bug fix, dependency update, configuration change, or design-system change, review the relevant documentation and update it in the same commit.
+- If no documentation content needs to change, state that the documentation impact was reviewed in the final handoff.
 
 ## Delivery
 
-Follow docs/AI_WORKFLOW.md for verification, commits, pushes, and handoff. Each completed change should have one focused conventional commit and should be pushed to the current remote branch when access is available and the user has not asked otherwise. Never force push. Never add Co-Authored-by or any other AI attribution to a commit.
+Follow docs/AI_WORKFLOW.md for documentation synchronization, verification, commits, pushes, and handoff. A change is not complete until its documentation impact has been reviewed. Each completed change should have one focused conventional commit and should be pushed to the current remote branch when access is available and the user has not asked otherwise. Never force push. Never add Co-Authored-by or any other AI attribution to a commit.
 
 ## Sources of truth
 

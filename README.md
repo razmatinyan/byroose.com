@@ -73,4 +73,4 @@ See [Architecture](docs/ARCHITECTURE.md) for dependency boundaries and placement
 
 ## Contributing
 
-Keep changes focused, reuse established patterns, and verify the affected behavior before delivery. Every completed change should use a short conventional commit and follow the push policy in [AI workflow and Git delivery](docs/AI_WORKFLOW.md).
+Keep changes focused, reuse established patterns, and verify the affected behavior before delivery. Review and update the relevant documentation after every feature, refactor, bug fix, dependency update, configuration change, or design-system change. Keep documentation and implementation in the same focused conventional commit, then follow the push policy in [AI workflow and Git delivery](docs/AI_WORKFLOW.md).

@@ -29,6 +29,8 @@ Inspect the relevant skill instructions in .agents/skills before implementation.
 - Keep source-owned Shadcn primitives compatible with Reka UI and preserve their accessibility behavior.
 - Keep client-only APIs inside safe Vue or Nuxt client lifecycles.
 - Preserve unrelated work and never use destructive Git commands.
+- Review and synchronize the relevant project documentation after every feature, refactor, bug fix, dependency update, configuration change, or design-system change.
+- Keep documentation updates in the same focused commit as the change they describe.
 
 ## Commands
 
@@ -41,4 +43,4 @@ npm run generate
 npm run preview
 ~~~
 
-Use the smallest relevant verification set. Follow docs/AI_WORKFLOW.md for the required Git and handoff process.
+Use the smallest relevant verification set. Follow docs/AI_WORKFLOW.md for documentation synchronization, Git delivery, and handoff.

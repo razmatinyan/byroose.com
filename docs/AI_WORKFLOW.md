@@ -27,10 +27,40 @@ This workflow defines how AI agents plan, implement, verify, commit, push, and h
 - Write self-explanatory code without comments.
 - Keep functions and components small enough to name precisely.
 - Update types, empty states, error states, accessibility, responsive behavior, and reduced motion where the feature requires them.
-- Update documentation when a public contract, architecture rule, token, command, or setup step changes.
 - Stop and ask before an irreversible choice or a change outside the requested scope.
 
-## 4. Review the diff
+## 4. Synchronize documentation
+
+Documentation synchronization is required after every implementation change. Review the impact immediately after the code is stable, before final verification and commit.
+
+Use this sequence:
+
+1. Identify what changed for users, contributors, components, data, architecture, design, setup, or delivery.
+2. Find the document that owns that contract.
+3. Update durable guidance, examples, commands, and links.
+4. Remove instructions that became inaccurate.
+5. Keep the documentation change in the same commit as the implementation.
+6. If no content change is required, record Documentation reviewed: no contract change in the final handoff.
+
+Use this impact map:
+
+| Change | Required documentation review |
+| --- | --- |
+| New feature | README.md for capabilities or setup, ARCHITECTURE.md for ownership and data flow, RULES.md for new standards, and public content where relevant |
+| Component or UI feature | DESIGN_SYSTEM.md for tokens, variants, accessibility, responsive behavior, and usage contracts |
+| Refactor | ARCHITECTURE.md for changed boundaries, ownership, dependencies, composables, utilities, or state flow |
+| Bug fix | Existing documented behavior, affected examples, troubleshooting guidance, and any invariant needed to prevent recurrence |
+| Backend or API work | ARCHITECTURE.md for route and data flow, RULES.md for validation and security, and shared request or response contracts |
+| Dependency or Nuxt configuration | README.md for setup and commands, ARCHITECTURE.md for runtime impact, and RULES.md for new constraints |
+| SEO or copy | CONTENT_GUIDE.md, metadata guidance, page intent, and visible public copy |
+| Design token or theme | DESIGN_SYSTEM.md palette, token purpose, light and dark pairs, contrast, and consumers |
+| Test, CI, build, or release | This workflow, README.md commands, and verification expectations |
+
+A bug fix does not always need a new paragraph. Update documentation when the fix changes expected behavior, exposes a reusable invariant, corrects an example, or adds a useful troubleshooting path. Otherwise record the completed impact review in the handoff.
+
+Do not maintain duplicate rules in multiple files. Update the canonical document and keep entry-point files concise.
+
+## 5. Review the diff
 
 Before running final checks:
 
@@ -40,8 +70,10 @@ Before running final checks:
 - Search changed text for em dashes.
 - Confirm no code comments were added.
 - Confirm filenames, imports, links, and documentation paths are correct.
+- Confirm documentation matches the final implementation.
+- Confirm required documentation is included in the same change.
 
-## 5. Verify
+## 6. Verify
 
 Use the smallest set that proves the result:
 
@@ -58,9 +90,9 @@ Use the smallest set that proves the result:
 
 Do not report a check as passed unless it was executed. If a check cannot run, report the reason and the remaining risk.
 
-## 6. Commit
+## 7. Commit
 
-Create one focused commit after the requested change is complete and verified. Stage only the files that belong to the task.
+Create one focused commit after the requested change, documentation synchronization, and verification are complete. Stage the implementation and its documentation together. Stage only the files that belong to the task.
 
 Use this format:
 
@@ -102,7 +134,7 @@ fix(header): prevent mobile menu overflow
 refactor(motion): centralize GSAP context cleanup
 ~~~
 
-## 7. Push
+## 8. Push
 
 After a successful commit, push the current branch to its normal remote when access is available and the user has not asked to keep the work local.
 
@@ -117,11 +149,12 @@ git push origin HEAD
 - If authentication, policy, or network access prevents a push, keep the local commit and report the exact blocker.
 - If the working tree contains unrelated user changes, do not include them in the commit.
 
-## 8. Handoff
+## 9. Handoff
 
 Lead with the completed outcome. Include:
 
 - What changed
+- Which documentation was updated, or confirmation that it was reviewed with no contract change
 - Important architecture or design decisions
 - Checks that passed
 - Commit and push status when relevant

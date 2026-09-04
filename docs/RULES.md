@@ -195,6 +195,34 @@ The project has no application backend yet. When server features are added:
 - Use descriptive headings and links. Do not write vague link text such as click here.
 - Do not stuff keywords, hide text, or add schema that is not represented on the page.
 
+## Documentation maintenance
+
+Documentation is part of the definition of done. Every feature, refactor, bug fix, dependency update, configuration change, design-system change, content change, and workflow change requires a documentation impact review.
+
+- Update affected documentation in the same commit as the implementation.
+- Document durable behavior, contracts, decisions, setup, and ownership boundaries.
+- Do not copy low-level implementation details that are likely to become stale.
+- Do not postpone required documentation to an unspecified follow-up task.
+- Update links and filenames when files move or are renamed.
+- Remove instructions that are no longer true.
+- Keep examples aligned with the supported Nuxt, Vue, Tailwind, Shadcn, and backend patterns.
+- If no documentation content needs to change, confirm the review in the final handoff.
+
+Review these sources for each change:
+
+| Change type | Documentation to review |
+| --- | --- |
+| New feature | README.md, ARCHITECTURE.md, RULES.md, and feature-facing content |
+| Component or design change | DESIGN_SYSTEM.md, ARCHITECTURE.md, and usage examples |
+| Code refactor | ARCHITECTURE.md, public component contracts, composable contracts, and utilities |
+| Bug fix | Documented behavior, new invariant, troubleshooting guidance, and affected examples |
+| Backend or API change | ARCHITECTURE.md, validation and security rules, request and response contracts |
+| Dependency or configuration change | README.md, setup commands, architecture, and project rules |
+| SEO or copy change | CONTENT_GUIDE.md, page intent, metadata rules, and public examples |
+| Test, build, or delivery change | AI_WORKFLOW.md, commands, and verification requirements |
+
+Do not edit documentation only to create activity. When behavior and durable guidance remain unchanged, record the completed review in the handoff instead.
+
 ## Verification rules
 
 - Match verification effort to the risk of the change.
@@ -205,6 +233,7 @@ The project has no application backend yet. When server features are added:
 - Check reduced motion after animation changes.
 - Check server rendering and hydration after client behavior changes.
 - Verify public content for spelling, factual accuracy, heading structure, metadata, and the no em dash rule.
+- Confirm the documentation impact review is complete.
 - Do not claim a check passed unless it was run.
 
 ## Do not
