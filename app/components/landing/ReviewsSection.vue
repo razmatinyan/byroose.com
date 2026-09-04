@@ -62,7 +62,6 @@ onBeforeUnmount(() => reviewTimer && clearInterval(reviewTimer))
 	<section id="reviews" class="reviews section-gutter">
 		<Card variant="plain" class="reviews-card">
 			<div class="reviews-copy">
-				<span class="eyebrow">Reviews</span>
 				<blockquote class="reviews-quote" aria-live="polite">
 					<p>{{ activeReview.quote }}</p>
 				</blockquote>

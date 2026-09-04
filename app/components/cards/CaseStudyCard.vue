@@ -56,7 +56,6 @@ const patternClasses: Record<Theme, string> = {
 		<MediaPlaceholder
 			label="case photo"
 			:class="cn('case-card-image', patternClasses[theme])"
-			label-class="text-current opacity-50"
 		/>
 		<div class="case-card-copy">
 			<span class="case-card-client">{{ client }}</span>

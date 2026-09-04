@@ -35,7 +35,7 @@ Prefer a sharp concrete statement over abstract agency language. Explain what ch
 
 - Never use an em dash.
 - Use commas, colons, parentheses, or separate sentences instead.
-- Use sentence case for headings and controls unless a design token requires uppercase display text.
+- Use sentence case for headings, controls, labels, and card metadata.
 - Prefer active voice.
 - Keep paragraphs focused on one idea.
 - Vary sentence length, but remove filler.

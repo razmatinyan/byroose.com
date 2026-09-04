@@ -51,7 +51,7 @@ const surfaceClasses: Record<Theme, string> = {
 				theme === 'blue' && 'pattern-blue',
 				theme === 'orange' && 'pattern-orange',
 			)"
-			:label-class="theme === 'white' ? undefined : 'text-current opacity-55'"
+			:label-class="theme === 'white' ? undefined : 'text-current opacity-90'"
 		/>
 		<h3 class="course-card-title">{{ title }}</h3>
 		<p class="course-card-description">{{ body }}</p>

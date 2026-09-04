@@ -19,7 +19,7 @@ the global stylesheet owns semantic tokens and reusable Tailwind class groups.
 Theme values live in `app/assets/css/tailwind.css` as OKLCH variables. Shadcn's
 standard surface pairs (`background`/`foreground`, `card`/`card-foreground`,
 `primary`/`primary-foreground`, and so on) are the default API. Brand extensions
-cover blue, green, pink, cream, soft copy, and subtle copy.
+cover blue, green, butter yellow, violet, pink, cream, soft copy, and subtle copy.
 
 Use semantic utilities such as `bg-primary`, `text-muted-foreground`, and
 `border-border`. Do not add raw hexadecimal colors to Vue templates. New theme
@@ -38,10 +38,12 @@ visual and accessibility review.
 | `card` | White | Elevated and contained content |
 | `primary` | Orange-red | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
-| `brand-green` | Saturated green | Positive editorial surfaces and varied content cards |
+| `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
+| `brand-yellow` | Butter yellow, `#F8E5AA` | Warm editorial surfaces and selective highlights |
+| `brand-violet` | Vivid violet, `#7C3AED` | Expressive editorial surfaces and selective highlights |
 | `accent` and `brand-pink` | Soft pink | Playful highlights and alternate surfaces |
 | `muted` | Pale warm neutral | Quiet backgrounds and placeholders |
-| `brand-soft` | Mid neutral | Eyebrows, secondary labels, and low-emphasis copy |
+| `brand-soft` | Mid neutral | Secondary labels and low-emphasis copy |
 | `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
 | `destructive` | Alert red | Destructive and error actions only |
 | `border`, `input`, and `ring` | Semantic controls | Boundaries, fields, and focus indicators |
@@ -49,6 +51,10 @@ visual and accessibility review.
 `brand-blue`, `brand-pink`, and `brand-cream` are explicit brand aliases. Generic
 components should prefer `secondary`, `accent`, and `background`. Brand aliases
 are appropriate when the color itself is part of a byroose composition.
+
+Orange, green, yellow, and pink surfaces use dark ink foregrounds. Blue and
+violet surfaces use white foregrounds. Keep each brand color paired with its
+foreground token so text contrast remains valid in both themes.
 
 ### Adding colors
 
@@ -76,6 +82,11 @@ or component-level font imports.
 - `text-service` supports interactive service titles.
 - `text-journey` and `text-step` support the oversized process composition.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
+
+Use sentence case for small interface text and card metadata. Do not use expanded
+uppercase styling for these elements. Eyebrows are not part of the interface
+hierarchy. Promote a meaningful section label to a semantic heading, or remove a
+decorative label when it does not add useful structure.
 
 Use tight tracking only for large display text. Body copy should use comfortable
 line height and a readable measure. Do not choose heading elements by visual size;
@@ -192,6 +203,7 @@ Do not shrink desktop layouts until they fit. Recompose them for smaller screens
 ## Accessibility
 
 - Meet WCAG AA contrast for text and essential controls.
+- Keep muted text and opacity-based metadata at WCAG AA contrast on every surface.
 - Preserve a visible focus ring against every surface.
 - Use semantic landmarks and heading order.
 - Give icon-only controls an accessible name.

@@ -55,7 +55,7 @@ const surfaceClasses: Record<Theme, string> = {
 						'journey-step-copy',
 						theme === 'white'
 							? 'text-muted-foreground'
-							: 'text-white/85',
+							: 'text-current opacity-90',
 					)
 				"
 			>
@@ -71,7 +71,7 @@ const surfaceClasses: Record<Theme, string> = {
 					theme === 'orange' && 'pattern-orange',
 				)
 			"
-			:label-class="theme === 'white' ? undefined : 'text-white/75'"
+			:label-class="theme === 'white' ? undefined : 'text-current opacity-90'"
 		/>
 	</Card>
 </template>

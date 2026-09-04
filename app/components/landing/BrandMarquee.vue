@@ -12,7 +12,7 @@ const brands = [
 <template>
 	<section class="brand-marquee">
 		<div class="section-gutter">
-			<span class="eyebrow">Brands we have worked with</span>
+			<h2 class="section-title brand-marquee-title">Brands we have worked with</h2>
 		</div>
 		<div class="brand-marquee-viewport">
 			<div class="brand-marquee-track">

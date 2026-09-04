@@ -52,14 +52,13 @@ const surfaceClasses: Record<Variant, string> = {
 	>
 		<div v-if="featured" class="blog-card-meta">
 			<span class="text-brand-cream">{{ category ?? 'Featured' }}</span>
-			<span class="text-white/65">{{ duration }}</span>
+			<span class="text-white/90">{{ duration }}</span>
 		</div>
 		<span
 			v-else-if="category"
 			:class="cn(
 				'blog-card-category',
-				variant === 'white' && 'text-brand-soft opacity-100',
-				variant === 'pink' && 'opacity-60',
+				variant === 'white' && 'text-brand-soft',
 			)"
 		>
 			{{ category }}

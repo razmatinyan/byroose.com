@@ -35,6 +35,10 @@
 	--color-brand-blue-foreground: var(--brand-blue-foreground);
 	--color-brand-green: var(--brand-green);
 	--color-brand-green-foreground: var(--brand-green-foreground);
+	--color-brand-yellow: var(--brand-yellow);
+	--color-brand-yellow-foreground: var(--brand-yellow-foreground);
+	--color-brand-violet: var(--brand-violet);
+	--color-brand-violet-foreground: var(--brand-violet-foreground);
 	--color-brand-pink: var(--brand-pink);
 	--color-brand-pink-foreground: var(--brand-pink-foreground);
 	--color-brand-cream: var(--brand-cream);
@@ -96,11 +100,11 @@
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.1796 0.0039 48.5);
 	--primary: oklch(0.652 0.2361 33.73);
-	--primary-foreground: oklch(1 0 0);
+	--primary-foreground: oklch(0.1796 0.0039 48.5);
 	--secondary: oklch(0.5187 0.2685 265.63);
 	--secondary-foreground: oklch(1 0 0);
 	--muted: oklch(0.9406 0.0159 73.68);
-	--muted-foreground: oklch(0.4583 0.0165 67.4);
+	--muted-foreground: oklch(0.42 0.0165 67.4);
 	--accent: oklch(0.8778 0.0665 334.17);
 	--accent-foreground: oklch(0.1796 0.0039 48.5);
 	--destructive: oklch(0.577 0.245 27.325);
@@ -110,12 +114,16 @@
 	--brand-blue: oklch(0.5187 0.2685 265.63);
 	--brand-blue-foreground: oklch(1 0 0);
 	--brand-green: oklch(0.615 0.1506 154.7);
-	--brand-green-foreground: oklch(1 0 0);
+	--brand-green-foreground: oklch(0.1796 0.0039 48.5);
+	--brand-yellow: oklch(0.923371 0.078225 92.3397);
+	--brand-yellow-foreground: oklch(0.1796 0.0039 48.5);
+	--brand-violet: oklch(0.541337 0.246586 293.009);
+	--brand-violet-foreground: oklch(1 0 0);
 	--brand-pink: oklch(0.8778 0.0665 334.17);
 	--brand-pink-foreground: oklch(0.1796 0.0039 48.5);
 	--brand-cream: oklch(0.9639 0.0153 77.07);
 	--brand-cream-foreground: oklch(0.1796 0.0039 48.5);
-	--brand-soft: oklch(0.6083 0.0184 70.39);
+	--brand-soft: oklch(0.5 0.0184 70.39);
 	--brand-subtle: oklch(0.3876 0.015 67.36);
 	--chart-1: var(--primary);
 	--chart-2: var(--brand-blue);
@@ -151,6 +159,10 @@
 	--border: oklch(1 0 0 / 12%);
 	--input: oklch(1 0 0 / 16%);
 	--ring: oklch(0.7 0.225 34);
+	--brand-yellow: oklch(0.923371 0.078225 92.3397);
+	--brand-yellow-foreground: oklch(0.1796 0.0039 48.5);
+	--brand-violet: oklch(0.541337 0.246586 293.009);
+	--brand-violet-foreground: oklch(1 0 0);
 	--brand-cream: oklch(0.225 0.006 55);
 	--brand-cream-foreground: oklch(0.9639 0.0153 77.07);
 	--brand-soft: oklch(0.74 0.018 70.39);
@@ -232,10 +244,6 @@
 		@apply m-0 max-w-[34ch] text-lg leading-normal text-muted-foreground;
 	}
 
-	.eyebrow {
-		@apply text-xs font-semibold tracking-[0.1em] text-brand-soft uppercase;
-	}
-
 	.media-placeholder {
 		@apply grid place-items-center bg-muted;
 		background-image: repeating-linear-gradient(
@@ -250,7 +258,7 @@
 	}
 
 	.button-icon {
-		@apply grid size-11 shrink-0 place-items-center rounded-action-icon bg-primary-foreground text-foreground;
+		@apply grid size-11 shrink-0 place-items-center rounded-action-icon bg-card text-foreground;
 	}
 
 	.button-icon-sm {
@@ -367,7 +375,7 @@
 	}
 
 	.hero-stat-card {
-		@apply flex flex-col justify-between p-6 text-white;
+		@apply flex flex-col justify-between p-6;
 	}
 
 	.hero-number {
@@ -375,11 +383,11 @@
 	}
 
 	.hero-label {
-		@apply mt-3 block text-xs font-semibold tracking-[0.09em] uppercase opacity-85;
+		@apply mt-3 block text-sm font-semibold opacity-90;
 	}
 
 	.hero-caption {
-		@apply m-0 text-sm leading-snug text-white/85 sm:text-base;
+		@apply m-0 text-sm leading-snug text-current opacity-90 sm:text-base;
 	}
 
 	.studio {
@@ -443,12 +451,8 @@
 		@apply text-sm tracking-[0.06em] text-brand-soft;
 	}
 
-	.client-story-eyebrow {
-		@apply mt-7 block tracking-[0.06em];
-	}
-
 	.client-story-quote {
-		@apply mt-4 min-h-36 text-lg leading-relaxed text-foreground;
+		@apply mt-7 min-h-36 text-lg leading-relaxed text-foreground;
 	}
 
 	.client-story-person {
@@ -476,7 +480,7 @@
 	}
 
 	.service-picker-option {
-		@apply m-0 border-0 bg-transparent p-0 text-left text-service font-bold tracking-[-0.04em] text-foreground/20 transition-colors duration-300 hover:text-foreground aria-pressed:text-foreground;
+		@apply m-0 border-0 bg-transparent p-0 text-left text-service font-bold tracking-[-0.04em] text-foreground/60 transition-colors duration-300 hover:text-foreground aria-pressed:text-foreground;
 	}
 
 	.service-picker-description {
@@ -510,7 +514,7 @@
 	}
 
 	.case-card-image span {
-		@apply text-current opacity-50;
+		@apply text-current opacity-85;
 	}
 
 	.case-card-copy {
@@ -518,7 +522,7 @@
 	}
 
 	.case-card-client {
-		@apply text-xs font-semibold tracking-[0.09em] uppercase opacity-75;
+		@apply text-sm font-semibold;
 	}
 
 	.case-card-title {
@@ -526,7 +530,7 @@
 	}
 
 	.case-card-metric {
-		@apply mt-2 mb-0 text-sm opacity-70;
+		@apply mt-2 mb-0 text-sm opacity-90;
 	}
 
 	@media (min-width: 40rem) {
@@ -579,8 +583,12 @@
 		@apply aspect-16/11 rounded-2xl;
 	}
 
+	.brand-marquee-title {
+		@apply mx-auto max-w-[17ch] text-center;
+	}
+
 	.brand-marquee-viewport {
-		@apply mt-6 overflow-hidden border-y border-foreground/10 py-7;
+		@apply mt-8 overflow-hidden border-y border-foreground/10 py-7 md:mt-10;
 	}
 
 	.brand-marquee-track {
@@ -600,7 +608,7 @@
 	}
 
 	.reviews-quote {
-		@apply mt-5 min-h-44;
+		@apply mt-0 min-h-44;
 	}
 
 	.reviews-quote p {
@@ -645,7 +653,7 @@
 	}
 
 	.course-card-kicker {
-		@apply text-xs font-semibold tracking-[0.09em] uppercase opacity-70;
+		@apply text-sm font-semibold;
 	}
 
 	.course-card-price {
@@ -661,7 +669,7 @@
 	}
 
 	.course-card-description {
-		@apply m-0 text-sm leading-relaxed opacity-80 sm:text-base;
+		@apply m-0 text-sm leading-relaxed opacity-90 sm:text-base;
 	}
 
 	.course-card-link {
@@ -689,11 +697,11 @@
 	}
 
 	.blog-card-meta {
-		@apply flex justify-between text-xs font-semibold tracking-[0.09em] uppercase;
+		@apply flex justify-between text-sm font-semibold;
 	}
 
 	.blog-card-category {
-		@apply text-xs font-semibold tracking-[0.09em] uppercase opacity-85;
+		@apply text-sm font-semibold;
 	}
 
 	.blog-card-title {
@@ -709,7 +717,7 @@
 	}
 
 	.blog-card-description {
-		@apply mt-3.5 mb-0 max-w-[44ch] text-base leading-normal text-white/80;
+		@apply mt-3.5 mb-0 max-w-[44ch] text-base leading-normal text-white/90;
 	}
 
 	.faq {
@@ -761,7 +769,7 @@
 	}
 
 	.contact-copy p {
-		@apply m-0 text-base leading-relaxed text-white/90 sm:text-lg;
+		@apply m-0 text-base leading-relaxed text-current sm:text-lg;
 	}
 
 	.contact-actions {
@@ -777,7 +785,7 @@
 	}
 
 	.site-footer-heading {
-		@apply text-xs font-semibold tracking-[0.09em] text-primary uppercase;
+		@apply text-sm font-semibold text-primary;
 	}
 
 	.site-footer-copy {
@@ -801,7 +809,7 @@
 	}
 
 	.site-footer-legal {
-		@apply mt-5 flex flex-wrap justify-between gap-3 text-xs tracking-[0.04em] text-white/45;
+		@apply mt-5 flex flex-wrap justify-between gap-3 text-xs tracking-[0.04em] text-white/65;
 	}
 }
 

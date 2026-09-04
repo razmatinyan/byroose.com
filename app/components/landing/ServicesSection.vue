@@ -100,7 +100,6 @@ function showNextStory() {
 					<span class="client-story-counter">{{ storyCounter }}</span>
 				</div>
 
-				<span class="eyebrow client-story-eyebrow">(Real client stories)</span>
 				<p class="client-story-quote">{{ activeStory.quote }}</p>
 
 				<div class="client-story-person">
