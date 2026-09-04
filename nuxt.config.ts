@@ -85,6 +85,16 @@ export default defineNuxtConfig({
 		'shadcn-nuxt',
 	],
 
+	image: {
+		provider: 'ipx',
+		format: ['webp'],
+		ipx: {
+			modifiers: {
+				format: 'webp',
+			},
+		},
+	},
+
 	shadcn: {
 		prefix: 'Ui',
 		componentDir: '@/components/ui',

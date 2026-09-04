@@ -50,6 +50,7 @@ function closeMenu() {
 					alt="byroose"
 					width="651"
 					height="187"
+					format="svg"
 				/>
 			</a>
 

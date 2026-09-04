@@ -121,6 +121,8 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 - Use NuxtLink for internal navigation.
 - Use NuxtImg or NuxtPicture for rendered images. Provide intrinsic dimensions,
   responsive sizes, loading intent, and accurate alternative text.
+- Let raster images inherit the central WebP output default. Override `format`
+  only when a source must remain vector or another format is required.
 - Use useFetch or useAsyncData for SSR-aware data loading.
 - Do not wrap initial page data in onMounted.
 - Use useState for SSR-safe shared state when Pinia is not justified.

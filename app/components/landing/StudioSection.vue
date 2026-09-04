@@ -14,7 +14,6 @@
 					width="720"
 					height="1280"
 					sizes="100vw sm:448px"
-					format="webp"
 					loading="lazy"
 				/>
 			</div>

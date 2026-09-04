@@ -73,6 +73,7 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 				alt="byroose"
 				width="651"
 				height="187"
+				format="svg"
 				loading="lazy"
 			/>
 			<div class="site-footer-legal">

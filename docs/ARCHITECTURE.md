@@ -122,7 +122,9 @@ The default scroller is the browser window. This keeps native scrolling, sticky 
 
 public contains source assets served from root-relative URLs, including images,
 the logo, favicon, and robots file. Render images through NuxtImg or NuxtPicture
-so Nuxt Image owns responsive sizing and optimization.
+so Nuxt Image owns responsive sizing and optimization. The central IPX provider
+configuration emits WebP for raster images, while components explicitly preserve
+vector formats where needed.
 
 ## Dependency direction
 

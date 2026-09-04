@@ -206,6 +206,8 @@ Render images with NuxtImg or NuxtPicture from the Nuxt Image module. Local imag
 sources belong under `public/` and use root-relative paths. Provide intrinsic
 width and height, an accurate alt value or an empty alt for decorative images,
 and responsive `sizes` when the rendered width changes across breakpoints.
+Raster output inherits the central WebP default. Do not repeat the `format` prop
+unless a source needs an intentional override. Keep vector brand assets as SVG.
 
 Use `object-cover` only when the composition intentionally crops the source.
 Lazy-load below-the-fold images. Reserve eager loading and preload behavior for

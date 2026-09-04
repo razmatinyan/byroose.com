@@ -70,6 +70,8 @@ Both skills remain subordinate to current user instructions, `AGENTS.md`, and th
 - Update types, empty states, error states, accessibility, responsive behavior, and reduced motion where the feature requires them.
 - Render images through NuxtImg or NuxtPicture with intrinsic dimensions,
   responsive sizes, loading intent, and accurate alternative text.
+- Let raster images inherit the central WebP output default. Add a `format`
+  override only for intentional exceptions such as vector assets.
 - Stop and ask before an irreversible choice or a change outside the requested scope.
 
 ## 5. Synchronize documentation
