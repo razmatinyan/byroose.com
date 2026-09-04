@@ -1,0 +1,42 @@
+{
+  "skill_name": "roose",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/roose Add a validated Nitro contact endpoint that sends inquiries to our CRM.",
+      "expected_output": "The agent completes the full repository discovery gate before planning, loads the relevant Nuxt and backend skills, inspects the current implementation and Git history, then implements, documents, verifies, commits, and pushes the smallest complete server change.",
+      "files": [],
+      "expectations": [
+        "The agent reads the root instruction files and every document under docs before presenting a plan.",
+        "The agent enumerates project-local skills and reads every skill applicable to Nuxt and backend work.",
+        "The agent records Git status, diffs, recent history, and ownership before editing.",
+        "The agent provides a reconnaissance completion report before its implementation plan.",
+        "The implementation follows the discovered architecture, documentation, verification, and Git delivery requirements."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/roose Diagnose why the mobile header overflows at 390px and tell me the root cause. Do not fix it.",
+      "expected_output": "The agent completes repository discovery, loads the relevant frontend skills, inspects the responsive header implementation and history, and reports an evidence-backed diagnosis without editing, committing, or pushing files.",
+      "files": [],
+      "expectations": [
+        "The agent finishes the discovery gate before stating a diagnosis or plan.",
+        "The agent inspects the responsive implementation, shared design rules, and relevant Git history.",
+        "The agent respects the diagnose-only scope and does not modify the working tree.",
+        "The final answer identifies evidence for the root cause and reports the unchanged Git state."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/roose Rewrite the landing hero so it explains our strategy and web services more clearly while preserving the current layout.",
+      "expected_output": "The agent completes repository discovery, loads content, SEO, and relevant frontend guidance, inspects the hero and its consumers, then makes a focused copy change with matching documentation review, policy checks, verification, commit, and push.",
+      "files": [],
+      "expectations": [
+        "The agent reads the content guide, design system, current hero copy, and applicable content or SEO skills before planning.",
+        "The plan preserves the requested layout and limits the scope to copy and necessary documentation.",
+        "The new copy follows the byroose voice and contains no em dash.",
+        "The agent verifies the affected content and completes the configured Git delivery workflow."
+      ]
+    }
+  ]
+}

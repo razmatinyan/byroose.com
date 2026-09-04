@@ -1,0 +1,42 @@
+{
+  "skill_name": "git",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/git Commit and push only the completed contact-form changes from this task.",
+      "expected_output": "The agent refreshes the workflow, audits ownership and the complete diff, reviews documentation impact, runs relevant checks, stages explicit contact-form paths, creates a focused conventional commit, and pushes the current branch to origin.",
+      "files": [],
+      "expectations": [
+        "The agent rereads docs/AI_WORKFLOW.md before staging.",
+        "The agent audits branch, upstream, status, unstaged and staged diffs, untracked files, recent commits, and remotes.",
+        "The agent verifies the change and documentation impact before committing.",
+        "The agent stages only explicit in-scope paths and reviews the staged diff.",
+        "The agent reports the commit hash, subject, branch, and successful push result."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/git The landing page work is ready, but my unrelated local notes are in the working tree too. Commit and push the landing page only.",
+      "expected_output": "The agent separates the requested landing-page change from unrelated user files, verifies and commits only the intended paths, leaves the notes untouched, and reports what remains uncommitted after pushing.",
+      "files": [],
+      "expectations": [
+        "The agent uses conversation context and the baseline to separate ownership and scope.",
+        "The agent does not stage unrelated local notes.",
+        "The agent uses explicit path staging rather than a repository-wide add command.",
+        "The final status identifies intentionally uncommitted files."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/git Push the current Vue changes. The required typecheck is failing in one of the changed components.",
+      "expected_output": "The agent audits the change, confirms the required check failure, and does not commit or push failing work. It reports the exact blocker and preserves the working tree.",
+      "files": [],
+      "expectations": [
+        "The agent runs or confirms the relevant required verification before committing.",
+        "The agent does not create a commit while the required check fails.",
+        "The agent does not push the failing change.",
+        "The agent reports the failing check and the remaining uncommitted state."
+      ]
+    }
+  ]
+}
