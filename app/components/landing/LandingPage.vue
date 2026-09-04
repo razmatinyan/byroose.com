@@ -33,7 +33,7 @@ const motionClass = computed(() => `motion--${motion}`)
 			<WorkSection />
 			<ServicesSection />
 			<JourneySection />
-			<ReviewsSection />
+			<!-- <ReviewsSection /> -->
 			<CoursesSection />
 			<BlogSection />
 			<FaqSection />
