@@ -199,11 +199,51 @@ Do not shrink desktop layouts until they fit. Recompose them for smaller screens
 - Keep animation optional through reduced-motion behavior.
 - Do not communicate state or meaning by color alone.
 
+## Smooth scrolling
+
+Lenis owns global scroll smoothing through `app/plugins/lenis.ts`. The plugin
+creates one application instance after mount, uses GSAP's ticker as the only
+animation frame source, sends Lenis scroll updates to ScrollTrigger, and refreshes
+measurements after route completion and font loading.
+
+Use `useSmoothScroll()` in components:
+
+```vue
+<script setup lang="ts">
+const { scrollTo, stop, start } = useSmoothScroll()
+
+async function openContact() {
+	await scrollTo('#contact', { offset: -24 })
+}
+</script>
+```
+
+The composable also exposes `instance`, `isReady`, `onScroll`, `ready`, `refresh`,
+and `resize`. Subscriptions created with `onScroll` are removed automatically
+when the current Vue scope is disposed.
+
+The browser window remains the scroller. Do not add `ScrollTrigger.scrollerProxy()`
+for the current configuration because Lenis retains native document scrolling.
+If a custom wrapper is introduced later, treat that as an architecture change and
+review the proxy, pin type, dimensions, routing, and accessibility behavior.
+
+Wheel input is smoothed. Touch input remains native. Lenis respects the user's
+reduced-motion preference. Use `data-lenis-prevent`,
+`data-lenis-prevent-wheel`, or `data-lenis-prevent-touch` on nested regions that
+must manage their own scroll input.
+
+Do not construct Lenis inside a page or component. Do not add a second animation
+frame loop. The app plugin is the only owner of initialization and teardown.
+
+The implementation follows the official [Lenis GSAP integration](https://github.com/darkroomengineering/lenis#gsap-scrolltrigger)
+and [GSAP ScrollTrigger guidance](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
+
 ## GSAP
 
 `useGsap()` exposes the core instance, scoped contexts, responsive match-media
-contexts, lazy plugin loading, and automatic teardown. GSAP is not eagerly loaded
-into the landing page until a component uses the composable.
+contexts, optional plugin loading, and automatic teardown. The Lenis bridge loads
+GSAP and ScrollTrigger after application mount. Components still use `useGsap()`
+to own and clean up their individual animation contexts.
 
 ```vue
 <script setup lang="ts">
@@ -236,9 +276,11 @@ onMounted(() => {
 ```
 
 Prefer `x`, `y`, `scale`, `rotation`, and `autoAlpha`; scope selector strings to
-a component root. Use `loadPlugin()` for `ScrollTrigger`, `SplitText`, `Flip`,
-`Observer`, `ScrollToPlugin`, or `TextPlugin`. Contexts and media queries are
-reverted automatically when their Vue scope is disposed.
+a component root. Use `loadPlugin()` for optional capabilities such as
+`SplitText`, `Flip`, `Observer`, `ScrollToPlugin`, or `TextPlugin`. ScrollTrigger
+is registered by the Lenis bridge and remains available through the existing
+loader when a component needs its API. Contexts and media queries are reverted
+automatically when their Vue scope is disposed.
 
 ## Design-system change workflow
 

@@ -18,6 +18,7 @@ app/
   app.vue
   assets/
     css/
+      lenis.css
       tailwind.css
   components/
     cards/
@@ -27,10 +28,12 @@ app/
     ui/
   composables/
     useGsap.ts
+    useSmoothScroll.ts
   lib/
     icons.ts
     utils.ts
   plugins/
+    lenis.ts
     ssr-width.ts
 docs/
 public/
@@ -80,7 +83,9 @@ Use a composable when logic:
 - Needs automatic cleanup
 - Is reused by multiple components
 
-The existing useGsap composable is the integration boundary for GSAP. Components own their animation intent. The composable owns loading, context, media matching, and cleanup.
+The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
+
+useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, start and stop controls, refresh behavior, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances.
 
 ### Library modules
 
@@ -108,6 +113,10 @@ Vue templates own local structure and short one-off utility groups. Repeated rec
 ### Plugins
 
 app/plugins contains Nuxt runtime integrations that must run as part of application setup. Keep plugins small. A plugin should configure an integration, not become a general utility collection.
+
+lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after navigation and font loading, and tears everything down with the Vue application.
+
+The default scroller is the browser window. This keeps native scrolling, sticky positioning, anchors, and accessibility behavior. Do not add ScrollTrigger.scrollerProxy for this configuration. Reevaluate the integration only if the application adopts a custom scroll wrapper.
 
 ### Public assets
 

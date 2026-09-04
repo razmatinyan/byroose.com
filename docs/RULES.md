@@ -25,6 +25,7 @@ When two rules conflict, stop and ask one concise question before making an irre
 - Base UI primitives follow Shadcn Vue and Reka UI patterns.
 - Interface icons use Lucide through Nuxt Icon.
 - Fonts load through Nuxt Fonts.
+- Smooth scrolling uses one app-level Lenis instance.
 - Motion uses the shared GSAP composable and must respect reduced motion.
 
 ## General code rules
@@ -157,6 +158,14 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 
 ## Motion rules
 
+- Access global smooth scrolling through app/composables/useSmoothScroll.ts.
+- Do not create Lenis instances inside components.
+- Keep the Lenis and ScrollTrigger ticker bridge inside app/plugins/lenis.ts.
+- Use the browser window as the default scroller.
+- Do not configure ScrollTrigger.scrollerProxy unless a real custom scroll container is introduced.
+- Keep wheel smoothing enabled and touch smoothing disabled so touch devices retain native behavior.
+- Keep Lenis reduced-motion support enabled.
+- Use data-lenis-prevent attributes for nested controls or regions that must retain their own scrolling.
 - Use app/composables/useGsap.ts for GSAP access and cleanup.
 - Scope selectors to a component root.
 - Animate transform and opacity properties where possible.

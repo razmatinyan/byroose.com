@@ -19,7 +19,11 @@ export default defineNuxtConfig({
 		},
 	},
 
-	css: ['~/assets/css/tailwind.css'],
+	css: [
+		'~/assets/css/tailwind.css',
+		'lenis/dist/lenis.css',
+		'~/assets/css/lenis.css',
+	],
 	fonts: {
 		families: [
 			{
@@ -67,6 +71,7 @@ export default defineNuxtConfig({
 				'gsap/ScrollTrigger',
 				'gsap/SplitText',
 				'gsap/all',
+				'lenis',
 				'class-variance-authority',
 			],
 		},
