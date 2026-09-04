@@ -52,9 +52,9 @@ visual and accessibility review.
 components should prefer `secondary`, `accent`, and `background`. Brand aliases
 are appropriate when the color itself is part of a byroose composition.
 
-Orange, green, yellow, and pink surfaces use dark ink foregrounds. Blue and
-violet surfaces use white foregrounds. Keep each brand color paired with its
-foreground token so text contrast remains valid in both themes.
+Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
+surfaces use dark ink foregrounds. Keep each brand color paired with its
+foreground token so color behavior remains consistent in both themes.
 
 ### Adding colors
 
