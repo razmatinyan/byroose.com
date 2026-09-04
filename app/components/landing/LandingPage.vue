@@ -17,28 +17,28 @@ import WorkSection from './WorkSection.vue'
 type LandingMotionMode = 'playful' | 'subtle' | 'off'
 
 const { motion = 'playful' } = defineProps<{
-  motion?: LandingMotionMode
+	motion?: LandingMotionMode
 }>()
 
 const motionClass = computed(() => `motion--${motion}`)
 </script>
 
 <template>
-  <div class="landing-page" :class="motionClass">
-    <SiteHeader />
-    <main>
-      <HeroSection />
-      <StudioSection />
-      <ServicesSection />
-      <WorkSection />
-      <JourneySection />
-      <BrandMarquee />
-      <ReviewsSection />
-      <CoursesSection />
-      <BlogSection />
-      <FaqSection />
-      <ContactSection />
-    </main>
-    <SiteFooter />
-  </div>
+	<div class="landing-page" :class="motionClass">
+		<SiteHeader />
+		<main>
+			<HeroSection />
+			<StudioSection />
+			<BrandMarquee />
+			<WorkSection />
+			<ServicesSection />
+			<JourneySection />
+			<ReviewsSection />
+			<CoursesSection />
+			<BlogSection />
+			<FaqSection />
+			<ContactSection />
+		</main>
+		<SiteFooter />
+	</div>
 </template>
