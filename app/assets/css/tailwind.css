@@ -191,6 +191,10 @@
 		@apply border-border outline-ring/50;
 	}
 
+	::selection {
+		@apply bg-foreground text-white;
+	}
+
 	html {
 		@apply scroll-smooth;
 	}
@@ -584,7 +588,7 @@
 	}
 
 	.brand-marquee-title {
-		@apply mx-auto max-w-[17ch] text-center;
+		@apply mx-auto max-w-[14ch] text-center;
 	}
 
 	.brand-marquee-viewport {
