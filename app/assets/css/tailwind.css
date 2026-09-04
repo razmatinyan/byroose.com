@@ -669,7 +669,7 @@
 	}
 
 	.course-card-description {
-		@apply m-0 text-sm leading-relaxed opacity-90 sm:text-base;
+		@apply m-0 text-sm leading-relaxed sm:text-base;
 	}
 
 	.course-card-link {
