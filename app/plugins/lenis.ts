@@ -3,8 +3,9 @@ import type Lenis from 'lenis'
 import type { ScrollCallback, ScrollToOptions } from 'lenis'
 
 type ScrollTarget = Parameters<Lenis['scrollTo']>[0]
-type GsapInstance = typeof import('gsap')['gsap']
-type ScrollTriggerInstance = typeof import('gsap/ScrollTrigger')['ScrollTrigger']
+type GsapInstance = (typeof import('gsap'))['gsap']
+type ScrollTriggerInstance =
+	(typeof import('gsap/ScrollTrigger'))['ScrollTrigger']
 
 export default defineNuxtPlugin({
 	name: 'lenis-scroll',
@@ -29,27 +30,30 @@ export default defineNuxtPlugin({
 			if (initializationPromise) return initializationPromise
 
 			initializationPromise = (async () => {
-				const [lenisModule, gsapModule, scrollTriggerModule] = await Promise.all([
-					import('lenis'),
-					import('gsap'),
-					import('gsap/ScrollTrigger'),
-				])
+				const [lenisModule, gsapModule, scrollTriggerModule] =
+					await Promise.all([
+						import('lenis'),
+						import('gsap'),
+						import('gsap/ScrollTrigger'),
+					])
 
 				if (isDestroyed) return
 
 				const nextGsapInstance = gsapModule.gsap
-				const nextScrollTriggerInstance = scrollTriggerModule.ScrollTrigger
+				const nextScrollTriggerInstance =
+					scrollTriggerModule.ScrollTrigger
 				const nextInstance = new lenisModule.default({
 					anchors: true,
 					autoRaf: false,
 					autoResize: true,
-					lerp: 0.1,
+					lerp: 0.2,
 					respectReducedMotion: true,
 					smoothWheel: true,
 					stopInertiaOnNavigate: true,
 					syncTouch: false,
 				})
-				const nextTickerCallback = (time: number) => nextInstance.raf(time * 1000)
+				const nextTickerCallback = (time: number) =>
+					nextInstance.raf(time * 1000)
 
 				nextGsapInstance.registerPlugin(nextScrollTriggerInstance)
 				nextGsapInstance.ticker.add(nextTickerCallback)
@@ -71,7 +75,10 @@ export default defineNuxtPlugin({
 			scrollTriggerInstance?.refresh()
 		}
 
-		async function scrollTo(target: ScrollTarget, options?: ScrollToOptions) {
+		async function scrollTo(
+			target: ScrollTarget,
+			options?: ScrollToOptions,
+		) {
 			await initialize()
 			instance.value?.scrollTo(target, options)
 		}
