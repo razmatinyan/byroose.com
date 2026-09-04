@@ -44,6 +44,15 @@ otherwise.
 - Ask one concise question if a missing answer would materially change behavior, architecture, visual direction, content meaning, or public data.
 - Continue with a safe assumption when the decision is minor and reversible.
 
+## Project-local workflow skills
+
+Two project-local skills provide explicit entry points for the full repository workflow and final Git delivery:
+
+- `/roose <task>` completes the required documentation, skill, architecture, implementation, and Git reconnaissance before it creates a plan or changes files. It then executes the requested task through verification and delivery.
+- `/git [scope]` audits the intended change set, verifies it, creates focused conventional commits, and pushes the current branch with the repository's normal non-force workflow.
+
+Both skills remain subordinate to current user instructions, `AGENTS.md`, and this workflow. `/roose` respects review-only and diagnose-only requests, while `/git` never treats unrelated working tree changes as authorized scope.
+
 ## 3. Plan the smallest complete change
 
 - Identify the files and boundaries that own the requested behavior.
