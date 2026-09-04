@@ -1,75 +1,76 @@
-# Nuxt Minimal Starter
+# byroose creative agency
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+byroose.com is the digital home of byroose, a creative agency for brands that are tired of shouting into the void. The agency brings strategy, marketing, web design and development, and AI-assisted content into one connected practice.
 
-## Setup
+The site is designed to turn a clear point of view into measurable action. It presents the agency's work, services, process, learning products, insights, and contact paths in a bold editorial experience that remains fast, accessible, and easy to use on every screen.
 
-Make sure to install dependencies:
+## Project status
 
-```bash
-# npm
+The current foundation is a responsive Nuxt landing page converted from the original visual template. It includes a source-owned component system, semantic design tokens, reusable Tailwind class groups, Lucide icons, and an SSR-safe GSAP integration. Content systems, case studies, forms, analytics, SEO expansion, and richer motion will be added as the project grows.
+
+## Technology
+
+- Nuxt 4 and Vue 3
+- TypeScript
+- Tailwind CSS v4
+- Shadcn Vue with Reka UI
+- Nuxt Icon with Lucide
+- Nuxt Fonts with Inter
+- VueUse
+- GSAP
+- Zod
+
+## Local development
+
+Requirements:
+
+- A current Node.js LTS release
+- npm
+
+Install dependencies and start the development server:
+
+~~~bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
+~~~
 
-# pnpm
-pnpm dev
+The application is available at http://localhost:3000 by default.
 
-# yarn
-yarn dev
+## Available commands
 
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
+~~~bash
+npm run dev
+npm run typecheck
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
+npm run generate
 npm run preview
+~~~
 
-# pnpm
-pnpm preview
+## Project structure
 
-# yarn
-yarn preview
+~~~text
+app/
+  assets/css/       Theme tokens and reusable Tailwind class groups
+  components/       Landing, layout, card, shared, and UI components
+  composables/      Reusable stateful and side-effect behavior
+  lib/              Pure helpers, shared constants, and icon names
+  plugins/          Nuxt runtime integrations
+docs/               Architecture, rules, design system, content, and workflow
+public/             Static public assets
+~~~
 
-# bun
-bun run preview
-```
+See [Architecture](docs/ARCHITECTURE.md) for dependency boundaries and placement rules.
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Documentation
+
+- [AI agent guide](AGENTS.md)
+- [Project rules](docs/RULES.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Design system](docs/DESIGN_SYSTEM.md)
+- [Content and SEO guide](docs/CONTENT_GUIDE.md)
+- [AI workflow and Git delivery](docs/AI_WORKFLOW.md)
+- [Claude Code guide](CLAUDE.md)
+
+## Contributing
+
+Keep changes focused, reuse established patterns, and verify the affected behavior before delivery. Every completed change should use a short conventional commit and follow the push policy in [AI workflow and Git delivery](docs/AI_WORKFLOW.md).

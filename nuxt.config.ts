@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			title: 'byroose — Creative agency',
+			title: 'byroose | Creative agency',
 			htmlAttrs: { lang: 'en' },
 			meta: [
 				{
