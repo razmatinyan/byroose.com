@@ -419,7 +419,7 @@
 	}
 
 	.studio-copy p {
-		@apply m-0 max-w-[46ch] text-xl leading-relaxed tracking-tight font-medium first:mb-8 text-brand-subtle md:text-2xl xl:text-3xl;
+		@apply m-0 max-w-[46ch] text-xl leading-snug tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
 	}
 
 	.services,
