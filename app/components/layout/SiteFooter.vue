@@ -67,7 +67,14 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 		</div>
 
 		<div class="site-footer-brand section-gutter">
-			<img class="site-footer-logo" src="/logo.svg" alt="byroose">
+			<NuxtImg
+				class="site-footer-logo"
+				src="/logo.svg"
+				alt="byroose"
+				width="651"
+				height="187"
+				loading="lazy"
+			/>
 			<div class="site-footer-legal">
 				<span>© 2026 byroose</span>
 				<span>Terms &amp; conditions · Privacy</span>

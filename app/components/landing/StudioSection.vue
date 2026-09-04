@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import MediaPlaceholder from '@/components/shared/MediaPlaceholder.vue'
-</script>
-
 <template>
 	<section id="studio" class="studio section-gutter">
 		<p class="studio-statement">
@@ -11,9 +7,15 @@ import MediaPlaceholder from '@/components/shared/MediaPlaceholder.vue'
 
 		<div class="studio-grid">
 			<div class="studio-column">
-				<MediaPlaceholder
-					class="studio-portrait"
-					label="founder portrait"
+				<NuxtImg
+					class="studio-portrait object-cover"
+					src="/images/founder.jpg"
+					alt="Founder of byroose against a blue sky"
+					width="720"
+					height="1280"
+					sizes="100vw sm:448px"
+					format="webp"
+					loading="lazy"
 				/>
 			</div>
 

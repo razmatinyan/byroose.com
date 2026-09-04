@@ -119,6 +119,8 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 - Use Nuxt auto-imports where they improve consistency. Use explicit imports when they make ownership clearer or avoid naming ambiguity.
 - Use Nuxt useRoute inside application code.
 - Use NuxtLink for internal navigation.
+- Use NuxtImg or NuxtPicture for rendered images. Provide intrinsic dimensions,
+  responsive sizes, loading intent, and accurate alternative text.
 - Use useFetch or useAsyncData for SSR-aware data loading.
 - Do not wrap initial page data in onMounted.
 - Use useState for SSR-safe shared state when Pinia is not justified.

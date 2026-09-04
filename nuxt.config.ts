@@ -77,7 +77,13 @@ export default defineNuxtConfig({
 		},
 	},
 
-	modules: ['@nuxt/fonts', '@nuxt/icon', '@vueuse/nuxt', 'shadcn-nuxt'],
+	modules: [
+		'@nuxt/fonts',
+		'@nuxt/icon',
+		'@nuxt/image',
+		'@vueuse/nuxt',
+		'shadcn-nuxt',
+	],
 
 	shadcn: {
 		prefix: 'Ui',

@@ -15,6 +15,7 @@ The current foundation is a responsive Nuxt landing page converted from the orig
 - Tailwind CSS v4
 - Shadcn Vue with Reka UI
 - Nuxt Icon with Lucide
+- Nuxt Image
 - Nuxt Fonts with Inter
 - VueUse
 - Lenis

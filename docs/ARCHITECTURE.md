@@ -120,7 +120,9 @@ The default scroller is the browser window. This keeps native scrolling, sticky 
 
 ### Public assets
 
-public contains assets served without transformation, including the logo, favicon, robots file, and temporary visual placeholders. Use Nuxt asset handling when optimization, hashing, or transformation is required.
+public contains source assets served from root-relative URLs, including images,
+the logo, favicon, and robots file. Render images through NuxtImg or NuxtPicture
+so Nuxt Image owns responsive sizing and optimization.
 
 ## Dependency direction
 

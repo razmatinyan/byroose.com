@@ -44,7 +44,13 @@ function closeMenu() {
 				aria-label="byroose home"
 				@click="closeMenu"
 			>
-				<img class="site-logo" src="/logo.svg" alt="byroose" />
+				<NuxtImg
+					class="site-logo"
+					src="/logo.svg"
+					alt="byroose"
+					width="651"
+					height="187"
+				/>
 			</a>
 
 			<nav class="site-nav" aria-label="Main navigation">

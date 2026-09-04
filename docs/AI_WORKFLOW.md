@@ -68,6 +68,8 @@ Both skills remain subordinate to current user instructions, `AGENTS.md`, and th
 - Write self-explanatory code without comments.
 - Keep functions and components small enough to name precisely.
 - Update types, empty states, error states, accessibility, responsive behavior, and reduced motion where the feature requires them.
+- Render images through NuxtImg or NuxtPicture with intrinsic dimensions,
+  responsive sizes, loading intent, and accurate alternative text.
 - Stop and ask before an irreversible choice or a change outside the requested scope.
 
 ## 5. Synchronize documentation
@@ -124,6 +126,7 @@ Use the smallest set that proves the result:
 | Documentation only | Read rendered structure, verify links, run text policy checks |
 | TypeScript or Vue logic | npm run typecheck and focused behavior checks |
 | Layout or styling | Typecheck plus visual checks at 390px, 768px, and 1440px |
+| Image or media | Typecheck, build, optimized response, alternative text, loading behavior, and responsive visual checks |
 | Interaction | Keyboard, focus, pointer, touch, loading, disabled, and error states |
 | GSAP motion | Default motion, reduced motion, cleanup, and route lifecycle |
 | Nuxt config or module | npm run typecheck and npm run build |

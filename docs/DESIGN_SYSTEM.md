@@ -200,6 +200,17 @@ Do not shrink desktop layouts until they fit. Recompose them for smaller screens
 - Keep large type fluid and prevent orphaned single-word lines when practical.
 - Test open navigation, accordion content, long titles, and translated-length text.
 
+## Images
+
+Render images with NuxtImg or NuxtPicture from the Nuxt Image module. Local image
+sources belong under `public/` and use root-relative paths. Provide intrinsic
+width and height, an accurate alt value or an empty alt for decorative images,
+and responsive `sizes` when the rendered width changes across breakpoints.
+
+Use `object-cover` only when the composition intentionally crops the source.
+Lazy-load below-the-fold images. Reserve eager loading and preload behavior for
+images that are verified as critical to the initial viewport.
+
 ## Accessibility
 
 - Meet WCAG AA contrast for text and essential controls.
