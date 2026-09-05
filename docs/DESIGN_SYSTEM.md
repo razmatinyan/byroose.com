@@ -324,7 +324,22 @@ the mobile navigation.
 Drive header state from the shared Lenis scroll subscription and animate it with
 the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
 limited to transforms and opacity. Reduced motion must switch between complete
-states without animated travel. Keep the header surface transparent in both
+states without animated travel.
+
+The Start a project action and the navigation control share one slot on desktop,
+because the full state slides the action across the space the control occupies in
+the compact state. Offset the two rather than running them in step, so one is
+still travelling while the other scales. Entering the compact state starts the
+action moving back and begins scaling the control up from zero shortly after.
+Entering the full state starts the control scaling down to zero and sends the
+action into the slot shortly after. Keep the ease strength in mind when tuning
+these offsets, because a strong out ease finishes most of its visible travel in
+the first third of its duration and turns an intended overlap back into a
+sequence. The full state deliberately uses a gentle ease on the control so it is
+still visibly shrinking while the action travels. The residual overlap is safe
+because the control paints above the action and both use the same dark action
+surface. Scale the control rather than drifting it, and animate it with a plain
+tween from its current value so a reversal mid transition stays continuous. Keep the header surface transparent in both
 states. The landing wrapper uses horizontal clipping so it does not create a
 competing scroll container that breaks sticky positioning.
 

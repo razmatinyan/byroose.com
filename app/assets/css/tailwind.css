@@ -344,7 +344,7 @@
 	}
 
 	.site-menu-button {
-		@apply grid size-[2.875rem] shrink-0 place-items-center rounded-action border border-foreground bg-foreground text-background outline-none transition-transform hover:scale-[1.03] focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-95 motion-reduce:transition-none;
+		@apply grid size-[2.875rem] shrink-0 place-items-center rounded-full border border-foreground bg-foreground text-background outline-none transition-transform hover:scale-[1.03] focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-95 motion-reduce:transition-none;
 	}
 
 	.site-mobile-nav {

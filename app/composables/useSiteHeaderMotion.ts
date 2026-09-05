@@ -14,10 +14,7 @@ interface HeaderMotionOptions {
 	immediate?: boolean
 }
 
-type ApplyHeaderMode = (
-	mode: HeaderMode,
-	options?: HeaderMotionOptions,
-) => void
+type ApplyHeaderMode = (mode: HeaderMode, options?: HeaderMotionOptions) => void
 
 export function useSiteHeaderMotion() {
 	const menuOpen = shallowRef(false)
@@ -49,9 +46,7 @@ export function useSiteHeaderMotion() {
 
 	async function focusFirstMobileLink() {
 		await nextTick()
-		mobileNavigation.value
-			?.querySelector<HTMLAnchorElement>('a')
-			?.focus()
+		mobileNavigation.value?.querySelector<HTMLAnchorElement>('a')?.focus()
 	}
 
 	function handleMenuButtonClick() {
@@ -125,9 +120,7 @@ export function useSiteHeaderMotion() {
 					gsap.set(menuElement, {
 						autoAlpha: desktop && !compact ? 0 : 1,
 						pointerEvents: desktop && !compact ? 'none' : 'auto',
-						rotation: 0,
-						scale: 1,
-						x: 0,
+						scale: desktop && !compact ? 0 : 1,
 					})
 				}
 
@@ -160,7 +153,7 @@ export function useSiteHeaderMotion() {
 							{
 								autoAlpha: 0,
 								duration: 0.24,
-								ease: 'power3.in',
+								ease: 'power4.out',
 								pointerEvents: 'none',
 								stagger: 0.018,
 								yPercent: -135,
@@ -172,30 +165,22 @@ export function useSiteHeaderMotion() {
 							activeTimeline.to(
 								ctaElement,
 								{
-									duration: 0.26,
+									duration: 0.28,
 									ease: 'power4.out',
 									x: 0,
 								},
-								0.02,
+								0,
 							)
-							activeTimeline.fromTo(
+							activeTimeline.to(
 								menuElement,
 								{
-									autoAlpha: 0,
-									rotation: -8,
-									scale: 0.78,
-									x: 10,
-								},
-								{
 									autoAlpha: 1,
-									duration: 0.24,
-									ease: 'power4.out',
+									duration: 0.3,
+									ease: 'back.out(1.7)',
 									pointerEvents: 'auto',
-									rotation: 0,
 									scale: 1,
-									x: 0,
 								},
-								0.05,
+								0.1,
 							)
 						}
 
@@ -214,23 +199,21 @@ export function useSiteHeaderMotion() {
 							menuElement,
 							{
 								autoAlpha: 0,
-								duration: 0.16,
-								ease: 'power3.in',
+								duration: 0.3,
+								ease: 'power1.out',
 								pointerEvents: 'none',
-								rotation: 8,
-								scale: 0.8,
-								x: 10,
+								scale: 0,
 							},
 							0,
 						)
 						activeTimeline.to(
 							ctaElement,
 							{
-								duration: 0.26,
-								ease: 'power4.out',
+								duration: 0.3,
+								ease: 'power2.out',
 								x: menuOffset,
 							},
-							0,
+							0.05,
 						)
 					}
 
