@@ -73,7 +73,7 @@ semantic palette over many near-duplicate colors.
 
 ## Typography
 
-Inter is the primary font and loads through Nuxt Fonts. Do not add font link tags
+Geist is the primary font and loads through Nuxt Fonts. Do not add font link tags
 or component-level font imports.
 
 - `text-hero` is reserved for the primary landing statement.
@@ -191,6 +191,9 @@ Build mobile-first with Tailwind's standard `sm`, `md`, `lg`, and `xl`
 breakpoints. Cards stack on phones, become two-column layouts on tablets where
 space allows, and expand to their full editorial grids on desktop. Keep a zero
 horizontal-overflow check at 390px, 768px, and 1440px in visual QA.
+
+The brand showcase uses a static bordered grid with one logomark and name per
+item. Keep every brand visible without motion or duplicated content.
 
 Do not shrink desktop layouts until they fit. Recompose them for smaller screens:
 

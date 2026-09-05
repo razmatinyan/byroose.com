@@ -10,7 +10,7 @@
  * tokens extend that vocabulary without leaking raw colors into components.
  */
 @theme inline {
-	--font-sans: 'Inter', Helvetica, Arial, sans-serif;
+	--font-sans: 'Geist', Helvetica, Arial, sans-serif;
 	--font-heading: var(--font-sans);
 
 	--color-background: var(--background);
@@ -87,8 +87,6 @@
 	--text-journey--line-height: 0.86;
 	--text-step: clamp(4rem, 9vw, 9rem);
 	--text-step--line-height: 0.85;
-
-	--animate-marquee: marquee 32s linear infinite;
 }
 
 :root {
@@ -175,15 +173,6 @@
 	--sidebar-accent-foreground: var(--accent-foreground);
 	--sidebar-border: var(--border);
 	--sidebar-ring: var(--ring);
-}
-
-@keyframes marquee {
-	from {
-		transform: translateX(0);
-	}
-	to {
-		transform: translateX(-50%);
-	}
 }
 
 @layer base {
@@ -424,7 +413,7 @@
 
 	.services,
 	.work,
-	.brand-marquee,
+	.brand-grid,
 	.reviews,
 	.courses,
 	.blog {
@@ -587,20 +576,24 @@
 		@apply aspect-16/11 rounded-2xl;
 	}
 
-	.brand-marquee-title {
+	.brand-grid-title {
 		@apply mx-auto max-w-[14ch] text-center;
 	}
 
-	.brand-marquee-viewport {
-		@apply mt-8 overflow-hidden border-y border-foreground/10 py-7 md:mt-10;
+	.brand-grid-list {
+		@apply mt-8 grid list-none grid-cols-2 border-t border-l border-foreground/15 p-0 sm:grid-cols-3 md:mt-10 xl:grid-cols-6;
 	}
 
-	.brand-marquee-track {
-		@apply flex w-max animate-marquee opacity-75 motion-reduce:[animation-play-state:paused];
+	.brand-grid-item {
+		@apply flex min-h-40 flex-col items-center justify-center gap-5 border-r border-b border-foreground/15 bg-background p-5 text-center sm:min-h-44;
 	}
 
-	.brand-marquee-group {
-		@apply flex items-center gap-10 pr-10 text-2xl font-bold tracking-[-0.02em] whitespace-nowrap text-brand-subtle md:gap-16 md:pr-16 xl:gap-22 xl:pr-22;
+	.brand-grid-logo {
+		@apply grid size-16 place-items-center text-2xl font-bold tracking-[-0.08em];
+	}
+
+	.brand-grid-name {
+		@apply text-base leading-tight font-semibold tracking-[-0.02em] text-brand-subtle sm:text-lg;
 	}
 
 	.reviews-card {

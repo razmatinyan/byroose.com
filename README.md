@@ -16,7 +16,7 @@ The current foundation is a responsive Nuxt landing page converted from the orig
 - Shadcn Vue with Reka UI
 - Nuxt Icon with Lucide
 - Nuxt Image
-- Nuxt Fonts with Inter
+- Nuxt Fonts with Geist
 - VueUse
 - Lenis
 - GSAP

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import BlogSection from './BlogSection.vue'
-import BrandMarquee from './BrandMarquee.vue'
+import BrandGrid from './BrandGrid.vue'
 import ContactSection from './ContactSection.vue'
 import CoursesSection from './CoursesSection.vue'
 import FaqSection from './FaqSection.vue'
@@ -29,7 +29,7 @@ const motionClass = computed(() => `motion--${motion}`)
 		<main>
 			<HeroSection />
 			<StudioSection />
-			<BrandMarquee />
+			<BrandGrid />
 			<WorkSection />
 			<ServicesSection />
 			<JourneySection />
