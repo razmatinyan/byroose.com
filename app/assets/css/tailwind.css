@@ -245,7 +245,7 @@
 	}
 
 	.section-intro {
-		@apply m-0 max-w-[34ch] text-lg leading-normal text-muted-foreground;
+		@apply m-0 max-w-[34ch] text-xl leading-normal text-muted-foreground;
 	}
 
 	.media-placeholder {
@@ -359,7 +359,7 @@
 	}
 
 	.hero-title {
-		@apply m-0 max-w-[16ch] text-hero font-bold tracking-[-0.045em];
+		@apply m-0 max-w-[15ch] text-hero font-bold tracking-[-0.045em];
 	}
 
 	.hero-copy {
@@ -367,7 +367,7 @@
 	}
 
 	.hero-description {
-		@apply mt-0 mb-5 text-base leading-relaxed text-muted-foreground sm:text-lg;
+		@apply mt-0 mb-5 text-base leading-relaxed text-muted-foreground sm:text-xl;
 	}
 
 	.hero-grid {
