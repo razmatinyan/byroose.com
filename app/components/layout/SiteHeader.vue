@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 import { Button, ButtonIcon } from '@/components/ui/button'
 import { appIcons } from '@/lib/icons'
 
@@ -27,18 +27,25 @@ const {
 	navItems?: NavItem[]
 }>()
 
-const menuOpen = shallowRef(false)
 const resolvedNavItems = computed(() => navItems ?? defaultNavItems)
-
-function closeMenu() {
-	menuOpen.value = false
-}
+const {
+	closeMenu,
+	handleMenuButtonClick,
+	headerMode,
+	menuButtonLabel,
+	menuOpen,
+} = useSiteHeaderMotion()
 </script>
 
 <template>
-	<header class="site-header">
+	<header
+		ref="headerRoot"
+		class="site-header"
+		:data-header-mode="headerMode"
+	>
 		<div class="site-header-inner">
 			<a
+				ref="logoLink"
 				class="site-logo-link"
 				href="#top"
 				aria-label="byroose home"
@@ -54,7 +61,12 @@ function closeMenu() {
 				/>
 			</a>
 
-			<nav class="site-nav" aria-label="Main navigation">
+			<nav
+				id="primary-navigation"
+				ref="primaryNavigation"
+				class="site-nav"
+				aria-label="Main navigation"
+			>
 				<a
 					v-for="item in resolvedNavItems"
 					:key="item.href"
@@ -65,39 +77,38 @@ function closeMenu() {
 				</a>
 			</nav>
 
-			<div class="flex items-center gap-2">
-				<Button
-					class="site-header-cta hidden sm:inline-flex"
-					as="a"
-					:href="ctaHref"
-					size="cta-sm"
-					variant="dark"
-				>
-					{{ ctaLabel }}
-					<ButtonIcon size="sm" />
-				</Button>
+			<div class="site-header-actions">
+				<span ref="headerCta" class="site-header-cta-wrap">
+					<Button
+						class="site-header-cta"
+						as="a"
+						:href="ctaHref"
+						size="cta-sm"
+						variant="dark"
+					>
+						{{ ctaLabel }}
+						<ButtonIcon size="sm" />
+					</Button>
+				</span>
 
-				<Button
-					class="site-menu-button lg:hidden"
-					variant="outline"
-					size="icon"
-					:aria-expanded="menuOpen"
-					aria-controls="mobile-navigation"
-					:aria-label="
-						menuOpen ? 'Close navigation' : 'Open navigation'
-					"
-					@click="menuOpen = !menuOpen"
-				>
-					<Icon
-						:name="menuOpen ? appIcons.close : appIcons.menu"
-						class="size-5"
-					/>
-				</Button>
+				<span ref="menuButton" class="site-menu-button-wrap">
+					<button
+						class="site-menu-button"
+						type="button"
+						:aria-expanded="menuOpen"
+						aria-controls="primary-navigation mobile-navigation"
+						:aria-label="menuButtonLabel"
+						@click="handleMenuButtonClick"
+					>
+						<Icon :name="appIcons.menu" class="size-5" aria-hidden="true" />
+					</button>
+				</span>
 			</div>
 
 			<nav
 				v-if="menuOpen"
 				id="mobile-navigation"
+				ref="mobileNavigation"
 				class="site-mobile-nav"
 				aria-label="Mobile navigation"
 			>

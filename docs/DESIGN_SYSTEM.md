@@ -310,6 +310,24 @@ is registered by the Lenis bridge and remains available through the existing
 loader when a component needs its API. Contexts and media queries are reverted
 automatically when their Vue scope is disposed.
 
+### Header motion
+
+The site header has full and compact sticky states. It stays full at the top of
+the page, compacts after intentional downward travel, and returns after a short
+upward movement. The compact state keeps the Start a project action visible and
+pairs it with a navigation control that uses the same dark action surface, outer
+radius, and control height without using the shared CTA icon tile. Render the
+menu glyph directly with Nuxt Icon. On desktop, activating that control restores
+the full navigation and moves focus into it. On smaller screens, it also opens
+the mobile navigation.
+
+Drive header state from the shared Lenis scroll subscription and animate it with
+the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
+limited to transforms and opacity. Reduced motion must switch between complete
+states without animated travel. Keep the header surface transparent in both
+states. The landing wrapper uses horizontal clipping so it does not create a
+competing scroll container that breaks sticky positioning.
+
 ## Design-system change workflow
 
 When changing the system:
