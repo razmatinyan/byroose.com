@@ -32,3 +32,23 @@ const {
 		</slot>
 	</span>
 </template>
+
+<style scoped>
+@reference '../../../assets/css/tailwind.css';
+
+.button-icon {
+	@apply grid size-11 shrink-0 place-items-center rounded-action-icon bg-card text-foreground;
+}
+
+.button-icon-sm {
+	@apply size-9;
+}
+
+.button-icon-dark {
+	@apply bg-foreground text-background;
+}
+
+.button-icon-soft {
+	@apply bg-brand-cream text-foreground;
+}
+</style>

@@ -24,7 +24,7 @@ const {
 	<Card
 		variant="plain"
 		:class="cn(
-			'hero-card hero-stat-card tilt-card',
+			'stat-card tilt-card',
 			tone === 'green' ? 'surface-green' : 'surface-blue',
 			rotation !== 'none' && `tilt-${rotation}`,
 			className,
@@ -37,3 +37,23 @@ const {
 		<p class="hero-caption">{{ caption }}</p>
 	</Card>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.stat-card {
+	@apply flex min-h-80 flex-col justify-between overflow-hidden rounded-2xl p-6 md:min-h-96 xl:min-h-108;
+}
+
+.hero-number {
+	@apply block text-5xl leading-none font-bold tracking-[-0.04em] xl:text-7xl;
+}
+
+.hero-label {
+	@apply mt-3 block text-sm font-semibold opacity-90;
+}
+
+.hero-caption {
+	@apply m-0 text-sm leading-snug text-current opacity-90 sm:text-base;
+}
+</style>

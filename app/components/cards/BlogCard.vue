@@ -78,3 +78,47 @@ const surfaceClasses: Record<Variant, string> = {
 		</div>
 	</Card>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.blog-card {
+	@apply flex flex-col justify-between gap-4 rounded-3xl p-6 text-foreground;
+}
+
+.blog-card-featured {
+	@apply gap-6 bg-brand-blue p-7 text-brand-blue-foreground sm:col-span-2 sm:row-span-2;
+}
+
+.blog-card-wide {
+	@apply sm:col-span-2;
+}
+
+.blog-card-photo {
+	@apply min-h-60 justify-end p-7;
+}
+
+.blog-card-meta {
+	@apply flex justify-between text-sm font-semibold;
+}
+
+.blog-card-category {
+	@apply text-sm font-semibold;
+}
+
+.blog-card-title {
+	@apply m-0 max-w-[26ch] text-xl leading-tight font-semibold tracking-[-0.025em] sm:text-2xl;
+}
+
+.blog-card-title-featured {
+	@apply max-w-[24ch] text-2xl leading-tight font-bold tracking-[-0.03em] md:text-3xl xl:text-4xl;
+}
+
+.blog-card-title-small {
+	@apply text-lg tracking-[-0.02em] sm:text-xl;
+}
+
+.blog-card-description {
+	@apply mt-3.5 mb-0 max-w-[44ch] text-base leading-normal text-white/90;
+}
+</style>

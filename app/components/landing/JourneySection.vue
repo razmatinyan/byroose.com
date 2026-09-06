@@ -43,3 +43,15 @@ const journeySteps = [
 		/>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.journey {
+	@apply w-full pt-4 pb-section md:pt-8;
+}
+
+.journey-title {
+	@apply m-0 text-journey font-bold tracking-[-0.05em] uppercase sm:whitespace-nowrap;
+}
+</style>

@@ -34,3 +34,35 @@
 		</div>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.studio {
+	@apply w-full py-section;
+}
+
+.studio-statement {
+	@apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
+}
+
+.studio-grid {
+	@apply mt-12 flex flex-wrap items-center gap-8 md:mt-16 md:gap-12 xl:mt-20 xl:gap-18;
+}
+
+.studio-column {
+	@apply min-w-0 flex-1 basis-80;
+}
+
+.studio-portrait {
+	@apply aspect-4/5 w-full max-w-md overflow-hidden rounded-2xl;
+}
+
+.studio-copy {
+	@apply space-y-6;
+}
+
+.studio-copy p {
+	@apply m-0 max-w-[46ch] text-xl leading-snug tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
+}
+</style>

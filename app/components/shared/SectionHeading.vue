@@ -19,3 +19,11 @@ const {
 		<slot />
 	</div>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.section-heading-row {
+	@apply flex flex-wrap items-end justify-between gap-6;
+}
+</style>

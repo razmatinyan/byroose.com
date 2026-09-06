@@ -83,3 +83,43 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 		</div>
 	</footer>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.site-footer {
+	@apply bg-foreground pt-10 pb-7 text-background md:pt-14 xl:pt-18;
+}
+
+.site-footer-grid {
+	@apply grid w-full grid-cols-2 gap-8 lg:grid-cols-4;
+}
+
+.site-footer-heading {
+	@apply text-sm font-semibold text-primary;
+}
+
+.site-footer-copy {
+	@apply mt-3 mb-0 text-sm leading-relaxed text-white/80 sm:text-base;
+}
+
+.site-footer-links {
+	@apply mt-3 flex flex-col gap-2 text-sm sm:text-base;
+}
+
+.site-footer-link {
+	@apply text-white/80 transition-colors hover:text-primary;
+}
+
+.site-footer-brand {
+	@apply mt-9 md:mt-14 xl:mt-18;
+}
+
+.site-footer-logo {
+	@apply block h-auto w-full invert;
+}
+
+.site-footer-legal {
+	@apply mt-5 flex flex-wrap justify-between gap-3 text-xs tracking-[0.04em] text-white/65;
+}
+</style>

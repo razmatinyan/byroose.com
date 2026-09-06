@@ -55,3 +55,31 @@ const brands: Brand[] = [
 		</ul>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.brand-grid {
+	@apply w-full pb-section;
+}
+
+.brand-grid-title {
+	@apply mx-auto max-w-[14ch] text-center;
+}
+
+.brand-grid-list {
+	@apply mt-8 grid list-none grid-cols-2 border-t border-l border-foreground/15 p-0 sm:grid-cols-3 md:mt-10 xl:grid-cols-6;
+}
+
+.brand-grid-item {
+	@apply flex min-h-40 flex-col items-center justify-center gap-5 border-r border-b border-foreground/15 bg-background p-5 text-center sm:min-h-44;
+}
+
+.brand-grid-logo {
+	@apply grid size-16 place-items-center text-2xl font-bold tracking-[-0.08em];
+}
+
+.brand-grid-name {
+	@apply text-base leading-tight font-semibold tracking-[-0.02em] text-brand-subtle sm:text-lg;
+}
+</style>

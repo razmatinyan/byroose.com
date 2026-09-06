@@ -2,7 +2,8 @@
 
 The design system keeps the original landing-page character while following
 Shadcn Vue and Tailwind CSS v4 conventions. Components own behavior and variants;
-the global stylesheet owns semantic tokens and reusable Tailwind class groups.
+their scoped style blocks own component-specific recipes. The global stylesheet
+owns semantic tokens, base behavior, and cross-component Tailwind utilities.
 
 ## Principles
 
@@ -120,10 +121,13 @@ communicates layering, such as an open mobile menu or floating overlay.
 
 ## Tailwind class groups
 
-Repeated visual recipes live under `@layer components`. Examples include
-`section-title`, `hero-card`, `course-card`, and `site-nav-link`. Small reusable
-surface and media recipes use Tailwind v4 `@utility`, such as `surface-blue` and
-`pattern-orange`.
+Component-specific visual recipes live in the owning Vue single-file component's
+`<style scoped>` block. These blocks use `@reference` to access the theme and
+utilities from `app/assets/css/tailwind.css` without emitting the global sheet a
+second time. Cross-component recipes live under the global `@layer components`.
+Examples include `section-title`, `section-gutter`, and the shared tilt behavior.
+Small reusable surface and media recipes use Tailwind v4 `@utility`, such as
+`surface-blue` and `pattern-orange`.
 
 Use direct Tailwind utilities in templates for one-off layout adjustments of a
 few classes. When the same recipe appears twice, give it a semantic class group
@@ -134,8 +138,9 @@ Use this decision order:
 1. Existing semantic class group
 2. Existing component or CVA variant
 3. A short one-off utility list
-4. A new semantic class group for a repeated recipe
-5. A new token when multiple recipes share the same design value
+4. A scoped class group owned by one component
+5. A global class group for a repeated cross-component recipe
+6. A new token when multiple recipes share the same design value
 
 Do not hide all utilities behind a class name. A semantic group should represent
 a recognizable design concept, not a random collection created only to shorten a

@@ -118,11 +118,15 @@ app/assets/css/tailwind.css owns:
 - OKLCH theme variables
 - Shadcn semantic token mappings
 - Type and spacing tokens
-- Reusable semantic component class groups
-- Small reusable surface and pattern utilities
+- Cross-component semantic class groups
+- Shared surface, pattern, and motion utilities
 - Global base behavior
 
-Vue templates own local structure and short one-off utility groups. Repeated recipes move to the global component layer or a component variant.
+Vue single-file components own their component-specific recipes in scoped style
+blocks. Scoped blocks use Tailwind's `@reference` directive to access the global
+theme and utilities without duplicating their output. Vue templates own local
+structure and short one-off utility groups. Repeated cross-component recipes move
+to the global component layer or a component variant.
 
 ### Plugins
 

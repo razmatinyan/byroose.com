@@ -50,16 +50,36 @@ const faqs = [
 			</p>
 		</div>
 
-		<Accordion class="faq-list" type="single" collapsible default-value="faq-0">
+		<Accordion class="border-y border-border" type="single" collapsible default-value="faq-0">
 			<AccordionItem
 				v-for="(faq, index) in faqs"
 				:key="faq.question"
-				class="faq-item"
+				class="border-b border-border last:border-b-0"
 				:value="`faq-${index}`"
 			>
-				<AccordionTrigger class="faq-trigger">{{ faq.question }}</AccordionTrigger>
-				<AccordionContent class="faq-answer">{{ faq.answer }}</AccordionContent>
+				<AccordionTrigger class="items-center rounded-none py-5.5 text-lg font-semibold tracking-[-0.02em] hover:no-underline sm:text-xl">
+					{{ faq.question }}
+				</AccordionTrigger>
+				<AccordionContent class="max-w-[56ch] pb-5.5 text-lg leading-relaxed text-muted-foreground">
+					{{ faq.answer }}
+				</AccordionContent>
 			</AccordionItem>
 		</Accordion>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.faq {
+	@apply grid w-full grid-cols-1 items-start gap-8 pb-section lg:grid-cols-2 lg:gap-16;
+}
+
+.faq-title {
+	@apply max-w-[10ch];
+}
+
+.faq-intro {
+	@apply mt-5 mb-0 max-w-[32ch] text-base leading-normal text-muted-foreground;
+}
+</style>

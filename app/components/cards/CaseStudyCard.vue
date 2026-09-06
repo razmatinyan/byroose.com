@@ -56,6 +56,7 @@ const patternClasses: Record<Theme, string> = {
 		<MediaPlaceholder
 			label="case photo"
 			:class="cn('case-card-image', patternClasses[theme])"
+			label-class="text-current opacity-85"
 		/>
 		<div class="case-card-copy">
 			<span class="case-card-client">{{ client }}</span>
@@ -64,3 +65,49 @@ const patternClasses: Record<Theme, string> = {
 		</div>
 	</Card>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.case-card {
+	@apply rounded-3xl p-3.5;
+}
+
+.case-card-image {
+	@apply aspect-16/10 rounded-xl;
+}
+
+.case-card-copy {
+	@apply px-1.5 pt-4 pb-1.5;
+}
+
+.case-card-client {
+	@apply text-sm font-semibold;
+}
+
+.case-card-title {
+	@apply mt-2 mb-0 text-xl leading-tight font-semibold tracking-[-0.02em];
+}
+
+.case-card-metric {
+	@apply mt-2 mb-0 text-sm opacity-90;
+}
+
+@media (min-width: 40rem) {
+	.case-offset-small {
+		@apply mt-4;
+	}
+
+	.case-offset-medium {
+		@apply mt-10;
+	}
+
+	.case-offset-large {
+		@apply mt-14;
+	}
+
+	.case-offset-extra-large {
+		@apply mt-16;
+	}
+}
+</style>

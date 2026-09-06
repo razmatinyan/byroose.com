@@ -131,3 +131,75 @@ function showNextStory() {
 		</div>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.services {
+	@apply w-full pb-section;
+}
+
+.services-title {
+	@apply mb-10 max-w-[15ch] md:mb-14 xl:mb-18;
+}
+
+.services-layout {
+	@apply grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(15rem,0.8fr)_minmax(24rem,1.5fr)_minmax(13rem,0.7fr)] lg:gap-8 xl:gap-16;
+}
+
+.client-story {
+	@apply min-w-0 max-w-md;
+}
+
+.client-story-controls {
+	@apply flex items-center justify-between gap-4 border-t border-foreground/25 pt-3;
+}
+
+.client-story-arrows {
+	@apply flex gap-3;
+}
+
+.client-story-counter {
+	@apply text-sm tracking-[0.06em] text-brand-soft;
+}
+
+.client-story-quote {
+	@apply mt-7 min-h-36 text-lg leading-relaxed text-foreground;
+}
+
+.client-story-person {
+	@apply mt-5 flex items-center gap-3;
+}
+
+.client-story-avatar {
+	@apply size-10 shrink-0 rounded-full bg-size-[0.75rem_0.75rem];
+}
+
+.client-story-name {
+	@apply text-base font-semibold;
+}
+
+.client-story-role {
+	@apply text-sm text-brand-soft sm:text-base;
+}
+
+.service-picker {
+	@apply min-w-0;
+}
+
+.service-picker-list {
+	@apply flex flex-col;
+}
+
+.service-picker-option {
+	@apply m-0 border-0 bg-transparent p-0 text-left text-service font-bold tracking-[-0.04em] text-foreground/60 transition-colors duration-300 hover:text-foreground aria-pressed:text-foreground;
+}
+
+.service-picker-description {
+	@apply mt-7 mb-0 max-w-[52ch] text-base leading-relaxed text-muted-foreground sm:text-lg;
+}
+
+.service-visual {
+	@apply aspect-3/4 w-full max-w-sm overflow-hidden rounded-2xl lg:max-w-xs;
+}
+</style>

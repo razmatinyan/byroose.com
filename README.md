@@ -52,8 +52,8 @@ npm run preview
 
 ~~~text
 app/
-  assets/css/       Theme tokens and reusable Tailwind class groups
-  components/       Landing, layout, card, shared, and UI components
+  assets/css/       Theme tokens, base styles, and shared Tailwind utilities
+  components/       Landing, layout, card, shared, and UI components with scoped styles
   composables/      Reusable stateful and side-effect behavior
   lib/              Pure helpers, shared constants, and icon names
   plugins/          Nuxt runtime integrations

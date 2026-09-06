@@ -45,7 +45,7 @@ const articles = [
 
 <template>
 	<section id="blog" class="blog section-gutter">
-		<SectionHeading title="From the blog" title-class="blog-title">
+		<SectionHeading title="From the blog" title-class="max-w-[12ch]">
 			<Button as="a" href="#blog" variant="outline" size="cta-lg">
 				All articles
 				<ButtonIcon tone="dark" />
@@ -57,3 +57,15 @@ const articles = [
 		</div>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.blog {
+	@apply w-full pb-section;
+}
+
+.blog-grid {
+	@apply mt-8 grid auto-rows-[minmax(13rem,auto)] grid-cols-1 gap-3 sm:grid-cols-2 md:mt-12 lg:grid-cols-4 xl:mt-14 xl:gap-5;
+}
+</style>

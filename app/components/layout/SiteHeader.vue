@@ -136,3 +136,69 @@ const {
 		</div>
 	</header>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.site-header {
+	@apply sticky top-0 z-60 isolate;
+}
+
+.site-header-inner {
+	@apply relative z-10 grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-page py-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-6;
+}
+
+.site-logo-link {
+	@apply col-start-1 row-start-1 flex shrink-0 items-center justify-self-start text-foreground hover:text-foreground;
+	will-change: transform, opacity;
+}
+
+.site-logo {
+	@apply block h-7 w-auto sm:h-8.5;
+}
+
+.site-nav {
+	@apply hidden items-center gap-1 rounded-lg bg-card p-1 lg:col-start-2 lg:row-start-1 lg:flex;
+	will-change: transform, opacity;
+}
+
+.site-nav-link {
+	@apply rounded-md px-3 py-2.5 text-base font-medium text-foreground transition-colors hover:bg-foreground hover:text-background xl:px-4;
+}
+
+.site-header-actions {
+	@apply col-start-2 row-start-1 flex items-center justify-self-end gap-2 lg:col-start-3;
+}
+
+.site-header-cta-wrap,
+.site-menu-button-wrap {
+	@apply inline-flex shrink-0;
+	will-change: transform, opacity;
+}
+
+.site-header-cta-wrap {
+	@apply lg:translate-x-13;
+}
+
+.site-menu-button-wrap {
+	@apply lg:pointer-events-none lg:invisible;
+}
+
+.site-menu-button {
+	@apply grid size-[2.875rem] shrink-0 place-items-center rounded-full border border-foreground bg-foreground text-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+}
+
+@media (hover: none) {
+	.site-menu-button {
+		@apply transition-transform active:scale-95 motion-reduce:transition-none;
+	}
+}
+
+.site-mobile-nav {
+	@apply absolute top-full right-page left-page grid gap-1 rounded-2xl border bg-card p-2 shadow-lg lg:hidden;
+}
+
+.site-mobile-link {
+	@apply rounded-xl px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground;
+}
+</style>

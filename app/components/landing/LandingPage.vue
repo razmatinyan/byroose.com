@@ -42,3 +42,11 @@ const motionClass = computed(() => `motion--${motion}`)
 		<SiteFooter />
 	</div>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.landing-page {
+	@apply overflow-x-clip bg-background;
+}
+</style>

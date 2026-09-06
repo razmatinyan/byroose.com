@@ -61,3 +61,39 @@ const surfaceClasses: Record<Theme, string> = {
 		</a>
 	</Card>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.course-card {
+	@apply flex min-h-96 flex-col gap-5 rounded-3xl p-7;
+}
+
+.course-card-meta {
+	@apply flex items-baseline justify-between gap-4;
+}
+
+.course-card-kicker {
+	@apply text-sm font-semibold;
+}
+
+.course-card-price {
+	@apply text-lg font-bold tracking-[-0.02em];
+}
+
+.course-card-visual {
+	@apply aspect-16/10 rounded-xl;
+}
+
+.course-card-title {
+	@apply m-0 text-2xl leading-tight font-bold tracking-[-0.03em] xl:text-3xl;
+}
+
+.course-card-description {
+	@apply m-0 text-sm leading-relaxed sm:text-base;
+}
+
+.course-card-link {
+	@apply mt-auto flex items-center justify-between gap-3.5 rounded-xl py-2 pr-2 text-base font-semibold text-current hover:text-current;
+}
+</style>

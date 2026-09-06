@@ -75,3 +75,31 @@ const surfaceClasses: Record<Theme, string> = {
 		/>
 	</Card>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.journey-step {
+	@apply grid w-full grid-cols-1 items-center gap-8 px-page py-10 md:grid-cols-2 md:gap-12 md:py-14 xl:gap-16 xl:py-18;
+}
+
+.journey-step-first {
+	@apply mt-8 md:mt-14;
+}
+
+.journey-step-number {
+	@apply block text-step font-bold tracking-[-0.06em];
+}
+
+.journey-step-title {
+	@apply mt-4 mb-0 text-3xl leading-none font-bold tracking-[-0.035em] lg:text-4xl xl:text-5xl;
+}
+
+.journey-step-copy {
+	@apply mt-4 mb-0 max-w-[46ch] text-base leading-relaxed sm:text-lg;
+}
+
+.journey-step-visual {
+	@apply aspect-16/11 rounded-2xl;
+}
+</style>

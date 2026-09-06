@@ -35,7 +35,7 @@ const courses = [
 
 <template>
 	<section id="courses" class="courses section-gutter">
-		<SectionHeading title="Our courses" title-class="courses-title">
+		<SectionHeading title="Our courses" title-class="max-w-[12ch]">
 			<p class="section-intro">The same playbooks we run for clients, taught to your team over four weeks.</p>
 		</SectionHeading>
 
@@ -44,3 +44,15 @@ const courses = [
 		</div>
 	</section>
 </template>
+
+<style scoped>
+@reference '../../assets/css/tailwind.css';
+
+.courses {
+	@apply w-full pb-section;
+}
+
+.courses-grid {
+	@apply mt-8 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-2 xl:mt-14 xl:grid-cols-3 xl:gap-6;
+}
+</style>
