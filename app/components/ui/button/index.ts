@@ -1,5 +1,6 @@
 import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
+import type { SurfaceTone } from '@/lib/surfaces'
 
 export { default as Button } from './Button.vue'
 export { default as ButtonIcon } from './ButtonIcon.vue'
@@ -10,8 +11,8 @@ export const buttonVariants = cva(
 		variants: {
 			variant: {
 				default:
-					'border border-primary bg-primary text-primary-foreground hover:border-foreground hover:bg-foreground hover:text-background',
-				dark: 'border hover:border-primary hover:bg-primary hover:text-primary-foreground border-foreground bg-foreground text-background',
+					'bg-primary text-primary-foreground hover:bg-foreground hover:text-background',
+				dark: 'hover:bg-primary hover:text-primary-foreground bg-foreground text-background',
 				destructive:
 					'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
 				outline:
@@ -22,7 +23,7 @@ export const buttonVariants = cva(
 				link: 'text-primary underline-offset-4 hover:underline',
 				cream: 'bg-brand-cream text-brand-cream-foreground hover:bg-card hover:text-foreground',
 				inverse:
-					'border border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground',
+					'bg-transparent text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground',
 			},
 			size: {
 				default: 'h-9 px-4 py-2 has-[>svg]:px-3',
@@ -35,9 +36,9 @@ export const buttonVariants = cva(
 				'icon-sm': 'size-8',
 				'icon-lg': 'size-10',
 				'cta-sm':
-					'h-auto min-h-11 gap-2.5 !rounded-action py-action-inset pr-action-inset pl-4 text-sm transition-colors sm:text-base',
+					'relative h-auto min-h-11 gap-2.5 overflow-hidden !rounded-action py-action-inset pr-action-inset pl-4 text-sm transition-colors sm:text-base',
 				'cta-lg':
-					'h-auto min-h-13 gap-3 !rounded-action py-action-inset pr-action-inset pl-5 text-lg transition-colors sm:text-xl',
+					'relative h-auto min-h-13 gap-3 overflow-hidden !rounded-action py-action-inset pr-action-inset pl-5 text-lg transition-colors sm:text-xl',
 			},
 		},
 		defaultVariants: {
@@ -47,3 +48,14 @@ export const buttonVariants = cva(
 	},
 )
 export type ButtonVariants = VariantProps<typeof buttonVariants>
+export type ButtonVariant = NonNullable<ButtonVariants['variant']>
+export type RolloverTones = readonly [SurfaceTone, SurfaceTone, SurfaceTone]
+
+export const variantRolloverTones: Partial<
+	Record<ButtonVariant, RolloverTones>
+> = {
+	cream: ['primary', 'green', 'dark'],
+	dark: ['green', 'pink', 'primary'],
+	default: ['blue', 'green', 'dark'],
+	outline: ['primary', 'green', 'dark'],
+}

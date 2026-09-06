@@ -3,12 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * byroose design tokens
- *
- * The public tokens follow shadcn's background/foreground pairing. Brand-only
- * tokens extend that vocabulary without leaking raw colors into components.
- */
 @theme inline {
 	--font-sans: 'Geist', Helvetica, Arial, sans-serif;
 	--font-heading: var(--font-sans);
@@ -260,7 +254,6 @@
 	.motion--subtle .tilt-card:hover {
 		@apply -translate-y-2 rotate-0;
 	}
-
 }
 
 @utility surface-orange {
@@ -281,6 +274,10 @@
 
 @utility surface-card {
 	@apply bg-card text-card-foreground;
+}
+
+@utility surface-dark {
+	@apply bg-foreground text-background;
 }
 
 @utility pattern-orange {

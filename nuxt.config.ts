@@ -46,6 +46,7 @@ export default defineNuxtConfig({
 				'lucide:arrow-down',
 				'lucide:arrow-left',
 				'lucide:arrow-right',
+				'lucide:arrow-up-right',
 				'lucide:menu',
 				'lucide:plus',
 				'lucide:x',

@@ -31,7 +31,9 @@ const {
 							size="cta-lg"
 						>
 							{{ primary }}
-							<ButtonIcon tone="dark" />
+							<template #icon>
+								<ButtonIcon tone="dark" />
+							</template>
 						</Button>
 					</div>
 				</div>

@@ -48,7 +48,9 @@ const articles = [
 		<SectionHeading title="From the blog" title-class="max-w-[12ch]">
 			<Button as="a" href="#blog" variant="outline" size="cta-lg">
 				All articles
-				<ButtonIcon tone="dark" />
+				<template #icon>
+					<ButtonIcon tone="dark" />
+				</template>
 			</Button>
 		</SectionHeading>
 

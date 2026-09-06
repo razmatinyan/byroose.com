@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
+import { computed } from 'vue'
 import { appIcons } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 const {
 	class: className,
-	icon = appIcons.arrowRight,
+	icon = appIcons.arrowUpRight,
 	size = 'default',
 	tone = 'light',
 } = defineProps<{
@@ -14,21 +15,30 @@ const {
 	size?: 'default' | 'sm'
 	tone?: 'light' | 'dark' | 'soft'
 }>()
+
+const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 </script>
 
 <template>
 	<span
 		aria-hidden="true"
-		:class="cn(
-			'button-icon',
-			size === 'sm' && 'button-icon-sm',
-			tone === 'dark' && 'button-icon-dark',
-			tone === 'soft' && 'button-icon-soft',
-			className,
-		)"
+		:class="
+			cn(
+				'button-icon',
+				size === 'sm' && 'button-icon-sm',
+				tone === 'dark' && 'button-icon-dark',
+				tone === 'soft' && 'button-icon-soft',
+				className,
+			)
+		"
 	>
 		<slot>
-			<Icon :name="icon" :class="size === 'sm' ? 'size-4' : 'size-5'" />
+			<span class="button-icon-glyph" data-rollover-glyph>
+				<Icon :name="icon" :class="glyphSize" />
+			</span>
+			<span class="button-icon-glyph" data-rollover-glyph-copy>
+				<Icon :name="icon" :class="glyphSize" />
+			</span>
 		</slot>
 	</span>
 </template>
@@ -37,7 +47,15 @@ const {
 @reference '../../../assets/css/tailwind.css';
 
 .button-icon {
-	@apply grid size-11 shrink-0 place-items-center rounded-action-icon bg-card text-foreground;
+	@apply grid size-11 shrink-0 place-items-center overflow-hidden rounded-action-icon bg-card text-foreground;
+}
+
+.button-icon-glyph {
+	@apply col-start-1 row-start-1 grid place-items-center;
+}
+
+.button-icon-glyph[data-rollover-glyph-copy] {
+	transform: translate(-200%, 100%);
 }
 
 .button-icon-sm {

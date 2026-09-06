@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import SiteNavLink from '@/components/layout/SiteNavLink.vue'
 import { Button, ButtonIcon } from '@/components/ui/button'
 import { appIcons } from '@/lib/icons'
 
@@ -38,11 +39,7 @@ const {
 </script>
 
 <template>
-	<header
-		ref="headerRoot"
-		class="site-header"
-		:data-header-mode="headerMode"
-	>
+	<header ref="headerRoot" class="site-header" :data-header-mode="headerMode">
 		<div class="site-header-inner">
 			<a
 				ref="logoLink"
@@ -67,14 +64,12 @@ const {
 				class="site-nav"
 				aria-label="Main navigation"
 			>
-				<a
+				<SiteNavLink
 					v-for="item in resolvedNavItems"
 					:key="item.href"
-					class="site-nav-link"
 					:href="item.href"
-				>
-					{{ item.label }}
-				</a>
+					:label="item.label"
+				/>
 			</nav>
 
 			<div class="site-header-actions">
@@ -87,7 +82,9 @@ const {
 						variant="dark"
 					>
 						{{ ctaLabel }}
-						<ButtonIcon size="sm" />
+						<template #icon>
+							<ButtonIcon size="sm" />
+						</template>
 					</Button>
 				</span>
 
@@ -101,7 +98,11 @@ const {
 						:aria-label="menuButtonLabel"
 						@click="handleMenuButtonClick"
 					>
-						<Icon :name="appIcons.menu" class="size-5" aria-hidden="true" />
+						<Icon
+							:name="appIcons.menu"
+							class="size-5"
+							aria-hidden="true"
+						/>
 					</button>
 				</span>
 			</div>
@@ -130,7 +131,9 @@ const {
 					@click="closeMenu"
 				>
 					{{ ctaLabel }}
-					<ButtonIcon size="sm" />
+					<template #icon>
+						<ButtonIcon size="sm" />
+					</template>
 				</Button>
 			</nav>
 		</div>
@@ -160,10 +163,6 @@ const {
 .site-nav {
 	@apply hidden items-center gap-1 rounded-lg bg-card p-1 lg:col-start-2 lg:row-start-1 lg:flex;
 	will-change: transform, opacity;
-}
-
-.site-nav-link {
-	@apply rounded-md px-3 py-2.5 text-base font-medium text-foreground transition-colors hover:bg-foreground hover:text-background xl:px-4;
 }
 
 .site-header-actions {

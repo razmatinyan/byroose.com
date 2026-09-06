@@ -162,6 +162,10 @@ Props use Vue's reactive destructuring syntax. Static primitive defaults can be
 declared directly in the destructure. Array and object defaults can also use
 native destructuring defaults. Do not use `withDefaults`.
 
+Only the `outline` and `secondary` variants may carry a border. Filled variants
+stay borderless so a stray one-pixel ring never survives on top of a rollover
+layer or an animated surface.
+
 ### Variant rules
 
 - Use CVA when a primitive has named visual variants, sizes, or state combinations.
@@ -367,6 +371,84 @@ same property. The CTA sizes narrow the shared button transition to
 `transition-colors`, and the navigation control keeps its press scale inside a
 `(hover: none)` block where the bounce never runs. Apply the same split whenever
 a component hands one property to GSAP and keeps the rest in CSS.
+
+### Hover rollover
+
+The `cta-sm` and `cta-lg` button sizes also run a masked three-stage rollover.
+The size variant makes the button a clipped positioning host, and the primitive
+renders one flow label plus three absolutely positioned layers that rest below the
+button. On hover the label travels up and out while the layers sweep up in
+sequence. The last layer carries a duplicate label and finishes covering the two
+below it. Leaving reverses the order, so the final layer descends first and
+briefly reveals the layers underneath.
+
+The icon tile stays put. CTA buttons pass their `ButtonIcon` through the named
+`icon` slot, which renders after the layers and is positioned so it paints above
+them. Only the glyph animates. `ButtonIcon` renders its glyph twice into the same
+grid cell and parks the second copy below and to the left, and the tile clips its
+own overflow, so the pair is invisible until the rollover swaps them diagonally:
+the original leaves toward the upper right while the copy arrives at rest. Both
+glyphs are ordinary spans rather than the raw SVG, which keeps percentage
+transforms predictable. The final layer repeats the icon slot as an invisible
+reserve, which keeps the duplicate label aligned with the original without
+hardcoding the tile width.
+
+Render the swap in the template rather than cloning a node at runtime. The tile
+lives inside a Vue-managed subtree, so an injected copy is not guaranteed to
+survive a re-render of the icon.
+
+`useHoverRollover` owns the motion. Both directions build the same timeline shape
+with the same duration and the same `power3.out` ease, so the return reads exactly
+like the entry, and each new timeline tweens from the current values so a fast
+pointer never jumps. Reduced motion switches between the two complete states with
+`gsap.set` instead of travelling. Pointer and keyboard state are tracked together,
+so a `:focus-visible` control shows the same covered state as a hovered one. A
+`speed` option scales the whole timeline through `timeScale`, so a smaller control
+can feel quicker without redefining its timings.
+
+The rollover is not limited to buttons. `SiteNavLink` uses the same composable
+with a pink, primary, dark sequence and a slightly higher speed, because a small
+navigation target reads better with a quicker sweep. Any element can join by
+becoming a clipped positioning host with the data attributes below.
+
+Layer colors belong to the variant, not to the motion. `variantRolloverTones` in
+the button module maps each participating variant to a tuple of three semantic
+surface names:
+
+| Variant | Layer sequence |
+| --- | --- |
+| `default` | blue, green, dark |
+| `dark` | green, pink, primary |
+| `outline` | primary, green, dark |
+| `cream` | primary, green, dark |
+
+`destructive`, `secondary`, `ghost`, `link`, and `inverse` are absent from that
+map on purpose. They keep their plain color hover at every size and render no
+rollover markup. A CTA-size button still bounces regardless of its variant.
+
+Tone names resolve through `app/lib/surfaces.ts` to the `surface-*` utilities,
+which pair a background with its readable foreground. `surface-dark` was added
+for the dark final layer. Add a variant to the map to give it a rollover, pass the
+`rolloverTones` prop to override one button, and add a surface utility before
+introducing a new tone.
+
+A variant that owns a rollover drops its hover colors, because the rollover is the
+hover state and a second color change underneath it only competes. The primitive
+filters `hover:` classes out of the variant list for those buttons rather than
+duplicating every variant's resting colors.
+
+Two invariants keep this working:
+
+- A rollover host needs `position: relative` and `overflow: hidden`, and its
+  label, layers, and optional icon must be direct children carrying
+  `data-rollover-label`, `data-rollover-layer`, and `data-rollover-icon`.
+- Anything that must stay visible above the layers needs its own `position`,
+  because the absolutely positioned layers paint above every static sibling
+  regardless of document order.
+- GSAP parses an element's computed `transform` into its own pixel translation
+  before it tweens. The layers start below through a CSS `transform`, so the first
+  GSAP call must set `y: 0` alongside `yPercent`. Without it the parsed pixel
+  offset survives and the layers stay below the button for the whole animation.
 
 ## Design-system change workflow
 

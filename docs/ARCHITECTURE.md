@@ -29,10 +29,12 @@ app/
   composables/
     useGsap.ts
     useHoverBounce.ts
+    useHoverRollover.ts
     useSiteHeaderMotion.ts
     useSmoothScroll.ts
   lib/
     icons.ts
+    surfaces.ts
     utils.ts
   plugins/
     lenis.ts
@@ -58,7 +60,8 @@ A landing section should not become a general component merely because it contai
 
 ### Layout components
 
-app/components/layout contains site-wide structure such as SiteHeader and SiteFooter. Layout components may use shared components and UI primitives. They should not depend on a landing section.
+app/components/layout contains site-wide structure such as SiteHeader, SiteNavLink,
+and SiteFooter. Layout components may use shared components and UI primitives. They should not depend on a landing section.
 
 ### Card components
 
@@ -99,6 +102,13 @@ action sizes and useSiteHeaderMotion passes the navigation control, so those
 components keep their generic markup, variant contracts, and accessibility
 behavior.
 
+useHoverRollover owns the layered hover rollover. It reads the label, layer, and
+glyph elements from a target through their data attributes, builds one timeline
+per direction so both share an ease and duration, and tracks pointer and focus
+state together. It only animates elements the consuming components render. Those
+components own the markup, the layer colors, the paired glyphs, and the clipped
+positioning host.
+
 useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, start and stop controls, refresh behavior, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances.
 
 ### Library modules
@@ -106,6 +116,7 @@ useSmoothScroll is the component-facing contract for the global Lenis instance. 
 app/lib contains pure helpers, shared constants, and stable names.
 
 - icons.ts is the canonical map for shared Lucide icon names.
+- surfaces.ts is the canonical map for semantic surface tone names.
 - utils.ts contains pure class and value helpers.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.

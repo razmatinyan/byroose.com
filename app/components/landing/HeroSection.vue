@@ -15,7 +15,9 @@ import { Button, ButtonIcon } from '@/components/ui/button'
 				</p>
 				<Button as="a" href="#contact" size="cta-lg">
 					Get a plan
-					<ButtonIcon />
+					<template #icon>
+						<ButtonIcon />
+					</template>
 				</Button>
 			</div>
 		</div>
