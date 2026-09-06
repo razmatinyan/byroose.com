@@ -24,9 +24,12 @@ export function useSiteHeaderMotion() {
 	const primaryNavigation = useTemplateRef<HTMLElement>('primaryNavigation')
 	const headerCta = useTemplateRef<HTMLElement>('headerCta')
 	const menuButton = useTemplateRef<HTMLElement>('menuButton')
+	const menuButtonControl = useTemplateRef<HTMLButtonElement>('menuButtonControl')
 	const mobileNavigation = useTemplateRef<HTMLElement>('mobileNavigation')
 	const { createMatchMedia, gsap } = useGsap()
 	const { onScroll } = useSmoothScroll()
+
+	useHoverBounce(menuButtonControl)
 
 	let applyHeaderMode: ApplyHeaderMode = mode => {
 		headerMode.value = mode

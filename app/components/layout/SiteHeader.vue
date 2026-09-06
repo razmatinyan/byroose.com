@@ -93,6 +93,7 @@ const {
 
 				<span ref="menuButton" class="site-menu-button-wrap">
 					<button
+						ref="menuButtonControl"
 						class="site-menu-button"
 						type="button"
 						:aria-expanded="menuOpen"

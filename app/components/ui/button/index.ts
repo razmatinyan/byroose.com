@@ -35,9 +35,9 @@ export const buttonVariants = cva(
 				'icon-sm': 'size-8',
 				'icon-lg': 'size-10',
 				'cta-sm':
-					'h-auto min-h-11 gap-2.5 !rounded-action py-action-inset pr-action-inset pl-4 text-sm sm:text-base',
+					'h-auto min-h-11 gap-2.5 !rounded-action py-action-inset pr-action-inset pl-4 text-sm transition-colors sm:text-base',
 				'cta-lg':
-					'h-auto min-h-13 gap-3 !rounded-action py-action-inset pr-action-inset pl-5 text-lg sm:text-xl',
+					'h-auto min-h-13 gap-3 !rounded-action py-action-inset pr-action-inset pl-5 text-lg transition-colors sm:text-xl',
 			},
 		},
 		defaultVariants: {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { PrimitiveProps } from "reka-ui"
-import type { HTMLAttributes } from "vue"
+import type { ComponentPublicInstance, HTMLAttributes } from "vue"
 import type { ButtonVariants } from "."
+import { useTemplateRef } from "vue"
 import { Primitive } from "reka-ui"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "."
@@ -19,10 +20,17 @@ const {
   size = "default",
   variant = "default",
 } = defineProps<Props>()
+
+const buttonElement = useTemplateRef<ComponentPublicInstance>("buttonElement")
+
+useHoverBounce(() =>
+  size === "cta-sm" || size === "cta-lg" ? buttonElement.value : null,
+)
 </script>
 
 <template>
   <Primitive
+    ref="buttonElement"
     data-slot="button"
     :data-variant="variant"
     :data-size="size"

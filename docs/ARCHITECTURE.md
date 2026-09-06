@@ -28,6 +28,7 @@ app/
     ui/
   composables/
     useGsap.ts
+    useHoverBounce.ts
     useSiteHeaderMotion.ts
     useSmoothScroll.ts
   lib/
@@ -87,9 +88,16 @@ Use a composable when logic:
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
-scroll-direction thresholds, and focus handoff. It composes useGsap and
-useSmoothScroll so the layout component remains focused on header structure and
-navigation content.
+scroll-direction thresholds, and focus handoff. It composes useGsap,
+useHoverBounce, and useSmoothScroll so the layout component remains focused on
+header structure and navigation content.
+
+useHoverBounce owns the hover bounce of action surfaces. It receives a target
+element, composes useGsap, and keeps its listeners and tweens inside a hover and
+motion media context. The button primitive passes its element for the call to
+action sizes and useSiteHeaderMotion passes the navigation control, so those
+components keep their generic markup, variant contracts, and accessibility
+behavior.
 
 useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, start and stop controls, refresh behavior, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances.
 

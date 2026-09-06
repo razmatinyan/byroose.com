@@ -343,6 +343,26 @@ tween from its current value so a reversal mid transition stays continuous. Keep
 states. The landing wrapper uses horizontal clipping so it does not create a
 competing scroll container that breaks sticky positioning.
 
+### Hover bounce
+
+Actions bounce on hover. `useHoverBounce` attaches GSAP pointer tweens to a target
+element, scales it up with an elastic ease, and settles it back with a short
+overshoot when the pointer leaves. The `cta-sm` and `cta-lg` button sizes opt in
+through the button primitive, and the header navigation control opts in through
+`useSiteHeaderMotion`, so both action surfaces share one motion character.
+
+The behavior is created inside a
+`(hover: hover) and (prefers-reduced-motion: no-preference)` media context, so
+pointers without hover and readers who prefer reduced motion keep a static
+control. Listeners, tweens, and the inline transform are removed when the query
+stops matching or the component scope is disposed.
+
+GSAP owns the transform of every element it bounces, so CSS must not animate the
+same property. The CTA sizes narrow the shared button transition to
+`transition-colors`, and the navigation control keeps its press scale inside a
+`(hover: none)` block where the bounce never runs. Apply the same split whenever
+a component hands one property to GSAP and keeps the rest in CSS.
+
 ## Design-system change workflow
 
 When changing the system:
