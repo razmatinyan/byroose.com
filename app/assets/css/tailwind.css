@@ -317,12 +317,12 @@
 	}
 
 	.site-nav {
-		@apply hidden items-center gap-1 rounded-md bg-card p-1 lg:col-start-2 lg:row-start-1 lg:flex;
+		@apply hidden items-center gap-1 rounded-lg bg-card p-1 lg:col-start-2 lg:row-start-1 lg:flex;
 		will-change: transform, opacity;
 	}
 
 	.site-nav-link {
-		@apply rounded-sm px-3 py-2.5 text-base font-medium text-foreground transition-colors hover:bg-foreground hover:text-background xl:px-4;
+		@apply rounded-md px-3 py-2.5 text-base font-medium text-foreground transition-colors hover:bg-foreground hover:text-background xl:px-4;
 	}
 
 	.site-header-actions {
