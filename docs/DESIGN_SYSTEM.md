@@ -54,8 +54,9 @@ components should prefer `secondary`, `accent`, and `background`. Brand aliases
 are appropriate when the color itself is part of a byroose composition.
 
 Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
-surfaces use dark ink foregrounds. Keep each brand color paired with its
-foreground token so color behavior remains consistent in both themes.
+surfaces use dark ink foregrounds. Copied labels over dark rollover surfaces use
+`primary-foreground`. Keep each brand color paired with its foreground token so
+color behavior remains consistent in both themes.
 
 ### Adding colors
 

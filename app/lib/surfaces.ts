@@ -12,7 +12,7 @@ export type SurfaceTone = keyof typeof surfaceTones
 export const surfaceForegroundTones = {
 	blue: 'text-brand-blue-foreground',
 	card: 'text-card-foreground',
-	dark: 'text-background',
+	dark: 'text-primary-foreground',
 	green: 'text-brand-green-foreground',
 	pink: 'text-brand-pink-foreground',
 	primary: 'text-primary-foreground',
