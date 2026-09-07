@@ -56,8 +56,10 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 				) {
 					const buttonBounds = buttonElement.getBoundingClientRect()
 					const panelWidth = panelElement.offsetWidth
-					const maximumLeft = window.innerWidth - panelWidth - menuViewportInset
-					const desiredLeft = buttonBounds.right - panelWidth + menuPanelOffset
+					const maximumLeft =
+						window.innerWidth - panelWidth - menuViewportInset
+					const desiredLeft =
+						buttonBounds.right - panelWidth + menuPanelOffset
 					const left = Math.max(
 						menuViewportInset,
 						Math.min(maximumLeft, desiredLeft),
@@ -66,7 +68,10 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 						menuPanelOffset,
 						buttonBounds.top - menuPanelOffset,
 					)
-					collapsedScaleX = Math.min(1, buttonBounds.width / panelWidth)
+					collapsedScaleX = Math.min(
+						1,
+						buttonBounds.width / panelWidth,
+					)
 					collapsedScaleY = Math.min(
 						1,
 						buttonBounds.height / panelElement.offsetHeight,
@@ -81,7 +86,11 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 							: panelElement.offsetHeight / 2
 
 					panelOrigin = `${originX}px ${originY}px`
-					gsap.set(panelElement, { left, top, transformOrigin: panelOrigin })
+					gsap.set(panelElement, {
+						left,
+						top,
+						transformOrigin: panelOrigin,
+					})
 				}
 
 				let lineTimeline: gsap.core.Timeline | null = null
@@ -113,12 +122,12 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 					{
 						duration: 0.38,
 						ease: 'power4.out',
-						rotation: 0.25,
-						scaleX: 1.025,
-						scaleY: 0.985,
-						skewX: 0.35,
-						x: 3,
-						y: -3,
+						// rotation: 0.25,
+						scaleX: 1,
+						scaleY: 1,
+						// skewX: 0.35,
+						// x: 3,
+						// y: -3,
 					},
 					0,
 				)
@@ -181,7 +190,10 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 						pointerEvents: expanded ? 'auto' : 'none',
 						visibility: 'visible',
 					})
-					panelTimeline.invalidate().progress(expanded ? 1 : 0).pause()
+					panelTimeline
+						.invalidate()
+						.progress(expanded ? 1 : 0)
+						.pause()
 					if (!expanded) {
 						gsap.set(panel, {
 							rotation: 0,
