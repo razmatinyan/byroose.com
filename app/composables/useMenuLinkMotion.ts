@@ -55,7 +55,7 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 			const characters = [...labelSplit.chars, ...labelCopySplit.chars]
 
 			gsap.set(labelCopy, { visibility: 'visible' })
-			gsap.set(labelCopySplit.chars, { force3D: true, yPercent: -120 })
+			gsap.set(labelCopySplit.chars, { force3D: true, yPercent: 100 })
 
 			const clearTransformHint = () => {
 				gsap.set(characters, { clearProps: 'willChange' })
@@ -70,21 +70,21 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 				.to(
 					labelSplit.chars,
 					{
-						duration: 0.4,
-						ease: 'power3.inOut',
+						duration: 0.2,
+						ease: 'power1.inOut',
 						force3D: true,
-						stagger: 0.018,
-						yPercent: 120,
+						stagger: 0.02,
+						yPercent: -100,
 					},
 					0,
 				)
 				.to(
 					labelCopySplit.chars,
 					{
-						duration: 0.4,
-						ease: 'power3.inOut',
+						duration: 0.2,
+						ease: 'power1.inOut',
 						force3D: true,
-						stagger: 0.018,
+						stagger: 0.02,
 						yPercent: 0,
 					},
 					0,
@@ -102,7 +102,7 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 				gsap.set(characters, { willChange: 'transform' })
 
 				if (covered) {
-					rollover.play()
+					rollover.restart()
 					return
 				}
 

@@ -156,7 +156,7 @@ onKeyStroke(
 }
 
 .site-menu-button {
-	@apply relative z-20 grid size-[2.875rem] shrink-0 place-items-center rounded-full border border-background/20 bg-foreground text-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+	@apply relative z-20 grid size-[2.875rem] shrink-0 place-items-center rounded-full border aria-expanded:border-background/20 bg-foreground text-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
 }
 
 .site-menu-icon {
@@ -176,7 +176,7 @@ onKeyStroke(
 }
 
 .site-menu-panel {
-	@apply invisible pointer-events-none fixed top-0 left-0 z-50 overflow-y-auto rounded-2xl border border-background/15 bg-foreground text-background shadow-xl;
+	@apply invisible pointer-events-none scrollbar-none fixed top-0 left-0 z-50 overflow-y-auto rounded-2xl border border-background/15 bg-foreground text-background shadow-xl;
 	width: min(22.5rem, calc(100vw - 2rem));
 	height: min(36rem, calc(100dvh - 2rem));
 }
@@ -210,7 +210,6 @@ onKeyStroke(
 .site-menu-reveal {
 	visibility: hidden;
 	opacity: 0;
-	transform: translateY(0.5rem);
 }
 
 @media (hover: none) {

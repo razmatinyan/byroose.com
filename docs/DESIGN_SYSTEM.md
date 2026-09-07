@@ -344,7 +344,8 @@ height through `scaleX` and `scaleY`. Derive the transform origin from the final
 panel position and collapsed scales so the closed panel bounds match the control
 exactly, then sweep up and right through a subtle translate, skew, and scale
 overshoot before settling at full dimensions. Its heading, navigation items,
-and footer enter with a short vertical offset, opacity, and a tight stagger.
+and footer enter with opacity and a tight stagger after the overshoot, keeping
+the content itself steady while the panel settles.
 Closing reverses the same sequence so the content and panel move immediately on
 the same short timeline, matching the opening speed as the panel swooshes down
 and left into the control. Keep the panel behind the compact header actions so
@@ -355,12 +356,12 @@ state, with its color transition timed to the panel expansion.
 Expanded navigation labels retain a single semantic link name while their
 two visual text copies stay hidden from assistive technology. SplitText divides
 both copies into characters after mount. On hover or visible keyboard focus,
-the resting characters travel down and the copied characters arrive from above
-with a tight left-to-right stagger as the label color softens. Leaving reverses
-the same timeline, returning characters right-to-left without a jump. Keep the
-rollover clipped to the label line, revert both SplitText instances during
-cleanup, and skip character splitting for touch-only pointers or reduced-motion
-preferences.
+the resting characters travel up and the copied characters arrive from below
+over `0.2s` with a `0.02s` left-to-right stagger and `power1.inOut` easing as
+the label color softens. Each entry restarts the rollover and leaving reverses
+the same timeline. Keep the rollover clipped to the label line, revert both
+SplitText instances during cleanup, and skip character splitting for touch-only
+pointers or reduced-motion preferences.
 
 Escape closes the panel and restores focus to the control. Outside clicks and
 navigation selection also close it. Keep the panel inert and absent from the

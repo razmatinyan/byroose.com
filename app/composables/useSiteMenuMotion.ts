@@ -138,15 +138,14 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 				)
 				panelTimeline.fromTo(
 					revealTargets,
-					{ autoAlpha: 0, y: 8 },
+					{ autoAlpha: 0 },
 					{
 						autoAlpha: 1,
-						duration: 0.2,
-						ease: 'power2.out',
-						stagger: 0.03,
-						y: 0,
+						duration: 0.18,
+						ease: 'power3.out',
+						stagger: 0.025,
 					},
-					0.13,
+					0.44,
 				)
 
 				function setLines(expanded: boolean, immediate: boolean) {
@@ -194,7 +193,7 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 							x: 0,
 							y: 0,
 						})
-						gsap.set(revealTargets, { autoAlpha: 0, y: 8 })
+						gsap.set(revealTargets, { autoAlpha: 0 })
 					}
 					setLines(expanded, true)
 				}
