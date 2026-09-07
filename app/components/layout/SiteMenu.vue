@@ -20,13 +20,8 @@ const emit = defineEmits<{
 const buttonLabel = computed(() =>
 	open ? 'Close navigation' : 'Open navigation',
 )
-const {
-	menuButton,
-	menuLineBottom,
-	menuLineTop,
-	menuPanel,
-	siteMenuRoot,
-} = useSiteMenuMotion(() => open)
+const { menuButton, menuLineBottom, menuLineTop, menuPanel, siteMenuRoot } =
+	useSiteMenuMotion(() => open)
 
 useHoverBounce(menuButton, { press: true })
 
@@ -102,7 +97,10 @@ onKeyStroke(
 				data-lenis-prevent
 			>
 				<div class="site-menu-content">
-					<p class="site-menu-heading site-menu-reveal" data-menu-reveal>
+					<p
+						class="site-menu-heading site-menu-reveal"
+						data-menu-reveal
+					>
 						Navigation
 					</p>
 
@@ -121,8 +119,13 @@ onKeyStroke(
 						</li>
 					</ul>
 
-					<div class="site-menu-footer site-menu-reveal" data-menu-reveal>
-						<span class="site-menu-footer-label">Creative agency</span>
+					<div
+						class="site-menu-footer site-menu-reveal"
+						data-menu-reveal
+					>
+						<span class="site-menu-footer-label"
+							>Creative agency</span
+						>
 						<a
 							class="site-menu-home"
 							href="#top"
@@ -173,7 +176,7 @@ onKeyStroke(
 }
 
 .site-menu-panel {
-	@apply invisible pointer-events-none fixed top-0 left-0 z-50 overflow-y-auto rounded-3xl border border-background/15 bg-foreground text-background shadow-xl;
+	@apply invisible pointer-events-none fixed top-0 left-0 z-50 overflow-y-auto rounded-2xl border border-background/15 bg-foreground text-background shadow-xl;
 	width: min(22.5rem, calc(100vw - 2rem));
 	height: min(36rem, calc(100dvh - 2rem));
 }
