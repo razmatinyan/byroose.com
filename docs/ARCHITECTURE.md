@@ -30,7 +30,9 @@ app/
     useGsap.ts
     useHoverBounce.ts
     useHoverRollover.ts
+    useMenuLinkMotion.ts
     useSiteHeaderMotion.ts
+    useSiteMenuMotion.ts
     useSmoothScroll.ts
   lib/
     icons.ts
@@ -60,8 +62,9 @@ A landing section should not become a general component merely because it contai
 
 ### Layout components
 
-app/components/layout contains site-wide structure such as SiteHeader, SiteNavLink,
-and SiteFooter. Layout components may use shared components and UI primitives. They should not depend on a landing section.
+app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
+SiteMenuLink, SiteNavLink, and SiteFooter. Layout components may use shared
+components and UI primitives. They should not depend on a landing section.
 
 ### Card components
 
@@ -91,17 +94,23 @@ Use a composable when logic:
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
-scroll-direction thresholds, and focus handoff. It composes useGsap,
-useHoverBounce, and useSmoothScroll so the layout component remains focused on
-header structure and navigation content.
+scroll-direction thresholds, and responsive animation states. It composes
+useGsap and useSmoothScroll so the layout component remains focused on header
+structure and navigation content.
+
+useSiteMenuMotion owns the compact navigation panel's anchored scale reveal,
+staggered content entrance, two-line toggle morph, resize correction, and
+reduced-motion states. useMenuLinkMotion owns the per-character rotation used by
+expanded navigation links on hover and visible keyboard focus. Both composables
+scope their GSAP work and cleanup to their consuming layout components.
 
 useHoverBounce owns the hover and press scale states of action surfaces. It
 receives a target plus optional hover and press behavior, composes useGsap, and
 keeps its listeners and tweens inside a motion media context. The button
 primitive enables press feedback for every size and hover bounce for call to
-action sizes, SiteNavLink enables both, and useSiteHeaderMotion keeps the
-navigation control's existing hover bounce. This leaves generic markup, variant
-contracts, and accessibility behavior in their owning components.
+action sizes, SiteNavLink enables both, and SiteMenu enables both on the compact
+navigation control. This leaves generic markup, variant contracts, and
+accessibility behavior in their owning components.
 
 useHoverRollover owns the layered hover rollover. It reads independent text and
 layer groups from a target through their data attributes, coordinates their GSAP

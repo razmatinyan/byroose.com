@@ -325,16 +325,36 @@ are reverted automatically when their Vue scope is disposed.
 The site header has full and compact sticky states. It stays full at the top of
 the page, compacts after intentional downward travel, and returns after a short
 upward movement. The compact state keeps the Start a project action visible and
-pairs it with a navigation control that uses the same dark action surface, outer
-radius, and control height without using the shared CTA icon tile. Render the
-menu glyph directly with Nuxt Icon. On desktop, activating that control restores
-the full navigation and moves focus into it. On smaller screens, it also opens
-the mobile navigation.
+pairs it with a single responsive SiteMenu control. The control uses the same
+dark action surface, outer radius, and control height without using the shared
+CTA icon tile. Its glyph is two horizontal one-pixel lines that morph into an X
+when expanded. Activating the control opens its own menu and never restores the
+header logo or primary navigation. There is no separate mobile dropdown.
 
 Drive header state from the shared Lenis scroll subscription and animate it with
 the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
 limited to transforms and opacity. Reduced motion must switch between complete
 states without animated travel.
+
+The expanded menu is a dark rounded panel anchored to the control's top-right
+corner. It grows from the control's exact width and height through `scaleX` and
+`scaleY`, then settles at its full dimensions with a `power2.out` ease. Its
+heading, navigation items, and footer enter with a short vertical offset,
+opacity, and a tight stagger. Closing reverses the same sequence so the content
+clears before the panel finishes collapsing. Keep the panel behind the compact
+header actions so the Start a project action and close control remain visible.
+
+Expanded navigation labels retain a single semantic link name while their
+visual text is split into hidden-from-assistive-technology character spans. On
+hover or visible keyboard focus, rotate the characters through a full turn on
+the X axis with a small left-to-right stagger and temporarily soften the text
+color. Skip this character animation for touch-only pointers and reduced-motion
+preferences.
+
+Escape closes the panel and restores focus to the control. Outside clicks and
+navigation selection also close it. Keep the panel inert and absent from the
+accessibility tree while closed, and let short viewports scroll its content
+without handing those gestures to the page's Lenis instance.
 
 The Start a project action and the navigation control share one slot on desktop,
 because the full state slides the action across the space the control occupies in

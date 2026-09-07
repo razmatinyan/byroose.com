@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
+import SiteMenu from '@/components/layout/SiteMenu.vue'
 import SiteNavLink from '@/components/layout/SiteNavLink.vue'
 import { Button, ButtonIcon } from '@/components/ui/button'
-import { appIcons } from '@/lib/icons'
 
 interface NavItem {
 	href: string
@@ -29,13 +30,21 @@ const {
 }>()
 
 const resolvedNavItems = computed(() => navItems ?? defaultNavItems)
-const {
-	closeMenu,
-	handleMenuButtonClick,
-	headerMode,
-	menuButtonLabel,
-	menuOpen,
-} = useSiteHeaderMotion()
+const menuOpen = shallowRef(false)
+const isDesktop = useMediaQuery('(min-width: 64rem)')
+const { headerMode } = useSiteHeaderMotion()
+
+function setMenuOpen(open: boolean) {
+	menuOpen.value = open
+}
+
+function closeMenu() {
+	setMenuOpen(false)
+}
+
+watch([headerMode, isDesktop], ([mode, desktop]) => {
+	if (mode === 'full' && desktop) closeMenu()
+})
 </script>
 
 <template>
@@ -89,53 +98,13 @@ const {
 				</span>
 
 				<span ref="menuButton" class="site-menu-button-wrap">
-					<button
-						ref="menuButtonControl"
-						class="site-menu-button"
-						type="button"
-						:aria-expanded="menuOpen"
-						aria-controls="primary-navigation mobile-navigation"
-						:aria-label="menuButtonLabel"
-						@click="handleMenuButtonClick"
-					>
-						<Icon
-							:name="appIcons.menu"
-							class="size-5"
-							aria-hidden="true"
-						/>
-					</button>
+					<SiteMenu
+						:nav-items="resolvedNavItems"
+						:open="menuOpen"
+						@update:open="setMenuOpen"
+					/>
 				</span>
 			</div>
-
-			<nav
-				v-if="menuOpen"
-				id="mobile-navigation"
-				ref="mobileNavigation"
-				class="site-mobile-nav"
-				aria-label="Mobile navigation"
-			>
-				<a
-					v-for="item in resolvedNavItems"
-					:key="item.href"
-					class="site-mobile-link"
-					:href="item.href"
-					@click="closeMenu"
-				>
-					{{ item.label }}
-				</a>
-				<Button
-					as="a"
-					:href="ctaHref"
-					size="cta-sm"
-					class="mt-1 sm:hidden"
-					@click="closeMenu"
-				>
-					{{ ctaLabel }}
-					<template #icon>
-						<ButtonIcon size="sm" />
-					</template>
-				</Button>
-			</nav>
 		</div>
 	</header>
 </template>
@@ -166,7 +135,7 @@ const {
 }
 
 .site-header-actions {
-	@apply col-start-2 row-start-1 flex items-center justify-self-end gap-2 lg:col-start-3;
+	@apply relative col-start-2 row-start-1 flex items-center justify-self-end gap-2 lg:col-start-3;
 }
 
 .site-header-cta-wrap,
@@ -176,28 +145,10 @@ const {
 }
 
 .site-header-cta-wrap {
-	@apply lg:translate-x-13;
+	@apply relative z-30 lg:translate-x-13;
 }
 
 .site-menu-button-wrap {
-	@apply lg:pointer-events-none lg:invisible;
-}
-
-.site-menu-button {
-	@apply grid size-[2.875rem] shrink-0 place-items-center rounded-full border border-foreground bg-foreground text-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
-}
-
-@media (hover: none) {
-	.site-menu-button {
-		@apply transition-transform active:scale-95 motion-reduce:transition-none;
-	}
-}
-
-.site-mobile-nav {
-	@apply absolute top-full right-page left-page grid gap-1 rounded-2xl border bg-card p-2 shadow-lg lg:hidden;
-}
-
-.site-mobile-link {
-	@apply rounded-xl px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground;
+	@apply relative z-20 lg:pointer-events-none lg:invisible;
 }
 </style>

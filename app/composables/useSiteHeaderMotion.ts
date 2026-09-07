@@ -1,75 +1,20 @@
-import {
-	computed,
-	nextTick,
-	onMounted,
-	readonly,
-	shallowRef,
-	useTemplateRef,
-} from 'vue'
+import { onMounted, readonly, shallowRef, useTemplateRef } from 'vue'
 
 type HeaderMode = 'compact' | 'full'
 
 interface HeaderMotionOptions {
-	focusNavigation?: boolean
 	immediate?: boolean
 }
 
-type ApplyHeaderMode = (mode: HeaderMode, options?: HeaderMotionOptions) => void
-
 export function useSiteHeaderMotion() {
-	const menuOpen = shallowRef(false)
 	const headerMode = shallowRef<HeaderMode>('full')
 	const headerRoot = useTemplateRef<HTMLElement>('headerRoot')
 	const logoLink = useTemplateRef<HTMLAnchorElement>('logoLink')
 	const primaryNavigation = useTemplateRef<HTMLElement>('primaryNavigation')
 	const headerCta = useTemplateRef<HTMLElement>('headerCta')
 	const menuButton = useTemplateRef<HTMLElement>('menuButton')
-	const menuButtonControl = useTemplateRef<HTMLButtonElement>('menuButtonControl')
-	const mobileNavigation = useTemplateRef<HTMLElement>('mobileNavigation')
 	const { createMatchMedia, gsap } = useGsap()
 	const { onScroll } = useSmoothScroll()
-
-	useHoverBounce(menuButtonControl)
-
-	let applyHeaderMode: ApplyHeaderMode = mode => {
-		headerMode.value = mode
-	}
-	let currentScroll = 0
-	let manualRevealAnchor: number | null = null
-
-	const menuButtonLabel = computed(() => {
-		if (menuOpen.value) return 'Close navigation'
-		if (headerMode.value === 'compact') return 'Show navigation'
-		return 'Open navigation'
-	})
-
-	function closeMenu() {
-		menuOpen.value = false
-	}
-
-	async function focusFirstMobileLink() {
-		await nextTick()
-		mobileNavigation.value?.querySelector<HTMLAnchorElement>('a')?.focus()
-	}
-
-	function handleMenuButtonClick() {
-		const desktop = window.matchMedia('(min-width: 64rem)').matches
-
-		if (headerMode.value === 'compact') {
-			manualRevealAnchor = currentScroll
-			applyHeaderMode('full', { focusNavigation: desktop })
-
-			if (!desktop) {
-				menuOpen.value = true
-				void focusFirstMobileLink()
-			}
-
-			return
-		}
-
-		menuOpen.value = !menuOpen.value
-		if (menuOpen.value) void focusFirstMobileLink()
-	}
 
 	onMounted(() => {
 		createMatchMedia(
@@ -86,28 +31,14 @@ export function useSiteHeaderMotion() {
 
 				if (!cta || !logo || !navigation || !menu) return
 
-				const ctaElement: HTMLElement = cta
-				const logoElement: HTMLAnchorElement = logo
-				const navigationElement: HTMLElement = navigation
-				const menuElement: HTMLElement = menu
 				const desktop = Boolean(context.conditions?.desktop)
 				const reduceMotion = Boolean(context.conditions?.reduceMotion)
-				const revealTargets = desktop
-					? [logoElement, navigationElement]
-					: [logoElement]
-				const menuOffset = menuElement.offsetWidth + 8
+				const revealTargets = desktop ? [logo, navigation] : [logo]
+				const menuOffset = menu.offsetWidth + 8
 				let activeTimeline: gsap.core.Timeline | null = null
 				let previousScroll = window.scrollY
 				let previousDirection: -1 | 0 | 1 = 0
 				let directionalDistance = 0
-
-				currentScroll = previousScroll
-
-				function focusFirstPrimaryLink() {
-					navigationElement
-						.querySelector<HTMLAnchorElement>('a')
-						?.focus()
-				}
 
 				function setImmediateState(mode: HeaderMode) {
 					const compact = mode === 'compact'
@@ -117,33 +48,27 @@ export function useSiteHeaderMotion() {
 						pointerEvents: compact ? 'none' : 'auto',
 						yPercent: compact ? -135 : 0,
 					})
-					gsap.set(ctaElement, {
+					gsap.set(cta, {
 						x: desktop && !compact ? menuOffset : 0,
 					})
-					gsap.set(menuElement, {
+					gsap.set(menu, {
 						autoAlpha: desktop && !compact ? 0 : 1,
 						pointerEvents: desktop && !compact ? 'none' : 'auto',
 						scale: desktop && !compact ? 0 : 1,
 					})
 				}
 
-				const setHeaderMode: ApplyHeaderMode = (
-					mode,
-					{ focusNavigation = false, immediate = false } = {},
-				) => {
-					if (mode === headerMode.value && !immediate) {
-						if (focusNavigation) focusFirstPrimaryLink()
-						return
-					}
+				const setHeaderMode = (
+					mode: HeaderMode,
+					{ immediate = false }: HeaderMotionOptions = {},
+				): void => {
+					if (mode === headerMode.value && !immediate) return
 
 					headerMode.value = mode
-					if (mode === 'compact') closeMenu()
-
 					activeTimeline?.kill()
 
 					if (immediate || reduceMotion) {
 						setImmediateState(mode)
-						if (focusNavigation) focusFirstPrimaryLink()
 						return
 					}
 
@@ -166,7 +91,7 @@ export function useSiteHeaderMotion() {
 
 						if (desktop) {
 							activeTimeline.to(
-								ctaElement,
+								cta,
 								{
 									duration: 0.28,
 									ease: 'power4.out',
@@ -175,7 +100,7 @@ export function useSiteHeaderMotion() {
 								0,
 							)
 							activeTimeline.to(
-								menuElement,
+								menu,
 								{
 									autoAlpha: 1,
 									duration: 0.3,
@@ -192,14 +117,11 @@ export function useSiteHeaderMotion() {
 
 					activeTimeline = gsap.timeline({
 						defaults: { overwrite: 'auto' },
-						onComplete: focusNavigation
-							? focusFirstPrimaryLink
-							: undefined,
 					})
 
 					if (desktop) {
 						activeTimeline.to(
-							menuElement,
+							menu,
 							{
 								autoAlpha: 0,
 								duration: 0.3,
@@ -210,7 +132,7 @@ export function useSiteHeaderMotion() {
 							0,
 						)
 						activeTimeline.to(
-							ctaElement,
+							cta,
 							{
 								duration: 0.3,
 								ease: 'power2.out',
@@ -234,7 +156,6 @@ export function useSiteHeaderMotion() {
 					)
 				}
 
-				applyHeaderMode = setHeaderMode
 				setHeaderMode(headerMode.value, { immediate: true })
 
 				const unsubscribe = onScroll(lenis => {
@@ -243,11 +164,9 @@ export function useSiteHeaderMotion() {
 					const direction: -1 | 0 | 1 =
 						delta > 0.25 ? 1 : delta < -0.25 ? -1 : 0
 
-					currentScroll = nextScroll
 					previousScroll = nextScroll
 
 					if (nextScroll <= 24) {
-						manualRevealAnchor = null
 						directionalDistance = 0
 						previousDirection = 0
 						setHeaderMode('full')
@@ -264,19 +183,10 @@ export function useSiteHeaderMotion() {
 					directionalDistance += Math.abs(delta)
 
 					if (direction === -1) {
-						manualRevealAnchor = null
 						if (directionalDistance >= 8) setHeaderMode('full')
 						return
 					}
 
-					if (
-						manualRevealAnchor !== null &&
-						nextScroll - manualRevealAnchor < 24
-					) {
-						return
-					}
-
-					manualRevealAnchor = null
 					if (nextScroll >= 96 && directionalDistance >= 12) {
 						setHeaderMode('compact')
 					}
@@ -285,11 +195,6 @@ export function useSiteHeaderMotion() {
 				return () => {
 					unsubscribe()
 					activeTimeline?.kill()
-					if (applyHeaderMode === setHeaderMode) {
-						applyHeaderMode = mode => {
-							headerMode.value = mode
-						}
-					}
 				}
 			},
 			headerRoot,
@@ -297,10 +202,6 @@ export function useSiteHeaderMotion() {
 	})
 
 	return {
-		closeMenu,
-		handleMenuButtonClick,
 		headerMode: readonly(headerMode),
-		menuButtonLabel,
-		menuOpen: readonly(menuOpen),
 	}
 }
