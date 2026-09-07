@@ -4,6 +4,9 @@ import { useEventListener } from '@vueuse/core'
 
 type ApplyMenuState = (open: boolean, immediate?: boolean) => void
 
+const menuPanelOffset = 8
+const menuViewportInset = 16
+
 export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 	const siteMenuRoot = useTemplateRef<HTMLElement>('siteMenuRoot')
 	const menuButton = useTemplateRef<HTMLButtonElement>('menuButton')
@@ -37,14 +40,50 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 
 				if (!button || !panel || !topLine || !bottomLine) return
 
+				const buttonElement = button
+				const panelElement = panel
 				const revealTargets = Array.from(
 					panel.querySelectorAll<HTMLElement>('[data-menu-reveal]'),
 				)
 				const reduceMotion = Boolean(context.conditions?.reduceMotion)
-				const collapsedScaleX = () =>
-					Math.min(1, button.offsetWidth / panel.offsetWidth)
-				const collapsedScaleY = () =>
-					Math.min(1, button.offsetHeight / panel.offsetHeight)
+				let collapsedScaleX = 1
+				let collapsedScaleY = 1
+				let panelOrigin = '100% 0%'
+
+				function positionPanel(
+					buttonElement: HTMLButtonElement,
+					panelElement: HTMLElement,
+				) {
+					const buttonBounds = buttonElement.getBoundingClientRect()
+					const panelWidth = panelElement.offsetWidth
+					const maximumLeft = window.innerWidth - panelWidth - menuViewportInset
+					const desiredLeft = buttonBounds.right - panelWidth + menuPanelOffset
+					const left = Math.max(
+						menuViewportInset,
+						Math.min(maximumLeft, desiredLeft),
+					)
+					const top = Math.max(
+						menuPanelOffset,
+						buttonBounds.top - menuPanelOffset,
+					)
+					collapsedScaleX = Math.min(1, buttonBounds.width / panelWidth)
+					collapsedScaleY = Math.min(
+						1,
+						buttonBounds.height / panelElement.offsetHeight,
+					)
+					const originX =
+						collapsedScaleX < 1
+							? (buttonBounds.left - left) / (1 - collapsedScaleX)
+							: panelWidth / 2
+					const originY =
+						collapsedScaleY < 1
+							? (buttonBounds.top - top) / (1 - collapsedScaleY)
+							: panelElement.offsetHeight / 2
+
+					panelOrigin = `${originX}px ${originY}px`
+					gsap.set(panelElement, { left, top, transformOrigin: panelOrigin })
+				}
+
 				let lineTimeline: gsap.core.Timeline | null = null
 
 				const panelTimeline = gsap.timeline({
@@ -63,29 +102,51 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 				panelTimeline.fromTo(
 					panel,
 					{
-						scaleX: collapsedScaleX,
-						scaleY: collapsedScaleY,
-						transformOrigin: '100% 0%',
+						rotation: 0,
+						scaleX: () => collapsedScaleX,
+						scaleY: () => collapsedScaleY,
+						skewX: 0,
+						transformOrigin: () => panelOrigin,
+						x: 0,
+						y: 0,
 					},
 					{
-						duration: 0.44,
-						ease: 'power2.out',
-						scaleX: 1,
-						scaleY: 1,
+						duration: 0.38,
+						ease: 'power4.out',
+						rotation: 0.25,
+						scaleX: 1.025,
+						scaleY: 0.985,
+						skewX: 0.35,
+						x: 3,
+						y: -3,
 					},
 					0,
+				)
+				panelTimeline.to(
+					panel,
+					{
+						duration: 0.2,
+						ease: 'power2.out',
+						rotation: 0,
+						scaleX: 1,
+						scaleY: 1,
+						skewX: 0,
+						x: 0,
+						y: 0,
+					},
+					0.34,
 				)
 				panelTimeline.fromTo(
 					revealTargets,
 					{ autoAlpha: 0, y: 8 },
 					{
 						autoAlpha: 1,
-						duration: 0.28,
+						duration: 0.2,
 						ease: 'power2.out',
-						stagger: 0.05,
+						stagger: 0.03,
 						y: 0,
 					},
-					0.18,
+					0.13,
 				)
 
 				function setLines(expanded: boolean, immediate: boolean) {
@@ -116,12 +177,25 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 				}
 
 				function setImmediateState(expanded: boolean) {
+					positionPanel(buttonElement, panelElement)
 					gsap.set(panel, {
 						pointerEvents: expanded ? 'auto' : 'none',
 						visibility: 'visible',
 					})
 					panelTimeline.invalidate().progress(expanded ? 1 : 0).pause()
-					if (!expanded) gsap.set(panel, { visibility: 'hidden' })
+					if (!expanded) {
+						gsap.set(panel, {
+							rotation: 0,
+							scaleX: collapsedScaleX,
+							scaleY: collapsedScaleY,
+							skewX: 0,
+							transformOrigin: panelOrigin,
+							visibility: 'hidden',
+							x: 0,
+							y: 0,
+						})
+						gsap.set(revealTargets, { autoAlpha: 0, y: 8 })
+					}
 					setLines(expanded, true)
 				}
 
@@ -137,6 +211,10 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 					setLines(expanded, false)
 
 					if (expanded) {
+						if (panelTimeline.progress() === 0) {
+							positionPanel(buttonElement, panelElement)
+							panelTimeline.invalidate()
+						}
 						gsap.set(panel, {
 							pointerEvents: 'auto',
 							visibility: 'visible',

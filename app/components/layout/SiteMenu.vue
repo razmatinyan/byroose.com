@@ -48,9 +48,13 @@ async function closeMenu(returnFocus = false) {
 	menuButton.value?.focus()
 }
 
-onClickOutside(siteMenuRoot, () => {
-	void closeMenu()
-})
+onClickOutside(
+	menuPanel,
+	() => {
+		void closeMenu()
+	},
+	{ ignore: [siteMenuRoot] },
+)
 
 onKeyStroke(
 	'Escape',
@@ -87,55 +91,57 @@ onKeyStroke(
 			</span>
 		</button>
 
-		<nav
-			id="site-menu-navigation"
-			ref="menuPanel"
-			class="site-menu-panel"
-			aria-label="Expanded navigation"
-			:aria-hidden="!open"
-			:inert="!open"
-			data-lenis-prevent
-		>
-			<div class="site-menu-content">
-				<p class="site-menu-heading site-menu-reveal" data-menu-reveal>
-					Navigation
-				</p>
+		<Teleport to="#teleports">
+			<nav
+				id="site-menu-navigation"
+				ref="menuPanel"
+				class="site-menu-panel"
+				aria-label="Expanded navigation"
+				:aria-hidden="!open"
+				:inert="!open"
+				data-lenis-prevent
+			>
+				<div class="site-menu-content">
+					<p class="site-menu-heading site-menu-reveal" data-menu-reveal>
+						Navigation
+					</p>
 
-				<ul class="site-menu-links">
-					<li
-						v-for="item in navItems"
-						:key="item.href"
-						class="site-menu-reveal"
-						data-menu-reveal
-					>
-						<SiteMenuLink
-							:href="item.href"
-							:label="item.label"
-							@navigate="closeMenu()"
-						/>
-					</li>
-				</ul>
+					<ul class="site-menu-links">
+						<li
+							v-for="item in navItems"
+							:key="item.href"
+							class="site-menu-reveal"
+							data-menu-reveal
+						>
+							<SiteMenuLink
+								:href="item.href"
+								:label="item.label"
+								@navigate="closeMenu()"
+							/>
+						</li>
+					</ul>
 
-				<div class="site-menu-footer site-menu-reveal" data-menu-reveal>
-					<span class="site-menu-footer-label">Creative agency</span>
-					<a
-						class="site-menu-home"
-						href="#top"
-						aria-label="byroose home"
-						@click="closeMenu()"
-					>
-						<NuxtImg
-							class="site-menu-logo"
-							src="/logo.svg"
-							alt="byroose"
-							width="651"
-							height="187"
-							format="svg"
-						/>
-					</a>
+					<div class="site-menu-footer site-menu-reveal" data-menu-reveal>
+						<span class="site-menu-footer-label">Creative agency</span>
+						<a
+							class="site-menu-home"
+							href="#top"
+							aria-label="byroose home"
+							@click="closeMenu()"
+						>
+							<NuxtImg
+								class="site-menu-logo"
+								src="/logo.svg"
+								alt="byroose"
+								width="651"
+								height="187"
+								format="svg"
+							/>
+						</a>
+					</div>
 				</div>
-			</div>
-		</nav>
+			</nav>
+		</Teleport>
 	</div>
 </template>
 
@@ -167,10 +173,9 @@ onKeyStroke(
 }
 
 .site-menu-panel {
-	@apply invisible pointer-events-none absolute top-0 right-0 z-10 overflow-y-auto rounded-3xl border border-background/15 bg-foreground text-background shadow-xl;
+	@apply invisible pointer-events-none fixed top-0 left-0 z-50 overflow-y-auto rounded-3xl border border-background/15 bg-foreground text-background shadow-xl;
 	width: min(22.5rem, calc(100vw - 2rem));
 	height: min(36rem, calc(100dvh - 2rem));
-	transform-origin: 100% 0%;
 }
 
 .site-menu-content {

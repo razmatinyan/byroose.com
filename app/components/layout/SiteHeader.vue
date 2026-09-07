@@ -31,6 +31,7 @@ const {
 
 const resolvedNavItems = computed(() => navItems ?? defaultNavItems)
 const menuOpen = shallowRef(false)
+const headerCtaVariant = computed(() => (menuOpen.value ? 'default' : 'dark'))
 const isDesktop = useMediaQuery('(min-width: 64rem)')
 const { headerMode } = useSiteHeaderMotion()
 
@@ -88,7 +89,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 						as="a"
 						:href="ctaHref"
 						size="cta-sm"
-						variant="dark"
+						:variant="headerCtaVariant"
 					>
 						{{ ctaLabel }}
 						<template #icon>
@@ -148,7 +149,18 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 	@apply relative z-30 lg:translate-x-13;
 }
 
+.site-header-cta {
+	transition-duration: 440ms;
+	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .site-menu-button-wrap {
 	@apply relative z-20 lg:pointer-events-none lg:invisible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.site-header-cta {
+		transition-duration: 0ms;
+	}
 }
 </style>

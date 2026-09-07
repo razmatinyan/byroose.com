@@ -336,13 +336,21 @@ the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
 limited to transforms and opacity. Reduced motion must switch between complete
 states without animated travel.
 
-The expanded menu is a dark rounded panel anchored to the control's top-right
-corner. It grows from the control's exact width and height through `scaleX` and
-`scaleY`, then settles at its full dimensions with a `power2.out` ease. Its
-heading, navigation items, and footer enter with a short vertical offset,
-opacity, and a tight stagger. Closing reverses the same sequence so the content
-clears before the panel finishes collapsing. Keep the panel behind the compact
-header actions so the Start a project action and close control remain visible.
+The expanded menu is a dark rounded panel teleported to Nuxt's shared overlay
+target, outside the header action group. Position its fixed surface from the
+control's live viewport bounds, resting eight pixels above and to the right
+while keeping a safe viewport inset. It grows from the control's exact width and
+height through `scaleX` and `scaleY`. Derive the transform origin from the final
+panel position and collapsed scales so the closed panel bounds match the control
+exactly, then sweep up and right through a subtle translate, skew, and scale
+overshoot before settling at full dimensions. Its heading, navigation items,
+and footer enter with a short vertical offset, opacity, and a tight stagger.
+Closing reverses the same sequence so the content and panel move immediately on
+the same short timeline, matching the opening speed as the panel swooshes down
+and left into the control. Keep the panel behind the compact header actions so
+the Start a project action and close control remain visible. The Start a project
+action switches from the dark to the default variant on the same reactive open
+state, with its color transition timed to the panel expansion.
 
 Expanded navigation labels retain a single semantic link name while their
 visual text is split into hidden-from-assistive-technology character spans. On

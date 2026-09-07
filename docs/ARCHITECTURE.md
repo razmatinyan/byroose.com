@@ -98,11 +98,14 @@ scroll-direction thresholds, and responsive animation states. It composes
 useGsap and useSmoothScroll so the layout component remains focused on header
 structure and navigation content.
 
-useSiteMenuMotion owns the compact navigation panel's anchored scale reveal,
-staggered content entrance, two-line toggle morph, resize correction, and
-reduced-motion states. useMenuLinkMotion owns the per-character rotation used by
-expanded navigation links on hover and visible keyboard focus. Both composables
-scope their GSAP work and cleanup to their consuming layout components.
+useSiteMenuMotion owns the compact navigation panel's trigger-relative fixed
+geometry, translated two-stage scale reveal, staggered content entrance,
+two-line toggle morph, resize correction, and reduced-motion states. SiteMenu
+teleports the panel into Nuxt's shared overlay target so the trigger can stay in
+the header action group without containing the expanded navigation.
+useMenuLinkMotion owns the per-character rotation used by expanded navigation
+links on hover and visible keyboard focus. Both composables scope their GSAP
+work and cleanup to their consuming layout components.
 
 useHoverBounce owns the hover and press scale states of action surfaces. It
 receives a target plus optional hover and press behavior, composes useGsap, and
