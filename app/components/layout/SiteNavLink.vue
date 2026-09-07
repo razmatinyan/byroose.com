@@ -8,6 +8,7 @@ const { href, label } = defineProps<{
 
 const link = useTemplateRef<HTMLAnchorElement>('link')
 
+useHoverBounce(link, { press: true })
 useHoverRollover(link, { speed: 1.4 })
 </script>
 

@@ -355,23 +355,24 @@ competing scroll container that breaks sticky positioning.
 
 ### Hover bounce
 
-Actions bounce on hover. `useHoverBounce` attaches GSAP pointer tweens to a target
-element, scales it up with an elastic ease, and settles it back with a short
-overshoot when the pointer leaves. The `cta-sm` and `cta-lg` button sizes opt in
-through the button primitive, and the header navigation control opts in through
-`useSiteHeaderMotion`, so both action surfaces share one motion character.
+Actions bounce on hover. `useHoverBounce` attaches GSAP scale tweens to a target,
+scales it to `1.08` with an elastic ease, and settles it back with a short
+overshoot when the pointer leaves. The `cta-sm` and `cta-lg` button sizes, each
+`SiteNavLink`, and the header navigation control share this motion character.
 
-The behavior is created inside a
-`(hover: hover) and (prefers-reduced-motion: no-preference)` media context, so
-pointers without hover and readers who prefer reduced motion keep a static
-control. Listeners, tweens, and the inline transform are removed when the query
-stops matching or the component scope is disposed.
+`SiteNavLink` and every size of the shared button primitive also enable press
+feedback. Pointer down and keyboard activation scale the control to `0.96`, then
+release returns it to `1.08` while still hovered or `1` at rest. Disabled controls
+ignore the press state. Hover enlargement only runs for hover-capable pointers,
+while press feedback also works with touch. Readers who prefer reduced motion
+keep a static control. Listeners, tweens, and inline transform hints are removed
+when the media context stops matching or the component scope is disposed.
 
 GSAP owns the transform of every element it bounces, so CSS must not animate the
-same property. The CTA sizes narrow the shared button transition to
-`transition-colors`, and the navigation control keeps its press scale inside a
-`(hover: none)` block where the bounce never runs. Apply the same split whenever
-a component hands one property to GSAP and keeps the rest in CSS.
+same property. The complete button primitive uses `transition-colors`, and the
+header navigation control keeps its CSS press scale inside a `(hover: none)`
+block where its hover-only GSAP behavior does not run. Apply the same split
+whenever a component hands one property to GSAP and keeps the rest in CSS.
 
 ### Hover rollover
 

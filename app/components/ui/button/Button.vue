@@ -51,12 +51,10 @@ const actionClasses = computed(() => {
     .join(" ")
 })
 
-const bounceTarget = () =>
-  isCallToAction.value ? buttonElement.value : null
 const rolloverTarget = () =>
   rolloverLayers.value ? buttonElement.value : null
 
-useHoverBounce(bounceTarget)
+useHoverBounce(buttonElement, { hover: isCallToAction, press: true })
 useHoverRollover(rolloverTarget)
 </script>
 
