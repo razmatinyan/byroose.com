@@ -14,7 +14,11 @@ useHoverRollover(link, { speed: 1.4 })
 
 <template>
 	<a ref="link" class="site-nav-link" :href="href">
-		<span class="site-nav-link-layers" data-rollover-layers aria-hidden="true">
+		<span
+			class="site-nav-link-layers"
+			data-rollover-layers
+			aria-hidden="true"
+		>
 			<span
 				class="site-nav-link-layer surface-pink"
 				data-rollover-layer
@@ -29,9 +33,11 @@ useHoverRollover(link, { speed: 1.4 })
 			/>
 		</span>
 		<span class="site-nav-link-texts" data-rollover-texts>
-			<span class="site-nav-link-label" data-rollover-label>{{ label }}</span>
+			<span class="site-nav-link-label" data-rollover-label>{{
+				label
+			}}</span>
 			<span
-				class="site-nav-link-label site-nav-link-label-copy text-background"
+				class="site-nav-link-label site-nav-link-label-copy text-primary-foreground"
 				data-rollover-label-copy
 				aria-hidden="true"
 			>
