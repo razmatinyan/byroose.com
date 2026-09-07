@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useTemplateRef } from 'vue'
+import { useTemplateRef } from 'vue'
 
 const { href, label } = defineProps<{
 	href: string
@@ -10,12 +10,6 @@ const emit = defineEmits<{
 	navigate: []
 }>()
 const link = useTemplateRef<HTMLAnchorElement>('link')
-const characters = computed(() =>
-	Array.from(label, (character, index) => ({
-		id: `${index}-${character}`,
-		value: character === ' ' ? '\u00a0' : character,
-	})),
-)
 
 useMenuLinkMotion(link)
 
@@ -32,14 +26,22 @@ function handleNavigate() {
 		:aria-label="label"
 		@click="handleNavigate"
 	>
-		<span class="site-menu-link-label" aria-hidden="true">
+		<span
+			class="site-menu-link-texts"
+			data-menu-texts
+			aria-hidden="true"
+		>
 			<span
-				v-for="character in characters"
-				:key="character.id"
-				class="site-menu-character"
-				data-menu-character
+				class="site-menu-link-label"
+				data-menu-label
 			>
-				{{ character.value }}
+				{{ label }}
+			</span>
+			<span
+				class="site-menu-link-label site-menu-link-label-copy"
+				data-menu-label-copy
+			>
+				{{ label }}
 			</span>
 		</span>
 	</a>
@@ -53,16 +55,25 @@ function handleNavigate() {
 	font-size: clamp(2rem, 7vw, 2.75rem);
 	line-height: 0.98;
 	letter-spacing: -0.055em;
-	perspective: 36rem;
+}
+
+.site-menu-link-texts {
+	@apply grid overflow-hidden py-0.5 whitespace-nowrap;
 }
 
 .site-menu-link-label {
-	@apply block py-0.5;
+	@apply block;
+	grid-area: 1 / 1;
+	font-kerning: none;
+	text-rendering: optimizeSpeed;
 }
 
-.site-menu-character {
+.site-menu-link-label-copy {
+	visibility: hidden;
+}
+
+.site-menu-link-label :deep(.site-menu-character) {
 	display: inline-block;
-	transform-style: preserve-3d;
 }
 
 @media (min-width: 64rem) {

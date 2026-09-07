@@ -353,10 +353,13 @@ action switches from the dark to the default variant on the same reactive open
 state, with its color transition timed to the panel expansion.
 
 Expanded navigation labels retain a single semantic link name while their
-visual text is split into hidden-from-assistive-technology character spans. On
-hover or visible keyboard focus, rotate the characters through a full turn on
-the X axis with a small left-to-right stagger and temporarily soften the text
-color. Skip this character animation for touch-only pointers and reduced-motion
+two visual text copies stay hidden from assistive technology. SplitText divides
+both copies into characters after mount. On hover or visible keyboard focus,
+the resting characters travel down and the copied characters arrive from above
+with a tight left-to-right stagger as the label color softens. Leaving reverses
+the same timeline, returning characters right-to-left without a jump. Keep the
+rollover clipped to the label line, revert both SplitText instances during
+cleanup, and skip character splitting for touch-only pointers or reduced-motion
 preferences.
 
 Escape closes the panel and restores focus to the control. Outside clicks and
