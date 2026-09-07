@@ -51,7 +51,14 @@ useHoverRollover(link, { speed: 1.4 })
 @reference '../../assets/css/tailwind.css';
 
 .site-nav-link {
-	@apply relative inline-flex items-center justify-center overflow-hidden rounded-md px-3 py-2.5 text-base font-medium text-foreground xl:px-4;
+	--site-nav-link-radius: calc(var(--radius) * 0.8);
+	@apply relative inline-flex items-center justify-center overflow-hidden px-3 py-2.5 text-base font-medium text-foreground xl:px-4;
+	border-radius: var(--site-nav-link-radius);
+	clip-path: inset(0 round var(--site-nav-link-radius));
+}
+
+.site-nav-link:focus-visible {
+	clip-path: none;
 }
 
 .site-nav-link-layers {
@@ -60,7 +67,7 @@ useHoverRollover(link, { speed: 1.4 })
 }
 
 .site-nav-link-layer {
-	@apply absolute inset-0;
+	@apply absolute -inset-px;
 	border-radius: inherit;
 	transform: translateY(100%);
 }

@@ -131,7 +131,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-nav {
-	@apply hidden items-center gap-1 rounded-lg bg-card px-2 py-1 lg:col-start-2 lg:row-start-1 lg:flex;
+	@apply hidden items-center gap-1 rounded-lg bg-card px-2 py-1 lg:col-start-2 lg:row-start-1 lg:flex shadow-lg shadow-black/4;
 	will-change: transform, opacity;
 }
 

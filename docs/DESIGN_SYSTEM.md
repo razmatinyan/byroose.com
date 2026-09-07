@@ -490,6 +490,38 @@ These invariants keep this working:
 - Layers are direct children of the layer group with `data-rollover-layer`.
   Original and copied labels are direct children of the text grid with
   `data-rollover-label` and `data-rollover-label-copy`.
+- Every rounded edge in the stack must be rasterized once. Coincident
+  antialiased edges blend instead of covering each other, so the surface below
+  survives as a hairline rim, and the hover scale magnifies it because
+  `useHoverBounce` promotes the host with `will-change: transform`. Two rules
+  keep the stack to a single edge.
+- Layers bleed one pixel past the host on every side, so the top layer covers
+  the antialiased outline of the layer and the host background beneath it. Keep
+  the inherited radius on the bleeding layer; a box grown by one pixel still
+  covers the host shape at every radius the system uses.
+- The host shapes itself with `clip-path: inset(0 round <radius>)` alongside its
+  radius and `overflow: hidden`. `overflow: hidden` never clips the host's own
+  background, so the radius and the clip draw the rounded outline twice and the
+  resting surface bleeds around the final layer. `clip-path` clips the
+  background and the layers in one pass. It also clips the focus ring, so the
+  host drops the clip while `:focus-visible`.
+- Nothing but the final layer paints at the edge while the rollover covers the
+  host. Antialiased clipping is applied per painted surface, so every surface
+  that still reaches the resting box adds its own edge and survives as a rim
+  under the final layer. This is the rule that does not depend on how a browser
+  applies the clip, and it takes two steps. The rollover hides the layers that
+  the final one covers, then restores them as the reverse starts. It also
+  switches the host to `background-clip: content-box`, which pulls the host's
+  own background off the edge and back inside its padding, and restores it the
+  same way. A rollover host therefore needs padding. `background-clip` is not a
+  transitioned property, so both switches are instant and the host keeps the
+  colour transition that the header's variant swap depends on.
+- Layers tween with `force3D: false`. GSAP's default writes a 3D transform,
+  which promotes each layer to its own compositor layer, and the compositor
+  applies the rounded mask to promoted layers one at a time. Every layer then
+  keeps its own antialiased edge and the surface below shows through it no
+  matter how the CSS is arranged. Without promotion the button rasterizes once
+  and the pixel of overhang covers what sits under it.
 - Anything that must stay visible above the layers needs its own `position`,
   because the absolutely positioned layers paint above every static sibling
   regardless of document order.

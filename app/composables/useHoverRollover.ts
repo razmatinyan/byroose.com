@@ -110,12 +110,16 @@ export function useHoverRollover(
 			)
 			const reduceMotion = Boolean(context.conditions?.reduceMotion)
 			const descending = [...layers].reverse()
+			const occludedLayers = layers.slice(0, -1)
+			const layerSettleTime =
+				(layers.length - 1) * layerStagger + layerDuration
 			const restingColor = getComputedStyle(label).color
 			const coveredColor = getComputedStyle(labelCopy).color
 
 			gsap.set(label, { opacity: 1 })
 			gsap.set(labelCopy, { opacity: 0 })
 			gsap.set(layers, {
+				force3D: false,
 				scale: layerRestScale,
 				transformOrigin: '50% 100%',
 				y: 0,
@@ -156,6 +160,10 @@ export function useHoverRollover(
 				const labelCopyStart = cover ? textEntryDelay : 0
 				const layerPosition = cover ? 0 : 100
 				const layerScale = cover ? 1 : layerRestScale
+				const occludedVisibility = cover ? 'hidden' : 'visible'
+				const hostBackground = cover
+					? { backgroundClip: 'content-box' }
+					: { clearProps: 'backgroundClip' }
 				const glyphPosition = cover ? glyphExit : glyphRest
 				const glyphCopyPosition = cover ? glyphRest : glyphEntry
 
@@ -173,9 +181,14 @@ export function useHoverRollover(
 						opacity: labelCopyOpacity,
 					})
 					gsap.set(layers, {
+						force3D: false,
 						scale: layerScale,
 						yPercent: layerPosition,
 					})
+					gsap.set(occludedLayers, {
+						visibility: occludedVisibility,
+					})
+					gsap.set(element, hostBackground)
 					if (glyph && glyphCopy) {
 						gsap.set(glyph, {
 							xPercent: glyphPosition.x,
@@ -265,10 +278,25 @@ export function useHoverRollover(
 				).entries()) {
 					timeline.to(
 						layer,
-						{ scale: layerScale, yPercent: layerPosition },
+						{
+							force3D: false,
+							scale: layerScale,
+							yPercent: layerPosition,
+						},
 						index * layerStagger,
 					)
 				}
+
+				timeline.set(
+					occludedLayers,
+					{ visibility: occludedVisibility },
+					cover ? layerSettleTime : 0,
+				)
+				timeline.set(
+					element,
+					hostBackground,
+					cover ? layerSettleTime : 0,
+				)
 
 				if (glyph && glyphCopy) {
 					timeline.to(
@@ -325,12 +353,13 @@ export function useHoverRollover(
 				element.removeEventListener('pointerenter', handlePointerEnter)
 				element.removeEventListener('pointerleave', handlePointerLeave)
 				rollover?.kill()
+				gsap.set(element, { clearProps: 'backgroundClip' })
 				gsap.set([label, labelCopy], {
 					clearProps: `${textAngleProperty},${textYProperty},color,opacity`,
 				})
 				gsap.set(
 					[...layers, glyph, glyphCopy].filter(Boolean),
-					{ clearProps: 'transform,transformOrigin' },
+					{ clearProps: 'transform,transformOrigin,visibility' },
 				)
 			}
 		})

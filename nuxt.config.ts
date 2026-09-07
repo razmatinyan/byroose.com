@@ -85,13 +85,16 @@ export default defineNuxtConfig({
 	],
 
 	image: {
-		provider: 'ipx',
-		format: ['webp'],
-		ipx: {
-			modifiers: {
-				format: 'webp',
-			},
+		provider: 'vercel',
+		vercel: {
+			formats: ['image/webp'],
 		},
+		// format: ['webp'],
+		// ipx: {
+		// 	modifiers: {
+		// 		format: 'webp',
+		// 	},
+		// },
 	},
 
 	shadcn: {

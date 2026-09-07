@@ -66,7 +66,9 @@ useHoverRollover(rolloverTarget)
     :data-size="size"
     :as="as"
     :as-child="asChild"
-    :class="cn(actionClasses, className)"
+    :class="
+      cn(actionClasses, rolloverLayers && 'button-rollover-host', className)
+    "
   >
     <template v-if="rolloverLayers">
       <span
@@ -117,13 +119,21 @@ useHoverRollover(rolloverTarget)
 <style scoped>
 @reference '../../../assets/css/tailwind.css';
 
+.button-rollover-host {
+  clip-path: inset(0 round var(--radius-action));
+}
+
+.button-rollover-host:focus-visible {
+  clip-path: none;
+}
+
 .button-rollover-layers {
   @apply pointer-events-none absolute inset-0;
   border-radius: inherit;
 }
 
 .button-rollover-layer {
-  @apply absolute inset-0;
+  @apply absolute -inset-px;
   border-radius: inherit;
   transform: translateY(100%);
 }
