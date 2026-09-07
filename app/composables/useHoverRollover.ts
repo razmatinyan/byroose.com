@@ -39,6 +39,7 @@ const textOpacityDuration = 0.2
 const textColorDuration = 0.2
 const textEntryDelay = 0.1
 const layerDuration = 0.38
+const layerRestScale = 0.94
 const layerStagger = 0.06
 const rolloverEase = 'power3.out'
 const glyphExit = { x: 200, y: -100 }
@@ -114,7 +115,12 @@ export function useHoverRollover(
 
 			gsap.set(label, { opacity: 1 })
 			gsap.set(labelCopy, { opacity: 0 })
-			gsap.set(layers, { y: 0, yPercent: 100 })
+			gsap.set(layers, {
+				scale: layerRestScale,
+				transformOrigin: '50% 100%',
+				y: 0,
+				yPercent: 100,
+			})
 
 			if (glyph && glyphCopy) {
 				gsap.set(glyph, {
@@ -149,6 +155,7 @@ export function useHoverRollover(
 				const labelCopyOpacity = cover ? 1 : 0
 				const labelCopyStart = cover ? textEntryDelay : 0
 				const layerPosition = cover ? 0 : 100
+				const layerScale = cover ? 1 : layerRestScale
 				const glyphPosition = cover ? glyphExit : glyphRest
 				const glyphCopyPosition = cover ? glyphRest : glyphEntry
 
@@ -165,7 +172,10 @@ export function useHoverRollover(
 						[textYProperty]: labelCopyY,
 						opacity: labelCopyOpacity,
 					})
-					gsap.set(layers, { yPercent: layerPosition })
+					gsap.set(layers, {
+						scale: layerScale,
+						yPercent: layerPosition,
+					})
 					if (glyph && glyphCopy) {
 						gsap.set(glyph, {
 							xPercent: glyphPosition.x,
@@ -253,7 +263,11 @@ export function useHoverRollover(
 					? layers
 					: descending
 				).entries()) {
-					timeline.to(layer, { yPercent: layerPosition }, index * layerStagger)
+					timeline.to(
+						layer,
+						{ scale: layerScale, yPercent: layerPosition },
+						index * layerStagger,
+					)
 				}
 
 				if (glyph && glyphCopy) {
@@ -316,7 +330,7 @@ export function useHoverRollover(
 				})
 				gsap.set(
 					[...layers, glyph, glyphCopy].filter(Boolean),
-					{ clearProps: 'transform' },
+					{ clearProps: 'transform,transformOrigin' },
 				)
 			}
 		})

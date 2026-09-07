@@ -378,9 +378,11 @@ The `cta-sm` and `cta-lg` button sizes also run a masked three-stage rollover.
 The size variant makes the button a clipped positioning host. The primitive
 renders an independent layer group with three surfaces below the button and an
 independent text grid containing the original and copied labels. On hover the
-original label travels up and out while the layers sweep up in sequence. The
-copied label follows the final layer into the center. Leaving reverses the layer
-order and returns the original label with the same elastic character.
+original label travels up and out while the layers sweep up in sequence. Each
+layer starts at `94%` scale around its bottom-center origin and grows to full
+size during its existing rise. The copied label follows the final layer into the
+center. Leaving reverses the layer order and returns the layers to their smaller
+hidden state while the original label returns with the same elastic character.
 
 The text grid follows an axis-angle motion contract. At rest the copied label is
 `2em` below the original, rotated `-30deg` around a `1 1 0.5` axis, and hidden.
