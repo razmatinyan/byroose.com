@@ -4,7 +4,7 @@ import type { ComponentPublicInstance, HTMLAttributes } from "vue"
 import type { ButtonVariants, RolloverTones } from "."
 import { computed, useTemplateRef } from "vue"
 import { Primitive } from "reka-ui"
-import { surfaceTones } from "@/lib/surfaces"
+import { surfaceForegroundTones, surfaceTones } from "@/lib/surfaces"
 import { cn } from "@/lib/utils"
 import { buttonVariants, variantRolloverTones } from "."
 
@@ -38,6 +38,7 @@ const rolloverLayers = computed(() => {
     entry: surfaceTones[tones[0]],
     middle: surfaceTones[tones[1]],
     final: surfaceTones[tones[2]],
+    finalText: surfaceForegroundTones[tones[2]],
   }
 })
 const actionClasses = computed(() => {
@@ -70,32 +71,38 @@ useHoverRollover(rolloverTarget)
     :class="cn(actionClasses, className)"
   >
     <template v-if="rolloverLayers">
-      <span class="button-rollover-label" data-rollover-label>
-        <slot />
-      </span>
       <span
-        class="button-rollover-layer"
-        :class="rolloverLayers.entry"
-        data-rollover-layer
-        aria-hidden="true"
-      />
-      <span
-        class="button-rollover-layer"
-        :class="rolloverLayers.middle"
-        data-rollover-layer
-        aria-hidden="true"
-      />
-      <span
-        class="button-rollover-layer"
-        :class="rolloverLayers.final"
-        data-rollover-layer
+        class="button-rollover-layers"
+        data-rollover-layers
         aria-hidden="true"
       >
-        <span class="button-rollover-copy">
+        <span
+          class="button-rollover-layer"
+          :class="rolloverLayers.entry"
+          data-rollover-layer
+        />
+        <span
+          class="button-rollover-layer"
+          :class="rolloverLayers.middle"
+          data-rollover-layer
+        />
+        <span
+          class="button-rollover-layer"
+          :class="rolloverLayers.final"
+          data-rollover-layer
+        />
+      </span>
+      <span class="button-rollover-texts" data-rollover-texts>
+        <span class="button-rollover-label" data-rollover-label>
           <slot />
-          <span class="button-rollover-reserve">
-            <slot name="icon" />
-          </span>
+        </span>
+        <span
+          class="button-rollover-label button-rollover-copy"
+          :class="rolloverLayers.finalText"
+          data-rollover-label-copy
+          aria-hidden="true"
+        >
+          <slot />
         </span>
       </span>
       <span class="button-rollover-icon" data-rollover-icon>
@@ -112,22 +119,38 @@ useHoverRollover(rolloverTarget)
 <style scoped>
 @reference '../../../assets/css/tailwind.css';
 
-.button-rollover-label,
-.button-rollover-copy {
-  @apply inline-flex items-center;
-  gap: inherit;
+.button-rollover-layers {
+  @apply pointer-events-none absolute inset-0;
+  border-radius: inherit;
 }
 
 .button-rollover-layer {
-  @apply absolute inset-0 flex items-center justify-center;
+  @apply absolute inset-0;
   border-radius: inherit;
-  gap: inherit;
-  padding: inherit;
   transform: translateY(100%);
 }
 
-.button-rollover-reserve {
-  @apply invisible inline-flex items-center;
+.button-rollover-texts {
+  @apply relative grid items-center;
+}
+
+.button-rollover-label {
+  --rollover-text-angle: 0deg;
+  --rollover-text-y: 0em;
+  display: block;
+  grid-area: 1 / 1;
+  rotate: 1 1 0.45 var(--rollover-text-angle);
+  transform-origin: 0 0;
+  translate: 0 var(--rollover-text-y) 0;
+  will-change: translate, rotate, opacity, color;
+}
+
+.button-rollover-copy {
+  --rollover-text-angle: -30deg;
+  --rollover-text-y: 2em;
+  opacity: 0;
+  rotate: 1 1 0.5 var(--rollover-text-angle);
+  transform-origin: top right;
 }
 
 .button-rollover-icon {

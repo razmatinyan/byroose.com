@@ -3,6 +3,7 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 import { gsap as coreGsap } from 'gsap'
 
 const pluginLoaders = {
+	CustomEase: () => import('gsap/CustomEase'),
 	Flip: () => import('gsap/Flip'),
 	Observer: () => import('gsap/Observer'),
 	ScrollToPlugin: () => import('gsap/ScrollToPlugin'),
@@ -12,6 +13,12 @@ const pluginLoaders = {
 } as const
 
 type LoadablePlugin = keyof typeof pluginLoaders
+type PluginModule<K extends LoadablePlugin> = Awaited<
+	ReturnType<(typeof pluginLoaders)[K]>
+>
+type PluginExport<K extends LoadablePlugin> = PluginModule<K>[
+	K & keyof PluginModule<K>
+]
 type AnimationScope = MaybeRefOrGetter<Element | null | undefined>
 type MediaConditions = string | Record<string, string>
 
@@ -53,19 +60,24 @@ export function useGsap() {
 		return nextMedia
 	}
 
-	async function loadPlugin(name: LoadablePlugin) {
+	async function loadPlugin<K extends LoadablePlugin>(
+		name: K,
+	): Promise<PluginExport<K> | null> {
 		if (!import.meta.client) return null
 
 		const cached = loadedPlugins.get(name)
-		if (cached) return cached
+		if (cached) return cached as PluginExport<K>
 
 		const module = await pluginLoaders[name]()
-		const plugin = (module as unknown as Record<string, gsap.RegisterablePlugins>)[name]
+		const plugin = (module as PluginModule<K>)[
+			name as K & keyof PluginModule<K>
+		]
 
 		if (!plugin) throw new Error(`GSAP plugin "${name}" did not expose the expected export.`)
 
-		gsapInstance.registerPlugin(plugin)
-		loadedPlugins.set(name, plugin)
+		const registerablePlugin = plugin as unknown as gsap.RegisterablePlugins
+		gsapInstance.registerPlugin(registerablePlugin)
+		loadedPlugins.set(name, registerablePlugin)
 		return plugin
 	}
 

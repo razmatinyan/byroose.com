@@ -314,10 +314,10 @@ onMounted(() => {
 
 Prefer `x`, `y`, `scale`, `rotation`, and `autoAlpha`; scope selector strings to
 a component root. Use `loadPlugin()` for optional capabilities such as
-`SplitText`, `Flip`, `Observer`, `ScrollToPlugin`, or `TextPlugin`. ScrollTrigger
-is registered by the Lenis bridge and remains available through the existing
-loader when a component needs its API. Contexts and media queries are reverted
-automatically when their Vue scope is disposed.
+`CustomEase`, `SplitText`, `Flip`, `Observer`, `ScrollToPlugin`, or `TextPlugin`.
+ScrollTrigger is registered by the Lenis bridge and remains available through
+the existing loader when a component needs its API. Contexts and media queries
+are reverted automatically when their Vue scope is disposed.
 
 ### Header motion
 
@@ -375,12 +375,21 @@ a component hands one property to GSAP and keeps the rest in CSS.
 ### Hover rollover
 
 The `cta-sm` and `cta-lg` button sizes also run a masked three-stage rollover.
-The size variant makes the button a clipped positioning host, and the primitive
-renders one flow label plus three absolutely positioned layers that rest below the
-button. On hover the label travels up and out while the layers sweep up in
-sequence. The last layer carries a duplicate label and finishes covering the two
-below it. Leaving reverses the order, so the final layer descends first and
-briefly reveals the layers underneath.
+The size variant makes the button a clipped positioning host. The primitive
+renders an independent layer group with three surfaces below the button and an
+independent text grid containing the original and copied labels. On hover the
+original label travels up and out while the layers sweep up in sequence. The
+copied label follows the final layer into the center. Leaving reverses the layer
+order and returns the original label with the same elastic character.
+
+The text grid follows an axis-angle motion contract. At rest the copied label is
+`2em` below the original, rotated `-30deg` around a `1 1 0.5` axis, and hidden.
+On rollover the original moves to `-2em`, rotates to `-60deg` around a
+`1 1 0.45` axis, and fades out. The copy starts after `0.1s`, then translates to
+zero, rotates to zero, and fades in. Translation uses the approved elastic
+`CustomEase` over `0.75s`, rotation uses the smooth curve over `0.5s`, and
+opacity and color settle over `0.2s`. The elastic curve overshoots in both
+directions, so the outgoing and returning original label both have a visible pop.
 
 The icon tile stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above
@@ -389,18 +398,17 @@ grid cell and parks the second copy below and to the left, and the tile clips it
 own overflow, so the pair is invisible until the rollover swaps them diagonally:
 the original leaves toward the upper right while the copy arrives at rest. Both
 glyphs are ordinary spans rather than the raw SVG, which keeps percentage
-transforms predictable. The final layer repeats the icon slot as an invisible
-reserve, which keeps the duplicate label aligned with the original without
-hardcoding the tile width.
+transforms predictable. The independent text grid keeps both labels aligned, so
+the copied label does not need an icon-width reserve.
 
 Render the swap in the template rather than cloning a node at runtime. The tile
 lives inside a Vue-managed subtree, so an injected copy is not guaranteed to
 survive a re-render of the icon.
 
-`useHoverRollover` owns the motion. Both directions build the same timeline shape
-with the same duration and the same `power3.out` ease, so the return reads exactly
-like the entry, and each new timeline tweens from the current values so a fast
-pointer never jumps. Reduced motion switches between the two complete states with
+`useHoverRollover` owns the motion. The layers and glyphs retain their shared
+`power3.out` timing while each text property uses its approved custom curve and
+duration. Each new timeline tweens from the current values, so a fast pointer
+never jumps. Reduced motion switches between the two complete states with
 `gsap.set` instead of travelling. Pointer and keyboard state are tracked together,
 so a `:focus-visible` control shows the same covered state as a hovered one. A
 `speed` option scales the whole timeline through `timeScale`, so a smaller control
@@ -428,20 +436,24 @@ rollover markup. A CTA-size button still bounces regardless of its variant.
 
 Tone names resolve through `app/lib/surfaces.ts` to the `surface-*` utilities,
 which pair a background with its readable foreground. `surface-dark` was added
-for the dark final layer. Add a variant to the map to give it a rollover, pass the
-`rolloverTones` prop to override one button, and add a surface utility before
-introducing a new tone.
+for the dark final layer. Because the copied text is independent from the layer,
+the same module maps every surface tone to its semantic Tailwind foreground class.
+Add a variant to the map to give it a rollover, pass the `rolloverTones` prop to
+override one button, and add a surface utility before introducing a new tone.
 
 A variant that owns a rollover drops its hover colors, because the rollover is the
 hover state and a second color change underneath it only competes. The primitive
 filters `hover:` classes out of the variant list for those buttons rather than
 duplicating every variant's resting colors.
 
-Two invariants keep this working:
+These invariants keep this working:
 
 - A rollover host needs `position: relative` and `overflow: hidden`, and its
-  label, layers, and optional icon must be direct children carrying
-  `data-rollover-label`, `data-rollover-layer`, and `data-rollover-icon`.
+  layer group, text grid, and optional icon must be direct children carrying
+  `data-rollover-layers`, `data-rollover-texts`, and `data-rollover-icon`.
+- Layers are direct children of the layer group with `data-rollover-layer`.
+  Original and copied labels are direct children of the text grid with
+  `data-rollover-label` and `data-rollover-label-copy`.
 - Anything that must stay visible above the layers needs its own `position`,
   because the absolutely positioned layers paint above every static sibling
   regardless of document order.
