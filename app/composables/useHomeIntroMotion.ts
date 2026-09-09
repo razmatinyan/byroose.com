@@ -14,9 +14,12 @@ type IntroState = "complete" | "pending" | "playing";
 type IntroScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type TitleSplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
-interface CardPlacement {
+interface TravelPlacement {
    dockX: number;
    dockY: number;
+}
+
+interface CardPlacement extends TravelPlacement {
    startX: number;
    startY: number;
 }
@@ -28,6 +31,8 @@ interface NativeScrollStyles {
    htmlOverflow: string;
    htmlScrollbarGutter: string;
 }
+
+const DOCK_OFFSET_Y = 40;
 
 const selectors = {
    backdrop: "[data-home-intro-backdrop]",
@@ -73,18 +78,21 @@ function waitForImage(image: HTMLImageElement) {
 function getPlacements(
    cards: HTMLElement[],
    mediaGrid: HTMLElement,
+   dockImage: HTMLElement,
 ): { placements: CardPlacement[]; stackScale: number } | null {
    const cardRects = cards.map((card) => card.getBoundingClientRect());
    const firstCard = cardRects[0];
    if (!firstCard || firstCard.width === 0) return null;
 
    const mediaRect = mediaGrid.getBoundingClientRect();
+   const dockImageRect = dockImage.getBoundingClientRect();
    const stackWidth = Math.min(520, Math.max(240, window.innerWidth - 40));
    const stackScale = stackWidth / firstCard.width;
    const startCenterX = window.innerWidth / 2;
    const startCenterY = window.innerHeight / 2;
    const dockCenterX = mediaRect.left + mediaRect.width / 2;
-   const dockCenterY = mediaRect.top + mediaRect.height / 2;
+   const dockCenterY =
+      dockImageRect.top + dockImageRect.height / 2 + DOCK_OFFSET_Y;
 
    return {
       placements: cardRects.map((rect) => ({
@@ -95,6 +103,33 @@ function getPlacements(
       })),
       stackScale,
    };
+}
+
+function getTravelPlacements(
+   images: HTMLElement[],
+   mediaGrid: HTMLElement,
+   dockImage: HTMLElement,
+   getTranslation: (image: HTMLElement) => { x: number; y: number },
+): TravelPlacement[] {
+   const mediaRect = mediaGrid.getBoundingClientRect();
+   const dockImageRect = dockImage.getBoundingClientRect();
+   const dockImageTranslation = getTranslation(dockImage);
+   const dockCenterX = mediaRect.left + mediaRect.width / 2;
+   const dockCenterY =
+      dockImageRect.top +
+      dockImageRect.height / 2 -
+      dockImageTranslation.y +
+      DOCK_OFFSET_Y;
+
+   return images.map((image) => {
+      const rect = image.getBoundingClientRect();
+      const translation = getTranslation(image);
+
+      return {
+         dockX: translation.x + dockCenterX - (rect.left + rect.width / 2),
+         dockY: translation.y + dockCenterY - (rect.top + rect.height / 2),
+      };
+   });
 }
 
 export function useHomeIntroMotion(
@@ -154,10 +189,12 @@ export function useHomeIntroMotion(
       backdrop: HTMLElement | null,
       elements: HTMLElement[],
       removedCards: HTMLElement[],
+      finalImages: HTMLElement[],
    ) {
       introState.value = "complete";
       if (backdrop) backdrop.hidden = true;
       gsap.set(elements, { clearProps: "all" });
+      gsap.set(finalImages, { y: DOCK_OFFSET_Y });
       for (const card of removedCards) card.hidden = true;
       unlockScroll();
    }
@@ -169,17 +206,25 @@ export function useHomeIntroMotion(
          return;
       }
 
-      const cards = Array.from(
+      const images = Array.from(
          root.querySelectorAll<HTMLElement>(selectors.card),
       );
+      const firstImage = images[0];
+      const notFirstImages = images.slice(1);
+      const lastImage = images[images.length - 1];
+      const notLastImages = images.slice(0, -1);
       const removedCards = Array.from(
          root.querySelectorAll<HTMLElement>(selectors.removedCard),
       );
-      const finalCards = cards.filter((card) => !removedCards.includes(card));
+      const finalImages = images.filter(
+         (image) => !removedCards.includes(image),
+      );
+      const dockImage = finalImages[0];
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
          introState.value = "complete";
          const backdrop = root.querySelector<HTMLElement>(selectors.backdrop);
          if (backdrop) backdrop.hidden = true;
+         gsap.set(finalImages, { y: DOCK_OFFSET_Y });
          for (const card of removedCards) card.hidden = true;
          return;
       }
@@ -187,16 +232,16 @@ export function useHomeIntroMotion(
       lockScroll();
       introState.value = "playing";
 
-      const images = cards.flatMap((card) => {
-         const image = card.querySelector<HTMLImageElement>("img");
-         return image ? [image] : [];
+      const imageElements = images.flatMap((image) => {
+         const imageElement = image.querySelector<HTMLImageElement>("img");
+         return imageElement ? [imageElement] : [];
       });
 
       await nextTick();
       const [titleSplit] = await Promise.all([
          waitForTitleSplit(titleSplitSource),
          document.fonts.ready,
-         Promise.all(images.map(waitForImage)),
+         Promise.all(imageElements.map(waitForImage)),
       ]);
       if (disposed) return;
 
@@ -220,13 +265,18 @@ export function useHomeIntroMotion(
                ...(header ? [header] : []),
                ...(title ? [title] : []),
                ...titleLines,
-               ...cards,
+               ...images,
                ...(mediaGrid ? [mediaGrid] : []),
             ];
             const reduceMotion = Boolean(context.conditions?.reduceMotion);
 
             if (introState.value === "complete" || reduceMotion) {
-               completeImmediately(backdrop, animatedElements, removedCards);
+               completeImmediately(
+                  backdrop,
+                  animatedElements,
+                  removedCards,
+                  finalImages,
+               );
                return;
             }
 
@@ -235,15 +285,28 @@ export function useHomeIntroMotion(
                !header ||
                !mediaGrid ||
                !title ||
+               !firstImage ||
+               !lastImage ||
+               !dockImage ||
                !titleLines.length
             ) {
-               completeImmediately(backdrop, animatedElements, removedCards);
+               completeImmediately(
+                  backdrop,
+                  animatedElements,
+                  removedCards,
+                  finalImages,
+               );
                return;
             }
 
-            const placementData = getPlacements(cards, mediaGrid);
+            const placementData = getPlacements(images, mediaGrid, dockImage);
             if (!placementData) {
-               completeImmediately(backdrop, animatedElements, removedCards);
+               completeImmediately(
+                  backdrop,
+                  animatedElements,
+                  removedCards,
+                  finalImages,
+               );
                return;
             }
 
@@ -268,11 +331,11 @@ export function useHomeIntroMotion(
             });
             gsap.set(title, { visibility: "inherit" });
             gsap.set(mediaGrid, { zIndex: 70 });
-            cards.forEach((card, index) => {
+            images.forEach((image, index) => {
                const placement = placements[index];
                if (!placement) return;
 
-               gsap.set(card, {
+               gsap.set(image, {
                   scale: playPreloader ? 0 : stackScale,
                   visibility: "inherit",
                   willChange: "transform",
@@ -283,87 +346,125 @@ export function useHomeIntroMotion(
                });
             });
 
-            const timeline = gsap.timeline({
+            const duration = 1;
+            let travelPlacements: TravelPlacement[] = placements;
+            const tl = gsap.timeline({
                onComplete: () => {
                   introState.value = "complete";
                   backdrop.hidden = true;
                   gsap.set(animatedElements, { clearProps: "all" });
+                  gsap.set(finalImages, { y: DOCK_OFFSET_Y });
                   for (const card of removedCards) card.hidden = true;
                   unlockScroll();
                },
             });
 
             if (playPreloader) {
-               timeline.to(cards, {
-                  duration: 0.72,
+               tl.to(firstImage, {
+                  duration,
                   ease: "power3.out",
                   scale: stackScale,
-                  stagger: 0.11,
                });
-               timeline.addLabel("travel", "+=0.16");
-            } else {
-               timeline.addLabel("travel", 0.08);
+               tl.to(
+                  notFirstImages,
+                  {
+                     duration,
+                     ease: "power3.out",
+                     scale: stackScale,
+                     stagger: 0.12,
+                  },
+                  `<${duration / 3}`,
+               );
             }
 
-            timeline.to(
-               cards,
+            tl.call(() => {
+               travelPlacements = getTravelPlacements(
+                  images,
+                  mediaGrid,
+                  dockImage,
+                  (image) => ({
+                     x:
+                        Number.parseFloat(
+                           String(gsap.getProperty(image, "x")),
+                        ) || 0,
+                     y:
+                        Number.parseFloat(
+                           String(gsap.getProperty(image, "y")),
+                        ) || 0,
+                  }),
+               );
+            });
+
+            const totalMoveDuration =
+               duration + 0.12 * (notLastImages.length - 1);
+
+            tl.to(notLastImages, {
+               duration,
+               ease: "power2.inOut",
+               stagger: 0.1,
+               x: (index) => travelPlacements[index]?.dockX ?? 0,
+               y: (index) => travelPlacements[index]?.dockY ?? 0,
+            });
+            tl.to(
+               images,
                {
-                  duration: 1.05,
-                  ease: "power3.inOut",
-                  stagger: 0.08,
-                  x: (index) => placements[index]?.dockX ?? 0,
-                  y: (index) => placements[index]?.dockY ?? 0,
+                  duration,
+                  keyframes: {
+                     "15%": {
+                        ease: "power2.in",
+                        scale: stackScale * 1.15,
+                     },
+                     "45%": {
+                        ease: "power2.out",
+                        scale: stackScale * 1.3,
+                     },
+                     "100%": {
+                        ease: "power3.inOut",
+                        scale: stackScale,
+                     },
+                  },
+                  stagger: 0.1,
                },
-               "travel",
+               "<",
             );
-            timeline.to(
-               cards,
+            tl.to(
+               backdrop,
                {
-                  duration: 0.45,
-                  ease: "power2.in",
-                  scale: stackScale * 1.2,
-                  stagger: 0.08,
+                  duration: totalMoveDuration,
+                  ease: "power2.inOut",
+                  scaleY: 0,
                },
-               "travel",
+               "<",
             );
-            timeline.to(
-               cards,
+            tl.to(
+               lastImage,
                {
-                  duration: 0.6,
-                  ease: "power2.out",
-                  scale: stackScale,
-                  stagger: 0.08,
+                  duration,
+                  ease: "power2.inOut",
+                  x: () => travelPlacements[images.length - 1]?.dockX ?? 0,
+                  y: () => travelPlacements[images.length - 1]?.dockY ?? 0,
                },
-               "travel+=0.45",
+               `<${duration - 0.1}`,
             );
-            timeline.addLabel("expand");
-            timeline.set(removedCards, { visibility: "hidden" }, "expand");
-            timeline.to(
-               finalCards,
+            tl.addLabel("expand");
+            tl.set(removedCards, { visibility: "hidden" }, "expand");
+            tl.to(
+               finalImages,
                {
                   duration: 0.92,
                   ease: "power3.inOut",
                   rotation: (index) =>
                      Number(
-                        finalCards[index]?.dataset.homeIntroCardRotation ?? 0,
+                        finalImages[index]?.dataset.homeIntroCardRotation ?? 0,
                      ),
                   scale: 1.08,
                   stagger: { each: 0.055, from: "center" },
                   x: 0,
-                  y: 0,
+                  y: DOCK_OFFSET_Y,
                },
                "expand",
             );
-            timeline.to(
-               backdrop,
-               {
-                  duration: 0.9,
-                  ease: "power3.inOut",
-                  scaleY: 0,
-               },
-               "expand",
-            );
-            timeline.to(
+            tl.to(
                header,
                {
                   autoAlpha: 1,
@@ -374,7 +475,7 @@ export function useHomeIntroMotion(
                },
                "<+0.4",
             );
-            timeline.to(
+            tl.to(
                titleLines,
                {
                   duration: 0.8,

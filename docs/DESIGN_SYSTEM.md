@@ -323,12 +323,24 @@ are reverted automatically when their Vue scope is disposed.
 ### Home intro motion
 
 The home route owns a two-stage hero entrance through `useHomeIntroMotion`. A
-direct request to the home page starts with six fully opaque images scaling into
-a centered stack. Client-side entries to the home page skip that preloader stage
-and begin from the same centered stack. Both paths trail all six images to the
-bottom of the hero before the two back layers are hidden without an exit tween.
-The remaining four images use 4:3 crops and expand across the container with
-alternating rotation and slight scale so adjacent cards overlap.
+direct request to the home page starts with ten fully opaque images scaling into
+a centered stack. The first image leads for one second with `power3.out`; the
+remaining images start one-third of a second later with a `0.12s` stagger.
+Client-side entries to the home page skip that preloader stage and begin from the
+same centered stack.
+
+Both paths trail the first nine images to the bottom of the hero over one second
+with `power2.inOut` and a `0.1s` stagger. Alongside the travel, all ten images
+pulse through `1.15`, `1.5`, and `1` relative stack scales at 15%, 45%, and 100%
+of their one-second keyframes with the same stagger. The final image starts its
+one-second move `0.9s` after the shared travel begins. Once every image reaches
+the hero, all ten must occupy one shared bottom dock positioned `40px` below the
+first retained card's final row so the stack sits partially outside the viewport.
+Hide the six back layers without an exit tween. From that shared stack, the
+remaining four 4:3 images expand into their responsive grid positions with
+alternating rotation and slight scale so adjacent cards overlap, while retaining
+the same `40px` downward offset in their final state. The image expansion, site
+header reveal, and hero title reveal must all begin at the same timeline label.
 
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
@@ -341,7 +353,7 @@ output must remain the complete text node for indexing and assistive technology.
 After mount, the component may split into words, lines, or characters and pass
 those elements to the consuming animation. The home title animates its generated
 visual lines in order. Each fully opaque line rises from 115% below its own
-clipping mask over `0.7s` with `power2.out` easing and a `0.22s` stagger.
+clipping mask over `0.8s` with `power3.out` easing and a `0.1s` stagger.
 
 ### Header motion
 
