@@ -320,6 +320,28 @@ ScrollTrigger is registered by the Lenis bridge and remains available through
 the existing loader when a component needs its API. Contexts and media queries
 are reverted automatically when their Vue scope is disposed.
 
+### Home intro motion
+
+The home route owns a two-stage hero entrance through `useHomeIntroMotion`. A
+direct request to the home page starts with six fully opaque images scaling into
+a centered stack. Client-side entries to the home page skip that preloader stage
+and begin from the same centered stack. Both paths trail all six images to the
+bottom of the hero before the two back layers are hidden without an exit tween.
+The remaining four images expand across the container with alternating rotation
+and slight scale so adjacent cards overlap.
+
+Keep native scrolling and the shared Lenis instance stopped until the expansion
+finishes. The final expansion retracts the page-colored backdrop while revealing
+the site header and both hero title lines together. Reduced motion must resolve
+directly to this complete state with scrolling available.
+
+Render animated titles through the shared `SplitText` component. Its server
+output must remain the complete text node for indexing and assistive technology.
+After mount, the component may split into words, lines, or characters and pass
+those elements to the consuming animation. The home title groups the generated
+words by their rendered line position so both lines start together even when the
+responsive layout changes their wrapping.
+
 ### Header motion
 
 The site header has full and compact sticky states. It stays full at the top of

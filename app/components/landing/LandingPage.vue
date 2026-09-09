@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef, useTemplateRef } from 'vue'
+import type { SplitTextResult } from '@/lib/split-text'
 import BlogSection from './BlogSection.vue'
 import BrandGrid from './BrandGrid.vue'
 import ContactSection from './ContactSection.vue'
@@ -21,13 +22,26 @@ const { motion = 'playful' } = defineProps<{
 }>()
 
 const motionClass = computed(() => `motion--${motion}`)
+const landingRoot = useTemplateRef<HTMLElement>('landingRoot')
+const titleSplit = shallowRef<SplitTextResult>()
+const { introState } = useHomeIntroMotion(landingRoot, titleSplit)
+
+function setTitleSplit(parts: SplitTextResult) {
+	titleSplit.value = parts
+}
 </script>
 
 <template>
-	<div class="landing-page" :class="motionClass">
-		<SiteHeader />
+	<div
+		ref="landingRoot"
+		class="landing-page"
+		:class="motionClass"
+		:data-home-intro-state="introState"
+	>
+		<div data-home-intro-backdrop class="home-intro-backdrop" aria-hidden="true" />
+		<SiteHeader data-home-intro-header />
 		<main>
-			<HeroSection />
+			<HeroSection @title-split="setTitleSplit" />
 			<StudioSection />
 			<BrandGrid />
 			<WorkSection />
@@ -48,5 +62,36 @@ const motionClass = computed(() => `motion--${motion}`)
 
 .landing-page {
 	@apply overflow-x-clip bg-background;
+}
+
+.home-intro-backdrop {
+	@apply pointer-events-auto fixed inset-0 z-50 bg-background;
+	transform-origin: bottom center;
+	will-change: transform;
+}
+
+.landing-page:not([data-home-intro-state='complete'])
+	:deep([data-home-intro-header]),
+.landing-page:not([data-home-intro-state='complete'])
+	:deep([data-home-intro-title]),
+.landing-page:not([data-home-intro-state='complete'])
+	:deep([data-home-intro-card]) {
+	visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-intro-backdrop,
+	.landing-page :deep([data-home-intro-card-remove]) {
+		display: none;
+	}
+
+	.landing-page:not([data-home-intro-state='complete'])
+		:deep([data-home-intro-header]),
+	.landing-page:not([data-home-intro-state='complete'])
+		:deep([data-home-intro-title]),
+	.landing-page:not([data-home-intro-state='complete'])
+		:deep([data-home-intro-card]) {
+		visibility: inherit;
+	}
 }
 </style>

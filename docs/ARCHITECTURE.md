@@ -27,6 +27,7 @@ app/
     shared/
     ui/
   composables/
+    useHomeIntroMotion.ts
     useGsap.ts
     useHoverBounce.ts
     useHoverRollover.ts
@@ -36,8 +37,11 @@ app/
     useSmoothScroll.ts
   lib/
     icons.ts
+    split-text.ts
     surfaces.ts
     utils.ts
+  pages/
+    index.vue
   plugins/
     lenis.ts
     ssr-width.ts
@@ -52,7 +56,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell. The current app renders the landing experience directly. Add pages only when routing requirements exist, then keep app.vue focused on providers, global layout, and NuxtPage.
+app/app.vue owns the root application shell and renders NuxtPage. app/pages/index.vue owns the home route and composes the landing experience. Keep app.vue focused on providers, global layout, and NuxtPage as additional routes are introduced.
 
 ### Landing components
 
@@ -72,7 +76,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading and MediaPlaceholder. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, and SplitText. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -92,6 +96,8 @@ Use a composable when logic:
 - Is reused by multiple components
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
+
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, and cleanup. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries begin with the shared trail state, so page transitions can reuse that boundary without replaying the preloader.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes
@@ -130,6 +136,7 @@ useSmoothScroll is the component-facing contract for the global Lenis instance. 
 app/lib contains pure helpers, shared constants, and stable names.
 
 - icons.ts is the canonical map for shared Lucide icon names.
+- split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - surfaces.ts is the canonical map for semantic surface and foreground tone names.
 - utils.ts contains pure class and value helpers.
 

@@ -6,7 +6,7 @@ The site is designed to turn a clear point of view into measurable action. It pr
 
 ## Project status
 
-The current foundation is a responsive Nuxt landing page converted from the original visual template. It includes a source-owned component system, semantic design tokens, reusable Tailwind class groups, Lucide icons, Lenis smooth scrolling, and an SSR-safe GSAP integration. Content systems, case studies, forms, analytics, SEO expansion, and richer motion will be added as the project grows.
+The current foundation is a responsive Nuxt landing page converted from the original visual template. It includes a source-owned component system, semantic design tokens, reusable Tailwind class groups, Lucide icons, Lenis smooth scrolling, an SSR-safe GSAP integration, and a route-aware home intro with SplitText title motion. Content systems, case studies, forms, analytics, SEO expansion, and additional motion will be added as the project grows.
 
 ## Technology
 
