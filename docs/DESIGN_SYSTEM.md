@@ -330,10 +330,11 @@ bottom of the hero before the two back layers are hidden without an exit tween.
 The remaining four images use 4:3 crops and expand across the container with
 alternating rotation and slight scale so adjacent cards overlap.
 
-Keep native scrolling and the shared Lenis instance stopped until the expansion
-finishes. The final expansion retracts the page-colored backdrop while revealing
-the site header and starting the hero title line sequence. Reduced motion must
-resolve directly to this complete state with scrolling available.
+Reset the native and Lenis scroll positions to the document top before the home
+intro begins. Keep both scrolling systems stopped until the expansion finishes.
+The final expansion retracts the page-colored backdrop while revealing the site
+header and starting the hero title line sequence. Reduced motion must resolve
+directly to this complete state with scrolling available.
 
 Render animated titles through the shared `SplitText` component. Its server
 output must remain the complete text node for indexing and assistive technology.

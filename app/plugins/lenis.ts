@@ -17,6 +17,7 @@ export default defineNuxtPlugin({
 		let scrollTriggerInstance: ScrollTriggerInstance | null = null
 		let tickerCallback: ((time: number) => void) | null = null
 		let unsubscribeScroll: (() => void) | null = null
+		let removeNavigationGuard: (() => void) | null = null
 		let initializationPromise: Promise<void> | null = null
 		let isDestroyed = false
 
@@ -83,6 +84,14 @@ export default defineNuxtPlugin({
 			instance.value?.scrollTo(target, options)
 		}
 
+		function resetScrollPosition() {
+			instance.value?.scrollTo(0, {
+				force: true,
+				immediate: true,
+			})
+			window.scrollTo(0, 0)
+		}
+
 		function onScroll(callback: ScrollCallback) {
 			scrollCallbacks.add(callback)
 			if (instance.value) callback(instance.value)
@@ -95,6 +104,7 @@ export default defineNuxtPlugin({
 		function destroy() {
 			isDestroyed = true
 			unsubscribeScroll?.()
+			removeNavigationGuard?.()
 
 			if (gsapInstance && tickerCallback) {
 				gsapInstance.ticker.remove(tickerCallback)
@@ -103,6 +113,7 @@ export default defineNuxtPlugin({
 			instance.value?.destroy()
 			scrollCallbacks.clear()
 			unsubscribeScroll = null
+			removeNavigationGuard = null
 			tickerCallback = null
 			scrollTriggerInstance = null
 			gsapInstance = null
@@ -110,8 +121,20 @@ export default defineNuxtPlugin({
 		}
 
 		if (import.meta.client) {
+			history.scrollRestoration = 'manual'
+			resetScrollPosition()
+			removeNavigationGuard = nuxtApp.$router.afterEach(
+				(to, from, failure) => {
+					const destinationPage = to.fullPath.split('#')[0]
+					const currentPage = from.fullPath.split('#')[0]
+					if (!failure && destinationPage !== currentPage) {
+						resetScrollPosition()
+					}
+				},
+			)
 			nuxtApp.hook('app:mounted', async () => {
 				await initialize()
+				resetScrollPosition()
 				await refresh()
 				void document.fonts.ready.then(refresh)
 			})

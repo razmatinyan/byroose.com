@@ -321,7 +321,7 @@ export function useHomeIntroMotion(
                {
                   duration: 0.45,
                   ease: "power2.in",
-                  scale: stackScale * 1.12,
+                  scale: stackScale * 1.2,
                   stagger: 0.08,
                },
                "travel",
@@ -378,11 +378,11 @@ export function useHomeIntroMotion(
                titleLines,
                {
                   duration: 0.8,
-                  ease: "power2.out",
-                  stagger: 0.22,
+                  ease: "power3.out",
+                  stagger: 0.1,
                   yPercent: 0,
                },
-               "<+0.4",
+               "-=0.6",
             );
          },
          scope,

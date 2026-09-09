@@ -51,6 +51,34 @@ const heroImages = [
       rotation: 2.5,
       src: "/images/hero/6.png",
    },
+   {
+      id: "hero-one",
+      preload: true,
+      removed: true,
+      rotation: 0,
+      src: "/images/hero/1.png",
+   },
+   {
+      id: "hero-two",
+      preload: false,
+      removed: true,
+      rotation: 0,
+      src: "/images/hero/2.png",
+   },
+   {
+      id: "hero-three",
+      preload: false,
+      removed: false,
+      rotation: -3,
+      src: "/images/hero/3.png",
+   },
+   {
+      id: "hero-four",
+      preload: false,
+      removed: false,
+      rotation: 2,
+      src: "/images/hero/4.png",
+   },
 ] as const;
 
 function handleTitleSplit(parts: SplitTextResult) {

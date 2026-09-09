@@ -164,7 +164,7 @@ to the global component layer or a component variant.
 
 app/plugins contains Nuxt runtime integrations that must run as part of application setup. Keep plugins small. A plugin should configure an integration, not become a general utility collection.
 
-lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after navigation and font loading, and tears everything down with the Vue application.
+lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It disables browser scroll restoration and synchronizes the native and Lenis positions to the document top during client startup and after every successful page route navigation. Hash-only navigation remains available for Lenis section anchors. The plugin initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after navigation and font loading, and tears everything down with the Vue application.
 
 The default scroller is the browser window. This keeps native scrolling, sticky positioning, anchors, and accessibility behavior. Do not add ScrollTrigger.scrollerProxy for this configuration. Reevaluate the integration only if the application adopts a custom scroll wrapper.
 
