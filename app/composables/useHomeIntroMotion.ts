@@ -3,14 +3,13 @@ import {
    onMounted,
    onScopeDispose,
    readonly,
-   shallowRef,
    toValue,
    watch,
 } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
-type IntroState = "complete" | "pending" | "playing";
+export type HomeIntroState = "complete" | "pending" | "playing";
 type IntroScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type TitleSplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
@@ -42,6 +41,14 @@ const selectors = {
    mediaGrid: "[data-home-intro-media-grid]",
    title: "[data-home-intro-title]",
 } as const;
+
+export function useHomeIntroState() {
+   const route = useRoute();
+
+   return useState<HomeIntroState>("home-intro-state", () =>
+      route.path === "/" ? "pending" : "complete",
+   );
+}
 
 function waitForTitleSplit(source: TitleSplitSource) {
    const current = toValue(source);
@@ -136,7 +143,8 @@ export function useHomeIntroMotion(
    scope: IntroScope,
    titleSplitSource: TitleSplitSource,
 ) {
-   const introState = shallowRef<IntroState>("pending");
+   const introState = useHomeIntroState();
+   introState.value = "pending";
    const startsWithPreloader = useNuxtApp().isHydrating;
    const { createMatchMedia, gsap } = useGsap();
    const { ready, refresh, start, stop } = useSmoothScroll();
@@ -255,7 +263,7 @@ export function useHomeIntroMotion(
             const backdrop = root.querySelector<HTMLElement>(
                selectors.backdrop,
             );
-            const header = root.querySelector<HTMLElement>(selectors.header);
+            const header = document.querySelector<HTMLElement>(selectors.header);
             const mediaGrid = root.querySelector<HTMLElement>(
                selectors.mediaGrid,
             );

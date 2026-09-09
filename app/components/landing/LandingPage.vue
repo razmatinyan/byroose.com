@@ -10,8 +10,6 @@ import HeroSection from './HeroSection.vue'
 import JourneySection from './JourneySection.vue'
 import ReviewsSection from './ReviewsSection.vue'
 import ServicesSection from './ServicesSection.vue'
-import SiteFooter from '@/components/layout/SiteFooter.vue'
-import SiteHeader from '@/components/layout/SiteHeader.vue'
 import StudioSection from './StudioSection.vue'
 import WorkSection from './WorkSection.vue'
 
@@ -39,21 +37,17 @@ function setTitleSplit(parts: SplitTextResult) {
 		:data-home-intro-state="introState"
 	>
 		<div data-home-intro-backdrop class="home-intro-backdrop" aria-hidden="true" />
-		<SiteHeader data-home-intro-header />
-		<main>
-			<HeroSection @title-split="setTitleSplit" />
-			<StudioSection />
-			<BrandGrid />
-			<WorkSection />
-			<ServicesSection />
-			<JourneySection />
-			<!-- <ReviewsSection /> -->
-			<CoursesSection />
-			<BlogSection />
-			<FaqSection />
-			<ContactSection />
-		</main>
-		<SiteFooter />
+		<HeroSection @title-split="setTitleSplit" />
+		<StudioSection />
+		<BrandGrid />
+		<WorkSection />
+		<ServicesSection />
+		<JourneySection />
+		<!-- <ReviewsSection /> -->
+		<CoursesSection />
+		<BlogSection />
+		<FaqSection />
+		<ContactSection />
 	</div>
 </template>
 
@@ -71,8 +65,6 @@ function setTitleSplit(parts: SplitTextResult) {
 }
 
 .landing-page:not([data-home-intro-state='complete'])
-	:deep([data-home-intro-header]),
-.landing-page:not([data-home-intro-state='complete'])
 	:deep([data-home-intro-title]),
 .landing-page:not([data-home-intro-state='complete'])
 	:deep([data-home-intro-card]) {
@@ -85,8 +77,6 @@ function setTitleSplit(parts: SplitTextResult) {
 		display: none;
 	}
 
-	.landing-page:not([data-home-intro-state='complete'])
-		:deep([data-home-intro-header]),
 	.landing-page:not([data-home-intro-state='complete'])
 		:deep([data-home-intro-title]),
 	.landing-page:not([data-home-intro-state='complete'])

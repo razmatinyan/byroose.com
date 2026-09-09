@@ -40,8 +40,17 @@ app/
     split-text.ts
     surfaces.ts
     utils.ts
+  layouts/
+    default.vue
   pages/
+    about.vue
+    blog.vue
+    contact.vue
+    courses.vue
     index.vue
+    journey.vue
+    services.vue
+    works.vue
   plugins/
     lenis.ts
     ssr-width.ts
@@ -56,7 +65,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtPage. app/pages/index.vue owns the home route and composes the landing experience. Keep app.vue focused on providers, global layout, and NuxtPage as additional routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage. app/layouts/default.vue owns the persistent site header, main landmark, and footer around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, and Contact routes as focused route-level views. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -97,7 +106,7 @@ Use a composable when logic:
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
-useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, and cleanup. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries begin with the shared trail state, so page transitions can reuse that boundary without replaying the preloader.
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries begin with the shared trail state, so page transitions can reuse that boundary without replaying the preloader.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes

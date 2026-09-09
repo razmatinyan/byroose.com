@@ -24,10 +24,13 @@ const defaultGroups: FooterGroup[] = [
 	{
 		heading: 'Menu',
 		links: [
-			{ href: '#services', label: 'Services' },
-			{ href: '#work', label: 'Work' },
-			{ href: '#courses', label: 'Courses' },
-			{ href: '#faq', label: 'FAQ' },
+			{ href: '/about', label: 'About' },
+			{ href: '/works', label: 'Works' },
+			{ href: '/services', label: 'Services' },
+			{ href: '/journey', label: 'Journey' },
+			{ href: '/courses', label: 'Courses' },
+			{ href: '/blog', label: 'Blog' },
+			{ href: '/contact', label: 'Contact' },
 		],
 	},
 	{
@@ -59,9 +62,9 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 					</template>
 				</p>
 				<nav v-else-if="group.links" class="site-footer-links" :aria-label="`${group.heading} links`">
-					<a v-for="link in group.links" :key="link.label" class="site-footer-link" :href="link.href">
+					<NuxtLink v-for="link in group.links" :key="link.label" class="site-footer-link" :to="link.href">
 						{{ link.label }}
-					</a>
+					</NuxtLink>
 				</nav>
 			</div>
 		</div>

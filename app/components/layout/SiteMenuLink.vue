@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 const { href, label } = defineProps<{
 	href: string
@@ -9,7 +10,7 @@ const { href, label } = defineProps<{
 const emit = defineEmits<{
 	navigate: []
 }>()
-const link = useTemplateRef<HTMLAnchorElement>('link')
+const link = useTemplateRef<ComponentPublicInstance>('link')
 
 useMenuLinkMotion(link)
 
@@ -19,10 +20,10 @@ function handleNavigate() {
 </script>
 
 <template>
-	<a
+	<NuxtLink
 		ref="link"
 		class="site-menu-link"
-		:href="href"
+		:to="href"
 		:aria-label="label"
 		@click="handleNavigate"
 	>
@@ -37,7 +38,7 @@ function handleNavigate() {
 				{{ label }}
 			</span>
 		</span>
-	</a>
+	</NuxtLink>
 </template>
 
 <style scoped>

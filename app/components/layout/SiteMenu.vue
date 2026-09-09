@@ -126,9 +126,9 @@ onKeyStroke(
 						<span class="site-menu-footer-label"
 							>Creative agency</span
 						>
-						<a
+						<NuxtLink
 							class="site-menu-home"
-							href="#top"
+							to="/"
 							aria-label="byroose home"
 							@click="closeMenu()"
 						>
@@ -140,7 +140,7 @@ onKeyStroke(
 								height="187"
 								format="svg"
 							/>
-						</a>
+						</NuxtLink>
 					</div>
 				</div>
 			</nav>

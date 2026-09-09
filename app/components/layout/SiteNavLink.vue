@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 const { href, label } = defineProps<{
 	href: string
 	label: string
 }>()
 
-const link = useTemplateRef<HTMLAnchorElement>('link')
+const link = useTemplateRef<ComponentPublicInstance>('link')
 
 useHoverBounce(link, { press: true })
 useHoverRollover(link, { speed: 1.4 })
 </script>
 
 <template>
-	<a ref="link" class="site-nav-link" :href="href">
+	<NuxtLink ref="link" class="site-nav-link" :to="href">
 		<span
 			class="site-nav-link-layers"
 			data-rollover-layers
@@ -44,7 +45,7 @@ useHoverRollover(link, { speed: 1.4 })
 				{{ label }}
 			</span>
 		</span>
-	</a>
+	</NuxtLink>
 </template>
 
 <style scoped>

@@ -11,16 +11,17 @@ interface NavItem {
 }
 
 const defaultNavItems: NavItem[] = [
-	{ href: '#studio', label: 'Studio' },
-	{ href: '#services', label: 'Services' },
-	{ href: '#work', label: 'Work' },
-	{ href: '#courses', label: 'Courses' },
-	{ href: '#blog', label: 'Blog' },
-	{ href: '#faq', label: 'FAQ' },
+	{ href: '/about', label: 'About' },
+	{ href: '/works', label: 'Works' },
+	{ href: '/services', label: 'Services' },
+	{ href: '/journey', label: 'Journey' },
+	{ href: '/courses', label: 'Courses' },
+	{ href: '/blog', label: 'Blog' },
+	{ href: '/contact', label: 'Contact' },
 ]
 
 const {
-	ctaHref = '#contact',
+	ctaHref = '/contact',
 	ctaLabel = 'Start a project',
 	navItems,
 } = defineProps<{
@@ -51,10 +52,10 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 <template>
 	<header ref="headerRoot" class="site-header" :data-header-mode="headerMode">
 		<div class="site-header-inner">
-			<a
+			<NuxtLink
 				ref="logoLink"
 				class="site-logo-link"
-				href="#top"
+				to="/"
 				aria-label="byroose home"
 				@click="closeMenu"
 			>
@@ -66,7 +67,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 					height="187"
 					format="svg"
 				/>
-			</a>
+			</NuxtLink>
 
 			<nav
 				id="primary-navigation"
