@@ -164,7 +164,7 @@ function handleTitleSplit(parts: SplitTextResult) {
 }
 
 .hero-media-card-remove {
-   @apply absolute top-0 left-1/2 w-[calc((100%_-_0.5rem)/2)] -translate-x-1/2 sm:w-[calc((100%_-_0.75rem)/2)] lg:w-[calc((100%_-_2.25rem)/4)];
+   @apply absolute top-0 left-1/2 w-[calc((100%-0.5rem)/2)] -translate-x-1/2 sm:w-[calc((100%-0.75rem)/2)] lg:w-[calc((100%-2.25rem)/4)];
 }
 
 .hero-media-card:not(.hero-media-card-remove) {
