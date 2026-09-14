@@ -34,6 +34,8 @@ const resolvedNavItems = computed(() => navItems ?? defaultNavItems)
 const menuOpen = shallowRef(false)
 const headerCtaVariant = computed(() => (menuOpen.value ? 'default' : 'dark'))
 const isDesktop = useMediaQuery('(min-width: 64rem)')
+const route = useRoute()
+const { scrollTo } = useSmoothScroll()
 const { headerMode } = useSiteHeaderMotion()
 
 function setMenuOpen(open: boolean) {
@@ -42,6 +44,17 @@ function setMenuOpen(open: boolean) {
 
 function closeMenu() {
 	setMenuOpen(false)
+}
+
+function handleLogoClick(event: MouseEvent) {
+	closeMenu()
+
+	if (route.path !== '/') return
+	if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+		return
+	}
+
+	void scrollTo(0)
 }
 
 watch([headerMode, isDesktop], ([mode, desktop]) => {
@@ -57,7 +70,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 				class="site-logo-link"
 				to="/"
 				aria-label="byroose home"
-				@click="closeMenu"
+				@click="handleLogoClick"
 			>
 				<NuxtImg
 					class="site-logo"

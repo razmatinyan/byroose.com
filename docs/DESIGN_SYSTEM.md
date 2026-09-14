@@ -373,6 +373,11 @@ CTA icon tile. Its glyph is two horizontal one-pixel lines that morph into an X
 when expanded. Activating the control opens its own menu and never restores the
 header logo or primary navigation. There is no separate mobile dropdown.
 
+The header logo always renders a real link to the home route so it stays
+crawlable and opens in a new tab on a modified click. On the home route a plain
+click scrolls smoothly to the top through the shared Lenis contract instead of
+repeating the current navigation. Every other route follows the link.
+
 Drive header state from the shared Lenis scroll subscription and animate it with
 the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
 limited to transforms and opacity. Reduced motion must switch between complete
