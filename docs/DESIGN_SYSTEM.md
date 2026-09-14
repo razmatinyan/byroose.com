@@ -320,6 +320,13 @@ ScrollTrigger is registered by the Lenis bridge and remains available through
 the existing loader when a component needs its API. Contexts and media queries
 are reverted automatically when their Vue scope is disposed.
 
+A template ref placed on a component holds that component's instance, not its
+element. `NuxtLink`, `Button`, and `SiteMenu` refs therefore reach GSAP as
+plain objects, which tween silently and move nothing on screen. Resolve every
+motion target through VueUse's `unrefElement` and confirm the result is an
+`HTMLElement` before animating it, so a plain element can become a component
+later without breaking the animation.
+
 ### Home intro motion
 
 The home route owns a two-stage hero entrance through `useHomeIntroMotion`. The

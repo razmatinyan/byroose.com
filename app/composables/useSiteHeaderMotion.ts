@@ -1,4 +1,7 @@
 import { onMounted, readonly, shallowRef, useTemplateRef } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
+import { unrefElement } from '@vueuse/core'
+import type { MaybeComputedElementRef } from '@vueuse/core'
 
 type HeaderMode = 'compact' | 'full'
 
@@ -6,10 +9,15 @@ interface HeaderMotionOptions {
 	immediate?: boolean
 }
 
+function resolveElement(target: MaybeComputedElementRef): HTMLElement | null {
+	const element = unrefElement(target)
+	return element instanceof HTMLElement ? element : null
+}
+
 export function useSiteHeaderMotion() {
 	const headerMode = shallowRef<HeaderMode>('full')
 	const headerRoot = useTemplateRef<HTMLElement>('headerRoot')
-	const logoLink = useTemplateRef<HTMLAnchorElement>('logoLink')
+	const logoLink = useTemplateRef<ComponentPublicInstance>('logoLink')
 	const primaryNavigation = useTemplateRef<HTMLElement>('primaryNavigation')
 	const headerCta = useTemplateRef<HTMLElement>('headerCta')
 	const menuButton = useTemplateRef<HTMLElement>('menuButton')
@@ -24,10 +32,10 @@ export function useSiteHeaderMotion() {
 				reduceMotion: '(prefers-reduced-motion: reduce)',
 			},
 			context => {
-				const cta = headerCta.value
-				const logo = logoLink.value
-				const navigation = primaryNavigation.value
-				const menu = menuButton.value
+				const cta = resolveElement(headerCta)
+				const logo = resolveElement(logoLink)
+				const navigation = resolveElement(primaryNavigation)
+				const menu = resolveElement(menuButton)
 
 				if (!cta || !logo || !navigation || !menu) return
 
