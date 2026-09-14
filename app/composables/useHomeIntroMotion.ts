@@ -367,7 +367,7 @@ export function useHomeIntroMotion(
 						ease: "power2.inOut",
 						scaleY: 0,
 					},
-					"expand",
+					"expand-=0.35",
 				);
 				tl.to(
 					header,
@@ -378,7 +378,7 @@ export function useHomeIntroMotion(
 						pointerEvents: "auto",
 						y: 0,
 					},
-					"expand+=0.4",
+					"expand+=0.1",
 				);
 				tl.to(
 					titleLines,
@@ -388,7 +388,7 @@ export function useHomeIntroMotion(
 						stagger: 0.1,
 						yPercent: 0,
 					},
-					"expand+=0.5",
+					"expand+=0.1",
 				);
 			},
 			scope,
