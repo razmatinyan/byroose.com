@@ -159,8 +159,13 @@ function handleTitleSplit(parts: SplitTextResult) {
 }
 
 .hero-media-card {
-   @apply relative aspect-4/3 overflow-hidden rounded-md bg-muted;
+   @apply relative aspect-4/3 overflow-hidden rounded-md bg-muted shadow-xl shadow-black/0;
    transform-origin: center;
+   transition: box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-home-intro-state='complete'] .hero-media-card {
+   @apply shadow-black/12;
 }
 
 .hero-media-card-remove {
@@ -189,5 +194,11 @@ function handleTitleSplit(parts: SplitTextResult) {
 
 .hero-media-image {
    @apply absolute inset-0 size-full object-cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .hero-media-card {
+      transition-duration: 0ms;
+   }
 }
 </style>

@@ -348,6 +348,12 @@ dock first. The image expansion, backdrop retraction, site header reveal, and
 hero title reveal must all be anchored to that same label so the stage reads as
 one movement.
 
+Hero cards carry a soft `shadow-xl` that stays fully transparent until the intro
+state turns complete, then fades to twelve percent black over `700ms`. The
+shadow exists so the overlapping rotated cards read as stacked paper, which is
+the layering exception to the borders before shadows rule. Reduced motion
+applies the same resting shadow without the fade.
+
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
 The expansion retracts the page-colored backdrop while revealing the site header
