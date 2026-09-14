@@ -31,6 +31,7 @@ documentation impact, commit, and push behavior.
 - Do not import React patterns into Vue components.
 - Do not add code comments.
 - Do not write em dashes.
+- Do not use the void operator.
 - Reuse existing UI primitives, cards, shared components, composables, utilities, icons, tokens, and Tailwind class groups.
 - Keep source-owned Shadcn primitives compatible with Reka UI and preserve their accessibility behavior.
 - Keep client-only APIs inside safe Vue or Nuxt client lifecycles.

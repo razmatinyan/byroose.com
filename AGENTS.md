@@ -36,6 +36,7 @@ skills for animation, and the SEO skill for public content.
 
 - Do not use em dashes in interface copy, documentation, metadata, commits, or agent-authored text.
 - Do not add comments to code. Prefer clear names, small functions, and explicit structure. If a critical constraint cannot be expressed clearly in code, ask before adding an exception.
+- Do not use the void operator to discard a promise. Void remains valid as a type annotation.
 - Use Nuxt 4, Vue 3 Composition API, TypeScript, and script setup.
 - Declare prop defaults with reactive destructuring from defineProps. Do not use withDefaults.
 - Keep components focused, reusable, accessible, and responsive.

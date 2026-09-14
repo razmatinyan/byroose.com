@@ -115,6 +115,7 @@ Before running final checks:
 - Confirm the active agent change contains no unrelated files.
 - Search changed text for em dashes.
 - Confirm no code comments were added.
+- Confirm no void operator was added.
 - Confirm filenames, imports, links, and documentation paths are correct.
 - Confirm documentation matches the final implementation.
 - Confirm required documentation is included in the same change.

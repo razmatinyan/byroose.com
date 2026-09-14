@@ -136,7 +136,7 @@ export default defineNuxtPlugin({
 				await initialize()
 				resetScrollPosition()
 				await refresh()
-				void document.fonts.ready.then(refresh)
+				document.fonts.ready.then(refresh)
 			})
 			nuxtApp.hook('page:finish', refresh)
 			nuxtApp.vueApp.onUnmount(destroy)

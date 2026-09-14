@@ -51,6 +51,7 @@ When two rules conflict, stop and ask one concise question before making an irre
 - Do not suppress errors with TypeScript directives or lint disable directives.
 - Do not use any. Use precise types, unknown with narrowing, or generics.
 - Handle failures explicitly. Do not leave empty catch blocks.
+- Do not use the void operator to discard a promise. Call the function directly, await it inside an async function, or attach a catch handler when a rejection needs handling. Void remains valid as a type annotation such as Promise<void>.
 - Run independent asynchronous operations in parallel when order does not matter.
 - Add a dependency only when existing platform and project tools cannot solve the need cleanly.
 
@@ -262,6 +263,7 @@ Do not edit documentation only to create activity. When behavior and durable gui
 - Do not use withDefaults.
 - Do not add code comments.
 - Do not use em dashes.
+- Do not use the void operator.
 - Do not copy a component to make a minor variant.
 - Do not bypass design tokens with hardcoded colors.
 - Do not mix icon libraries.

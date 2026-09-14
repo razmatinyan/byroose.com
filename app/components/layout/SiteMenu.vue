@@ -46,7 +46,7 @@ async function closeMenu(returnFocus = false) {
 onClickOutside(
 	menuPanel,
 	() => {
-		void closeMenu()
+		closeMenu()
 	},
 	{ ignore: [siteMenuRoot] },
 )
@@ -57,7 +57,7 @@ onKeyStroke(
 		if (!open) return
 
 		event.preventDefault()
-		void closeMenu(true)
+		closeMenu(true)
 	},
 	{ dedupe: true },
 )

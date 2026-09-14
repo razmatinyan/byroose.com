@@ -54,7 +54,7 @@ function handleLogoClick(event: MouseEvent) {
 		return
 	}
 
-	void scrollTo(0)
+	scrollTo(0)
 }
 
 watch([headerMode, isDesktop], ([mode, desktop]) => {

@@ -131,7 +131,7 @@ export function useHomeIntroMotion(
       body.style.overscrollBehavior = "none";
       body.style.touchAction = "none";
       stop();
-      void ready().then(() => {
+      ready().then(() => {
          if (scrollLocked) stop();
       });
    }
@@ -149,7 +149,7 @@ export function useHomeIntroMotion(
       nativeScrollStyles = null;
       scrollLocked = false;
       start();
-      void refresh();
+      refresh();
    }
 
    function completeImmediately(
