@@ -13,12 +13,7 @@ export type HomeIntroState = "complete" | "pending" | "playing";
 type IntroScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type TitleSplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
-interface TravelPlacement {
-   dockX: number;
-   dockY: number;
-}
-
-interface CardPlacement extends TravelPlacement {
+interface CardPlacement {
    startX: number;
    startY: number;
 }
@@ -82,61 +77,25 @@ function waitForImage(image: HTMLImageElement) {
    }).then(() => image.decode().catch(() => undefined));
 }
 
-function getPlacements(
+function getStackPlacements(
    cards: HTMLElement[],
-   mediaGrid: HTMLElement,
-   dockImage: HTMLElement,
 ): { placements: CardPlacement[]; stackScale: number } | null {
    const cardRects = cards.map((card) => card.getBoundingClientRect());
    const firstCard = cardRects[0];
    if (!firstCard || firstCard.width === 0) return null;
 
-   const mediaRect = mediaGrid.getBoundingClientRect();
-   const dockImageRect = dockImage.getBoundingClientRect();
    const stackWidth = Math.min(520, Math.max(240, window.innerWidth - 40));
    const stackScale = stackWidth / firstCard.width;
    const startCenterX = window.innerWidth / 2;
    const startCenterY = window.innerHeight / 2;
-   const dockCenterX = mediaRect.left + mediaRect.width / 2;
-   const dockCenterY =
-      dockImageRect.top + dockImageRect.height / 2 + DOCK_OFFSET_Y;
 
    return {
       placements: cardRects.map((rect) => ({
-         dockX: dockCenterX - (rect.left + rect.width / 2),
-         dockY: dockCenterY - (rect.top + rect.height / 2),
          startX: startCenterX - (rect.left + rect.width / 2),
          startY: startCenterY - (rect.top + rect.height / 2),
       })),
       stackScale,
    };
-}
-
-function getTravelPlacements(
-   images: HTMLElement[],
-   mediaGrid: HTMLElement,
-   dockImage: HTMLElement,
-   getTranslation: (image: HTMLElement) => { x: number; y: number },
-): TravelPlacement[] {
-   const mediaRect = mediaGrid.getBoundingClientRect();
-   const dockImageRect = dockImage.getBoundingClientRect();
-   const dockImageTranslation = getTranslation(dockImage);
-   const dockCenterX = mediaRect.left + mediaRect.width / 2;
-   const dockCenterY =
-      dockImageRect.top +
-      dockImageRect.height / 2 -
-      dockImageTranslation.y +
-      DOCK_OFFSET_Y;
-
-   return images.map((image) => {
-      const rect = image.getBoundingClientRect();
-      const translation = getTranslation(image);
-
-      return {
-         dockX: translation.x + dockCenterX - (rect.left + rect.width / 2),
-         dockY: translation.y + dockCenterY - (rect.top + rect.height / 2),
-      };
-   });
 }
 
 export function useHomeIntroMotion(
@@ -219,15 +178,12 @@ export function useHomeIntroMotion(
       );
       const firstImage = images[0];
       const notFirstImages = images.slice(1);
-      const lastImage = images[images.length - 1];
-      const notLastImages = images.slice(0, -1);
       const removedCards = Array.from(
          root.querySelectorAll<HTMLElement>(selectors.removedCard),
       );
       const finalImages = images.filter(
          (image) => !removedCards.includes(image),
       );
-      const dockImage = finalImages[0];
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
          introState.value = "complete";
          const backdrop = root.querySelector<HTMLElement>(selectors.backdrop);
@@ -294,8 +250,7 @@ export function useHomeIntroMotion(
                !mediaGrid ||
                !title ||
                !firstImage ||
-               !lastImage ||
-               !dockImage ||
+               !finalImages.length ||
                !titleLines.length
             ) {
                completeImmediately(
@@ -307,7 +262,7 @@ export function useHomeIntroMotion(
                return;
             }
 
-            const placementData = getPlacements(images, mediaGrid, dockImage);
+            const placementData = getStackPlacements(images);
             if (!placementData) {
                completeImmediately(
                   backdrop,
@@ -354,8 +309,8 @@ export function useHomeIntroMotion(
                });
             });
 
-            const duration = 1;
-            let travelPlacements: TravelPlacement[] = placements;
+            const revealDuration = 1;
+            const expandDuration = 1;
             const tl = gsap.timeline({
                onComplete: () => {
                   introState.value = "complete";
@@ -369,106 +324,46 @@ export function useHomeIntroMotion(
 
             if (playPreloader) {
                tl.to(firstImage, {
-                  duration,
+                  duration: revealDuration,
                   ease: "power3.out",
                   scale: stackScale,
                });
                tl.to(
                   notFirstImages,
                   {
-                     duration,
+                     duration: revealDuration,
                      ease: "power3.out",
                      scale: stackScale,
                      stagger: 0.12,
                   },
-                  `<${duration / 3}`,
+                  `<${revealDuration / 3}`,
                );
             }
 
-            tl.call(() => {
-               travelPlacements = getTravelPlacements(
-                  images,
-                  mediaGrid,
-                  dockImage,
-                  (image) => ({
-                     x:
-                        Number.parseFloat(
-                           String(gsap.getProperty(image, "x")),
-                        ) || 0,
-                     y:
-                        Number.parseFloat(
-                           String(gsap.getProperty(image, "y")),
-                        ) || 0,
-                  }),
-               );
-            });
-
-            const totalMoveDuration =
-               duration + 0.12 * (notLastImages.length - 1);
-
-            tl.to(notLastImages, {
-               duration,
-               ease: "power2.inOut",
-               stagger: 0.1,
-               x: (index) => travelPlacements[index]?.dockX ?? 0,
-               y: (index) => travelPlacements[index]?.dockY ?? 0,
-            });
-            tl.to(
-               images,
-               {
-                  duration,
-                  keyframes: {
-                     "15%": {
-                        ease: "power2.in",
-                        scale: stackScale * 1.15,
-                     },
-                     "45%": {
-                        ease: "power2.out",
-                        scale: stackScale * 1.3,
-                     },
-                     "100%": {
-                        ease: "power3.inOut",
-                        scale: stackScale,
-                     },
-                  },
-                  stagger: 0.1,
-               },
-               "<",
-            );
-            tl.to(
-               backdrop,
-               {
-                  duration: totalMoveDuration,
-                  ease: "power2.inOut",
-                  scaleY: 0,
-               },
-               "<",
-            );
-            tl.to(
-               lastImage,
-               {
-                  duration,
-                  ease: "power2.inOut",
-                  x: () => travelPlacements[images.length - 1]?.dockX ?? 0,
-                  y: () => travelPlacements[images.length - 1]?.dockY ?? 0,
-               },
-               `<${duration - 0.1}`,
-            );
             tl.addLabel("expand");
             tl.set(removedCards, { visibility: "hidden" }, "expand");
             tl.to(
                finalImages,
                {
-                  duration: 0.92,
+                  duration: expandDuration,
                   ease: "power3.inOut",
                   rotation: (index) =>
                      Number(
                         finalImages[index]?.dataset.homeIntroCardRotation ?? 0,
                      ),
                   scale: 1.08,
-                  stagger: { each: 0.055, from: "center" },
+                  stagger: { each: 0.06, from: "center" },
                   x: 0,
                   y: DOCK_OFFSET_Y,
+               },
+               "expand",
+            );
+            tl.to(
+               backdrop,
+               {
+                  duration: expandDuration,
+                  ease: "power2.inOut",
+                  scaleY: 0,
                },
                "expand",
             );
@@ -481,7 +376,7 @@ export function useHomeIntroMotion(
                   pointerEvents: "auto",
                   y: 0,
                },
-               "<+0.4",
+               "expand+=0.4",
             );
             tl.to(
                titleLines,
@@ -491,7 +386,7 @@ export function useHomeIntroMotion(
                   stagger: 0.1,
                   yPercent: 0,
                },
-               "-=0.6",
+               "expand+=0.5",
             );
          },
          scope,

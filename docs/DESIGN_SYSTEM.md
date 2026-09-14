@@ -322,31 +322,31 @@ are reverted automatically when their Vue scope is disposed.
 
 ### Home intro motion
 
-The home route owns a two-stage hero entrance through `useHomeIntroMotion`. A
-direct request to the home page starts with ten fully opaque images scaling into
-a centered stack. The first image leads for one second with `power3.out`; the
-remaining images start one-third of a second later with a `0.12s` stagger.
-Client-side entries to the home page skip that preloader stage and begin from the
-same centered stack.
+The home route owns a two-stage hero entrance through `useHomeIntroMotion`. The
+preloader is the first stage and nothing else. A direct request to the home page
+starts with ten fully opaque images scaling into a centered stack. The first
+image leads for one second with `power3.out`; the remaining images start
+one-third of a second later with a `0.12s` stagger. The preloader ends as soon
+as that stack is revealed. Client-side entries to the home page skip the
+preloader and begin from the same centered stack.
 
-Both paths trail the first nine images to the bottom of the hero over one second
-with `power2.inOut` and a `0.1s` stagger. Alongside the travel, all ten images
-pulse through `1.15`, `1.5`, and `1` relative stack scales at 15%, 45%, and 100%
-of their one-second keyframes with the same stagger. The final image starts its
-one-second move `0.9s` after the shared travel begins. Once every image reaches
-the hero, all ten must occupy one shared bottom dock positioned `40px` below the
-first retained card's final row so the stack sits partially outside the viewport.
-Hide the six back layers without an exit tween. From that shared stack, the
-remaining four 4:3 images expand into their responsive grid positions with
-alternating rotation and slight scale so adjacent cards overlap, while retaining
-the same `40px` downward offset in their final state. The image expansion, site
-header reveal, and hero title reveal must all begin at the same timeline label.
+The second stage begins at the shared `expand` timeline label. Hide the six back
+layers without an exit tween, then expand the four retained 4:3 images straight
+from the centered stack into their responsive grid positions over one second
+with `power3.inOut` and a `0.06s` stagger from the center of the group. They
+land with alternating rotation and slight scale so adjacent cards overlap, and
+they keep a `40px` downward offset in their final state so the row sits
+partially outside the viewport. Do not trail the stack to a separate bottom
+dock first. The image expansion, backdrop retraction, site header reveal, and
+hero title reveal must all be anchored to that same label so the stage reads as
+one movement.
 
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
-The final expansion retracts the page-colored backdrop while revealing the site
-header and starting the hero title line sequence. Reduced motion must resolve
-directly to this complete state with scrolling available.
+The expansion retracts the page-colored backdrop while revealing the site header
+`0.4s` after the label and starting the hero title line sequence `0.5s` after
+it. Reduced motion must resolve directly to this complete state with scrolling
+available.
 
 Render animated titles through the shared `SplitText` component. Its server
 output must remain the complete text node for indexing and assistive technology.
