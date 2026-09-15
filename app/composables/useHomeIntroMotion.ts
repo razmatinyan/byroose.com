@@ -29,7 +29,6 @@ interface NativeScrollStyles {
 const DOCK_OFFSET_Y = 40;
 
 const selectors = {
-	backdrop: "[data-home-intro-backdrop]",
 	card: "[data-home-intro-card]",
 	removedCard: "[data-home-intro-card-remove]",
 	header: "[data-home-intro-header]",
@@ -153,13 +152,11 @@ export function useHomeIntroMotion(
 	}
 
 	function completeImmediately(
-		backdrop: HTMLElement | null,
 		elements: HTMLElement[],
 		removedCards: HTMLElement[],
 		finalImages: HTMLElement[],
 	) {
 		introState.value = "complete";
-		if (backdrop) backdrop.hidden = true;
 		gsap.set(elements, { clearProps: "all" });
 		gsap.set(finalImages, { y: DOCK_OFFSET_Y });
 		for (const card of removedCards) card.hidden = true;
@@ -186,8 +183,6 @@ export function useHomeIntroMotion(
 		);
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 			introState.value = "complete";
-			const backdrop = root.querySelector<HTMLElement>(selectors.backdrop);
-			if (backdrop) backdrop.hidden = true;
 			gsap.set(finalImages, { y: DOCK_OFFSET_Y });
 			for (const card of removedCards) card.hidden = true;
 			return;
@@ -216,9 +211,6 @@ export function useHomeIntroMotion(
 				reduceMotion: "(prefers-reduced-motion: reduce)",
 			},
 			(context) => {
-				const backdrop = root.querySelector<HTMLElement>(
-					selectors.backdrop,
-				);
 				const header = document.querySelector<HTMLElement>(
 					selectors.header,
 				);
@@ -238,7 +230,6 @@ export function useHomeIntroMotion(
 
 				if (introState.value === "complete" || reduceMotion) {
 					completeImmediately(
-						backdrop,
 						animatedElements,
 						removedCards,
 						finalImages,
@@ -247,7 +238,6 @@ export function useHomeIntroMotion(
 				}
 
 				if (
-					!backdrop ||
 					!header ||
 					!mediaGrid ||
 					!title ||
@@ -256,7 +246,6 @@ export function useHomeIntroMotion(
 					!titleLines.length
 				) {
 					completeImmediately(
-						backdrop,
 						animatedElements,
 						removedCards,
 						finalImages,
@@ -267,7 +256,6 @@ export function useHomeIntroMotion(
 				const placementData = getStackPlacements(images);
 				if (!placementData) {
 					completeImmediately(
-						backdrop,
 						animatedElements,
 						removedCards,
 						finalImages,
@@ -278,14 +266,8 @@ export function useHomeIntroMotion(
 				const { placements, stackScale } = placementData;
 				const playPreloader = preloaderAvailable;
 				preloaderAvailable = false;
-				backdrop.hidden = false;
 				for (const card of removedCards) card.hidden = false;
 
-				gsap.set(backdrop, {
-					autoAlpha: 1,
-					scaleY: 1,
-					transformOrigin: "bottom center",
-				});
 				gsap.set(header, {
 					autoAlpha: 0,
 					pointerEvents: "none",
@@ -316,7 +298,6 @@ export function useHomeIntroMotion(
 				const tl = gsap.timeline({
 					onComplete: () => {
 						introState.value = "complete";
-						backdrop.hidden = true;
 						gsap.set(animatedElements, { clearProps: "all" });
 						gsap.set(finalImages, { y: DOCK_OFFSET_Y });
 						for (const card of removedCards) card.hidden = true;
@@ -357,15 +338,6 @@ export function useHomeIntroMotion(
 						stagger: { each: 0.06, from: "center" },
 						x: 0,
 						y: DOCK_OFFSET_Y,
-					},
-					"expand-=0.35",
-				);
-				tl.to(
-					backdrop,
-					{
-						duration: expandDuration,
-						ease: "power2.inOut",
-						scaleY: 0,
 					},
 					"expand-=0.35",
 				);

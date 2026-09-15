@@ -138,9 +138,7 @@ blend modes paired when the opacity changes.
 The layer sits behind page content, so any element painted with `bg-background`
 hides the grain beneath it. Surfaces that only repeat the canvas color must stay
 transparent and let the body background show through. The landing wrapper and the
-brand grid cells follow that rule. The home intro backdrop is the deliberate
-exception: the preloader has to cover the page, so it keeps an opaque canvas
-color and the grain arrives as the backdrop retracts.
+brand grid cells follow that rule.
 
 The tile is referenced directly from CSS with a root-relative URL because it is a
 repeating decorative texture rather than a content image, so it does not pass
@@ -372,9 +370,8 @@ with `power3.inOut` and a `0.06s` stagger from the center of the group. They
 land with alternating rotation and slight scale so adjacent cards overlap, and
 they keep a `40px` downward offset in their final state so the row sits
 partially outside the viewport. Do not trail the stack to a separate bottom
-dock first. The image expansion, backdrop retraction, site header reveal, and
-hero title reveal must all be anchored to that same label so the stage reads as
-one movement.
+dock first. The image expansion, site header reveal, and hero title reveal must
+all be anchored to that same label so the stage reads as one movement.
 
 Hero cards carry a soft `shadow-xl` that stays fully transparent until the intro
 state turns complete, then fades to twelve percent black over `700ms`. The
@@ -384,10 +381,15 @@ applies the same resting shadow without the fade.
 
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
-The expansion retracts the page-colored backdrop while revealing the site header
-`0.4s` after the label and starting the hero title line sequence `0.5s` after
-it. Reduced motion must resolve directly to this complete state with scrolling
-available.
+The expansion reveals the site header `0.4s` after the label and starts the hero
+title line sequence `0.5s` after it. Reduced motion must resolve directly to this
+complete state with scrolling available.
+
+The preloader has no curtain. Because both scrolling systems are pinned to the
+document top, the only thing behind the centered stack is the hero section with
+its title still masked, so an opaque cover would hide nothing worth hiding. The
+media grid still lifts to `zIndex: 70` for the duration of the intro, which is
+what keeps the cards above the page now that the page is visible behind them.
 
 Render animated titles through the shared `SplitText` component. Its server
 output must remain the complete text node for indexing and assistive technology.

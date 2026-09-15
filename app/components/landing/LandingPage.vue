@@ -36,7 +36,6 @@ function setTitleSplit(parts: SplitTextResult) {
 		:class="motionClass"
 		:data-home-intro-state="introState"
 	>
-		<div data-home-intro-backdrop class="home-intro-backdrop" aria-hidden="true" />
 		<HeroSection @title-split="setTitleSplit" />
 		<StudioSection />
 		<BrandGrid />
@@ -58,12 +57,6 @@ function setTitleSplit(parts: SplitTextResult) {
 	@apply overflow-x-clip;
 }
 
-.home-intro-backdrop {
-	@apply pointer-events-auto fixed inset-0 z-50 bg-background;
-	transform-origin: bottom center;
-	will-change: transform;
-}
-
 .landing-page:not([data-home-intro-state='complete'])
 	:deep([data-home-intro-title]),
 .landing-page:not([data-home-intro-state='complete'])
@@ -72,7 +65,6 @@ function setTitleSplit(parts: SplitTextResult) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.home-intro-backdrop,
 	.landing-page :deep([data-home-intro-card-remove]) {
 		display: none;
 	}
