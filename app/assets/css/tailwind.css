@@ -189,7 +189,7 @@
 	body::before {
 		content: '';
 		@apply pointer-events-none fixed inset-0 -z-10 opacity-35;
-		background-image: url('/images/noise.jpg');
+		background-image: url('/images/noise.webp');
 		mix-blend-mode: multiply;
 	}
 

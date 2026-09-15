@@ -123,11 +123,19 @@ communicates layering, such as an open mobile menu or floating overlay.
 ## Canvas grain
 
 The page canvas carries a fine grain texture so large flat areas read as printed
-paper rather than flat screen color. The texture is `public/images/noise.jpg`,
-an 800px neutral noise tile. A fixed `body::before` layer in the global base
-layer tiles it across the viewport at its natural size, sits at `-z-10` behind
-every page element, and is `pointer-events-none`. Because the layer is fixed and
-never repaints, the grain stays still while the page scrolls.
+paper rather than flat screen color. The texture is `public/images/noise.webp`,
+a 256px neutral noise tile stored losslessly. A fixed `body::before` layer in the
+global base layer tiles it across the viewport at its natural size, sits at
+`-z-10` behind every page element, and is `pointer-events-none`. Because the
+layer is fixed and never repaints, the grain stays still while the page scrolls.
+
+The tile must stay lossless. A lossy codec cannot encode random noise, so it
+substitutes a field with the right per-pixel statistics but roughly double the
+variance at the four to eight pixel scale, which reads as mottling across a large
+flat canvas. Quality level does not change that, so there is nothing to buy by
+paying for it. Tile dimensions only set the repeat period. One image pixel is
+always one CSS pixel, so resizing the asset never changes how coarse the grain
+looks.
 
 One opacity value tunes the whole effect. The light theme multiplies the light
 tile into the cream canvas, which keeps the warm hue and costs roughly three
