@@ -1,10 +1,10 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-	--font-sans: 'Geist', Helvetica, Arial, sans-serif;
+	--font-sans: "Geist", Helvetica, Arial, sans-serif;
 	--font-heading: var(--font-sans);
 
 	--color-background: var(--background);
@@ -187,9 +187,9 @@
 	}
 
 	body::before {
-		content: '';
+		content: "";
 		@apply pointer-events-none fixed inset-0 -z-10 opacity-35;
-		background-image: url('/images/noise.webp');
+		background-image: url("/images/noise.webp");
 		mix-blend-mode: multiply;
 	}
 
@@ -199,7 +199,7 @@
 	}
 
 	button,
-	[role='button']:not(:disabled) {
+	[role="button"]:not(:disabled) {
 		@apply cursor-pointer;
 	}
 
@@ -236,35 +236,6 @@
 
 	.tilt-card {
 		@apply transition-transform duration-300 ease-out motion-reduce:transition-none;
-	}
-
-	.motion--playful .tilt-minus-four {
-		@apply -rotate-4;
-	}
-
-	.motion--playful .tilt-plus-four {
-		@apply rotate-4;
-	}
-
-	.motion--playful .tilt-minus-three {
-		@apply -rotate-3;
-	}
-
-	.motion--playful .tilt-plus-three {
-		@apply rotate-3;
-	}
-
-	.motion--playful .tilt-minus-two {
-		@apply -rotate-2;
-	}
-
-	.motion--playful .tilt-plus-two {
-		@apply rotate-2;
-	}
-
-	.motion--playful .tilt-card:hover,
-	.motion--subtle .tilt-card:hover {
-		@apply -translate-y-2 rotate-0;
 	}
 }
 
