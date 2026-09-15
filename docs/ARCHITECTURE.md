@@ -162,6 +162,7 @@ app/assets/css/tailwind.css owns:
 - Cross-component semantic class groups
 - Shared surface, pattern, and motion utilities
 - Global base behavior
+- The fixed canvas grain layer described in DESIGN_SYSTEM.md
 
 Vue single-file components own their component-specific recipes in scoped style
 blocks. Scoped blocks use Tailwind's `@reference` directive to access the global
@@ -183,7 +184,9 @@ public contains source assets served from root-relative URLs, including images,
 the logo, favicon, and robots file. Render images through NuxtImg or NuxtPicture
 so Nuxt Image owns responsive sizing and optimization. The central IPX provider
 configuration emits WebP for raster images, while components explicitly preserve
-vector formats where needed.
+vector formats where needed. Repeating decorative textures such as the canvas
+grain tile are the exception. They are referenced by root-relative URL from the
+global stylesheet and do not pass through Nuxt Image.
 
 ## Dependency direction
 

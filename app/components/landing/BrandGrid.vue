@@ -72,7 +72,7 @@ const brands: Brand[] = [
 }
 
 .brand-grid-item {
-	@apply flex min-h-40 flex-col items-center justify-center gap-5 border-r border-b border-foreground/15 bg-background p-5 text-center sm:min-h-44;
+	@apply flex min-h-40 flex-col items-center justify-center gap-5 border-r border-b border-foreground/15 p-5 text-center sm:min-h-44;
 }
 
 .brand-grid-logo {

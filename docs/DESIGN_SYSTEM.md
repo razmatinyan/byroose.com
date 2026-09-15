@@ -120,6 +120,32 @@ Do not tune the icon wrapper radius independently inside a button size.
 Use borders before shadows for most containment. Add a shadow only when elevation
 communicates layering, such as an open mobile menu or floating overlay.
 
+## Canvas grain
+
+The page canvas carries a fine grain texture so large flat areas read as printed
+paper rather than flat screen color. The texture is `public/images/noise.jpg`,
+an 800px neutral noise tile. A fixed `body::before` layer in the global base
+layer tiles it across the viewport at its natural size, sits at `-z-10` behind
+every page element, and is `pointer-events-none`. Because the layer is fixed and
+never repaints, the grain stays still while the page scrolls.
+
+One opacity value tunes the whole effect. The light theme multiplies the light
+tile into the cream canvas, which keeps the warm hue and costs roughly three
+percent lightness. The dark theme inverts the same asset and screens it, so a
+near-black canvas gains a matching three percent instead of losing it. Keep both
+blend modes paired when the opacity changes.
+
+The layer sits behind page content, so any element painted with `bg-background`
+hides the grain beneath it. Surfaces that only repeat the canvas color must stay
+transparent and let the body background show through. The landing wrapper and the
+brand grid cells follow that rule. The home intro backdrop is the deliberate
+exception: the preloader has to cover the page, so it keeps an opaque canvas
+color and the grain arrives as the backdrop retracts.
+
+The tile is referenced directly from CSS with a root-relative URL because it is a
+repeating decorative texture rather than a content image, so it does not pass
+through Nuxt Image.
+
 ## Tailwind class groups
 
 Component-specific visual recipes live in the owning Vue single-file component's
@@ -221,6 +247,8 @@ width and height, an accurate alt value or an empty alt for decorative images,
 and responsive `sizes` when the rendered width changes across breakpoints.
 Raster output inherits the central WebP default. Do not repeat the `format` prop
 unless a source needs an intentional override. Keep vector brand assets as SVG.
+Repeating CSS background textures are the exception and are described in Canvas
+grain.
 
 Use `object-cover` only when the composition intentionally crops the source.
 Lazy-load below-the-fold images. Reserve eager loading and preload behavior for
@@ -568,7 +596,7 @@ These invariants keep this working:
   own background off the edge and back inside its padding, and restores it the
   same way. A rollover host therefore needs padding. `background-clip` is not a
   transitioned property, so both switches are instant and the host keeps the
-  colour transition that the header's variant swap depends on.
+  color transition that the header's variant swap depends on.
 - Layers tween with `force3D: false`. GSAP's default writes a 3D transform,
   which promotes each layer to its own compositor layer, and the compositor
   applies the rounded mask to promoted layers one at a time. Every layer then

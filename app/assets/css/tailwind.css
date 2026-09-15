@@ -186,6 +186,18 @@
 		@apply m-0 bg-background font-sans text-foreground antialiased;
 	}
 
+	body::before {
+		content: '';
+		@apply pointer-events-none fixed inset-0 -z-10 opacity-35;
+		background-image: url('/images/noise.jpg');
+		mix-blend-mode: multiply;
+	}
+
+	.dark body::before {
+		filter: invert(1);
+		mix-blend-mode: screen;
+	}
+
 	button,
 	[role='button']:not(:disabled) {
 		@apply cursor-pointer;

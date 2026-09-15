@@ -55,7 +55,7 @@ function setTitleSplit(parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .landing-page {
-	@apply overflow-x-clip bg-background;
+	@apply overflow-x-clip;
 }
 
 .home-intro-backdrop {
