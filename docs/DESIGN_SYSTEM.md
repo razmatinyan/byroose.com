@@ -81,7 +81,11 @@ or component-level font imports.
 - `text-hero` is reserved for the primary landing statement.
 - `text-section` is the default major section heading.
 - `text-statement` supports large editorial body statements.
-- `text-service` supports interactive service titles.
+- `text-service` supports interactive service titles. Its leading is
+  deliberately loose so the two-item service picker ends level with the client
+  story column beside it. Tightening it reopens a vertical gap in the services
+  section, and the font size cannot compensate because the longest service name
+  wraps only a few pixels above its current size.
 - `text-journey` and `text-step` support the oversized process composition.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
