@@ -27,6 +27,7 @@ app/
     shared/
     ui/
   composables/
+    useCookieBannerMotion.ts
     useHomeIntroMotion.ts
     useGsap.ts
     useHoverBounce.ts
@@ -65,7 +66,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage. app/layouts/default.vue owns the persistent site header, main landmark, and footer around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, and Contact routes as focused route-level views. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage. app/layouts/default.vue owns the persistent site header, main landmark, footer, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, and Contact routes as focused route-level views. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -76,8 +77,15 @@ A landing section should not become a general component merely because it contai
 ### Layout components
 
 app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
-SiteMenuLink, SiteNavLink, and SiteFooter. Layout components may use shared
-components and UI primitives. They should not depend on a landing section.
+SiteMenuLink, SiteNavLink, SiteCookieBanner, and SiteFooter. Layout components
+may use shared components and UI primitives. They should not depend on a landing
+section.
+
+SiteCookieBanner owns the cookie notice. Its consent value lives in the
+byroose-cookie-consent cookie through Nuxt's useCookie, so the server and the
+first client render agree on whether the notice is visible and an accepted
+notice never reappears. The layout withholds the banner until the home intro
+reports a complete state, so it never paints over the preloader.
 
 ### Card components
 
@@ -137,6 +145,12 @@ timelines, and tracks pointer and focus state together. It only animates element
 the consuming components render. Those components own the markup, the semantic
 layer and copied-text colors, the paired glyphs, and the clipped positioning
 host.
+
+useCookieBannerMotion owns the cookie notice's entrance and exit. It returns the
+three Vue transition hooks that SiteCookieBanner binds, so the component keeps
+its markup and consent intent while the composable owns the tweens, the
+reduced-motion outcome, and tween cleanup. Because the hooks resolve Vue's done
+callback, the notice stays mounted until its exit finishes.
 
 useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, start and stop controls, refresh behavior, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances.
 

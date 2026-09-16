@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import SiteCookieBanner from '@/components/layout/SiteCookieBanner.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
 
@@ -17,6 +18,7 @@ const layoutIntroState = computed(() =>
 			<slot />
 		</main>
 		<SiteFooter />
+		<SiteCookieBanner v-if="layoutIntroState === 'complete'" />
 	</div>
 </template>
 

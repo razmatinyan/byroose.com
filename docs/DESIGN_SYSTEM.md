@@ -227,6 +227,41 @@ Icon names that express a repeated meaning belong in `app/lib/icons.ts`. A
 one-time decorative icon may use a direct Lucide collection name when a semantic
 alias would not improve clarity.
 
+## Cookie notice
+
+`SiteCookieBanner` is a small fixed notice in the bottom right corner of every
+route. It uses the card surface, a border, and `shadow-xl`, because a floating
+overlay is the elevation exception to the borders before shadows rule. On phones
+it spans the viewport inset. From `sm` it settles into a compact panel in the
+corner.
+
+A title sits above a single row that keeps the explanation and the accept action
+inline, so the notice reads as one short block rather than a stack. The action
+carries `shrink-0`, so the copy wraps beside it instead of crushing it.
+
+It is an `aside` named by its own title through `aria-labelledby` rather than a
+dialog, because it never traps focus and never blocks the page. Its single
+action is a `cta-sm` button in the `dark` variant, so the accept control
+inherits the shared hover bounce and the masked three-stage rollover without
+redefining either.
+
+That size reserves trailing space for an icon tile. A label-only call to action
+therefore closes the variant gap and restores symmetric horizontal padding in
+the banner's own scoped style, rather than changing the shared size contract.
+Prefer this local correction whenever a CTA size is reused without its icon.
+
+The notice enters and leaves through a `Transition` with `:css="false"`, driven
+by `useCookieBannerMotion`. It rises `24px` with a slight scale over `0.5s` on
+`power3.out`, and it settles back down over `0.3s` on `power2.in` when accepted.
+The transition carries `appear`, so the notice animates on its first paint as
+well as when the home intro finally releases it. Reduced motion resolves both
+directions with `gsap.set`, so the notice still appears and still dismisses
+without travelling.
+
+Accepting writes `accepted` to the `byroose-cookie-consent` cookie for one year.
+Because the value is read through `useCookie`, the server already knows whether
+to render the notice, so an accepted banner never flashes during hydration.
+
 ## Responsive rules
 
 Build mobile-first with Tailwind's standard `sm`, `md`, `lg`, and `xl`
