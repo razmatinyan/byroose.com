@@ -12,7 +12,7 @@ interface Review {
 
 const reviewData: Review[] = [
 	{
-		quote: 'They killed two channels we loved and were right about both. Revenue moved within a quarter.',
+		quote: 'They killed two formats we loved and were right about both. Engagement moved within a quarter.',
 		name: 'Ilse Warner',
 		role: 'CMO',
 		company: 'Nova Dairy',

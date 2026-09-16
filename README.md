@@ -1,6 +1,6 @@
 # byroose creative agency
 
-byroose.com is the digital home of byroose, a creative agency for brands that are tired of shouting into the void. The agency brings strategy, marketing, web design and development, and AI-assisted content into one connected practice.
+byroose.com is the digital home of byroose, a creative agency for brands that are tired of shouting into the void. The agency brings AI content creation and web development into one connected practice.
 
 The site is designed to turn a clear point of view into measurable action. It presents the agency's work, services, process, learning products, insights, and contact paths in a bold editorial experience that remains fast, accessible, and easy to use on every screen.
 

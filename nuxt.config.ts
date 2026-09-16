@@ -13,7 +13,7 @@ export default defineNuxtConfig({
 				{
 					name: 'description',
 					content:
-						'byroose is a creative agency for strategy, marketing, web and AI-assisted content.',
+						'byroose is a creative agency for AI content creation and web development. Visuals, video and reels, plus websites designed to convert.',
 				},
 			],
 		},

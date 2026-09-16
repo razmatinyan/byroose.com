@@ -23,7 +23,7 @@ const storyData: ClientStory[] = [
 		role: "Owner, Mammoth Murals",
 	},
 	{
-		quote: "“They rewrote our positioning in a fortnight. The sales team stopped explaining what we do and started closing.”",
+		quote: "“Our reels stopped looking like stock footage. Same team, same budget, work that finally looks like us.”",
 		name: "Ilse Warner",
 		role: "CMO, Nova Dairy",
 	},
@@ -36,19 +36,9 @@ const storyData: ClientStory[] = [
 
 const servicesData: Service[] = [
 	{
-		title: "Content creation",
-		body: "Studio and AI-assisted production: video, photo, editorial and design, planned as a quarterly slate instead of one-off requests.",
+		title: "AI content creation",
+		body: "Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
 		visual: "content grid",
-	},
-	{
-		title: "SM marketing",
-		body: "Paid and organic social run as one system. Creative testing weekly, budget decisions monthly, a single dashboard you can read in a minute.",
-		visual: "campaign dashboard",
-	},
-	{
-		title: "Brand strategy",
-		body: "Positioning, naming and messaging built from customer interviews and market data, not a mood board. A story your whole team can repeat.",
-		visual: "brand board",
 	},
 	{
 		title: "Web development",
@@ -58,7 +48,7 @@ const servicesData: Service[] = [
 ];
 
 const selectedStory = shallowRef(0);
-const selectedService = shallowRef(2);
+const selectedService = shallowRef(0);
 
 const activeStory = computed(() => storyData[selectedStory.value]!);
 const activeService = computed(() => servicesData[selectedService.value]!);

@@ -5,11 +5,11 @@ import { Button, ButtonIcon } from '@/components/ui/button'
 
 const articles = [
 	{
-		title: 'The attribution report your agency does not want you to read',
+		title: 'What we learned shipping 400 AI-generated assets',
 		category: 'Featured',
 		duration: '8 min',
 		description:
-			'Why last-click keeps rewarding the wrong channel, and the three-column model we use instead.',
+			'Where the pipeline saves real time, where it quietly costs more, and the review loop that decides which.',
 		variant: 'blue' as const,
 		featured: true,
 	},
@@ -20,8 +20,8 @@ const articles = [
 		wide: true,
 	},
 	{
-		title: 'Naming is a maths problem',
-		category: 'Brand',
+		title: 'Why AI video still looks stock, and how we fix it',
+		category: 'Video',
 		variant: 'white' as const,
 	},
 	{
@@ -30,13 +30,13 @@ const articles = [
 		variant: 'pink' as const,
 	},
 	{
-		title: 'Field notes: two weeks inside a retail launch',
+		title: 'Field notes: two weeks inside a launch shoot',
 		variant: 'photo' as const,
 		wide: true,
 	},
 	{
 		title: 'The four numbers we put on every weekly readout',
-		category: 'Marketing',
+		category: 'Workflow',
 		variant: 'white' as const,
 		wide: true,
 	},

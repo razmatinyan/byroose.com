@@ -4,24 +4,6 @@ import SectionHeading from '@/components/shared/SectionHeading.vue'
 
 const courses = [
 	{
-		title: 'Social that sells',
-		length: '4 weeks · live',
-		price: '€890',
-		body:
-			'Build a creative testing loop your team can run without us. Hooks, formats, budget rules and the reporting that keeps it honest.',
-		theme: 'white' as const,
-		visual: 'course workbook',
-	},
-	{
-		title: 'Brand in a room',
-		length: '2 days · on site',
-		price: '€1,400',
-		body:
-			'The positioning workshop we open every engagement with, taught to your marketing and product leads in one intense sprint.',
-		theme: 'blue' as const,
-		visual: 'workshop deck',
-	},
-	{
 		title: 'AI content, no slop',
 		length: '3 weeks · online',
 		price: '€690',
@@ -30,13 +12,31 @@ const courses = [
 		theme: 'orange' as const,
 		visual: 'pipeline diagram',
 	},
+	{
+		title: 'Reels that hold',
+		length: '4 weeks · live',
+		price: '€890',
+		body:
+			'Hooks, pacing and edit rhythm for short video. Build a format library your team can shoot and cut without waiting on an agency.',
+		theme: 'white' as const,
+		visual: 'storyboard frames',
+	},
+	{
+		title: 'Art direction for AI',
+		length: '2 days · on site',
+		price: '€1,400',
+		body:
+			'Direct image and video models toward one consistent look. Reference building, prompt structure and the taste calls that keep output on brand.',
+		theme: 'blue' as const,
+		visual: 'reference board',
+	},
 ]
 </script>
 
 <template>
 	<section id="courses" class="courses section-gutter">
 		<SectionHeading title="Our courses" title-class="max-w-[12ch]">
-			<p class="section-intro">The same playbooks we run for clients, taught to your team over four weeks.</p>
+			<p class="section-intro">The same AI content playbooks we run for clients, taught to your team.</p>
 		</SectionHeading>
 
 		<div class="courses-grid">

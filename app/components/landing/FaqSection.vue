@@ -20,17 +20,17 @@ const faqs = [
 	{
 		question: 'What does the AI content actually mean?',
 		answer:
-			'A model tuned on your voice, offers and proof points, running inside a human review loop. Nothing publishes without an editor signing off.',
+			'A model tuned on your voice and your look, producing visuals, video and reels inside a human review loop. Nothing publishes without an editor signing off.',
 	},
 	{
 		question: 'Can we buy one service on its own?',
 		answer:
-			'Yes. Content, marketing, brand and web are sold separately, though they compound when run together.',
+			'Yes. AI content creation and web development are sold separately, though they compound when the site and the content are built to the same brief.',
 	},
 	{
 		question: 'How do you report results?',
 		answer:
-			'One dashboard, weekly written readouts, and a monthly decision meeting where we cut what is not paying.',
+			'One dashboard, weekly written readouts, and a monthly decision meeting where we drop the formats that are not working.',
 	},
 	{
 		question: 'Is there a minimum commitment?',

@@ -4,7 +4,9 @@ This guide defines how byroose speaks and how public content should support orga
 
 ## Brand idea
 
-byroose helps brands turn noise into a clear signal. Strategy, marketing, web, and AI-assisted content work together so the brand can earn attention, explain its value, and create measurable action.
+byroose helps brands turn noise into a clear signal. AI content creation and web development work together so the brand can earn attention, explain its value, and create measurable action.
+
+byroose offers exactly two services: AI content creation and web development. AI content creation covers visuals, video, reels, and site imagery produced through an AI pipeline with human editing. Web development covers design, build, and handover. Do not describe strategy, positioning, naming, or paid media as services. Write both service names in sentence case.
 
 The core expression is:
 
@@ -14,7 +16,7 @@ Use this idea as a filter, not as a phrase that must appear everywhere.
 
 ## Audience
 
-Write primarily for founders, marketing leaders, and growing teams that need sharper positioning, stronger creative execution, and a connected digital presence.
+Write primarily for founders, marketing leaders, and growing teams that need stronger creative output and a website that earns its keep.
 
 Do not assume every reader understands agency terminology. Explain the business value in plain language.
 
@@ -113,7 +115,7 @@ Target title length is usually 50 to 60 characters. Target meta description leng
 Link text should describe the destination or action. Prefer:
 
 - View the case study
-- Explore brand strategy
+- Explore AI content creation
 - Read the launch guide
 - Get a project plan
 

@@ -15,16 +15,16 @@ const casePairs: CaseStudy[][] = [
 	[
 		{
 			client: 'Nova Dairy',
-			title: 'From zero to full retail listing in eleven weeks',
-			metric: '4 chains · 260 stores',
+			title: 'A launch film and sixty cutdowns in one sprint',
+			metric: '11M views earned',
 			theme: 'orange',
 			rotation: 'minus-two',
 			offset: 'none',
 		},
 		{
 			client: 'Kessler Tools',
-			title: 'Cut cost per lead by 41% and doubled deal size',
-			metric: '€1.2M pipeline added',
+			title: 'A product site rebuilt around how buyers actually search',
+			metric: '41% more qualified enquiries',
 			theme: 'blue',
 			rotation: 'plus-two',
 			offset: 'large',
@@ -33,7 +33,7 @@ const casePairs: CaseStudy[][] = [
 	[
 		{
 			client: 'Halden Clinics',
-			title: 'A rebrand that filled the calendar six weeks out',
+			title: 'A booking flow rebuilt in five weeks',
 			metric: '+38% bookings',
 			theme: 'pink',
 			rotation: 'plus-two',
@@ -59,7 +59,7 @@ const casePairs: CaseStudy[][] = [
 		},
 		{
 			client: 'Piquant',
-			title: 'A category story that unlocked two distributors',
+			title: 'A reel format that ran for nine months straight',
 			metric: '18M views earned',
 			theme: 'orange',
 			rotation: 'plus-three',
