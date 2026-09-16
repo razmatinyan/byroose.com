@@ -139,6 +139,7 @@ onKeyStroke(
 								width="651"
 								height="187"
 								format="svg"
+								provider="none"
 							/>
 						</NuxtLink>
 					</div>

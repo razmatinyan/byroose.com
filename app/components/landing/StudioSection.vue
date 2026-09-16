@@ -13,7 +13,7 @@
 					alt="Founder of byroose against a blue sky"
 					width="720"
 					height="1280"
-					sizes="100vw sm:448px"
+					sizes="sm:100vw md:448px"
 					loading="lazy"
 				/>
 			</div>

@@ -77,6 +77,7 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 				width="651"
 				height="187"
 				format="svg"
+				provider="none"
 				loading="lazy"
 			/>
 			<div class="site-footer-legal">

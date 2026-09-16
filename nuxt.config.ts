@@ -89,6 +89,16 @@ export default defineNuxtConfig({
 		vercel: {
 			formats: ['image/webp'],
 		},
+		none: {},
+		screens: {
+			'sm': 640,
+			'md': 768,
+			'lg': 1024,
+			'xl': 1280,
+			'2xl': 1536,
+			'portrait': 448,
+			'portrait-2x': 896,
+		},
 		// format: ['webp'],
 		// ipx: {
 		// 	modifiers: {

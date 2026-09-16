@@ -79,6 +79,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 					width="651"
 					height="187"
 					format="svg"
+					provider="none"
 				/>
 			</NuxtLink>
 

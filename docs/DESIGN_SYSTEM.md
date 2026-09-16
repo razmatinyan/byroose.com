@@ -85,7 +85,9 @@ or component-level font imports.
   deliberately loose so the two-item service picker ends level with the client
   story column beside it. Tightening it reopens a vertical gap in the services
   section, and the font size cannot compensate because the longest service name
-  wraps only a few pixels above its current size.
+  wraps only a few pixels above its current size. For the same reason the
+  service visual switches from a 3:4 to a square ratio at `lg`, so all three
+  columns end at nearly the same height.
 - `text-journey` and `text-step` support the oversized process composition.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
@@ -291,7 +293,16 @@ sources belong under `public/` and use root-relative paths. Provide intrinsic
 width and height, an accurate alt value or an empty alt for decorative images,
 and responsive `sizes` when the rendered width changes across breakpoints.
 Raster output inherits the central WebP default. Do not repeat the `format` prop
-unless a source needs an intentional override. Keep vector brand assets as SVG.
+unless a source needs an intentional override. Keep vector brand assets as SVG
+and render them with `provider="none"`.
+
+Every width an image requests, including its 2x density, must be a value in
+`image.screens`, or the Vercel provider rounds it up and warns. Give every
+`sizes` entry a screen key, such as `sm:100vw md:448px`. A bare entry like
+`100vw` is resolved against a 1px screen and produces a useless 1px candidate.
+When a fixed slot needs a width that is not a breakpoint, add it to `screens`
+under a descriptive key, as the founder portrait does with `portrait` and
+`portrait-2x`.
 Repeating CSS background textures are the exception and are described in Canvas
 grain.
 

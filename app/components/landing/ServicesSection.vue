@@ -207,6 +207,6 @@ function showNextStory() {
 }
 
 .service-visual {
-	@apply aspect-3/4 w-full max-w-sm overflow-hidden rounded-2xl lg:max-w-xs;
+	@apply aspect-3/4 w-full max-w-sm overflow-hidden rounded-2xl lg:aspect-square lg:max-w-xs;
 }
 </style>
