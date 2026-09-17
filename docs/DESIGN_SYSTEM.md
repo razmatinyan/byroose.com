@@ -479,7 +479,7 @@ the scroll transition enlarges it.
 Render the Studio statement through the shared `SplitText` component with word
 masks. When the Studio section reaches 82 percent of the viewport, each word
 rises from 115 percent below its mask over `0.8s` with `power3.out` easing and a
-`0.06s` stagger. The reveal runs once. Reduced motion displays every word in its
+`0.02s` stagger. The reveal runs once. Reduced motion displays every word in its
 resting position without a ScrollTrigger animation.
 
 ### Header motion

@@ -47,7 +47,7 @@ export function useStudioStatementMotion(
 				gsap.to(parts.words, {
 					duration: 0.8,
 					ease: "power3.out",
-					stagger: 0.06,
+					stagger: 0.02,
 					scrollTrigger: {
 						once: true,
 						start: "top 82%",
