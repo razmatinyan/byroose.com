@@ -465,14 +465,15 @@ until the transition finishes. The featured card first leaves its rotated grid
 position and moves to the viewport center, then expands to fit within 92 percent
 of the viewport width and 82 percent of its height. The movement and scale are
 scrubbed directly to scroll progress, and the existing Lenis instance supplies
-the wheel smoothing. Hero cards preserve the native 16:9 ratio of their source
-images throughout the transition.
+the wheel smoothing. All hero cards remain 4:3 in the grid. The featured card
+alone transitions to the source image's native 16:9 ratio while it expands.
 
 `useHomeHeroScrollMotion` owns this behavior. It starts only after
 `useHomeIntroMotion` reports a complete state, uses the browser window as the
-scroller, animates only transform properties, and lets its scoped GSAP media
-context remove the pin and inline styles during route cleanup. Reduced motion
-keeps the standard hero and Studio flow without pinning or scaling.
+scroller, animates the featured card's transform and aspect ratio, and lets its
+scoped GSAP media context remove the pin and inline styles during route cleanup.
+Reduced motion keeps the standard hero and Studio flow without pinning, scaling,
+or changing the card ratio.
 
 Keep the featured card on two-dimensional transforms with `force3D: false` and
 do not apply a persistent `will-change` hint. Promoting the card while it is

@@ -11,6 +11,8 @@ interface FeaturedCardTransform {
 	y: number;
 }
 
+const featuredAspectRatio = 16 / 9;
+
 const selectors = {
 	card: "[data-home-hero-scroll-card]",
 	hero: "[data-home-hero-scroll]",
@@ -32,15 +34,21 @@ function getFeaturedCardTransform(
 
 	const availableWidth = window.innerWidth * 0.92;
 	const availableHeight = window.innerHeight * 0.82;
+	const finalCardHeight = card.offsetWidth / featuredAspectRatio;
+	const heroRect = hero.getBoundingClientRect();
 	const scale = Math.min(
 		availableWidth / card.offsetWidth,
-		availableHeight / card.offsetHeight,
+		availableHeight / finalCardHeight,
 	);
 
 	return {
 		scale,
-		x: window.innerWidth / 2 - (offsetLeft + card.offsetWidth / 2),
-		y: window.innerHeight / 2 - (offsetTop + card.offsetHeight / 2),
+		x:
+			window.innerWidth / 2 -
+			(heroRect.left + offsetLeft + card.offsetWidth / 2),
+		y:
+			window.innerHeight / 2 -
+			(heroRect.top + offsetTop + card.offsetHeight / 2),
 	};
 }
 
@@ -70,6 +78,7 @@ export function useHomeHeroScrollMotion(
 			"(prefers-reduced-motion: no-preference)",
 			() => {
 				gsap.set(featuredCard, {
+					alignSelf: "center",
 					force3D: false,
 					transformOrigin: "center center",
 					zIndex: 50,
@@ -83,7 +92,7 @@ export function useHomeHeroScrollMotion(
 						pin: hero,
 						pinSpacing: true,
 						scrub: true,
-						start: "top top",
+						start: 0,
 						trigger: hero,
 					},
 				});
@@ -103,6 +112,7 @@ export function useHomeHeroScrollMotion(
 				timeline.to(
 					featuredCard,
 					{
+						aspectRatio: "16 / 9",
 						duration: 0.88,
 						ease: "none",
 						force3D: false,
