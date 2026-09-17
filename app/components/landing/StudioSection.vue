@@ -1,17 +1,51 @@
 <script setup lang="ts">
-import { shallowRef, useTemplateRef } from "vue";
+import { computed, shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
+const copyParagraphs = [
+	{
+		id: "team",
+		text: "Nine people in one room: editors, designers, engineers and an AI pipeline that does the boring half. No account layer, no handoff tax. You talk to the people doing the work.",
+	},
+	{
+		id: "method",
+		text: "Every engagement starts with a hypothesis and ends with a number. If a format does not work, we kill it and say so out loud, in the readout, with the maths attached.",
+	},
+] as const;
+
+type CopyParagraphId = (typeof copyParagraphs)[number]["id"];
+
 const studioRoot = useTemplateRef<HTMLElement>("studioRoot");
+const studioPortrait = useTemplateRef("studioPortrait");
+const studioCopy = useTemplateRef<HTMLElement>("studioCopy");
 const statementSplit = shallowRef<SplitTextResult>();
+const copySplits = shallowRef<Partial<Record<CopyParagraphId, SplitTextResult>>>(
+	{},
+);
 const studioStatement =
 	"We make work that gets chosen, not just seen. Sharp thinking, fast execution, numbers you can defend.";
 
-useStudioStatementMotion(studioRoot, statementSplit);
+const copyWords = computed(() => {
+	const results = copyParagraphs.map(({ id }) => copySplits.value[id]);
+	if (results.includes(undefined)) return undefined;
+
+	return results.flatMap((parts) => parts?.words ?? []);
+});
+
+useStudioMotion(studioRoot, {
+	copy: studioCopy,
+	copyWords,
+	portrait: () => studioPortrait.value?.imgEl,
+	statementSplit,
+});
 
 function setStatementSplit(parts: SplitTextResult) {
 	statementSplit.value = parts;
+}
+
+function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
+	copySplits.value = { ...copySplits.value, [id]: parts };
 }
 </script>
 
@@ -29,6 +63,7 @@ function setStatementSplit(parts: SplitTextResult) {
 		<div class="studio-grid">
 			<div class="studio-column">
 				<NuxtImg
+					ref="studioPortrait"
 					class="studio-portrait object-cover"
 					src="/images/founder.jpg"
 					alt="Founder of byroose against a blue sky"
@@ -39,18 +74,17 @@ function setStatementSplit(parts: SplitTextResult) {
 				/>
 			</div>
 
-			<div class="studio-column studio-copy">
-				<p>
-					Nine people in one room: editors, designers, engineers
-					and an AI pipeline that does the boring half. No account
-					layer, no handoff tax. You talk to the people doing the
-					work.
-				</p>
-				<p>
-					Every engagement starts with a hypothesis and ends with a
-					number. If a format does not work, we kill it and say so out
-					loud, in the readout, with the maths attached.
-				</p>
+			<div ref="studioCopy" class="studio-column studio-copy">
+				<SplitText
+					v-for="paragraph in copyParagraphs"
+					:key="paragraph.id"
+					class="studio-copy-paragraph"
+					as="p"
+					mask="words"
+					:text="paragraph.text"
+					type="words"
+					@split="setCopySplit(paragraph.id, $event)"
+				/>
 			</div>
 		</div>
 	</section>
@@ -68,11 +102,14 @@ function setStatementSplit(parts: SplitTextResult) {
 }
 
 .studio-statement :deep(.split-text-word),
-.studio-statement :deep(.split-text-word-mask) {
+.studio-statement :deep(.split-text-word-mask),
+.studio-copy-paragraph :deep(.split-text-word),
+.studio-copy-paragraph :deep(.split-text-word-mask) {
 	display: inline-block;
 }
 
-.studio-statement :deep(.split-text-word) {
+.studio-statement :deep(.split-text-word),
+.studio-copy-paragraph :deep(.split-text-word) {
 	visibility: hidden;
 }
 
@@ -92,7 +129,7 @@ function setStatementSplit(parts: SplitTextResult) {
 	@apply space-y-6;
 }
 
-.studio-copy p {
+.studio-copy-paragraph {
 	@apply m-0 max-w-[46ch] text-xl leading-snug tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
 }
 </style>

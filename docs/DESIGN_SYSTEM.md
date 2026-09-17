@@ -474,13 +474,22 @@ do not apply a persistent `will-change` hint. Promoting the card while it is
 still grid-sized can cache a small raster layer that becomes visibly soft when
 the scroll transition enlarges it.
 
-### Studio statement reveal
+### Studio section reveal
 
-Render the Studio statement through the shared `SplitText` component with word
-masks. When the Studio section reaches 82 percent of the viewport, each word
-rises from 115 percent below its mask over `0.8s` with `power3.out` easing and a
-`0.02s` stagger. The reveal runs once. Reduced motion displays every word in its
-resting position without a ScrollTrigger animation.
+Render the Studio statement and both copy paragraphs through the shared
+`SplitText` component with word masks. When the Studio section reaches 82
+percent of the viewport, each statement word rises from 115 percent below its
+mask over `0.8s` with `power3.out` easing and a `0.02s` stagger.
+
+The founder portrait follows with a top to bottom clip reveal. When its top edge
+reaches 82 percent of the viewport, its `clip-path` inset opens from the bottom
+edge over `1.2s` with `power3.inOut`, and the inline clip is cleared once the
+image is fully visible. The copy words then use the statement's rise when the
+copy column reaches the same line, with a tighter `0.01s` stagger because the
+paragraphs hold many more words.
+
+Every reveal runs once. Reduced motion displays the portrait and every word in
+their resting positions without a ScrollTrigger animation.
 
 ### Header motion
 
