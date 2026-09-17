@@ -456,6 +456,23 @@ those elements to the consuming animation. The home title animates its generated
 visual lines in order. Each fully opaque line rises from 115% below its own
 clipping mask over `0.8s` with `power3.out` easing and a `0.1s` stagger.
 
+### Home hero scroll transition
+
+After the home intro completes, the third of the four retained hero cards becomes
+the featured transition image. ScrollTrigger pins the hero for one viewport of
+scroll with normal pin spacing, so the Studio section remains below the viewport
+until the transition finishes. The featured card first leaves its rotated grid
+position and moves to the viewport center, then expands to fit within 92 percent
+of the viewport width and 82 percent of its height. The movement and scale are
+scrubbed directly to scroll progress, and the existing Lenis instance supplies
+the wheel smoothing.
+
+`useHomeHeroScrollMotion` owns this behavior. It starts only after
+`useHomeIntroMotion` reports a complete state, uses the browser window as the
+scroller, animates only transform properties, and lets its scoped GSAP media
+context remove the pin and inline styles during route cleanup. Reduced motion
+keeps the standard hero and Studio flow without pinning or scaling.
+
 ### Header motion
 
 The site header has full and compact sticky states. It stays full at the top of

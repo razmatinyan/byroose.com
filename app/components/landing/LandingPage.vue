@@ -16,6 +16,7 @@ import WorkSection from "./WorkSection.vue";
 const landingRoot = useTemplateRef<HTMLElement>("landingRoot");
 const titleSplit = shallowRef<SplitTextResult>();
 const { introState } = useHomeIntroMotion(landingRoot, titleSplit);
+useHomeHeroScrollMotion(landingRoot, introState);
 
 function setTitleSplit(parts: SplitTextResult) {
    titleSplit.value = parts;

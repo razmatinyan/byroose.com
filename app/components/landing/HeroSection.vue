@@ -87,7 +87,7 @@ function handleTitleSplit(parts: SplitTextResult) {
 </script>
 
 <template>
-   <section id="top" class="hero section-gutter">
+   <section id="top" data-home-hero-scroll class="hero section-gutter">
       <div class="hero-intro">
          <SplitText
             class="hero-title"
@@ -109,6 +109,9 @@ function handleTitleSplit(parts: SplitTextResult) {
             :class="{ 'hero-media-card-remove': image.removed }"
             :data-home-intro-card-remove="image.removed ? '' : undefined"
             :data-home-intro-card-rotation="image.rotation"
+            :data-home-hero-scroll-card="
+               image.id === 'hero-nine' ? '' : undefined
+            "
          >
             <NuxtImg
                class="hero-media-image"
@@ -130,7 +133,7 @@ function handleTitleSplit(parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .hero {
-   @apply grid w-full grid-rows-[minmax(0,1fr)_auto] pt-4 pb-4 sm:pt-6 sm:pb-6;
+   @apply relative grid w-full grid-rows-[minmax(0,1fr)_auto] pt-4 pb-4 sm:pt-6 sm:pb-6;
    min-height: calc(100svh - 5rem);
 }
 
