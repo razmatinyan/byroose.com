@@ -481,6 +481,11 @@ Render the Studio statement and both copy paragraphs through the shared
 percent of the viewport, each statement word rises from 115 percent below its
 mask over `0.8s` with `power3.out` easing and a `0.03s` stagger.
 
+The statement and copy paragraphs are justified so every full line ends on the
+same edge, while a short final line stays start-aligned. Justification still
+applies after splitting because each masked word is an inline block and the
+split keeps the spaces between words, which the browser stretches.
+
 The founder portrait follows with a top to bottom clip reveal. When its top edge
 reaches 82 percent of the viewport, its `clip-path` inset opens from the bottom
 edge over `1.2s` with `power3.inOut`, and the inline clip is cleared once the

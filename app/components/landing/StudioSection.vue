@@ -98,7 +98,7 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 }
 
 .studio-statement {
-	@apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
+	@apply m-0 max-w-[22ch] text-justify text-statement font-semibold tracking-[-0.035em];
 }
 
 .studio-statement :deep(.split-text-word),
@@ -130,6 +130,6 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 }
 
 .studio-copy-paragraph {
-	@apply m-0 max-w-[46ch] text-xl leading-snug tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
+	@apply m-0 max-w-[46ch] text-justify text-xl leading-snug tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
 }
 </style>
