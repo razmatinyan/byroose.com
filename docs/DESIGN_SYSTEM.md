@@ -459,21 +459,21 @@ clipping mask over `0.8s` with `power3.out` easing and a `0.1s` stagger.
 ### Home hero scroll transition
 
 After the home intro completes, the third of the four retained hero cards becomes
-the featured transition image. ScrollTrigger pins the hero for one viewport of
-scroll with normal pin spacing, so the Studio section remains below the viewport
-until the transition finishes. The featured card first leaves its rotated grid
-position and moves to the viewport center, then expands to fit within 92 percent
-of the viewport width and 82 percent of its height. The movement and scale are
-scrubbed directly to scroll progress, and the existing Lenis instance supplies
-the wheel smoothing. All hero cards remain 4:3 in the grid. The featured card
-alone transitions to the source image's native 16:9 ratio while it expands.
+the featured transition image. The hero leaves through normal document scrolling
+while LandingPage's empty one-viewport transition space keeps Studio below the
+viewport. The featured card offsets that document movement as it leaves its
+rotated grid position, reaches the viewport center, and expands to fit within 92
+percent of the viewport width and 82 percent of its height. The movement and
+scale are scrubbed directly to scroll progress, and the existing Lenis instance
+supplies the wheel smoothing. All hero cards remain 4:3 in the grid. The featured
+card alone transitions to the source image's native 16:9 ratio while it expands.
 
 `useHomeHeroScrollMotion` owns this behavior. It starts only after
 `useHomeIntroMotion` reports a complete state, uses the browser window as the
 scroller, animates the featured card's transform and aspect ratio, and lets its
-scoped GSAP media context remove the pin and inline styles during route cleanup.
-Reduced motion keeps the standard hero and Studio flow without pinning, scaling,
-or changing the card ratio.
+scoped GSAP media context remove the inline styles during route cleanup. Reduced
+motion collapses the empty transition space and keeps the standard hero and
+Studio flow without scaling or changing the card ratio.
 
 Keep the featured card on two-dimensional transforms with `force3D: false` and
 do not apply a persistent `will-change` hint. Promoting the card while it is

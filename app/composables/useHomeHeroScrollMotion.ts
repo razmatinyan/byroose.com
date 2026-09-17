@@ -8,19 +8,23 @@ type IntroStateSource = MaybeRefOrGetter<HomeIntroState>;
 interface FeaturedCardTransform {
 	scale: number;
 	x: number;
-	y: number;
+	yAtCenter: number;
+	yAtEnd: number;
 }
 
+const centerArrivalProgress = 0.38;
 const featuredAspectRatio = 16 / 9;
 
 const selectors = {
 	card: "[data-home-hero-scroll-card]",
 	hero: "[data-home-hero-scroll]",
+	space: "[data-home-hero-scroll-space]",
 } as const;
 
 function getFeaturedCardTransform(
 	hero: HTMLElement,
 	card: HTMLElement,
+	scrollDistance: number,
 ): FeaturedCardTransform {
 	let offsetLeft = card.offsetLeft;
 	let offsetTop = card.offsetTop;
@@ -36,6 +40,9 @@ function getFeaturedCardTransform(
 	const availableHeight = window.innerHeight * 0.82;
 	const finalCardHeight = card.offsetWidth / featuredAspectRatio;
 	const heroRect = hero.getBoundingClientRect();
+	const heroDocumentTop = heroRect.top + window.scrollY;
+	const cardDocumentCenterY =
+		heroDocumentTop + offsetTop + card.offsetHeight / 2;
 	const scale = Math.min(
 		availableWidth / card.offsetWidth,
 		availableHeight / finalCardHeight,
@@ -46,9 +53,12 @@ function getFeaturedCardTransform(
 		x:
 			window.innerWidth / 2 -
 			(heroRect.left + offsetLeft + card.offsetWidth / 2),
-		y:
-			window.innerHeight / 2 -
-			(heroRect.top + offsetTop + card.offsetHeight / 2),
+		yAtCenter:
+			window.innerHeight / 2 +
+			scrollDistance * centerArrivalProgress -
+			cardDocumentCenterY,
+		yAtEnd:
+			window.innerHeight / 2 + scrollDistance - cardDocumentCenterY,
 	};
 }
 
@@ -71,8 +81,9 @@ export function useHomeHeroScrollMotion(
 
 		const root = toValue(scope);
 		const hero = root?.querySelector<HTMLElement>(selectors.hero);
+		const transitionSpace = root?.querySelector<HTMLElement>(selectors.space);
 		const featuredCard = hero?.querySelector<HTMLElement>(selectors.card);
-		if (!hero || !featuredCard) return;
+		if (!hero || !transitionSpace || !featuredCard) return;
 
 		createMatchMedia(
 			"(prefers-reduced-motion: no-preference)",
@@ -86,11 +97,8 @@ export function useHomeHeroScrollMotion(
 
 				const timeline = gsap.timeline({
 					scrollTrigger: {
-						anticipatePin: 1,
-						end: () => `+=${window.innerHeight}`,
+						end: () => `+=${transitionSpace.offsetHeight}`,
 						invalidateOnRefresh: true,
-						pin: hero,
-						pinSpacing: true,
 						scrub: true,
 						start: 0,
 						trigger: hero,
@@ -100,14 +108,39 @@ export function useHomeHeroScrollMotion(
 				timeline.to(
 					featuredCard,
 					{
-						duration: 0.38,
+						duration: centerArrivalProgress,
 						ease: "none",
 						force3D: false,
 						rotation: 0,
-						x: () => getFeaturedCardTransform(hero, featuredCard).x,
-						y: () => getFeaturedCardTransform(hero, featuredCard).y,
+						x: () =>
+							getFeaturedCardTransform(
+								hero,
+								featuredCard,
+								transitionSpace.offsetHeight,
+							).x,
+						y: () =>
+							getFeaturedCardTransform(
+								hero,
+								featuredCard,
+								transitionSpace.offsetHeight,
+							).yAtCenter,
 					},
 					0,
+				);
+				timeline.to(
+					featuredCard,
+					{
+						duration: 1 - centerArrivalProgress,
+						ease: "none",
+						force3D: false,
+						y: () =>
+							getFeaturedCardTransform(
+								hero,
+								featuredCard,
+								transitionSpace.offsetHeight,
+							).yAtEnd,
+					},
+					centerArrivalProgress,
 				);
 				timeline.to(
 					featuredCard,
@@ -117,7 +150,11 @@ export function useHomeHeroScrollMotion(
 						ease: "none",
 						force3D: false,
 						scale: () =>
-							getFeaturedCardTransform(hero, featuredCard).scale,
+							getFeaturedCardTransform(
+								hero,
+								featuredCard,
+								transitionSpace.offsetHeight,
+							).scale,
 					},
 					0.12,
 				);

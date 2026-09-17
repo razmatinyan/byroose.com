@@ -30,6 +30,11 @@ function setTitleSplit(parts: SplitTextResult) {
       :data-home-intro-state="introState"
    >
       <HeroSection @title-split="setTitleSplit" />
+      <div
+         data-home-hero-scroll-space
+         class="home-hero-scroll-space"
+         aria-hidden="true"
+      />
       <StudioSection />
       <BrandGrid />
       <WorkSection />
@@ -50,6 +55,10 @@ function setTitleSplit(parts: SplitTextResult) {
    @apply overflow-x-clip;
 }
 
+.home-hero-scroll-space {
+   height: 100svh;
+}
+
 .landing-page:not([data-home-intro-state="complete"])
    :deep([data-home-intro-title]),
 .landing-page:not([data-home-intro-state="complete"])
@@ -58,6 +67,10 @@ function setTitleSplit(parts: SplitTextResult) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+   .home-hero-scroll-space {
+      height: 0;
+   }
+
    .landing-page :deep([data-home-intro-card-remove]) {
       display: none;
    }

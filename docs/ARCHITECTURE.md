@@ -118,11 +118,11 @@ The existing useGsap composable is the integration boundary for component-owned 
 useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
-and Studio section. It waits for the intro to complete, pins the hero for one
-viewport of scroll, and uses the resulting pin spacing to keep Studio below the
-viewport while the featured retained card moves to the center and expands. Its
-responsive measurements, reduced-motion outcome, ScrollTrigger lifecycle, and
-route cleanup remain inside the composable.
+and Studio section. It waits for the intro to complete and lets the hero leave
+through normal document scrolling while the featured retained card moves to the
+viewport center and expands. LandingPage supplies the empty one-viewport scroll
+space before Studio. Responsive measurements, the reduced-motion outcome,
+ScrollTrigger lifecycle, and route cleanup remain inside the composable.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes
