@@ -85,7 +85,7 @@
 
 :root {
 	--radius: 1rem;
-	--background: oklch(0.9639 0.0153 77.07);
+	--background: oklch(0.9441 0.0215 76.53);
 	--foreground: oklch(0.1796 0.0039 48.5);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.1796 0.0039 48.5);
@@ -95,7 +95,7 @@
 	--primary-foreground: oklch(1 0 0);
 	--secondary: oklch(0.5187 0.2685 265.63);
 	--secondary-foreground: oklch(1 0 0);
-	--muted: oklch(0.9406 0.0159 73.68);
+	--muted: oklch(0.9208 0.0221 73.14);
 	--muted-foreground: oklch(0.42 0.0165 67.4);
 	--accent: oklch(0.8778 0.0665 334.17);
 	--accent-foreground: oklch(0.1796 0.0039 48.5);
@@ -113,7 +113,7 @@
 	--brand-violet-foreground: oklch(1 0 0);
 	--brand-pink: oklch(0.8778 0.0665 334.17);
 	--brand-pink-foreground: oklch(0.1796 0.0039 48.5);
-	--brand-cream: oklch(0.9639 0.0153 77.07);
+	--brand-cream: oklch(0.9441 0.0215 76.53);
 	--brand-cream-foreground: oklch(0.1796 0.0039 48.5);
 	--brand-soft: oklch(0.5 0.0184 70.39);
 	--brand-subtle: oklch(0.3876 0.015 67.36);
@@ -134,11 +134,11 @@
 
 .dark {
 	--background: oklch(0.1796 0.0039 48.5);
-	--foreground: oklch(0.9639 0.0153 77.07);
+	--foreground: oklch(0.9441 0.0215 76.53);
 	--card: oklch(0.225 0.006 55);
-	--card-foreground: oklch(0.9639 0.0153 77.07);
+	--card-foreground: oklch(0.9441 0.0215 76.53);
 	--popover: oklch(0.225 0.006 55);
-	--popover-foreground: oklch(0.9639 0.0153 77.07);
+	--popover-foreground: oklch(0.9441 0.0215 76.53);
 	--primary: oklch(0.7 0.225 34);
 	--primary-foreground: oklch(1 0 0);
 	--secondary: oklch(0.63 0.225 265.63);
@@ -146,7 +146,7 @@
 	--muted: oklch(0.28 0.008 58);
 	--muted-foreground: oklch(0.74 0.018 70.39);
 	--accent: oklch(0.42 0.065 334.17);
-	--accent-foreground: oklch(0.9639 0.0153 77.07);
+	--accent-foreground: oklch(0.9441 0.0215 76.53);
 	--destructive: oklch(0.704 0.191 22.216);
 	--border: oklch(1 0 0 / 12%);
 	--input: oklch(1 0 0 / 16%);
@@ -156,7 +156,7 @@
 	--brand-violet: oklch(0.541337 0.246586 293.009);
 	--brand-violet-foreground: oklch(1 0 0);
 	--brand-cream: oklch(0.225 0.006 55);
-	--brand-cream-foreground: oklch(0.9639 0.0153 77.07);
+	--brand-cream-foreground: oklch(0.9441 0.0215 76.53);
 	--brand-soft: oklch(0.74 0.018 70.39);
 	--brand-subtle: oklch(0.82 0.015 70);
 	--sidebar: var(--card);

@@ -34,7 +34,7 @@ visual and accessibility review.
 
 | Token | Visual role | Intended use |
 | --- | --- | --- |
-| `background` | Warm cream | Main page canvas |
+| `background` and `brand-cream` | Warm cream, `#F5EBDD` | Main page canvas and cream brand surfaces |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
 | `primary` | Orange-red | Primary actions, emphasis, and high-energy sections |
@@ -43,7 +43,7 @@ visual and accessibility review.
 | `brand-yellow` | Butter yellow, `#F8E5AA` | Warm editorial surfaces and selective highlights |
 | `brand-violet` | Vivid violet, `#7C3AED` | Expressive editorial surfaces and selective highlights |
 | `accent` and `brand-pink` | Soft pink | Playful highlights and alternate surfaces |
-| `muted` | Pale warm neutral | Quiet backgrounds and placeholders |
+| `muted` | Pale warm neutral, `#EEE3D5` | Quiet backgrounds and placeholders |
 | `brand-soft` | Mid neutral | Secondary labels and low-emphasis copy |
 | `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
 | `destructive` | Alert red | Destructive and error actions only |
@@ -57,6 +57,15 @@ Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
 surfaces use dark ink foregrounds. Copied labels over dark rollover surfaces use
 `primary-foreground`. Keep each brand color paired with its foreground token so
 color behavior remains consistent in both themes.
+
+The cream is a family, not a single token. `muted` sits a step darker and
+slightly toward yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay
+visible on the canvas. The dark theme uses the same cream,
+`oklch(0.9441 0.0215 76.53)`, for its foreground, card, popover, accent, and
+cream foreground tokens. Change the canvas, `brand-cream`, `muted`, and those
+dark foregrounds together, then recheck `muted-foreground`, `brand-soft`, and
+`brand-subtle` against both the canvas and `muted`. Against the current cream,
+`brand-soft` on `muted` is the tightest pair at about 4.75:1.
 
 ### Adding colors
 
