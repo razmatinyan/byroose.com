@@ -57,8 +57,7 @@ function getFeaturedCardTransform(
 			window.innerHeight / 2 +
 			scrollDistance * centerArrivalProgress -
 			cardDocumentCenterY,
-		yAtEnd:
-			window.innerHeight / 2 + scrollDistance - cardDocumentCenterY,
+		yAtEnd: window.innerHeight / 2 + scrollDistance - cardDocumentCenterY,
 	};
 }
 
