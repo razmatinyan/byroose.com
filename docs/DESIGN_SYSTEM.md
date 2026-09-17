@@ -479,7 +479,7 @@ the scroll transition enlarges it.
 Render the Studio statement and both copy paragraphs through the shared
 `SplitText` component with word masks. When the Studio section reaches 82
 percent of the viewport, each statement word rises from 115 percent below its
-mask over `0.8s` with `power3.out` easing and a `0.02s` stagger.
+mask over `0.8s` with `power3.out` easing and a `0.03s` stagger.
 
 The founder portrait follows with a top to bottom clip reveal. When its top edge
 reaches 82 percent of the viewport, its `clip-path` inset opens from the bottom

@@ -112,7 +112,7 @@ export function useStudioMotion(
 					return;
 				}
 
-				revealWords(statementWords, root, 0.02);
+				revealWords(statementWords, root, 0.03);
 				revealPortrait(image);
 				revealWords(paragraphWords, copyRoot, 0.01);
 			},
@@ -125,7 +125,8 @@ export function useStudioMotion(
 	watch(
 		() => [toValue(statementSplit), toValue(copyWords)] as const,
 		([statementParts, paragraphWords]) => {
-			if (statementParts === undefined || paragraphWords === undefined) return;
+			if (statementParts === undefined || paragraphWords === undefined)
+				return;
 
 			return initialize(statementParts?.words ?? [], paragraphWords);
 		},
