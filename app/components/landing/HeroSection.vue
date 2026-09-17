@@ -162,7 +162,7 @@ function handleTitleSplit(parts: SplitTextResult) {
 }
 
 .hero-media-card {
-   @apply relative aspect-4/3 overflow-hidden rounded-md bg-muted shadow-xl shadow-black/0;
+   @apply relative aspect-16/9 overflow-hidden rounded-md bg-muted shadow-xl shadow-black/0;
    transform-origin: center;
    transition: box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }

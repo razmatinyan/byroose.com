@@ -70,8 +70,8 @@ export function useHomeHeroScrollMotion(
 			"(prefers-reduced-motion: no-preference)",
 			() => {
 				gsap.set(featuredCard, {
+					force3D: false,
 					transformOrigin: "center center",
-					willChange: "transform",
 					zIndex: 50,
 				});
 
@@ -93,7 +93,7 @@ export function useHomeHeroScrollMotion(
 					{
 						duration: 0.38,
 						ease: "none",
-						force3D: true,
+						force3D: false,
 						rotation: 0,
 						x: () => getFeaturedCardTransform(hero, featuredCard).x,
 						y: () => getFeaturedCardTransform(hero, featuredCard).y,
@@ -105,7 +105,7 @@ export function useHomeHeroScrollMotion(
 					{
 						duration: 0.88,
 						ease: "none",
-						force3D: true,
+						force3D: false,
 						scale: () =>
 							getFeaturedCardTransform(hero, featuredCard).scale,
 					},
