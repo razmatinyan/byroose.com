@@ -480,6 +480,14 @@ do not apply a persistent `will-change` hint. Promoting the card while it is
 still grid-sized can cache a small raster layer that becomes visibly soft when
 the scroll transition enlarges it.
 
+### Studio statement reveal
+
+Render the Studio statement through the shared `SplitText` component with word
+masks. When the Studio section reaches 82 percent of the viewport, each word
+rises from 115 percent below its mask over `0.8s` with `power3.out` easing and a
+`0.06s` stagger. The reveal runs once. Reduced motion displays every word in its
+resting position without a ScrollTrigger animation.
+
 ### Header motion
 
 The site header has full and compact sticky states. It stays full at the top of

@@ -37,6 +37,7 @@ app/
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
     useSmoothScroll.ts
+    useStudioStatementMotion.ts
   lib/
     icons.ts
     split-text.ts
@@ -123,6 +124,11 @@ through normal document scrolling while the featured retained card moves to the
 viewport center and expands. LandingPage supplies the empty one-viewport scroll
 space before Studio. Responsive measurements, the reduced-motion outcome,
 ScrollTrigger lifecycle, and route cleanup remain inside the composable.
+
+useStudioStatementMotion owns the Studio statement's word-level entrance. It
+waits for the shared SplitText component to provide generated words, creates the
+section-scoped ScrollTrigger, resolves reduced motion to visible text, and
+removes animation state when the section scope is disposed.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes

@@ -1,9 +1,30 @@
+<script setup lang="ts">
+import { shallowRef, useTemplateRef } from "vue";
+import SplitText from "@/components/shared/SplitText.vue";
+import type { SplitTextResult } from "@/lib/split-text";
+
+const studioRoot = useTemplateRef<HTMLElement>("studioRoot");
+const statementSplit = shallowRef<SplitTextResult>();
+const studioStatement =
+	"We make work that gets chosen, not just seen. Sharp thinking, fast execution, numbers you can defend.";
+
+useStudioStatementMotion(studioRoot, statementSplit);
+
+function setStatementSplit(parts: SplitTextResult) {
+	statementSplit.value = parts;
+}
+</script>
+
 <template>
-	<section id="studio" class="studio section-gutter">
-		<p class="studio-statement">
-			We make work that gets chosen, not just seen. Sharp thinking, fast
-			execution, numbers you can defend.
-		</p>
+	<section id="studio" ref="studioRoot" class="studio section-gutter">
+		<SplitText
+			class="studio-statement"
+			as="p"
+			mask="words"
+			:text="studioStatement"
+			type="words"
+			@split="setStatementSplit"
+		/>
 
 		<div class="studio-grid">
 			<div class="studio-column">
@@ -44,6 +65,15 @@
 
 .studio-statement {
 	@apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
+}
+
+.studio-statement :deep(.split-text-word),
+.studio-statement :deep(.split-text-word-mask) {
+	display: inline-block;
+}
+
+.studio-statement :deep(.split-text-word) {
+	visibility: hidden;
 }
 
 .studio-grid {
