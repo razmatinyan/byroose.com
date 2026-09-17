@@ -7,6 +7,13 @@ const menuLinkMotionConditions = {
 	motion: '(prefers-reduced-motion: no-preference)',
 }
 
+const menuLinkRolloverTween = {
+	duration: 0.2,
+	ease: 'power1.inOut',
+	force3D: true,
+	stagger: 0.02,
+} satisfies gsap.TweenVars
+
 export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 	const { createMatchMedia, gsap, loadPlugin } = useGsap()
 	let active = true
@@ -61,34 +68,23 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 				gsap.set(characters, { clearProps: 'willChange' })
 			}
 
-			const rollover = gsap
-				.timeline({
-					onComplete: clearTransformHint,
-					onReverseComplete: clearTransformHint,
-					paused: true,
-				})
-				.to(
-					labelSplit.chars,
-					{
-						duration: 0.2,
-						ease: 'power1.inOut',
-						force3D: true,
-						stagger: 0.02,
-						yPercent: -100,
-					},
-					0,
-				)
-				.to(
-					labelCopySplit.chars,
-					{
-						duration: 0.2,
-						ease: 'power1.inOut',
-						force3D: true,
-						stagger: 0.02,
-						yPercent: 0,
-					},
-					0,
-				)
+			let rollover: gsap.core.Timeline | null = null
+
+			const playRollover = (labelYPercent: number, copyYPercent: number) => {
+				rollover?.kill()
+				rollover = gsap
+					.timeline({ onComplete: clearTransformHint })
+					.to(
+						labelSplit.chars,
+						{ ...menuLinkRolloverTween, yPercent: labelYPercent },
+						0,
+					)
+					.to(
+						labelCopySplit.chars,
+						{ ...menuLinkRolloverTween, yPercent: copyYPercent },
+						0,
+					)
+			}
 
 			let pointerInside = false
 			let focusVisible = false
@@ -102,11 +98,11 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 				gsap.set(characters, { willChange: 'transform' })
 
 				if (covered) {
-					rollover.restart()
+					playRollover(-100, 0)
 					return
 				}
 
-				rollover.reverse()
+				playRollover(0, 100)
 			}
 
 			const handlePointerEnter = () => {
@@ -139,7 +135,7 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 				element.removeEventListener('focus', handleFocus)
 				element.removeEventListener('pointerenter', handlePointerEnter)
 				element.removeEventListener('pointerleave', handlePointerLeave)
-				rollover.kill()
+				rollover?.kill()
 				gsap.set(characters, {
 					clearProps: 'transform,willChange',
 				})

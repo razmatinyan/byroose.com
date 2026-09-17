@@ -534,8 +534,11 @@ two visual text copies stay hidden from assistive technology. SplitText divides
 both copies into characters after mount. On hover or visible keyboard focus,
 the resting characters travel up and the copied characters arrive from below
 over `0.2s` with a `0.02s` left-to-right stagger and `power1.inOut` easing as
-the label color softens. Each entry restarts the rollover and leaving reverses
-the same timeline. Keep the rollover clipped to the label line, revert both
+the label color softens. Leaving sends the resting characters back down and the
+copied characters below with the same left-to-right stagger, rather than
+reversing the entry order. Each change tweens from the current character
+positions, so a quick exit or re-entry stays continuous. Keep the rollover
+clipped to the label line, revert both
 SplitText instances during cleanup, and skip character splitting for touch-only
 pointers or reduced-motion preferences.
 

@@ -143,8 +143,8 @@ two-line toggle morph, resize correction, and reduced-motion states. SiteMenu
 teleports the panel into Nuxt's shared overlay target so the trigger can stay in
 the header action group without containing the expanded navigation.
 useMenuLinkMotion lazily splits the expanded navigation link's two visual text
-copies into characters, then owns their reversible vertical rollover on hover
-and visible keyboard focus. Both composables scope their GSAP work and cleanup
+copies into characters, then owns their vertical rollover and its forward-ordered
+return on hover and visible keyboard focus. Both composables scope their GSAP work and cleanup
 to their consuming layout components.
 
 useHoverBounce owns the hover and press scale states of action surfaces. It
