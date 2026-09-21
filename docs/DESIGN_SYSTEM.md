@@ -576,6 +576,34 @@ Card content is not hidden before the motion initializes, because it is part of
 the server output. Reduced motion therefore needs no exit state for the cards:
 it resolves the title words and leaves every card at rest with no parallax.
 
+The complete case study card is the hover surface for one shared trailing
+tooltip. WorkSection owns the active image and keeps one TrailingTooltip mounted
+through Nuxt's shared teleport target, so the follower is not clipped by the
+landing wrapper or card media. The card stays an article until a real case study
+destination exists. Its pointer cursor communicates the intended future link
+surface without introducing a no-op control or fake URL.
+
+The tooltip uses the hovered card image in a large 96-pixel thumbnail, the
+label "See Full Project" at `text-xl`, and a fixed card surface. It opens from
+`inset(50% 100% 50% 0 round 1.2rem)` to
+`inset(0 0 0 0 round 1.2rem)` over `0.75s` with the
+`cubic-bezier(0.19, 1, 0.22, 1)` curve. GSAP `quickTo` owns only its `x` and `y`
+position with `power3.out` easing, keeping repeated pointer updates inside one
+reused tween per axis. The follower keeps its pointer offset and may travel
+beyond a viewport edge. It never flips or clamps its position. The card image
+is non-selectable and non-draggable, so pointer travel cannot highlight or drag
+it.
+
+Leaving a card starts a 100ms close delay. Entering another card within that
+window cancels the close, keeps the tooltip open, and swaps only its image. The
+movement stays on two-dimensional transforms with `force3D: false`, and the
+tooltip has no persistent `will-change` promotion, so its settled text remains
+sharp. Reduced motion removes the movement delay and clip transition.
+
+WorkSection loads the component asynchronously only after mount and only while
+`(hover: hover) and (pointer: fine)` matches. Phones, tablets, and other
+touch-first devices never request or mount the tooltip chunk.
+
 ### Header motion
 
 The site header has full and compact sticky states. It stays full at the top of

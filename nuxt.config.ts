@@ -96,6 +96,8 @@ export default defineNuxtConfig({
 			'lg': 1024,
 			'xl': 1280,
 			'2xl': 1536,
+			'tooltip': 96,
+			'tooltip-2x': 192,
 			'portrait': 448,
 			'portrait-2x': 896,
 		},

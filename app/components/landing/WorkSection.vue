@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import { shallowRef, useTemplateRef } from "vue";
+import { useMediaQuery, useMounted, useTimeoutFn } from "@vueuse/core";
+import {
+   computed,
+   defineAsyncComponent,
+   shallowRef,
+   useTemplateRef,
+} from "vue";
 import CaseStudyCard from "@/components/cards/CaseStudyCard.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 import type { SurfaceTone } from "@/lib/surfaces";
+
+const TrailingTooltip = defineAsyncComponent(
+   () => import("@/components/shared/TrailingTooltip.vue"),
+);
 
 interface CaseStudy {
    client: string;
@@ -89,11 +99,37 @@ const caseStudies: CaseStudy[] = [
 
 const workRoot = useTemplateRef<HTMLElement>("workRoot");
 const titleSplit = shallowRef<SplitTextResult>();
+const tooltipActive = shallowRef(false);
+const tooltipImage = shallowRef("");
+const mounted = useMounted();
+const supportsFinePointer = useMediaQuery(
+   "(hover: hover) and (pointer: fine)",
+);
+const shouldLoadTooltip = computed(
+   () => mounted.value && supportsFinePointer.value,
+);
+const { start: scheduleTooltipClose, stop: cancelTooltipClose } = useTimeoutFn(
+   () => {
+      tooltipActive.value = false;
+   },
+   100,
+   { immediate: false },
+);
 
 useWorkMotion(workRoot, { titleSplit });
 
 function setTitleSplit(parts: SplitTextResult) {
    titleSplit.value = parts;
+}
+
+function activateTooltip(item: CaseStudy) {
+   cancelTooltipClose();
+   tooltipImage.value = item.image;
+   tooltipActive.value = true;
+}
+
+function deactivateTooltip() {
+   scheduleTooltipClose();
 }
 </script>
 
@@ -113,8 +149,16 @@ function setTitleSplit(parts: SplitTextResult) {
             v-for="item in caseStudies"
             :key="item.client"
             v-bind="item"
+            @activate="activateTooltip(item)"
+            @deactivate="deactivateTooltip"
          />
       </div>
+
+      <TrailingTooltip
+         v-if="shouldLoadTooltip"
+         :active="tooltipActive"
+         :image="tooltipImage"
+      />
    </section>
 </template>
 

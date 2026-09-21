@@ -97,7 +97,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, and SplitText. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state and image from its owner, and owns its fine-pointer tracking, reduced-motion state, and GSAP cleanup. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 

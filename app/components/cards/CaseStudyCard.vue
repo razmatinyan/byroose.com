@@ -26,6 +26,11 @@ const {
 	revealTones?: readonly SurfaceTone[]
 	tone?: SurfaceTone
 }>()
+
+const emit = defineEmits<{
+	activate: []
+	deactivate: []
+}>()
 </script>
 
 <template>
@@ -34,6 +39,8 @@ const {
 		variant="plain"
 		data-work-case
 		:class="cn('case', className)"
+		@pointerenter="emit('activate')"
+		@pointerleave="emit('deactivate')"
 	>
 		<div class="case-media">
 			<span
@@ -92,7 +99,7 @@ const {
 @reference '../../assets/css/tailwind.css';
 
 .case {
-	@apply grid grid-cols-1 items-start gap-8 md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
+	@apply grid cursor-pointer grid-cols-1 items-start gap-8 md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
 }
 
 .case-media {
@@ -111,7 +118,7 @@ const {
 }
 
 .case-image {
-	@apply absolute inset-0 size-full object-cover;
+	@apply absolute inset-0 size-full select-none object-cover;
 }
 
 .case-body {
