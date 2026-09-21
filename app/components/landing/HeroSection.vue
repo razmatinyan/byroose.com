@@ -119,7 +119,7 @@ function handleTitleSplit(parts: SplitTextResult) {
 					alt=""
 					width="1456"
 					height="816"
-					sizes="640px"
+					sizes="sm:448px lg:768px 2xl:640px"
 					loading="eager"
 					:preload="image.preload"
 					draggable="false"

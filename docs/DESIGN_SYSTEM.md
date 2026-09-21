@@ -312,6 +312,16 @@ Every width an image requests, including its 2x density, must be a value in
 When a fixed slot needs a width that is not a breakpoint, add it to `screens`
 under a descriptive key, as the founder portrait does with `portrait` and
 `portrait-2x`.
+
+A `sizes` entry describes the source width the slot needs, not only the box
+width. An `object-cover` slot that is narrower than its source ratio crops the
+sides, so a 16:9 source in a 4/3 box needs about a third more width than the
+box. Size every breakpoint for the widest viewport it covers, because the last
+entry applies to all larger viewports. When a fluid slot needs more than 768px,
+its 2x candidate would leave `screens`, so list the needed widths per breakpoint
+and set `densities="x1"`, as CaseStudyCard does. The browser still multiplies
+the slot by the device pixel ratio and picks from those candidates, and a width
+above the source, such as 1536 for a 1456 image, returns the original.
 Repeating CSS background textures are the exception and are described in Canvas
 grain.
 

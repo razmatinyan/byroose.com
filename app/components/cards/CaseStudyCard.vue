@@ -59,7 +59,8 @@ const emit = defineEmits<{
 					:alt="imageAlt"
 					width="1456"
 					height="816"
-					sizes="sm:100vw md:448px lg:640px"
+					sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
+					densities="x1"
 					loading="lazy"
 					draggable="false"
 				/>
