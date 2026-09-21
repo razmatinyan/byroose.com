@@ -311,19 +311,38 @@ Every width an image requests, including its 2x density, must be a value in
 `100vw` is resolved against a 1px screen and produces a useless 1px candidate.
 When a fixed slot needs a width that is not a breakpoint, add it to `screens`
 under a descriptive key, as the founder portrait does with `portrait` and
-`portrait-2x`.
+`portrait-2x`. Repeating CSS background textures are the exception and are
+described in Canvas grain.
 
-A `sizes` entry describes the source width the slot needs, not only the box
-width. An `object-cover` slot that is narrower than its source ratio crops the
-sides, so a 16:9 source in a 4/3 box needs about a third more width than the
-box. Size every breakpoint for the widest viewport it covers, because the last
-entry applies to all larger viewports. When a fluid slot needs more than 768px,
-its 2x candidate would leave `screens`, so list the needed widths per breakpoint
-and set `densities="x1"`, as CaseStudyCard does. The browser still multiplies
-the slot by the device pixel ratio and picks from those candidates, and a width
-above the source, such as 1536 for a 1456 image, returns the original.
-Repeating CSS background textures are the exception and are described in Canvas
-grain.
+The browser picks a candidate once, from the `sizes` value multiplied by the
+device pixel ratio. It never looks at crops or transforms. An image whose
+`sizes` value is smaller than what it shows on screen is fetched too small and
+looks soft, so work out `sizes` for every new image with this checklist:
+
+1. Start from the widest layout box the image gets at each breakpoint. Size
+   every breakpoint for the widest viewport it covers, because the last entry
+   applies to all larger viewports.
+2. Add the crop. An `object-cover` slot that is narrower than its source ratio
+   crops the sides, so the source must be wider than the box. A 16:9 source
+   needs about 1.33 times the width of a 4/3 box and 1.78 times the width of a
+   square box.
+3. Add every transform. When GSAP or CSS scales the element or a parent, size
+   for the largest state, not the resting layout. The hero cards are about
+   300px in the grid, but they are scaled up to a 520px preloader stack and the
+   featured card grows to almost the full viewport on scroll, so the hero asks
+   for up to 1536px.
+4. Pick the nearest `screens` value at or above each need. When the 2x width of
+   a value would leave `screens`, which is true for anything above 768px, list
+   the needed widths per breakpoint and set `densities="x1"`, as HeroSection
+   and CaseStudyCard do. The browser still multiplies the slot by the device
+   pixel ratio and picks the best of those candidates.
+5. Do not worry about asking for more than the source. A request above the
+   source width, such as 1536 for a 1456 image, returns the original converted
+   to WebP.
+
+Small fixed slots follow the same rules. The TrailingTooltip thumbnail is a
+104px square cropped from a 16:9 source, so it needs about 185px at 1x and uses
+`sm:448px` for 448 and 896 candidates.
 
 Use `object-cover` only when the composition intentionally crops the source.
 Lazy-load below-the-fold images. Reserve eager loading and preload behavior for

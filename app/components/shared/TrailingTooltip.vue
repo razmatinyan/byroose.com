@@ -153,7 +153,7 @@ onScopeDispose(() => {
                alt=""
                width="96"
                height="96"
-               sizes="tooltip:96px"
+               sizes="sm:448px"
                loading="eager"
                draggable="false"
             />
