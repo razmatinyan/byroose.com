@@ -88,6 +88,7 @@ export default defineNuxtConfig({
 		provider: 'vercel',
 		vercel: {
 			formats: ['image/webp'],
+			minimumCacheTTL: 86400,
 		},
 		none: {},
 		screens: {

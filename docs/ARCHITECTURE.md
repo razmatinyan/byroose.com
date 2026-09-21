@@ -230,7 +230,10 @@ public contains source assets served from root-relative URLs, including images,
 the logo, favicon, and robots file. Render images through NuxtImg or NuxtPicture
 so Nuxt Image owns responsive sizing and optimization. Raster images go through
 the Vercel provider, which emits WebP and only accepts widths listed in
-`image.screens`, because that list becomes the Vercel image size allowlist. SVG
+`image.screens`, because that list becomes the Vercel image size allowlist.
+Optimized images are cached for one day through `image.vercel.minimumCacheTTL`,
+so a replaced image can stay stale for returning visitors until that expires.
+Give an updated image a new file name when it must appear immediately. SVG
 brand assets use the registered `none` provider so they bypass the optimizer,
 which does not process SVG. Repeating decorative textures such as the canvas
 grain tile are the exception. They are referenced by root-relative URL from the
