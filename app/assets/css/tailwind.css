@@ -255,6 +255,10 @@
 	@apply bg-brand-pink text-brand-pink-foreground;
 }
 
+@utility surface-yellow {
+	@apply bg-brand-yellow text-brand-yellow-foreground;
+}
+
 @utility surface-card {
 	@apply bg-card text-card-foreground;
 }

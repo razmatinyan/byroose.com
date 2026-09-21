@@ -7,6 +7,7 @@ import {
 	watch,
 } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import { addStackReveal } from "@/lib/stack-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 
 export type HomeIntroState = "complete" | "pending" | "playing";
@@ -174,7 +175,6 @@ export function useHomeIntroMotion(
 			root.querySelectorAll<HTMLElement>(selectors.card),
 		);
 		const firstImage = images[0];
-		const notFirstImages = images.slice(1);
 		const removedCards = Array.from(
 			root.querySelectorAll<HTMLElement>(selectors.removedCard),
 		);
@@ -293,7 +293,6 @@ export function useHomeIntroMotion(
 					});
 				});
 
-				const revealDuration = 1;
 				const expandDuration = 1;
 				const tl = gsap.timeline({
 					onComplete: () => {
@@ -306,21 +305,7 @@ export function useHomeIntroMotion(
 				});
 
 				if (playPreloader) {
-					tl.to(firstImage, {
-						duration: revealDuration,
-						ease: "power3.out",
-						scale: stackScale,
-					});
-					tl.to(
-						notFirstImages,
-						{
-							duration: revealDuration,
-							ease: "power3.out",
-							scale: stackScale,
-							stagger: 0.12,
-						},
-						`<${revealDuration / 3}`,
-					);
+					addStackReveal(tl, images, { scale: stackScale });
 				}
 
 				tl.addLabel("expand");

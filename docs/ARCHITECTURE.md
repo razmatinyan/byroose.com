@@ -38,9 +38,11 @@ app/
     useSiteMenuMotion.ts
     useSmoothScroll.ts
     useStudioMotion.ts
+    useWorkMotion.ts
   lib/
     icons.ts
     split-text.ts
+    stack-reveal.ts
     surfaces.ts
     utils.ts
   layouts/
@@ -116,7 +118,7 @@ Use a composable when logic:
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
-useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
@@ -131,6 +133,15 @@ SplitText component has reported every statement and copy paragraph split, then
 creates the section-scoped ScrollTriggers in page order. It resolves reduced
 motion to visible content and removes animation state when the section scope is
 disposed.
+
+useWorkMotion owns the work section: the centered title words, each
+case study's stacked media reveal, its scrubbed image parallax, and the
+staggered rise of its masked text lines. WorkSection supplies the section scope
+and the title split; the case study card supplies the `data-work-case`,
+`data-work-case-layer`, `data-work-case-image`, and `data-work-case-reveal`
+hooks the composable resolves inside that scope. One timeline per card carries
+both the media reveal and the text lines, so their relative timing cannot drift. Reduced motion resolves the
+title to visible words and leaves every card in its resting state.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes
@@ -176,6 +187,11 @@ app/lib contains pure helpers, shared constants, and stable names.
 
 - icons.ts is the canonical map for shared Lucide icon names.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
+- stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
+  and follower tweens to a timeline it is handed, so the home preloader and the
+  work section's media reveal keep identical timing from one definition. It
+  never queries the DOM or creates its own timeline, which keeps trigger and
+  lifecycle ownership with the calling composable.
 - surfaces.ts is the canonical map for semantic surface and foreground tone names.
 - utils.ts contains pure class and value helpers.
 

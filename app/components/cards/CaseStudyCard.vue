@@ -1,67 +1,89 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { cn } from '@/lib/utils'
-import { Card } from '@/components/ui/card'
-import MediaPlaceholder from '@/components/shared/MediaPlaceholder.vue'
-
-type Theme = 'blue' | 'orange' | 'pink' | 'white'
-type Rotation = 'minus-three' | 'minus-two' | 'plus-three' | 'plus-two'
-type Offset = 'none' | 'small' | 'medium' | 'large' | 'extra-large'
+import type { HTMLAttributes } from "vue"
+import { Card } from "@/components/ui/card"
+import { surfaceTones } from "@/lib/surfaces"
+import type { SurfaceTone } from "@/lib/surfaces"
+import { cn } from "@/lib/utils"
 
 const {
 	class: className,
 	client,
-	metric,
-	offset = 'none',
-	rotation = 'minus-two',
-	theme = 'white',
-	title,
+	description,
+	image,
+	imageAlt,
+	resultLabel,
+	resultValue,
+	revealTones = ["primary", "yellow", "blue", "green"],
+	tone = "primary",
 } = defineProps<{
-	class?: HTMLAttributes['class']
+	class?: HTMLAttributes["class"]
 	client: string
-	metric: string
-	offset?: Offset
-	rotation?: Rotation
-	theme?: Theme
-	title: string
+	description: string
+	image: string
+	imageAlt: string
+	resultLabel: string
+	resultValue: string
+	revealTones?: readonly SurfaceTone[]
+	tone?: SurfaceTone
 }>()
-
-const surfaceClasses: Record<Theme, string> = {
-	blue: 'surface-blue',
-	orange: 'surface-orange',
-	pink: 'surface-pink',
-	white: 'surface-card',
-}
-
-const patternClasses: Record<Theme, string> = {
-	blue: 'pattern-blue',
-	orange: 'pattern-orange',
-	pink: 'pattern-pink',
-	white: '',
-}
 </script>
 
 <template>
 	<Card
 		as="article"
 		variant="plain"
-		:class="cn(
-			'case-card tilt-card',
-			surfaceClasses[theme],
-			`tilt-${rotation}`,
-			offset !== 'none' && `case-offset-${offset}`,
-			className,
-		)"
+		data-work-case
+		:class="cn('case', className)"
 	>
-		<MediaPlaceholder
-			label="case photo"
-			:class="cn('case-card-image', patternClasses[theme])"
-			label-class="text-current opacity-85"
-		/>
-		<div class="case-card-copy">
-			<span class="case-card-client">{{ client }}</span>
-			<p class="case-card-title">{{ title }}</p>
-			<p class="case-card-metric">{{ metric }}</p>
+		<div class="case-media">
+			<span
+				v-for="revealTone in revealTones"
+				:key="revealTone"
+				data-work-case-layer
+				aria-hidden="true"
+				:class="cn('case-layer', surfaceTones[revealTone])"
+			/>
+
+			<div data-work-case-layer class="case-image-layer">
+				<NuxtImg
+					data-work-case-image
+					class="case-image"
+					:src="image"
+					:alt="imageAlt"
+					width="1456"
+					height="816"
+					sizes="sm:100vw md:448px lg:640px"
+					loading="lazy"
+					draggable="false"
+				/>
+			</div>
+		</div>
+
+		<div class="case-body">
+			<div class="case-line">
+				<h3 data-work-case-reveal class="case-title">{{ client }}</h3>
+			</div>
+
+			<div class="case-line mt-4">
+				<p data-work-case-reveal class="case-description">
+					{{ description }}
+				</p>
+			</div>
+
+			<div class="case-line mt-10 md:mt-14">
+				<span
+					data-work-case-reveal
+					:class="cn('case-result-value', surfaceTones[tone])"
+				>
+					{{ resultValue }}
+				</span>
+			</div>
+
+			<div class="case-line mt-3">
+				<p data-work-case-reveal class="case-result-label">
+					{{ resultLabel }}
+				</p>
+			</div>
 		</div>
 	</Card>
 </template>
@@ -69,45 +91,50 @@ const patternClasses: Record<Theme, string> = {
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
-.case-card {
-	@apply rounded-3xl p-3.5;
+.case {
+	@apply grid grid-cols-1 items-start gap-8 md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
 }
 
-.case-card-image {
-	@apply aspect-16/10 rounded-xl;
+.case-media {
+	@apply relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-muted;
+	clip-path: inset(0 round var(--radius-2xl));
 }
 
-.case-card-copy {
-	@apply px-1.5 pt-4 pb-1.5;
+.case-layer,
+.case-image-layer {
+	@apply pointer-events-none absolute -inset-px;
+	border-radius: inherit;
 }
 
-.case-card-client {
-	@apply text-sm font-semibold;
+.case-layer {
+	transform: scale(0);
 }
 
-.case-card-title {
-	@apply mt-2 mb-0 text-xl leading-tight font-semibold tracking-[-0.02em];
+.case-image {
+	@apply absolute inset-0 size-full object-cover;
 }
 
-.case-card-metric {
-	@apply mt-2 mb-0 text-sm opacity-90;
+.case-body {
+	@apply min-w-0;
 }
 
-@media (min-width: 40rem) {
-	.case-offset-small {
-		@apply mt-4;
-	}
+.case-line {
+	@apply overflow-hidden;
+}
 
-	.case-offset-medium {
-		@apply mt-10;
-	}
+.case-title {
+	@apply m-0 text-3xl leading-tight font-bold tracking-[-0.03em] md:text-4xl xl:text-5xl;
+}
 
-	.case-offset-large {
-		@apply mt-14;
-	}
+.case-description {
+	@apply m-0 max-w-[42ch] text-lg leading-snug tracking-tight text-brand-subtle md:text-xl;
+}
 
-	.case-offset-extra-large {
-		@apply mt-16;
-	}
+.case-result-value {
+	@apply inline-block rounded-md px-3 py-1 text-2xl leading-tight font-semibold tracking-tight md:text-3xl;
+}
+
+.case-result-label {
+	@apply m-0 max-w-[24ch] text-2xl leading-tight tracking-tight font-medium md:text-3xl;
 }
 </style>

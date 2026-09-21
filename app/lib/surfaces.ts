@@ -5,6 +5,7 @@ export const surfaceTones = {
 	green: 'surface-green',
 	pink: 'surface-pink',
 	primary: 'surface-orange',
+	yellow: 'surface-yellow',
 } as const
 
 export type SurfaceTone = keyof typeof surfaceTones
@@ -16,4 +17,5 @@ export const surfaceForegroundTones = {
 	green: 'text-brand-green-foreground',
 	pink: 'text-brand-pink-foreground',
 	primary: 'text-primary-foreground',
+	yellow: 'text-brand-yellow-foreground',
 } satisfies Record<SurfaceTone, string>

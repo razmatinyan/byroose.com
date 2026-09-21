@@ -505,6 +505,77 @@ paragraphs hold many more words.
 Every reveal runs once. Reduced motion displays the portrait and every word in
 their resting positions without a ScrollTrigger animation.
 
+### Work section
+
+The work section centers its heading, currently "What we've done", and gives
+each case study its own full-width row. The heading keeps `section-title` for
+its weight and tracking but overrides the font size in the component's own
+scoped block. This heading is deliberately oversized: its clamp runs past
+`text-hero` and sits just below `text-journey`, so the section opens at display
+scale and the phrase wraps across the full column. Promote that clamp to a token
+if a second section ever wants the same step. From `md` the row is a `3fr 2fr` grid, so the media takes
+sixty percent of the width and the copy takes forty, and both columns align to
+the top of the row rather than to each other's center. On phones the row stacks
+to one column. Case study cards carry no surface color of their own, so the
+canvas grain stays visible behind them and the image is the only filled shape in
+the row.
+
+The copy column reads title, description, result value, result label. The value
+is an inline highlight that takes a `surface-*` utility through the card's
+`tone` prop, so a case study picks a brand color from `app/lib/surfaces.ts`
+rather than defining one. The label below it stays at foreground weight, because
+the color belongs to the number and not to the sentence that explains it.
+
+Case images are currently reused from the hero set. They are content images with
+their own alternative text, and they will be replaced by real project media when
+case studies gain their own routes.
+
+The section heading is a `SplitText` word reveal. When the section reaches 82
+percent of the viewport, each word rises from 115 percent below its mask over
+`0.8s` with `power3.out` easing and a `0.03s` stagger, matching the Studio
+statement.
+
+Each case study reveals from its own trigger at the same line. The media frame
+fills with the preloader's stack reveal: five elements stacked on the frame all
+scale up from zero around their own center, four of them empty brand-color
+layers, with the image arriving as the fifth and last. Both the preloader and
+this section run that recipe through `addStackReveal` in
+`app/lib/stack-reveal.ts`, so the lead element scales over one second with
+`power3.out`, the rest start a third of a second later, and the group carries a
+`0.12s` stagger. Change the timing there and both reveals move together.
+
+Each case study gets its own four-color sequence through the card's
+`revealTones` prop, resolved through the same `surface-*` map as the result
+highlight. The sequences are all different, and each one ends on the card's own
+`tone`, so the color that lands immediately before the image is the color the
+result number wears.
+
+Layers bleed one pixel past the frame and inherit its radius, and the frame
+shapes itself with `clip-path: inset(0 round var(--radius-2xl))` alongside its
+radius and `overflow: hidden`, so the resting surface never survives as a
+hairline rim around the final layer. DOM order is the paint order, so the image
+wrapper must stay last. The colored layers rest at `scale(0)` in CSS because
+they are decorative, which keeps a solid color block off the card before the
+motion initializes and without JavaScript. The image wrapper carries no CSS rest
+state, so the image itself is always present in the server output.
+
+The four text lines share the card's timeline rather than running their own
+trigger. They start at the halfway point of the media reveal, so the copy is
+already arriving while the last colored layers are still landing, and they rise
+from their masks over `0.8s` with a `0.08s` stagger. The position is read from
+the timeline's own duration after the stack tweens are added, so retiming the
+stack moves the text with it. The image inside the frame is held at `1.3` scale and scrubbed
+from `14` to `-14` percent as the card crosses the viewport, so it travels
+against the scroll rather than with it. The reveal and the parallax are on
+different elements: the image's layer wrapper owns the entry scale and the image
+inside it owns the parallax, so neither fights the other. Keep the scale ahead
+of the shift: the image only has `(scale - 1) / 2` of overflow on each edge, so
+raising the travel without raising the scale exposes the frame.
+
+Card content is not hidden before the motion initializes, because it is part of
+the server output. Reduced motion therefore needs no exit state for the cards:
+it resolves the title words and leaves every card at rest with no parallax.
+
 ### Header motion
 
 The site header has full and compact sticky states. It stays full at the top of
@@ -665,7 +736,9 @@ rollover markup. A CTA-size button still bounces regardless of its variant.
 
 Tone names resolve through `app/lib/surfaces.ts` to the `surface-*` utilities,
 which pair a background with its readable foreground. `surface-dark` was added
-for the dark final layer. Because the copied text is independent from the layer,
+for the dark final layer, and `surface-yellow` completes the brand hues so
+butter yellow can be selected by tone name like every other brand color.
+Because the copied text is independent from the layer,
 the same module maps every surface tone to its semantic Tailwind foreground class.
 Add a variant to the map to give it a rollover, pass the `rolloverTones` prop to
 override one button, and add a surface utility before introducing a new tone.
