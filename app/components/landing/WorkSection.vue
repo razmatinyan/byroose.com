@@ -102,9 +102,7 @@ const titleSplit = shallowRef<SplitTextResult>();
 const tooltipActive = shallowRef(false);
 const tooltipImage = shallowRef("");
 const mounted = useMounted();
-const supportsFinePointer = useMediaQuery(
-   "(hover: hover) and (pointer: fine)",
-);
+const supportsFinePointer = useMediaQuery("(hover: hover) and (pointer: fine)");
 const shouldLoadTooltip = computed(
    () => mounted.value && supportsFinePointer.value,
 );
@@ -112,7 +110,7 @@ const { start: scheduleTooltipClose, stop: cancelTooltipClose } = useTimeoutFn(
    () => {
       tooltipActive.value = false;
    },
-   100,
+   200,
    { immediate: false },
 );
 
