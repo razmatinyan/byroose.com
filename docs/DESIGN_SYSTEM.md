@@ -583,8 +583,8 @@ landing wrapper or card media. The card stays an article until a real case study
 destination exists. Its pointer cursor communicates the intended future link
 surface without introducing a no-op control or fake URL.
 
-The tooltip uses the hovered card image in a large 96-pixel thumbnail, the
-label "See Full Project" at `text-xl`, and a fixed card surface. It opens from
+The tooltip uses the hovered card image in a large 104-pixel thumbnail, the
+label "See Full Project" at `text-3xl`, and a fixed card surface. It opens from
 `inset(50% 100% 50% 0 round 1.2rem)` to
 `inset(0 0 0 0 round 1.2rem)` over `0.75s` with the
 `cubic-bezier(0.19, 1, 0.22, 1)` curve. GSAP `quickTo` owns only its `x` and `y`

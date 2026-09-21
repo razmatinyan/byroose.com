@@ -24,7 +24,7 @@ onMounted(() => {
          const element = tooltip.value;
          if (!element || !context.conditions?.finePointer) return;
 
-         const gap = 16;
+         const gap = 2;
          const moveX = context.conditions.motion
             ? gsap.quickTo(element, "x", {
                  duration: 0.65,
@@ -103,12 +103,12 @@ onMounted(() => {
 }
 
 .trailing-tooltip-image {
-   @apply size-24 shrink-0 object-cover;
+   @apply size-26 shrink-0 object-cover;
    border-radius: calc(1.2rem - 0.5rem);
 }
 
 .trailing-tooltip-label {
-   @apply whitespace-nowrap text-xl leading-none font-semibold;
+   @apply whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
 }
 
 @media (prefers-reduced-motion: reduce) {
