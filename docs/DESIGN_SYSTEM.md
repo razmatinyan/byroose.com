@@ -594,8 +594,19 @@ beyond a viewport edge. It never flips or clamps its position. The card image
 is non-selectable and non-draggable, so pointer travel cannot highlight or drag
 it.
 
-Leaving a card starts a 100ms close delay. Entering another card within that
-window cancels the close, keeps the tooltip open, and swaps only its image. The
+Leaving a card starts a 200ms close delay. Entering another card within that
+window cancels the close, keeps the tooltip open, and swaps only its image.
+
+That swap is layered rather than instant. The incoming image mounts on top of
+the outgoing one inside a fixed thumbnail frame and scales up from zero with the
+shared `stackRevealEase`, so it borrows the card media reveal's curve. The
+outgoing image stays mounted underneath until the incoming one finishes, then
+every layer below it is dropped. A fast pass across several cards stacks several
+layers, and each completion clears only the layers beneath itself, so a newer
+image is never removed by an older tween. The reveal runs only when the tooltip
+was already open before the image changed. Opening from a closed state, and
+reduced motion, both replace the thumbnail in one step instead, so a stale
+project image never shows while the panel is wiping open. The
 movement stays on two-dimensional transforms with `force3D: false`, and the
 tooltip has no persistent `will-change` promotion, so its settled text remains
 sharp. Reduced motion removes the movement delay and clip transition.

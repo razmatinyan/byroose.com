@@ -1,5 +1,19 @@
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+import {
+   nextTick,
+   onMounted,
+   onScopeDispose,
+   ref,
+   useTemplateRef,
+   watch,
+} from "vue";
+import { stackRevealEase } from "@/lib/stack-reveal";
+
+interface TooltipLayer {
+   id: number;
+   src: string;
+}
 
 const {
    active = false,
@@ -11,8 +25,60 @@ const {
    label?: string;
 }>();
 
+const swapDuration = 0.6;
+
 const tooltip = useTemplateRef<HTMLElement>("tooltip");
+const media = useTemplateRef<HTMLElement>("media");
+const layers = ref<TooltipLayer[]>([]);
+const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 const { createMatchMedia, gsap } = useGsap();
+let nextLayerId = 0;
+
+function keepLayersFrom(id: number) {
+   layers.value = layers.value.filter((layer) => layer.id >= id);
+}
+
+async function revealLayer(id: number) {
+   await nextTick();
+   const element = media.value?.querySelector<HTMLElement>(
+      `[data-tooltip-layer="${id}"]`,
+   );
+   if (!element) {
+      keepLayersFrom(id);
+      return;
+   }
+
+   gsap.fromTo(
+      element,
+      { scale: 0 },
+      {
+         duration: swapDuration,
+         ease: stackRevealEase,
+         onComplete: () => keepLayersFrom(id),
+         scale: 1,
+      },
+   );
+}
+
+watch(
+   () => [active, image] as const,
+   ([isActive, nextImage], previous) => {
+      if (!nextImage || nextImage === layers.value.at(-1)?.src) return;
+
+      const id = nextLayerId++;
+      const revealsOverPrevious =
+         Boolean(previous?.[0]) && isActive && layers.value.length > 0;
+
+      if (!revealsOverPrevious || prefersReducedMotion.value) {
+         layers.value = [{ id, src: nextImage }];
+         return;
+      }
+
+      layers.value = [...layers.value, { id, src: nextImage }];
+      return revealLayer(id);
+   },
+   { flush: "post", immediate: true },
+);
 
 onMounted(() => {
    createMatchMedia(
@@ -62,6 +128,11 @@ onMounted(() => {
       tooltip,
    );
 });
+
+onScopeDispose(() => {
+   const element = media.value;
+   if (element) gsap.killTweensOf(element.children);
+});
 </script>
 
 <template>
@@ -72,17 +143,21 @@ onMounted(() => {
          :data-active="active"
          aria-hidden="true"
       >
-         <NuxtImg
-            v-if="image"
-            class="trailing-tooltip-image"
-            :src="image"
-            alt=""
-            width="96"
-            height="96"
-            sizes="tooltip:96px"
-            loading="eager"
-            draggable="false"
-         />
+         <span v-if="layers.length" ref="media" class="trailing-tooltip-media">
+            <NuxtImg
+               v-for="layer in layers"
+               :key="layer.id"
+               :data-tooltip-layer="layer.id"
+               class="trailing-tooltip-image"
+               :src="layer.src"
+               alt=""
+               width="96"
+               height="96"
+               sizes="tooltip:96px"
+               loading="eager"
+               draggable="false"
+            />
+         </span>
          <span class="trailing-tooltip-label">{{ label }}</span>
       </div>
    </Teleport>
@@ -102,9 +177,14 @@ onMounted(() => {
    clip-path: inset(0 0 0 0 round 1.2rem);
 }
 
-.trailing-tooltip-image {
-   @apply size-26 shrink-0 object-cover;
+.trailing-tooltip-media {
+   @apply relative block size-26 shrink-0 overflow-hidden;
    border-radius: calc(1.2rem - 0.5rem);
+}
+
+.trailing-tooltip-image {
+   @apply absolute inset-0 size-full object-cover;
+   border-radius: inherit;
 }
 
 .trailing-tooltip-label {
