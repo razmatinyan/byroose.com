@@ -23,13 +23,13 @@ const servicesData: Service[] = [
 		description:
 			"Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
 		image: "/images/hero/5.png",
-		title: "AI content creation",
+		title: "AI Content Creation",
 	},
 	{
 		description:
 			"Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
 		image: "/images/hero/6.png",
-		title: "Web development",
+		title: "Website Development",
 	},
 ];
 
@@ -173,7 +173,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-intro-title {
-	@apply text-center leading-[0.95];
+	@apply text-center leading-[0.95] select-none;
 	font-size: clamp(3rem, 10vw, 12rem);
 }
 

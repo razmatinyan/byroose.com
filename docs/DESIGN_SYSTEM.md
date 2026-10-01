@@ -811,7 +811,9 @@ after another in reading order, and the pin holds the finished title for a
 short beat before releasing it.
 
 Each service panel centers its title at `text-service`, a description below
-it, and an image below that. The service names stay in sentence case. The
+it, and an image below that. The service names, "AI Content Creation" and
+"Website Development", are set in title case. The intro title is not
+selectable, so a drag across the pinned panel never highlights its words. The
 description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
 `xl`, in the default `foreground` color at weight 600 with tight leading,
 balanced lines, and a `38ch` measure. The image spans the full content width at the source's natural
