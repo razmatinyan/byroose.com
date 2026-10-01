@@ -14,7 +14,8 @@ interface FeaturedCardTransform {
 
 const centerArrivalProgress = 0.38;
 const releaseLength = 0.3;
-const releaseGrowth = 1.04;
+const releaseGrowth = 1.1;
+const releaseGrowthLength = 1.3;
 const featuredAspectRatio = 16 / 9;
 
 const selectors = {
@@ -170,15 +171,11 @@ export function useHomeHeroScrollMotion(
 
 				gsap.fromTo(
 					featuredCard,
-					{
-						scale: () => featured().scale,
-						y: () => featured().yAtEnd,
-					},
+					{ y: () => featured().yAtEnd },
 					{
 						ease: "power1.out",
 						force3D: false,
 						immediateRender: false,
-						scale: () => featured().scale * releaseGrowth,
 						scrollTrigger: {
 							end: () => transitionSpace.offsetHeight + release(),
 							invalidateOnRefresh: true,
@@ -186,6 +183,25 @@ export function useHomeHeroScrollMotion(
 							start: () => transitionSpace.offsetHeight,
 						},
 						y: () => featured().yAtEnd + release() / 2,
+					},
+				);
+
+				gsap.fromTo(
+					featuredCard,
+					{ scale: () => featured().scale },
+					{
+						ease: "power1.out",
+						force3D: false,
+						immediateRender: false,
+						scale: () => featured().scale * releaseGrowth,
+						scrollTrigger: {
+							end: () =>
+								transitionSpace.offsetHeight +
+								window.innerHeight * releaseGrowthLength,
+							invalidateOnRefresh: true,
+							scrub: true,
+							start: () => transitionSpace.offsetHeight,
+						},
 					},
 				);
 			},

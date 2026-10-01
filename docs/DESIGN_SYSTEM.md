@@ -523,9 +523,12 @@ scale are scrubbed directly to scroll progress, and the existing Lenis instance
 supplies the wheel smoothing. When the transition space ends, the card does not
 switch straight from holding at center to moving with the page. Over the next
 thirty percent of a viewport, it eases from holding into full scroll speed with
-`power1.out`, which offsets it upward by half that distance, and keeps growing
-by four percent. The handoff is velocity matched, so the card never looks like
-it stops and restarts. The window stays short so the card never covers the
+`power1.out`, which offsets it upward by half that distance. The handoff is
+velocity matched, so the card never looks like it stops and restarts. Its scale
+never freezes either: a separate scrubbed tween keeps it growing very slowly
+for 1.3 viewport heights after the transition space ends, by ten percent in
+total with `power1.out`, so it is still growing as it leaves the top of the
+viewport. The window stays short so the card never covers the
 Studio statement entering below it. All hero cards remain 4:3 in the grid. The featured
 card alone transitions to the source image's native 16:9 ratio while it expands.
 
