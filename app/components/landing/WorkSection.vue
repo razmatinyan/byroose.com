@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useMediaQuery, useMounted, useTimeoutFn } from "@vueuse/core";
 import {
-   computed,
-   defineAsyncComponent,
-   shallowRef,
-   useTemplateRef,
+	computed,
+	defineAsyncComponent,
+	shallowRef,
+	useTemplateRef,
 } from "vue";
 import CaseStudyCard from "@/components/cards/CaseStudyCard.vue";
 import MoreWorksPanel from "./MoreWorksPanel.vue";
@@ -13,67 +13,67 @@ import type { SplitTextResult } from "@/lib/split-text";
 import type { SurfaceTone } from "@/lib/surfaces";
 
 const TrailingTooltip = defineAsyncComponent(
-   () => import("@/components/shared/TrailingTooltip.vue"),
+	() => import("@/components/shared/TrailingTooltip.vue"),
 );
 
 interface CaseStudy {
-   client: string;
-   description: string;
-   image: string;
-   imageAlt: string;
-   resultLabel: string;
-   resultValue: string;
-   revealTones: readonly SurfaceTone[];
-   tone: SurfaceTone;
+	client: string;
+	description: string;
+	image: string;
+	imageAlt: string;
+	resultLabel: string;
+	resultValue: string;
+	revealTones: readonly SurfaceTone[];
+	tone: SurfaceTone;
 }
 
 const workTitle = "What we've done";
 
 const caseStudies: CaseStudy[] = [
-   {
-      client: "Nova Dairy",
-      description:
-         "A launch film and sixty cutdowns produced in one sprint, cut for every placement the brand actually buys.",
-      image: "/images/hero/1.png",
-      imageAlt: "Nova Dairy project visual",
-      resultLabel: "Views earned across the launch",
-      resultValue: "11M",
-      revealTones: ["blue", "green", "yellow", "primary"],
-      tone: "primary",
-   },
-   {
-      client: "Kessler Tools",
-      description:
-         "A product site rebuilt around how buyers actually search, from the category pages down to the specs they compare.",
-      image: "/images/hero/2.png",
-      imageAlt: "Kessler Tools project visual",
-      resultLabel: "More qualified enquiries",
-      resultValue: "41%",
-      revealTones: ["pink", "primary", "blue", "yellow"],
-      tone: "yellow",
-   },
-   {
-      client: "Halden Clinics",
-      description:
-         "A booking flow rebuilt in five weeks, with the questions patients could not answer taken out of the way.",
-      image: "/images/hero/3.png",
-      imageAlt: "Halden Clinics project visual",
-      resultLabel: "Increase in completed bookings",
-      resultValue: "+38%",
-      revealTones: ["green", "yellow", "primary", "pink"],
-      tone: "pink",
-   },
-   {
-      client: "Marrow & Co",
-      description:
-         "One landing page rebuilt around a single offer, with the proof moved above the decision.",
-      image: "/images/hero/4.png",
-      imageAlt: "Marrow and Co project visual",
-      resultLabel: "Conversion rate, up from 3.1%",
-      resultValue: "4.7%",
-      revealTones: ["yellow", "blue", "pink", "green"],
-      tone: "green",
-   },
+	{
+		client: "Nova Dairy",
+		description:
+			"A launch film and sixty cutdowns produced in one sprint, cut for every placement the brand actually buys.",
+		image: "/images/hero/1.png",
+		imageAlt: "Nova Dairy project visual",
+		resultLabel: "Views earned across the launch",
+		resultValue: "11M",
+		revealTones: ["blue", "green", "yellow", "primary"],
+		tone: "primary",
+	},
+	{
+		client: "Kessler Tools",
+		description:
+			"A product site rebuilt around how buyers actually search, from the category pages down to the specs they compare.",
+		image: "/images/hero/2.png",
+		imageAlt: "Kessler Tools project visual",
+		resultLabel: "More qualified enquiries",
+		resultValue: "41%",
+		revealTones: ["pink", "primary", "blue", "yellow"],
+		tone: "yellow",
+	},
+	{
+		client: "Halden Clinics",
+		description:
+			"A booking flow rebuilt in five weeks, with the questions patients could not answer taken out of the way.",
+		image: "/images/hero/3.png",
+		imageAlt: "Halden Clinics project visual",
+		resultLabel: "Increase in completed bookings",
+		resultValue: "+38%",
+		revealTones: ["green", "yellow", "primary", "pink"],
+		tone: "pink",
+	},
+	{
+		client: "Marrow & Co",
+		description:
+			"One landing page rebuilt around a single offer, with the proof moved above the decision.",
+		image: "/images/hero/4.png",
+		imageAlt: "Marrow and Co project visual",
+		resultLabel: "Conversion rate, up from 3.1%",
+		resultValue: "4.7%",
+		revealTones: ["yellow", "blue", "pink", "green"],
+		tone: "green",
+	},
 ];
 
 const workRoot = useTemplateRef<HTMLElement>("workRoot");
@@ -84,101 +84,98 @@ const tooltipLabel = shallowRef<string>();
 const mounted = useMounted();
 const supportsFinePointer = useMediaQuery("(hover: hover) and (pointer: fine)");
 const shouldLoadTooltip = computed(
-   () => mounted.value && supportsFinePointer.value,
+	() => mounted.value && supportsFinePointer.value,
 );
 const { start: scheduleTooltipClose, stop: cancelTooltipClose } = useTimeoutFn(
-   () => {
-      tooltipActive.value = false;
-   },
-   200,
-   { immediate: false },
+	() => {
+		tooltipActive.value = false;
+	},
+	200,
+	{ immediate: false },
 );
 
 useWorkMotion(workRoot, { titleSplit });
 
 function setTitleSplit(parts: SplitTextResult) {
-   titleSplit.value = parts;
+	titleSplit.value = parts;
 }
 
 function showTooltip(image: string, label?: string) {
-   cancelTooltipClose();
-   tooltipImage.value = image;
-   tooltipLabel.value = label;
-   tooltipActive.value = true;
+	cancelTooltipClose();
+	tooltipImage.value = image;
+	tooltipLabel.value = label;
+	tooltipActive.value = true;
 }
 
 function activateTooltip(item: CaseStudy) {
-   showTooltip(item.image);
+	showTooltip(item.image);
 }
 
 function deactivateTooltip() {
-   scheduleTooltipClose();
+	scheduleTooltipClose();
 }
 </script>
 
 <template>
-   <section id="work" ref="workRoot" class="work">
-      <div class="work-content section-gutter">
-         <SplitText
-            class="section-title work-title"
-            as="h2"
-            mask="words"
-            :text="workTitle"
-            type="words"
-            @split="setTitleSplit"
-         />
+	<section id="work" ref="workRoot" class="work">
+		<div class="work-content section-gutter">
+			<SplitText
+				class="section-title work-title"
+				as="h2"
+				mask="words"
+				:text="workTitle"
+				type="words"
+				@split="setTitleSplit"
+			/>
 
-         <div class="case-list" data-work-case-list>
-            <CaseStudyCard
-               v-for="item in caseStudies"
-               :key="item.client"
-               v-bind="item"
-               @activate="activateTooltip(item)"
-               @deactivate="deactivateTooltip"
-            />
-         </div>
-      </div>
+			<div class="case-list" data-work-case-list>
+				<CaseStudyCard
+					v-for="item in caseStudies"
+					:key="item.client"
+					v-bind="item"
+					@activate="activateTooltip(item)"
+					@deactivate="deactivateTooltip"
+				/>
+			</div>
+		</div>
 
-      <MoreWorksPanel
-         @activate="showTooltip"
-         @deactivate="deactivateTooltip"
-      />
+		<MoreWorksPanel @activate="showTooltip" @deactivate="deactivateTooltip" />
 
-      <TrailingTooltip
-         v-if="shouldLoadTooltip"
-         :active="tooltipActive"
-         :image="tooltipImage"
-         :label="tooltipLabel"
-      />
-   </section>
+		<TrailingTooltip
+			v-if="shouldLoadTooltip"
+			:active="tooltipActive"
+			:image="tooltipImage"
+			:label="tooltipLabel"
+		/>
+	</section>
 </template>
 
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
 .work {
-   @apply w-full pb-section;
+	@apply w-full pb-section;
 }
 
 .work-content {
-   @apply pb-section;
+	@apply pb-section;
 }
 
 .work-title {
-   @apply mx-auto max-w-[16ch] text-center;
-   font-size: clamp(3.5rem, 12vw, 13rem);
+	@apply mx-auto max-w-[16ch] text-center;
+	font-size: clamp(3.5rem, 12vw, 13rem);
 }
 
 .work-title :deep(.split-text-word),
 .work-title :deep(.split-text-word-mask) {
-   display: inline-block;
+	display: inline-block;
 }
 
 .work-title :deep(.split-text-word) {
-   visibility: hidden;
+	visibility: hidden;
 }
 
 .case-list {
-   @apply mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 xl:mt-24 xl:gap-32;
+	@apply mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 xl:mt-24 xl:gap-32;
 }
 </style>
