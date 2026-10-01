@@ -210,6 +210,14 @@
 		@apply outline-3 outline-offset-3 outline-ring;
 	}
 
+	html {
+		scrollbar-width: none;
+	}
+
+	html::-webkit-scrollbar {
+		display: none;
+	}
+
 	::-webkit-scrollbar {
 		@apply size-2;
 	}

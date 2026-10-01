@@ -400,6 +400,27 @@ must manage their own scroll input.
 Do not construct Lenis inside a page or component. Do not add a second animation
 frame loop. The app plugin is the only owner of initialization and teardown.
 
+### Scrollbar
+
+The page shows a thumb with no track. A classic scrollbar always reserves its own
+gutter, and that gutter paints the root canvas color, so it would show as a cream
+strip beside dark sections. The base layer therefore hides the root scrollbar
+with `scrollbar-width: none` and `html::-webkit-scrollbar { display: none }`.
+Nested scroll regions keep the global `::-webkit-scrollbar` styling.
+
+`SiteScrollbar` in the layout replaces it with a fixed overlay thumb on the right
+edge. It reads the native scroll position, viewport height, and document height
+after mount. It updates on scroll and resize, and through a resize observer on
+the body, so pin spacers and late content keep the thumb in proportion. The
+thumb is at least `48px` tall. A `w-1.5` pill sits inside a `w-3.5` drag target
+painted in `background` at half opacity with `mix-blend-mode: difference`, so it
+reads dark on the canvas and light on dark surfaces without a separate color
+per section. Dragging the thumb scrolls through `useSmoothScroll` with
+`immediate`, so Lenis stays the single owner of the scroll position. The overlay
+is hidden from assistive technology. Wheel, keyboard, and touch scrolling stay
+native, and the overlay renders nothing until mount or when the page does not
+scroll.
+
 The implementation follows the official [Lenis GSAP integration](https://github.com/darkroomengineering/lenis#gsap-scrolltrigger)
 and [GSAP ScrollTrigger guidance](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
 
