@@ -804,8 +804,8 @@ measure after the work section's pin above them.
 The intro panel centers its heading, currently "What can we do for You", on two
 lines at `clamp(3rem, 10vw, 12rem)`, with each line held to one line through
 `white-space: nowrap`. Each line is its own `SplitText` word split, and
-screen readers get the phrase from an `sr-only` copy. Every word starts faint,
-blurred, and small, at `0.12` opacity, `blur(16px)`, and `0.6` scale, and
+screen readers get the phrase from an `sr-only` copy. Every word starts invisible,
+blurred, and small, at `0` opacity, `blur(16px)`, and `0.6` scale, and
 grows to full opacity, no blur, and its resting size. The words resolve one
 after another in reading order, and the pin holds the finished title for a
 short beat before releasing it.
