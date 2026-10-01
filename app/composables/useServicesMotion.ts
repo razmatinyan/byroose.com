@@ -1,11 +1,8 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import { addCharReveal } from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
-import {
-	addWordReveal,
-	wordRevealDenseStagger,
-	wordRevealStagger,
-} from "@/lib/word-reveal";
+import { addWordReveal, wordRevealDenseStagger } from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitListSource = MaybeRefOrGetter<
@@ -21,11 +18,10 @@ interface ServicesMotionTargets {
 interface ServicePanelParts {
 	descriptionWords: HTMLElement[];
 	panel: HTMLElement;
-	titleWords: HTMLElement[];
+	titleChars: HTMLElement[];
 }
 
 const selectors = {
-	description: "[data-service-description]",
 	image: "[data-service-image]",
 	intro: "[data-services-intro]",
 	media: "[data-service-media]",
@@ -46,6 +42,7 @@ const introWordFrom = {
 	scale: 0.6,
 };
 const textRevealStart = "top 60%";
+const descriptionOverlap = 0.2;
 const imageZoom = 1.3;
 const mediaRunway = 1;
 const mediaPeakScale = 0.8;
@@ -97,40 +94,28 @@ export function useServicesMotion(
 			.to({}, { duration: introHold });
 	}
 
-	function revealWords(
-		words: HTMLElement[],
-		trigger: HTMLElement | null,
-		stagger: number,
-	) {
-		if (!words.length || !trigger) return;
+	function revealText({
+		descriptionWords,
+		panel,
+		titleChars,
+	}: ServicePanelParts) {
+		const title = panel.querySelector<HTMLElement>(selectors.title);
+		if (!title || (!titleChars.length && !descriptionWords.length)) return;
 
 		const timeline = gsap.timeline({
 			scrollTrigger: {
 				once: true,
 				refreshPriority,
 				start: textRevealStart,
-				trigger,
+				trigger: title,
 			},
 		});
 
-		addWordReveal(timeline, words, { stagger });
-	}
-
-	function revealText({
-		descriptionWords,
-		panel,
-		titleWords,
-	}: ServicePanelParts) {
-		revealWords(
-			titleWords,
-			panel.querySelector<HTMLElement>(selectors.title),
-			wordRevealStagger,
-		);
-		revealWords(
-			descriptionWords,
-			panel.querySelector<HTMLElement>(selectors.description),
-			wordRevealDenseStagger,
-		);
+		addCharReveal(timeline, titleChars);
+		addWordReveal(timeline, descriptionWords, {
+			position: Math.max(0, timeline.duration() - descriptionOverlap),
+			stagger: wordRevealDenseStagger,
+		});
 	}
 
 	function scaleMedia(panel: HTMLElement) {
@@ -208,7 +193,7 @@ export function useServicesMotion(
 		].map((panel, index) => ({
 			descriptionWords: splitWords(descriptionParts[index]),
 			panel,
-			titleWords: splitWords(titleParts[index]),
+			titleChars: titleParts[index]?.chars ?? [],
 		}));
 
 		createMatchMedia(
@@ -220,8 +205,8 @@ export function useServicesMotion(
 				if (context.conditions?.reduceMotion) {
 					showAll([
 						...introWords,
-						...panels.flatMap(({ descriptionWords, titleWords }) => [
-							...titleWords,
+						...panels.flatMap(({ descriptionWords, titleChars }) => [
+							...titleChars,
 							...descriptionWords,
 						]),
 					]);

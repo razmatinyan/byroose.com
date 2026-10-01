@@ -106,10 +106,11 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			data-service-panel
 		>
 			<SplitText
-				class="service-title"
+				class="split-title service-title"
 				as="h3"
 				data-service-title
-				mask="words"
+				mask="chars"
+				type="words,chars"
 				:text="service.title"
 				@split="setTitleSplit(index, $event)"
 			/>
@@ -117,7 +118,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			<SplitText
 				class="service-description"
 				as="p"
-				data-service-description
 				mask="words"
 				:text="service.description"
 				@split="setDescriptionSplit(index, $event)"
@@ -189,21 +189,18 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-title {
-	@apply m-0 text-service font-bold tracking-[-0.045em] text-balance;
+	@apply m-0 text-service font-bold text-balance;
 }
 
 .service-description {
 	@apply m-0 max-w-[38ch] text-xl leading-snug font-medium tracking-tight text-balance text-muted-foreground md:text-2xl xl:text-3xl;
 }
 
-.service-title :deep(.split-text-word),
-.service-title :deep(.split-text-word-mask),
 .service-description :deep(.split-text-word),
 .service-description :deep(.split-text-word-mask) {
 	display: inline-block;
 }
 
-.service-title :deep(.split-text-word),
 .service-description :deep(.split-text-word) {
 	visibility: hidden;
 }

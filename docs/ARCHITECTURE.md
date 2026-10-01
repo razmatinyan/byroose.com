@@ -167,8 +167,8 @@ hover state with its current image and label, and WorkSection feeds them to the
 same TrailingTooltip the case cards use.
 
 useServicesMotion owns the services section's motion: the pinned intro panel's
-blurred word reveal and, for each `data-service-panel`, the title and
-description word rises and the scrubbed bottom origin image entry and top
+blurred word reveal and, for each `data-service-panel`, the title character
+rise followed by the description word rise in one timeline, and the scrubbed bottom origin image entry and top
 origin image exit measured against `data-service-media-frame`. ServicesSection owns the copy, the
 image links, and the tooltip handlers. The composable waits until the intro
 lines, every service title, and every description have reported their splits.

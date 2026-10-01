@@ -817,14 +817,16 @@ description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
 measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
-The title and the description reveal like the Studio statement and copy. Both
-split into masked words that rise from 115 percent below their masks over
-`0.8s` with `power3.out` easing. The title uses the statement's `0.03s`
-stagger and the description uses the copy's denser `0.01s` stagger. Both
-sections take that recipe from `app/lib/word-reveal.ts`, so their timing
-cannot drift. Only the start differs: each service text waits until its own
-element reaches 60 percent of the viewport rather than Studio's 82, so the
-words rise once they are well inside the screen.
+The title and the description reveal in sequence from one trigger. When the
+title reaches 60 percent of the viewport, it types itself in character by
+character with the work title's recipe from `app/lib/char-reveal.ts`: the
+title takes the `split-title` class group for its kerning compensation, and
+each character rises from its mask over `0.9s` with a `0.035s` stagger. The
+description follows in the same timeline, starting `0.2s` before the last
+title character lands, and rises word by word like the Studio copy, with the
+masked word recipe from `app/lib/word-reveal.ts` and its `0.01s` stagger.
+Because both reveals share one timeline, the description can never start
+ahead of its title.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at
 full size, and it travels slower than the page so a future video stays on
