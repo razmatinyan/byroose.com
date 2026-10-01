@@ -98,7 +98,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state and image from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -152,7 +152,9 @@ useMoreWorksMotion owns the MoreWorksPanel's internal motion: the pin, the
 scrubbed reveal that brings the words in from their sides character by character
 while the image scales up from zero, and the on-screen state that drives image
 cycling. The panel component owns the image list and the cycling interval, and
-the composable only reports whether cycling should run.
+the composable only reports whether cycling should run. The panel emits its
+hover state with its current image and label, and WorkSection feeds them to the
+same TrailingTooltip the case cards use.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes

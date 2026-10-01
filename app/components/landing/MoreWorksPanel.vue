@@ -12,9 +12,15 @@ interface MoreWorksImage {
    src: string;
 }
 
+const emit = defineEmits<{
+   activate: [image: string, label: string];
+   deactivate: [];
+}>();
+
 const worksRoute = "/works";
 const titleStart = "View";
 const titleEnd = "work";
+const actionLabel = "Explore Projects";
 const imageInterval = 750;
 const actionRolloverTones: RolloverTones = ["primary", "green", "pink"];
 
@@ -36,6 +42,7 @@ const endWord = useTemplateRef<HTMLElement>("endWord");
 const startSplit = shallowRef<SplitTextResult>();
 const endSplit = shallowRef<SplitTextResult>();
 const activeImage = shallowRef(0);
+const previewing = shallowRef(false);
 
 const { cycling } = useMoreWorksMotion(track, {
    endSplit,
@@ -55,8 +62,25 @@ watch(cycling, (active) => {
    else pause();
 });
 
+watch(activeImage, () => {
+   if (previewing.value) showPreview();
+});
+
 function showNextImage() {
    activeImage.value = (activeImage.value + 1) % moreWorksImages.length;
+}
+
+function showPreview() {
+   const image = moreWorksImages[activeImage.value];
+   if (!image) return;
+
+   previewing.value = true;
+   emit("activate", image.src, actionLabel);
+}
+
+function hidePreview() {
+   previewing.value = false;
+   emit("deactivate");
 }
 
 function setStartSplit(parts: SplitTextResult) {
@@ -81,6 +105,8 @@ function openWorks(event: MouseEvent) {
          class="more-works"
          data-work-more-panel
          @click="openWorks"
+         @pointerenter="showPreview"
+         @pointerleave="hidePreview"
       >
          <div class="more-works-stage">
             <div ref="media" class="more-works-media" aria-hidden="true">
@@ -135,8 +161,10 @@ function openWorks(event: MouseEvent) {
                variant="cream"
                size="cta-lg"
                :rollover-tones="actionRolloverTones"
+               @pointerenter="hidePreview"
+               @pointerleave="showPreview"
             >
-               Explore Projects
+               {{ actionLabel }}
                <template #icon>
                   <ButtonIcon tone="dark" />
                </template>

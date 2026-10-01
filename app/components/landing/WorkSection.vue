@@ -80,6 +80,7 @@ const workRoot = useTemplateRef<HTMLElement>("workRoot");
 const titleSplit = shallowRef<SplitTextResult>();
 const tooltipActive = shallowRef(false);
 const tooltipImage = shallowRef("");
+const tooltipLabel = shallowRef<string>();
 const mounted = useMounted();
 const supportsFinePointer = useMediaQuery("(hover: hover) and (pointer: fine)");
 const shouldLoadTooltip = computed(
@@ -99,10 +100,15 @@ function setTitleSplit(parts: SplitTextResult) {
    titleSplit.value = parts;
 }
 
-function activateTooltip(item: CaseStudy) {
+function showTooltip(image: string, label?: string) {
    cancelTooltipClose();
-   tooltipImage.value = item.image;
+   tooltipImage.value = image;
+   tooltipLabel.value = label;
    tooltipActive.value = true;
+}
+
+function activateTooltip(item: CaseStudy) {
+   showTooltip(item.image);
 }
 
 function deactivateTooltip() {
@@ -133,12 +139,16 @@ function deactivateTooltip() {
          </div>
       </div>
 
-      <MoreWorksPanel />
+      <MoreWorksPanel
+         @activate="showTooltip"
+         @deactivate="deactivateTooltip"
+      />
 
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
          :image="tooltipImage"
+         :label="tooltipLabel"
       />
    </section>
 </template>

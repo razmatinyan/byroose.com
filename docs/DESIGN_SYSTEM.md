@@ -656,6 +656,15 @@ panel. A click anywhere else on the panel also routes to `/works`, so the whole
 surface carries a pointer cursor. Keyboard users reach the destination through
 the action link.
 
+The panel is also a hover surface for the work section's shared trailing
+tooltip. While the pointer is on the panel, the tooltip reads "Explore Projects"
+instead of the cards' default label. Its thumbnail follows the panel's
+currently cycling image, so each cut swaps the thumbnail through the tooltip's
+layered reveal. The tooltip steps aside while the pointer is on the action
+itself, so its label never sits on top of the identical button label, and
+returns when the pointer moves back onto the panel. Moving between a card and
+the panel keeps the same 200ms close window as moving between cards.
+
 The panel is followed by `spacing-section` of canvas before the next section.
 
 The stage overlays the heading and a 3:4 image frame in one grid cell. The
