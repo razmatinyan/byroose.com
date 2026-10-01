@@ -47,6 +47,8 @@ const descriptionStagger = 0.025;
 const imageZoom = 1.3;
 const panelRunway = 1;
 const mediaPeakScale = 0.8;
+const mediaEntryAt = 1;
+const mediaPeakAt = 0.6;
 const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
 
@@ -185,11 +187,18 @@ export function useServicesMotion(
 		const media = panel.querySelector<HTMLElement>(selectors.media);
 		const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
 		const image = panel.querySelector<HTMLElement>(selectors.image);
-		if (!frame || !media || !mediaExit) return;
+		const title = panel.querySelector<HTMLElement>(selectors.title);
+		if (!frame || !media || !mediaExit || !title) return;
 
 		const frameAt = (share: number) => () =>
 			offsetWithin(frame, panel) + frame.offsetHeight * share;
-		const peak = scrollWhen(panel, content, frameAt(0.5), 0.5);
+		const peak = scrollWhen(panel, content, frameAt(0.5), mediaPeakAt);
+		const entryStart = scrollWhen(
+			panel,
+			content,
+			() => offsetWithin(title, panel),
+			mediaEntryAt,
+		);
 
 		const entry = gsap
 			.timeline({
@@ -199,7 +208,7 @@ export function useServicesMotion(
 					invalidateOnRefresh: true,
 					refreshPriority,
 					scrub: true,
-					start: scrollWhen(panel, content, frameAt(0), 1),
+					start: entryStart,
 				},
 			})
 			.fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
