@@ -26,9 +26,8 @@ const lineStagger = 0.08;
 const linesAtMedia = 0.1;
 const parallaxScale = 1.3;
 const parallaxShift = 14;
-const caseListLag = 0.4;
+const caseListLag = 0.7;
 const caseListFadeStart = 0.3;
-const panelArrivalOffset = 20;
 
 function documentTop(element: HTMLElement) {
    let top = 0;
@@ -155,24 +154,35 @@ export function useWorkMotion(
       const panel = more?.querySelector<HTMLElement>(selectors.morePanel);
       if (!caseList || !lastCase || !more || !panel) return;
 
-      gsap.set(more, { "--more-works-overlap": panelArrivalOffset / 100 });
+      gsap.set(more, { "--more-works-runway": 1 });
 
-      gsap
-         .timeline({
-            defaults: { duration: 1, ease: "none" },
-            scrollTrigger: {
-               end: "top top",
-               endTrigger: more,
-               invalidateOnRefresh: true,
-               scrub: true,
-               start: () =>
-                  documentTop(lastCase) +
-                  lastCase.offsetHeight / 2 -
-                  window.innerHeight / 2,
-            },
-         })
-         .to(caseList, { y: () => window.innerHeight * caseListLag }, 0)
-         .fromTo(panel, { yPercent: panelArrivalOffset }, { yPercent: 0 }, 0)
+      const timeline = gsap.timeline({
+         defaults: { duration: 1, ease: "none" },
+         scrollTrigger: {
+            end: "top top",
+            endTrigger: more,
+            invalidateOnRefresh: true,
+            scrub: true,
+            start: () =>
+               documentTop(lastCase) +
+               lastCase.offsetHeight / 2 -
+               window.innerHeight / 2,
+         },
+      });
+
+      const handoffDistance = () => {
+         const trigger = timeline.scrollTrigger;
+         return trigger ? trigger.end - trigger.start : window.innerHeight;
+      };
+
+      timeline
+         .to(caseList, { y: () => handoffDistance() * caseListLag }, 0)
+         .fromTo(
+            panel,
+            { y: () => window.innerHeight - handoffDistance() },
+            { y: 0 },
+            0,
+         )
          .to(
             caseList,
             { duration: 1 - caseListFadeStart, opacity: 0 },

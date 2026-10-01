@@ -23,11 +23,10 @@ interface MoreWorksElements {
    track: HTMLElement;
 }
 
-const headerLine = 40;
-const charsRevealStart = "top 30%";
-const charDuration = 0.6;
-const charStagger = 0.06;
-const mediaStartScale = 0.55;
+const revealLead = 0.6;
+const pinLength = 1;
+const charDuration = 0.3;
+const charSpread = 0.6;
 const wordSpread = 0.22;
 
 export function useMoreWorksMotion(
@@ -36,7 +35,6 @@ export function useMoreWorksMotion(
 ) {
    const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
-   const { setCoversHeader } = useHeaderSurface();
    const cycling = shallowRef(false);
    let disposed = false;
    let initialized = false;
@@ -67,82 +65,81 @@ export function useMoreWorksMotion(
       };
    }
 
-   function revealChars(
-      startChars: HTMLElement[],
-      endChars: HTMLElement[],
-      trigger: HTMLElement,
-   ) {
-      const chars = [...startChars, ...endChars];
-      if (!chars.length) return;
-
-      gsap.set(chars, { opacity: 0 });
-
-      const reveal = {
-         duration: charDuration,
-         ease: "power2.out",
-         opacity: 1,
-         stagger: charStagger,
-      };
-
-      gsap
-         .timeline({
-            scrollTrigger: {
-               once: true,
-               start: charsRevealStart,
-               trigger,
-            },
-         })
-         .to([...startChars].reverse(), reveal, 0)
-         .to(endChars, reveal, 0);
+   function pinPanel(ScrollTrigger: ScrollTriggerPlugin, track: HTMLElement) {
+      ScrollTrigger.create({
+         end: `+=${pinLength * 100}%`,
+         pin: true,
+         refreshPriority: 1,
+         start: "top top",
+         trigger: track,
+      });
    }
 
-   function convergeTitle({ endWord, media, startWord, track }: MoreWorksElements) {
+   function revealTitle(
+      { endWord, media, startWord, track }: MoreWorksElements,
+      startChars: HTMLElement[],
+      endChars: HTMLElement[],
+   ) {
+      const duration = revealLead + pinLength;
       const spread = () => window.innerWidth * wordSpread;
+      const charReveal = {
+         duration: charDuration,
+         opacity: 1,
+         stagger: { amount: charSpread },
+      };
 
-      gsap
+      const timeline = gsap
          .timeline({
             defaults: { ease: "none" },
             scrollTrigger: {
-               end: "+=100%",
+               end: () => `+=${window.innerHeight * duration}`,
                invalidateOnRefresh: true,
-               pin: true,
-               refreshPriority: 1,
                scrub: true,
-               start: "top top",
+               start: `top ${revealLead * 100}%`,
                trigger: track,
             },
          })
-         .fromTo(startWord, { x: () => -spread() }, { x: 0 }, 0)
-         .fromTo(endWord, { x: spread }, { x: 0 }, 0)
-         .fromTo(media, { scale: mediaStartScale }, { scale: 1 }, 0);
+         .fromTo(startWord, { x: () => -spread() }, { duration, x: 0 }, 0)
+         .fromTo(endWord, { x: spread }, { duration, x: 0 }, 0)
+         .fromTo(media, { scale: 0 }, { duration, scale: 1 }, 0);
+
+      if (startChars.length) {
+         timeline.fromTo(
+            [...startChars].reverse(),
+            { opacity: 0 },
+            charReveal,
+            0,
+         );
+      }
+
+      if (endChars.length) {
+         timeline.fromTo(endChars, { opacity: 0 }, charReveal, 0);
+      }
    }
 
-   function syncPanel(panel: HTMLElement, motion: boolean) {
+   function syncCycling(panel: HTMLElement) {
       const { bottom, top } = panel.getBoundingClientRect();
-
-      setCoversHeader(top <= headerLine && bottom >= headerLine);
-      cycling.value = motion && bottom > 0 && top < window.innerHeight;
+      cycling.value = bottom > 0 && top < window.innerHeight;
    }
 
-   function releasePanel() {
-      setCoversHeader(false);
+   function stopCycling() {
       cycling.value = false;
    }
 
-   function trackPanel(
+   function trackVisibility(
       ScrollTrigger: ScrollTriggerPlugin,
       { panel, track }: MoreWorksElements,
-      motion: boolean,
    ) {
       ScrollTrigger.create({
-         end: () => `+=${track.offsetHeight + window.innerHeight * 2}`,
+         end: () =>
+            `+=${track.offsetHeight + window.innerHeight * (pinLength + 2)}`,
          invalidateOnRefresh: true,
-         onRefresh: () => syncPanel(panel, motion),
+         onRefresh: () => syncCycling(panel),
          onToggle: (self) => {
-            if (self.isActive) syncPanel(panel, motion);
-            else releasePanel();
+            if (self.isActive) syncCycling(panel);
+            else stopCycling();
          },
-         onUpdate: () => syncPanel(panel, motion),
+         onUpdate: () => syncCycling(panel),
          start: "top bottom",
          trigger: track,
       });
@@ -160,21 +157,13 @@ export function useMoreWorksMotion(
       if (!elements) return;
 
       createMatchMedia(
-         {
-            motion: "(prefers-reduced-motion: no-preference)",
-            reduceMotion: "(prefers-reduced-motion: reduce)",
-         },
-         (context) => {
-            const motion = Boolean(context.conditions?.motion);
+         "(prefers-reduced-motion: no-preference)",
+         () => {
+            pinPanel(ScrollTrigger, elements.track);
+            revealTitle(elements, startChars, endChars);
+            trackVisibility(ScrollTrigger, elements);
 
-            if (motion) {
-               revealChars(startChars, endChars, elements.track);
-               convergeTitle(elements);
-            }
-
-            trackPanel(ScrollTrigger, elements, motion);
-
-            return releasePanel;
+            return stopCycling;
          },
          track,
       );

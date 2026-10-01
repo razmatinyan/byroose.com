@@ -13,6 +13,8 @@ interface MoreWorksImage {
 }
 
 const worksRoute = "/works";
+const titleStart = "View";
+const titleEnd = "work";
 const imageInterval = 750;
 const actionRolloverTones: RolloverTones = ["primary", "green", "pink"];
 
@@ -98,19 +100,27 @@ function openWorks(event: MouseEvent) {
             </div>
 
             <h3 class="more-works-title">
-               <span class="sr-only">More works</span>
-               <span ref="startWord" class="more-works-word" aria-hidden="true">
+               <span class="sr-only">{{ titleStart }} {{ titleEnd }}</span>
+               <span
+                  ref="startWord"
+                  class="more-works-word more-works-word-start"
+                  aria-hidden="true"
+               >
                   <SplitText
                      aria="none"
-                     text="More"
+                     :text="titleStart"
                      type="chars"
                      @split="setStartSplit"
                   />
                </span>
-               <span ref="endWord" class="more-works-word" aria-hidden="true">
+               <span
+                  ref="endWord"
+                  class="more-works-word more-works-word-end"
+                  aria-hidden="true"
+               >
                   <SplitText
                      aria="none"
-                     text="works"
+                     :text="titleEnd"
                      type="chars"
                      @split="setEndSplit"
                   />
@@ -141,7 +151,7 @@ function openWorks(event: MouseEvent) {
 
 .more-works-track {
    @apply pointer-events-none relative z-10;
-   margin-top: calc(var(--more-works-overlap, 0) * -100svh);
+   margin-top: calc(var(--more-works-runway, 0) * 50svh);
 }
 
 .more-works {
@@ -172,13 +182,21 @@ function openWorks(event: MouseEvent) {
 }
 
 .more-works-title {
-   @apply relative z-10 m-0 flex items-center justify-center leading-none font-bold tracking-[-0.045em] whitespace-nowrap uppercase;
-   gap: calc(var(--more-works-image) * 0.76);
+   @apply relative z-10 m-0 grid w-full items-center leading-none font-bold tracking-[-0.045em] whitespace-nowrap uppercase;
+   grid-template-columns: 1fr calc(var(--more-works-image) * 0.76) 1fr;
    font-size: clamp(2.75rem, 11vw, 13rem);
 }
 
 .more-works-word {
    @apply inline-block;
+}
+
+.more-works-word-start {
+   @apply col-start-1 justify-self-end;
+}
+
+.more-works-word-end {
+   @apply col-start-3 justify-self-start;
 }
 
 .more-works-action {

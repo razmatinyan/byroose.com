@@ -4,7 +4,6 @@ import { useMediaQuery } from '@vueuse/core'
 import SiteMenu from '@/components/layout/SiteMenu.vue'
 import SiteNavLink from '@/components/layout/SiteNavLink.vue'
 import { Button, ButtonIcon } from '@/components/ui/button'
-import type { ButtonVariant, RolloverTones } from '@/components/ui/button'
 
 interface NavItem {
 	href: string
@@ -33,20 +32,11 @@ const {
 
 const resolvedNavItems = computed(() => navItems ?? defaultNavItems)
 const menuOpen = shallowRef(false)
-const darkSurfaceRolloverTones: RolloverTones = ['primary', 'green', 'pink']
+const headerCtaVariant = computed(() => (menuOpen.value ? 'default' : 'dark'))
 const isDesktop = useMediaQuery('(min-width: 64rem)')
 const route = useRoute()
 const { scrollTo } = useSmoothScroll()
 const { headerMode } = useSiteHeaderMotion()
-const { surface: headerSurface } = useHeaderSurface()
-const overDarkSurface = computed(() => headerSurface.value === 'dark')
-const headerCtaVariant = computed<ButtonVariant>(() => {
-	if (menuOpen.value) return 'default'
-	return overDarkSurface.value ? 'cream' : 'dark'
-})
-const headerCtaRolloverTones = computed(() =>
-	overDarkSurface.value ? darkSurfaceRolloverTones : undefined,
-)
 
 function setMenuOpen(open: boolean) {
 	menuOpen.value = open
@@ -73,12 +63,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 </script>
 
 <template>
-	<header
-		ref="headerRoot"
-		class="site-header"
-		:data-header-mode="headerMode"
-		:data-header-surface="headerSurface"
-	>
+	<header ref="headerRoot" class="site-header" :data-header-mode="headerMode">
 		<div class="site-header-inner">
 			<NuxtLink
 				ref="logoLink"
@@ -120,7 +105,6 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 						:href="ctaHref"
 						size="cta-sm"
 						:variant="headerCtaVariant"
-						:rollover-tones="headerCtaRolloverTones"
 					>
 						{{ ctaLabel }}
 						<template #icon>
@@ -133,7 +117,6 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 					<SiteMenu
 						:nav-items="resolvedNavItems"
 						:open="menuOpen"
-						:surface="headerSurface"
 						@update:open="setMenuOpen"
 					/>
 				</span>
@@ -159,11 +142,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-logo {
-	@apply block h-7 w-auto transition-[filter] duration-300 sm:h-8.5;
-}
-
-.site-header[data-header-surface='dark'] .site-logo {
-	filter: invert(1);
+	@apply block h-7 w-auto sm:h-8.5;
 }
 
 .site-nav {

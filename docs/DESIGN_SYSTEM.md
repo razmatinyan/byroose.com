@@ -656,10 +656,16 @@ panel. A click anywhere else on the panel also routes to `/works`, so the whole
 surface carries a pointer cursor. Keyboard users reach the destination through
 the action link.
 
+The panel is followed by `spacing-section` of canvas before the next section.
+
 The stage overlays the heading and a 3:4 image frame in one grid cell. The
-heading reads "More works", rendered as two uppercase words split into
-characters, with a gap of `0.76` times the image width so each word's inner edge
-overlaps the frame. The heading paints above the image. A visually hidden copy
+heading reads "View work", rendered as two uppercase words split into
+characters. Both words have four characters so they balance around the image.
+The heading is a `1fr gap 1fr` grid, with the gap set to `0.76` times the image
+width. The first word aligns to the end of its column and the second to the
+start of its column, so the gap stays centered on the image and both words
+overlap the frame by the same amount, whatever their glyph widths. The heading
+paints above the image. A visually hidden copy
 carries the accessible name while both visual words stay hidden from assistive
 technology. The frame cycles through the seven images in `public/images/work`,
 cutting to the next one every `750ms` without a crossfade. They are decorative,
@@ -671,42 +677,35 @@ is measured from `offsetTop` rather than the bounding box, because the case list
 it measures is the element the handoff transforms. From there until the panel
 pins, `useWorkMotion` scrubs one timeline:
 
-- The case list drifts down `40` percent of the viewport height, so the cards
-  move at about half the scroll speed.
+- The track gains a `50svh` runway above it through the `--more-works-runway`
+  variable. That extra scroll distance lets both the cards and the panel move
+  slower than the reader's scroll.
+- The case list drifts down seventy percent of the handoff distance, so the
+  cards move at about three tenths of the scroll speed.
 - The case list fades to zero over the last seventy percent of the range.
-- The panel rises from `20` percent below its rest position, so it arrives at
-  about one and a quarter times the scroll speed. Its track pulls up by `20svh`
-  through the `--more-works-overlap` variable, so that offset never opens a gap
-  after the last card.
+- The panel starts lifted by the handoff distance minus one viewport height, so
+  it enters at the viewport bottom exactly as the handoff starts. It then
+  settles into place, arriving at roughly seven tenths of the scroll speed.
 
-Before that start, every element moves at the native scroll speed.
-`useMoreWorksMotion` owns the panel's own motion:
+Both offsets are read from the timeline's own trigger range on every refresh, so
+the speeds hold at any viewport size. Before the handoff starts, every element
+moves at the native scroll speed. The header does not change color over the
+panel. `useMoreWorksMotion` owns the panel's own motion:
 
-- Characters: when the track reaches 30 percent of the viewport, each character
-  fades in over `0.6s` with a `0.06s` stagger, working outward from the center,
-  so "More" reveals right to left and "works" left to right.
-- Convergence: the track pins for one viewport of scroll. During the pin, both
-  words travel from `22` percent of the viewport width away toward the center,
-  and the image frame scales from `0.55` to its full size.
+- Reveal: one timeline is scrubbed from when the track reaches 60 percent of
+  the viewport until the end of the pin. Across it, both words travel in from
+  `22` percent of the viewport width to their resting columns. The image frame
+  scales up from zero. Each character fades in from zero opacity, working
+  outward from the center, so "View" reveals right to left and "work" left to
+  right, and every character is visible before the words settle.
+- Pin: the track pins for one viewport of scroll once its top reaches the
+  viewport top.
 - Cycling: images only cycle while the panel is on screen.
 
-The track carries `pointer-events: none` and only the panel accepts input, so
-the overlap never blocks the last card. Reduced motion drops the overlap, the
-pin, the fade, the slowdown, the character fade, and the cycling. It keeps a static dark panel with
-converged words and the first image.
-
-### Header surface
-
-The header adapts to dark sections instead of blending with them. A dark
-section reports through `useHeaderSurface` whenever it covers the header's
-control line, 40 pixels below the viewport top. The header then marks
-`data-header-surface="dark"`. In that state, the Start a project action switches
-from `dark` to `cream` with a primary, green, pink rollover, the closed menu
-control switches to the `background` surface, and the logo inverts. The open
-menu keeps its dark control because it sits on the dark panel. Colors and the
-logo filter transition over `300ms`, and transforms stay with GSAP. The state
-is a shared counter, so overlapping dark sections never release the header
-early. Each section clears its contribution when its scope is disposed.
+The track carries `pointer-events: none` and only the panel accepts input.
+Reduced motion drops the runway, the pin, the fade, the slowdown, the reveal,
+and the cycling. It keeps a static dark panel with the words in place and the
+first image.
 
 ### Header motion
 

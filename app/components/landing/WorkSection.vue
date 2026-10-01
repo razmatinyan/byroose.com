@@ -147,7 +147,7 @@ function deactivateTooltip() {
 @reference '../../assets/css/tailwind.css';
 
 .work {
-   @apply w-full;
+   @apply w-full pb-section;
 }
 
 .work-content {
