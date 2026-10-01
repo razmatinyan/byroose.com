@@ -813,8 +813,8 @@ short beat before releasing it.
 Each service panel centers its title at `text-service`, a description below
 it, and an image below that. The service names stay in sentence case. The
 description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
-`xl`, in medium weight with snug leading, balanced lines, and a `38ch`
-measure. The image spans the full content width at the source's natural
+`xl`, in the default `foreground` color at weight 600 with snug leading,
+balanced lines, and a `38ch` measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
 Each service panel scrolls slower than the page, so the title, the
