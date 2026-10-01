@@ -1,112 +1,158 @@
 <script setup lang="ts">
-import { shallowRef, useTemplateRef } from "vue";
+import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
-import { appIcons } from "@/lib/icons";
 import type { SplitTextResult } from "@/lib/split-text";
 
+const TrailingTooltip = defineAsyncComponent(
+	() => import("@/components/shared/TrailingTooltip.vue"),
+);
+
 interface Service {
+	description: string;
 	image: string;
 	title: string;
 }
 
-const servicesTitle = "We can help You with";
+const introLines = ["What can we do", "for You"];
+const introTitle = introLines.join(" ");
+const servicesRoute = "/services";
+const tooltipText = "More Details";
 
 const servicesData: Service[] = [
 	{
-		image: "/images/work/1.png",
+		description:
+			"Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
+		image: "/images/hero/5.png",
 		title: "AI content creation",
 	},
 	{
-		image: "/images/work/2.png",
+		description:
+			"Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
+		image: "/images/hero/6.png",
 		title: "Web development",
 	},
 ];
 
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
-const activeService = shallowRef(0);
-const titleSplit = shallowRef<SplitTextResult>();
-const optionSplits = shallowRef<(SplitTextResult | undefined)[]>(
+const introSplits = shallowRef<(SplitTextResult | undefined)[]>(
+	introLines.map(() => undefined),
+);
+const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
 	servicesData.map(() => undefined),
 );
+const descriptionSplits = shallowRef<(SplitTextResult | undefined)[]>(
+	servicesData.map(() => undefined),
+);
+const {
+	active: tooltipActive,
+	hide: hideTooltip,
+	image: tooltipImage,
+	label: tooltipLabel,
+	shouldLoad: shouldLoadTooltip,
+	show: showTooltip,
+} = useTrailingTooltip();
 
 useServicesMotion(servicesRoot, {
-	active: activeService,
-	optionSplits,
-	titleSplit,
+	descriptionSplits,
+	introSplits,
+	titleSplits,
 });
 
-function setTitleSplit(parts: SplitTextResult) {
-	titleSplit.value = parts;
-}
-
-function setOptionSplit(index: number, parts: SplitTextResult) {
-	optionSplits.value = optionSplits.value.map((entry, entryIndex) =>
+function withSplit(
+	splits: (SplitTextResult | undefined)[],
+	index: number,
+	parts: SplitTextResult,
+) {
+	return splits.map((entry, entryIndex) =>
 		entryIndex === index ? parts : entry,
 	);
 }
 
-function selectService(index: number) {
-	activeService.value = index;
+function setIntroSplit(index: number, parts: SplitTextResult) {
+	introSplits.value = withSplit(introSplits.value, index, parts);
+}
+
+function setTitleSplit(index: number, parts: SplitTextResult) {
+	titleSplits.value = withSplit(titleSplits.value, index, parts);
+}
+
+function setDescriptionSplit(index: number, parts: SplitTextResult) {
+	descriptionSplits.value = withSplit(descriptionSplits.value, index, parts);
 }
 </script>
 
 <template>
-	<section id="services" ref="servicesRoot" class="services section-gutter">
-		<h2 class="section-title split-title services-title">
-			<span class="sr-only">{{ servicesTitle }}</span>
-			<span aria-hidden="true">
-				<SplitText
-					aria="none"
-					mask="chars"
-					:text="servicesTitle"
-					type="words,chars"
-					@split="setTitleSplit"
-				/>
-				<span class="services-title-arrow">
-					<span class="services-title-glyph" data-services-title-arrow>
-						<Icon :name="appIcons.arrowDown" />
-					</span>
-				</span>
-			</span>
-		</h2>
-
-		<div class="services-layout" data-services-layout>
-			<div class="services-options">
-				<button
-					v-for="(service, index) in servicesData"
-					:key="service.title"
-					class="services-option"
-					type="button"
-					:aria-pressed="index === activeService"
-					@click="selectService(index)"
-					@focus="selectService(index)"
-					@pointerenter="selectService(index)"
-				>
+	<section id="services" ref="servicesRoot" class="services">
+		<div class="services-intro section-gutter" data-services-intro>
+			<h2 class="section-title services-intro-title">
+				<span class="sr-only">{{ introTitle }}</span>
+				<span aria-hidden="true">
 					<SplitText
+						v-for="(line, index) in introLines"
+						:key="line"
+						class="services-intro-line"
 						aria="none"
-						mask="words"
-						:text="service.title"
-						@split="setOptionSplit(index, $event)"
+						:text="line"
+						@split="setIntroSplit(index, $event)"
 					/>
-				</button>
-			</div>
-
-			<div class="services-visual" data-services-visual>
-				<NuxtImg
-					v-for="service in servicesData"
-					:key="service.image"
-					class="services-image"
-					data-services-image
-					:src="service.image"
-					alt=""
-					width="1080"
-					height="1919"
-					sizes="sm:448px"
-					loading="lazy"
-					draggable="false"
-				/>
-			</div>
+				</span>
+			</h2>
 		</div>
+
+		<article
+			v-for="(service, index) in servicesData"
+			:key="service.title"
+			class="service-panel section-gutter"
+			data-service-panel
+		>
+			<SplitText
+				class="service-title"
+				as="h3"
+				mask="words"
+				:text="service.title"
+				@split="setTitleSplit(index, $event)"
+			/>
+
+			<SplitText
+				class="service-description"
+				as="p"
+				mask="lines"
+				:text="service.description"
+				type="lines"
+				@split="setDescriptionSplit(index, $event)"
+			/>
+
+			<div class="service-media-exit" data-service-media-exit>
+				<NuxtLink
+					class="service-media"
+					data-service-media
+					:to="servicesRoute"
+					:aria-label="`More details about ${service.title}`"
+					@pointerenter="showTooltip(service.image, tooltipText)"
+					@pointerleave="hideTooltip"
+				>
+					<NuxtImg
+						class="service-image"
+						data-service-image
+						:src="service.image"
+						alt=""
+						width="1456"
+						height="816"
+						sizes="sm:1024px md:1280px lg:1536px"
+						densities="x1"
+						loading="lazy"
+						draggable="false"
+					/>
+				</NuxtLink>
+			</div>
+		</article>
+
+		<TrailingTooltip
+			v-if="shouldLoadTooltip"
+			:active="tooltipActive"
+			:image="tooltipImage"
+			:label="tooltipLabel"
+		/>
 	</section>
 </template>
 
@@ -117,53 +163,60 @@ function selectService(index: number) {
 	@apply w-full pb-section;
 }
 
-.services-title {
-	@apply text-center text-balance;
+.services-intro {
+	@apply flex min-h-svh items-center justify-center;
 }
 
-.services-title-arrow {
-	@apply ms-[0.12em] inline-block overflow-clip align-[-0.06em];
+.services-intro-title {
+	@apply text-center leading-[0.95];
+	font-size: clamp(3rem, 10vw, 12rem);
 }
 
-.services-title-glyph {
-	@apply invisible block size-[0.8em];
+.services-intro-line {
+	@apply block whitespace-nowrap;
 }
 
-.services-title-glyph :deep(svg),
-.services-title-glyph :deep(.iconify) {
-	@apply block size-full;
-}
-
-.services-layout {
-	@apply mt-16 grid grid-cols-1 items-center gap-12 md:mt-20 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16 xl:mt-24 xl:gap-24;
-}
-
-.services-options {
-	@apply flex flex-col items-start gap-3 md:gap-5;
-}
-
-.services-option {
-	@apply m-0 cursor-default border-0 bg-transparent p-0 text-left text-service font-bold tracking-[-0.045em] text-balance text-foreground/60 transition-colors duration-300 hover:text-foreground aria-pressed:text-foreground;
-}
-
-.services-option :deep(.split-text-word),
-.services-option :deep(.split-text-word-mask) {
+.services-intro-title :deep(.split-text-word) {
 	display: inline-block;
-}
-
-.services-option :deep(.split-text-word) {
 	visibility: hidden;
 }
 
-.services-visual {
-	@apply relative aspect-9/16 w-full max-w-xs justify-self-center overflow-hidden rounded-2xl bg-muted sm:max-w-sm lg:w-[clamp(16rem,26vw,28rem)] lg:max-w-none lg:justify-self-end;
+.service-panel {
+	@apply flex min-h-svh flex-col items-center justify-center gap-5 py-24 text-center md:gap-7 lg:h-svh lg:pt-28 lg:pb-10;
 }
 
-.services-image {
-	@apply pointer-events-none absolute inset-0 size-full object-cover select-none;
+.service-title {
+	@apply m-0 text-service font-bold tracking-[-0.045em] text-balance;
 }
 
-.services-image + .services-image {
-	clip-path: inset(100% 0% 0% 0%);
+.service-description {
+	@apply m-0 max-w-[46ch] text-base leading-relaxed text-muted-foreground sm:text-lg;
+}
+
+.service-title :deep(.split-text-word),
+.service-title :deep(.split-text-word-mask) {
+	display: inline-block;
+}
+
+.service-description :deep(.split-text-line),
+.service-description :deep(.split-text-line-mask) {
+	display: block;
+}
+
+.service-title :deep(.split-text-word),
+.service-description :deep(.split-text-line) {
+	visibility: hidden;
+}
+
+.service-media-exit {
+	@apply mt-3 w-full origin-top lg:min-h-0 lg:flex-1;
+}
+
+.service-media {
+	@apply block aspect-video w-full origin-bottom overflow-hidden rounded-2xl bg-muted lg:aspect-auto lg:h-full;
+}
+
+.service-image {
+	@apply pointer-events-none size-full object-cover select-none;
 }
 </style>

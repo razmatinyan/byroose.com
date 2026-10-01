@@ -610,7 +610,7 @@ hides every character until its reveal sets it visible. When the section
 reaches 90 percent of the viewport, each character rises from 115 percent below
 its mask over `0.9s` with `power3.out` easing and a `0.035s` stagger, so the
 title types itself in from left to right. That recipe lives in
-`app/lib/char-reveal.ts`, which the services title shares.
+`app/lib/char-reveal.ts`.
 
 Each case study reveals from its own trigger at the same line. The media frame
 fills with the preloader's stack reveal: five elements stacked on the frame all
@@ -688,8 +688,9 @@ movement stays on two-dimensional transforms with `force3D: false`, and the
 tooltip has no persistent `will-change` promotion, so its settled text remains
 sharp. Reduced motion removes the movement delay and clip transition.
 
-WorkSection loads the component asynchronously only after mount and only while
-`(hover: hover) and (pointer: fine)` matches. Phones, tablets, and other
+The open, close-delay, and loading state lives in `useTrailingTooltip`, which
+the services section shares. Each consumer loads the component asynchronously
+only after mount and only while `(hover: hover) and (pointer: fine)` matches. Phones, tablets, and other
 touch-first devices never request or mount the tooltip chunk.
 
 ### More works panel
@@ -793,38 +794,53 @@ first image, and the full circular action, whose glyph swap resolves instantly.
 
 ### Services section
 
-The services section centers its heading, currently "We can help You with",
-followed by a Lucide arrow down. The heading keeps `section-title` at
-`text-section` and adds `split-title`, so it shares the work title's kerning
-compensation and character reveal. Screen readers get the phrase from an
-`sr-only` copy, and the split characters and the arrow are hidden from them.
-The arrow is the last element of the reveal: it sits in its own mask at `0.8em`
-and rises with the characters as if it were one more letter. No whitespace
-separates it from the final word, so the arrow stays on the final word's line
-when the title wraps.
+The services section is a sequence of pinned full-viewport panels: one intro
+panel followed by one panel per service. `useServicesMotion` pins each panel
+at the top of the viewport for one and a half viewport heights and scrubs its
+reveal against that pin, so the scroll drives every reveal and reversing the
+scroll plays it back. The pins use a `refreshPriority` of `-1`, so they
+measure after the work section's pin above them.
 
-Below the heading, the two service names sit on the left at `text-service` and
-a 9:16 service visual sits on the right. On phones the layout stacks with the
-visual centered under the names. The names are buttons with `aria-pressed`.
-Hovering, focusing, or clicking one makes it the active service, raises it from
-`foreground` at sixty percent to full `foreground`, and swaps the visual to its
-image. The section carries no service descriptions.
+The intro panel centers its heading, currently "What can we do for You", on two
+lines at `clamp(3rem, 10vw, 12rem)`, with each line held to one line through
+`white-space: nowrap`. Each line is its own `SplitText` word split, and
+screen readers get the phrase from an `sr-only` copy. Every word starts faint,
+blurred, and oversized, at `0.12` opacity, `blur(16px)`, and `1.6` scale,
+and settles to full opacity, no blur, and its resting size. The words resolve
+one after another in reading order, and the pin holds the finished title for a
+short beat before releasing it.
 
-The visual stacks one image per service. The incoming image moves to the top of
-the stack and opens with a `clip-path` inset wipe over `1.1s` with `expo.out`,
-so it starts fast and settles slowly. Moving to a later service wipes it up
-from the bottom edge, and moving to an earlier one wipes it down from the top.
-The outgoing image stays underneath until it is covered. Every image after the
-first rests fully clipped in CSS, so the server output shows only the first
-image. The images are decorative placeholders from `public/images/work` and
-will be replaced with real service media.
+Each service panel centers its title at `text-service`, a description below
+it, and a wide image below that. The service names stay in sentence case. On
+desktop the panel is exactly one viewport tall and the image fills the space
+left under the text at the full content width, so it reads as a wide banner.
+On phones the panel may grow taller and the image keeps a 16:9 ratio.
 
-The service names split into masked words. When the layout reaches 82 percent
-of the viewport, each word rises from 115 percent below its mask over `0.8s`
-with `power3.out` easing and a `0.06s` stagger. The visual opens top to bottom
-at the same moment with the Studio portrait's `1.2s` `power3.inOut` clip
-reveal. Every reveal runs once. Reduced motion displays the title, the arrow,
-the names, and the visual at rest, and swaps images in one step.
+The title rises word by word from `SplitText` word masks. The description
+splits into masked lines and rises line by line, starting while the title is
+still arriving. The lines and their masks are block elements, because the
+split emits them as inline spans and a transform has no effect on an inline
+element. The image scales up from zero around its bottom center while the image
+inside it eases from `1.3` scale to rest, so it grows out of the description
+and keeps moving with the scroll. When the pin releases and the panel scrolls
+away toward the next one, the image scales back down to zero around its top
+center over the first sixty percent of a viewport height. Entry and exit live
+on two nested elements, the link for the bottom origin entry and its wrapper
+for the top origin exit, so the two transform origins never fight.
+
+The lines are split once, after the fonts load, and are not re-split on resize.
+A large width change can therefore wrap a split line inside its own mask. Move
+to `autoSplit` with a rebuilt timeline if that becomes visible.
+
+Each image is a `NuxtLink` to the `/services` route, named for its service
+through `aria-label`. Hovering it opens the shared TrailingTooltip with the
+service image and the label "More Details". The images are decorative
+placeholders from `public/images/hero` and will be replaced with real service
+media.
+
+Reduced motion drops every pin, the scrubbed reveals, and the image scale. It
+displays the title words, the service titles, the description lines, and the
+images at rest.
 
 ### Header motion
 

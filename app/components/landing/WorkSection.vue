@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { useMediaQuery, useMounted, useTimeoutFn } from "@vueuse/core";
-import {
-	computed,
-	defineAsyncComponent,
-	shallowRef,
-	useTemplateRef,
-} from "vue";
+import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import CaseStudyCard from "@/components/cards/CaseStudyCard.vue";
 import MoreWorksPanel from "./MoreWorksPanel.vue";
 import SplitText from "@/components/shared/SplitText.vue";
@@ -78,21 +72,14 @@ const caseStudies: CaseStudy[] = [
 
 const workRoot = useTemplateRef<HTMLElement>("workRoot");
 const titleSplit = shallowRef<SplitTextResult>();
-const tooltipActive = shallowRef(false);
-const tooltipImage = shallowRef("");
-const tooltipLabel = shallowRef<string>();
-const mounted = useMounted();
-const supportsFinePointer = useMediaQuery("(hover: hover) and (pointer: fine)");
-const shouldLoadTooltip = computed(
-	() => mounted.value && supportsFinePointer.value,
-);
-const { start: scheduleTooltipClose, stop: cancelTooltipClose } = useTimeoutFn(
-	() => {
-		tooltipActive.value = false;
-	},
-	200,
-	{ immediate: false },
-);
+const {
+	active: tooltipActive,
+	hide: deactivateTooltip,
+	image: tooltipImage,
+	label: tooltipLabel,
+	shouldLoad: shouldLoadTooltip,
+	show: showTooltip,
+} = useTrailingTooltip();
 
 useWorkMotion(workRoot, { titleSplit });
 
@@ -100,19 +87,8 @@ function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts;
 }
 
-function showTooltip(image: string, label?: string) {
-	cancelTooltipClose();
-	tooltipImage.value = image;
-	tooltipLabel.value = label;
-	tooltipActive.value = true;
-}
-
 function activateTooltip(item: CaseStudy) {
 	showTooltip(item.image);
-}
-
-function deactivateTooltip() {
-	scheduleTooltipClose();
 }
 </script>
 
