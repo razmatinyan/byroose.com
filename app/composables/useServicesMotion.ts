@@ -5,7 +5,6 @@ import {
 	addWordReveal,
 	wordRevealDenseStagger,
 	wordRevealStagger,
-	wordRevealStart,
 } from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
@@ -46,7 +45,12 @@ const introWordFrom = {
 	opacity: 0.12,
 	scale: 0.6,
 };
+const textRevealStart = "top 60%";
 const imageZoom = 1.3;
+const mediaPeak = "center center";
+const mediaPeakScale = 0.8;
+const mediaEntryEase = "sine.out";
+const mediaExitEase = "sine.in";
 
 function splitWords(parts: SplitTextResult | undefined) {
 	return parts?.words ?? [];
@@ -104,7 +108,7 @@ export function useServicesMotion(
 			scrollTrigger: {
 				once: true,
 				refreshPriority,
-				start: wordRevealStart,
+				start: textRevealStart,
 				trigger,
 			},
 		});
@@ -138,16 +142,16 @@ export function useServicesMotion(
 
 		const entry = gsap
 			.timeline({
-				defaults: { ease: "none" },
+				defaults: { ease: mediaEntryEase },
 				scrollTrigger: {
-					end: "center 60%",
+					end: mediaPeak,
 					refreshPriority,
 					scrub: true,
 					start: "top bottom",
 					trigger: frame,
 				},
 			})
-			.fromTo(media, { scale: 0 }, { scale: 1 }, 0);
+			.fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
 
 		if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
 
@@ -155,14 +159,14 @@ export function useServicesMotion(
 			mediaExit,
 			{ scale: 1 },
 			{
-				ease: "none",
+				ease: mediaExitEase,
 				immediateRender: false,
 				scale: 0,
 				scrollTrigger: {
 					end: "bottom top",
 					refreshPriority,
 					scrub: true,
-					start: "center 40%",
+					start: mediaPeak,
 					trigger: frame,
 				},
 			},

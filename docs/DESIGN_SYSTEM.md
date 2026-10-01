@@ -817,20 +817,23 @@ description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
 measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
-The title and the description reveal exactly like the Studio statement and
-copy. Both split into masked words that rise from 115 percent below their masks
-over `0.8s` with `power3.out` easing once their own element reaches 82
-percent of the viewport. The title uses the statement's `0.03s` stagger and
-the description uses the copy's denser `0.01s` stagger. Both sections take
-that recipe from `app/lib/word-reveal.ts`, so their timing cannot drift.
+The title and the description reveal like the Studio statement and copy. Both
+split into masked words that rise from 115 percent below their masks over
+`0.8s` with `power3.out` easing. The title uses the statement's `0.03s`
+stagger and the description uses the copy's denser `0.01s` stagger. Both
+sections take that recipe from `app/lib/word-reveal.ts`, so their timing
+cannot drift. Only the start differs: each service text waits until its own
+element reaches 60 percent of the viewport rather than Studio's 82, so the
+words rise once they are well inside the screen.
 
-The image is scrubbed with the scroll. It scales up from zero around its
-bottom center from the moment its frame enters the viewport until the frame's
-center reaches 60 percent of the viewport, while the picture inside eases from
-`1.3` scale to rest. Once the frame's center passes 40 percent of the viewport,
-the image scales back down to zero around its top center, finishing as the
-frame leaves the top. The gap between the two lines keeps a short rest at full
-size even when the image is taller than the viewport. Entry and exit live on
+The image is scrubbed with the scroll in one continuous motion with no rest at
+full size. It scales up from zero around its bottom center from the moment its
+frame enters the viewport until the frame's center reaches the viewport center,
+easing out with `sine.out` to a peak of `0.8`, while the picture inside eases
+from `1.3` scale to rest. From that same point it eases back down to zero
+around its top center with `sine.in`, finishing as the frame leaves the top.
+Both eases are slow at the peak, so the turn from growing to shrinking is
+smooth. The image never reaches its full layout size. Entry and exit live on
 two nested elements, the link for the bottom origin entry and its wrapper for
 the top origin exit, inside an untransformed frame that serves as the trigger,
 so the transform origins never fight and the trigger is never measured while
