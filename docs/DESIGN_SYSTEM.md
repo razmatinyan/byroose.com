@@ -753,7 +753,12 @@ panel. `useMoreWorksMotion` owns the panel's own motion:
   `22` percent of the viewport width to their resting columns. The image frame
   scales up from zero. Each character fades in from zero opacity, working
   outward from the center, so "View" reveals right to left and "work" left to
-  right, and every character is visible before the words settle. The circular
+  right, and every character is visible before the words settle. Every
+  character is set to zero opacity before the timeline is built, and the
+  timeline only tweens toward one. Do not use a staggered `fromTo` here: inside
+  a scrubbed timeline it applies its starting opacity only to the characters
+  the playhead has reached. Later characters keep their natural full opacity
+  until their turn, which reveals the outer letters first. The circular
   action scales up from zero around its center on the panel edge during the
   pinned part of the timeline, with `power2.out` easing, so it rises out of the
   bottom edge after the title has arrived.

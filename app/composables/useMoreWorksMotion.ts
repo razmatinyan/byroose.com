@@ -122,17 +122,15 @@ export function useMoreWorksMotion(
             revealLead,
          );
 
+      const chars = [...startChars, ...endChars];
+      if (chars.length) gsap.set(chars, { opacity: 0 });
+
       if (startChars.length) {
-         timeline.fromTo(
-            [...startChars].reverse(),
-            { opacity: 0 },
-            charReveal,
-            0,
-         );
+         timeline.to([...startChars].reverse(), { ...charReveal }, 0);
       }
 
       if (endChars.length) {
-         timeline.fromTo(endChars, { opacity: 0 }, charReveal, 0);
+         timeline.to(endChars, { ...charReveal }, 0);
       }
    }
 
