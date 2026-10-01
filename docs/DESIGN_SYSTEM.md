@@ -845,15 +845,10 @@ word with the masked word recipe from `app/lib/word-reveal.ts`, using a
 the two in sync, even though the description sits below the title.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at
-full size. It scales up from zero around its bottom center from the moment
-the service title enters the bottom of the viewport, set by `mediaEntryAt`,
-until the image's center reaches 60 percent of the viewport, set by
-`mediaPeakAt`. It eases out with `sine.out` to a peak of `0.8` while the
-picture inside eases from `1.3` scale to rest, so it is already large when it
-scrolls into view below the description. The title and description stay
-visible for most of that growth. Because the growth is anchored to the bottom
-of a tall box, a small image sits low in that box, and starting earlier is what
-keeps it close to the text.
+full size. It scales up from zero around its bottom center from the moment it
+enters the viewport until it is centered in the viewport, easing out with
+`sine.out` to a peak of `0.8`, while the picture inside eases from `1.3`
+scale to rest. The title and description stay visible for most of that growth.
 From the same point it eases back down to zero around its top center with
 `sine.in`, finishing as the image leaves the top. Both eases are slow at the
 peak, so the turn from growing to shrinking is smooth. The image never reaches
