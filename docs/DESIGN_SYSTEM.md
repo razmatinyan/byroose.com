@@ -545,7 +545,8 @@ Render the Studio statement and both copy paragraphs through the shared
 percent of the viewport, each statement word rises from 115 percent below its
 mask over `0.8s` with `power3.out` easing and a `0.03s` stagger.
 
-The statement and copy paragraphs are justified so every full line ends on the
+The statement is start-aligned, so its large display lines keep natural word
+spacing. The copy paragraphs are justified so every full line ends on the
 same edge, while a short final line stays start-aligned. Justification still
 applies after splitting because each masked word is an inline block and the
 split keeps the spaces between words, which the browser stretches.
