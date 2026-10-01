@@ -236,6 +236,11 @@
 		@apply m-0 font-bold tracking-[-0.045em] text-section;
 	}
 
+	.split-text-word-mask {
+		margin-inline: -0.1em;
+		padding-inline: 0.1em;
+	}
+
 	.split-title {
 		--split-title-tracking: -0.07em;
 		letter-spacing: var(--split-title-tracking);

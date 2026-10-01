@@ -548,6 +548,14 @@ same edge, while a short final line stays start-aligned. Justification still
 applies after splitting because each masked word is an inline block and the
 split keeps the spaces between words, which the browser stretches.
 
+Negative tracking ends a word's box slightly before the right edge of its last
+glyph, so a word mask would clip that edge, as it did to the b in "Web". Every
+`.split-text-word-mask` therefore carries `0.1em` of inline padding cancelled
+by an equal negative inline margin. The clip box covers the full glyphs while
+the layout, the word spacing, and the justification stay exactly as before.
+The rule lives in the global `@layer components`, so every word mask on the
+site gets it.
+
 The founder portrait follows with a top to bottom clip reveal. When its top edge
 reaches 82 percent of the viewport, its `clip-path` inset opens from the bottom
 edge over `1.2s` with `power3.inOut`, and the inline clip is cleared once the
