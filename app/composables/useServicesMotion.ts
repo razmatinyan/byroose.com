@@ -1,6 +1,5 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
-import { addCharReveal } from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 import { addWordReveal } from "@/lib/word-reveal";
 
@@ -18,7 +17,7 @@ interface ServicesMotionTargets {
 interface ServicePanelParts {
 	descriptionLines: HTMLElement[];
 	panel: HTMLElement;
-	titleChars: HTMLElement[];
+	titleWords: HTMLElement[];
 }
 
 const selectors = {
@@ -43,6 +42,7 @@ const introWordFrom = {
 	scale: 0.6,
 };
 const textRevealAt = 0.6;
+const titleStagger = 0.08;
 const descriptionStagger = 0.1;
 const imageZoom = 1.3;
 const panelRunway = 1;
@@ -153,11 +153,11 @@ export function useServicesMotion(
 	}
 
 	function revealText(
-		{ descriptionLines, panel, titleChars }: ServicePanelParts,
+		{ descriptionLines, panel, titleWords }: ServicePanelParts,
 		content: HTMLElement,
 	) {
 		const title = panel.querySelector<HTMLElement>(selectors.title);
-		if (!title || (!titleChars.length && !descriptionLines.length)) return;
+		if (!title || (!titleWords.length && !descriptionLines.length)) return;
 
 		const timeline = gsap.timeline({
 			scrollTrigger: {
@@ -173,7 +173,7 @@ export function useServicesMotion(
 			},
 		});
 
-		addCharReveal(timeline, titleChars);
+		addWordReveal(timeline, titleWords, { stagger: titleStagger });
 		addWordReveal(timeline, descriptionLines, {
 			position: 0,
 			stagger: descriptionStagger,
@@ -263,7 +263,7 @@ export function useServicesMotion(
 		].map((panel, index) => ({
 			descriptionLines: descriptionParts[index]?.lines ?? [],
 			panel,
-			titleChars: titleParts[index]?.chars ?? [],
+			titleWords: splitWords(titleParts[index]),
 		}));
 
 		createMatchMedia(
@@ -275,8 +275,8 @@ export function useServicesMotion(
 				if (context.conditions?.reduceMotion) {
 					showAll([
 						...introWords,
-						...panels.flatMap(({ descriptionLines, titleChars }) => [
-							...titleChars,
+						...panels.flatMap(({ descriptionLines, titleWords }) => [
+							...titleWords,
 							...descriptionLines,
 						]),
 					]);

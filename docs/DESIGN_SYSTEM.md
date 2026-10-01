@@ -813,7 +813,7 @@ short beat before releasing it.
 Each service panel centers its title at `text-service`, a description below
 it, and an image below that. The service names stay in sentence case. The
 description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
-`xl`, in the default `foreground` color at weight 600 with snug leading,
+`xl`, in the default `foreground` color at weight 600 with tight leading,
 balanced lines, and a `38ch` measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
@@ -834,14 +834,14 @@ element reaches that line once the slowed travel is accounted for. The panel
 itself is never transformed, so it stays a reliable reference.
 
 The title and the description reveal together from one trigger. When the
-title reaches 60 percent of the viewport, it types itself in character by
-character with the work title's recipe from `app/lib/char-reveal.ts`: the
-title takes the `split-title` class group for its kerning compensation, and
-each character rises from its mask over `0.9s` with a `0.035s` stagger. The
-description starts at the same moment in the same timeline and rises line by
-line from `SplitText` line masks, using the masked rise from
-`app/lib/word-reveal.ts` with a `0.1s` stagger set through
-`descriptionStagger` in `useServicesMotion`. Sharing one trigger keeps the two
+title reaches 60 percent of the viewport, it rises word by word from
+`SplitText` word masks with a `0.08s` stagger set through `titleStagger`,
+and the description starts at the same moment in the same timeline, rising
+line by line from `SplitText` line masks with a `0.1s` stagger set through
+`descriptionStagger`, both in `useServicesMotion`. Each mask rise uses the
+recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest over
+`0.8s` with `power3.out` easing. The title keeps its `-0.045em` tracking,
+because a word split preserves kerning inside each word. Sharing one trigger keeps the two
 in sync, even though the description sits below the title. The lines and their
 masks are block elements, because the split emits them as inline spans and a
 transform has no effect on an inline element. The lines are split once, after
