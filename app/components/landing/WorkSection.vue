@@ -7,6 +7,7 @@ import {
    useTemplateRef,
 } from "vue";
 import CaseStudyCard from "@/components/cards/CaseStudyCard.vue";
+import MoreWorksPanel from "./MoreWorksPanel.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 import type { SurfaceTone } from "@/lib/surfaces";
@@ -73,28 +74,6 @@ const caseStudies: CaseStudy[] = [
       revealTones: ["yellow", "blue", "pink", "green"],
       tone: "green",
    },
-   {
-      client: "Vestlund",
-      description:
-         "Forty assets a month produced by four people, through an AI pipeline with human editing on every frame.",
-      image: "/images/hero/5.png",
-      imageAlt: "Vestlund project visual",
-      resultLabel: "Lower cost per asset",
-      resultValue: "62%",
-      revealTones: ["primary", "pink", "green", "blue"],
-      tone: "blue",
-   },
-   {
-      client: "Piquant",
-      description:
-         "A reel format built to survive repetition, then run for nine months without losing its audience.",
-      image: "/images/hero/6.png",
-      imageAlt: "Piquant project visual",
-      resultLabel: "Views earned in nine months",
-      resultValue: "18M",
-      revealTones: ["blue", "yellow", "pink", "primary"],
-      tone: "primary",
-   },
 ];
 
 const workRoot = useTemplateRef<HTMLElement>("workRoot");
@@ -132,25 +111,29 @@ function deactivateTooltip() {
 </script>
 
 <template>
-   <section id="work" ref="workRoot" class="work section-gutter">
-      <SplitText
-         class="section-title work-title"
-         as="h2"
-         mask="words"
-         :text="workTitle"
-         type="words"
-         @split="setTitleSplit"
-      />
-
-      <div class="case-list">
-         <CaseStudyCard
-            v-for="item in caseStudies"
-            :key="item.client"
-            v-bind="item"
-            @activate="activateTooltip(item)"
-            @deactivate="deactivateTooltip"
+   <section id="work" ref="workRoot" class="work">
+      <div class="work-content section-gutter">
+         <SplitText
+            class="section-title work-title"
+            as="h2"
+            mask="words"
+            :text="workTitle"
+            type="words"
+            @split="setTitleSplit"
          />
+
+         <div class="case-list" data-work-case-list>
+            <CaseStudyCard
+               v-for="item in caseStudies"
+               :key="item.client"
+               v-bind="item"
+               @activate="activateTooltip(item)"
+               @deactivate="deactivateTooltip"
+            />
+         </div>
       </div>
+
+      <MoreWorksPanel />
 
       <TrailingTooltip
          v-if="shouldLoadTooltip"
@@ -164,7 +147,11 @@ function deactivateTooltip() {
 @reference '../../assets/css/tailwind.css';
 
 .work {
-   @apply w-full pb-section;
+   @apply w-full;
+}
+
+.work-content {
+   @apply pb-section;
 }
 
 .work-title {

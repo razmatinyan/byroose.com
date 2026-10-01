@@ -12,8 +12,11 @@ interface WorkMotionTargets {
 
 const selectors = {
    case: "[data-work-case]",
+   caseList: "[data-work-case-list]",
    image: "[data-work-case-image]",
    layer: "[data-work-case-layer]",
+   more: "[data-work-more]",
+   morePanel: "[data-work-more-panel]",
    reveal: "[data-work-case-reveal]",
 } as const;
 
@@ -23,6 +26,21 @@ const lineStagger = 0.08;
 const linesAtMedia = 0.1;
 const parallaxScale = 1.3;
 const parallaxShift = 14;
+const caseListLag = 0.4;
+const caseListFadeStart = 0.3;
+const panelArrivalOffset = 20;
+
+function documentTop(element: HTMLElement) {
+   let top = 0;
+   let node: HTMLElement | null = element;
+
+   while (node) {
+      top += node.offsetTop;
+      node = node.offsetParent instanceof HTMLElement ? node.offsetParent : null;
+   }
+
+   return top;
+}
 
 export function useWorkMotion(
    scope: MotionScope,
@@ -128,6 +146,40 @@ export function useWorkMotion(
       }
    }
 
+   function handOffToPanel(root: HTMLElement) {
+      const caseList = root.querySelector<HTMLElement>(selectors.caseList);
+      const lastCase = [
+         ...root.querySelectorAll<HTMLElement>(selectors.case),
+      ].at(-1);
+      const more = root.querySelector<HTMLElement>(selectors.more);
+      const panel = more?.querySelector<HTMLElement>(selectors.morePanel);
+      if (!caseList || !lastCase || !more || !panel) return;
+
+      gsap.set(more, { "--more-works-overlap": panelArrivalOffset / 100 });
+
+      gsap
+         .timeline({
+            defaults: { duration: 1, ease: "none" },
+            scrollTrigger: {
+               end: "top top",
+               endTrigger: more,
+               invalidateOnRefresh: true,
+               scrub: true,
+               start: () =>
+                  documentTop(lastCase) +
+                  lastCase.offsetHeight / 2 -
+                  window.innerHeight / 2,
+            },
+         })
+         .to(caseList, { y: () => window.innerHeight * caseListLag }, 0)
+         .fromTo(panel, { yPercent: panelArrivalOffset }, { yPercent: 0 }, 0)
+         .to(
+            caseList,
+            { duration: 1 - caseListFadeStart, opacity: 0 },
+            caseListFadeStart,
+         );
+   }
+
    async function initialize(titleWords: HTMLElement[]) {
       if (initialized || disposed) return;
 
@@ -156,6 +208,7 @@ export function useWorkMotion(
             )) {
                revealCase(caseElement);
             }
+            handOffToPanel(root);
          },
          scope,
       );

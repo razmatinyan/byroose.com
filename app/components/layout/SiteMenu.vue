@@ -2,15 +2,21 @@
 import { computed, nextTick } from 'vue'
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import SiteMenuLink from '@/components/layout/SiteMenuLink.vue'
+import type { HeaderSurface } from '@/composables/useHeaderSurface'
 
 interface NavItem {
 	href: string
 	label: string
 }
 
-const { navItems, open = false } = defineProps<{
+const {
+	navItems,
+	open = false,
+	surface = 'light',
+} = defineProps<{
 	navItems: NavItem[]
 	open?: boolean
+	surface?: HeaderSurface
 }>()
 
 const emit = defineEmits<{
@@ -64,7 +70,12 @@ onKeyStroke(
 </script>
 
 <template>
-	<div ref="siteMenuRoot" class="site-menu" :data-open="open">
+	<div
+		ref="siteMenuRoot"
+		class="site-menu"
+		:data-open="open"
+		:data-surface="surface"
+	>
 		<button
 			ref="menuButton"
 			class="site-menu-button"
@@ -157,7 +168,11 @@ onKeyStroke(
 }
 
 .site-menu-button {
-	@apply relative z-20 grid size-[2.875rem] shrink-0 place-items-center rounded-full border aria-expanded:border-background/20 bg-foreground text-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+	@apply relative z-20 grid size-[2.875rem] shrink-0 place-items-center rounded-full border aria-expanded:border-background/20 bg-foreground text-background outline-none transition-colors duration-300 focus-visible:ring-3 focus-visible:ring-ring/50;
+}
+
+.site-menu[data-surface='dark'][data-open='false'] .site-menu-button {
+	@apply bg-background text-foreground;
 }
 
 .site-menu-icon {
@@ -215,7 +230,7 @@ onKeyStroke(
 
 @media (hover: none) {
 	.site-menu-button {
-		@apply transition-transform active:scale-95 motion-reduce:transition-none;
+		@apply transition-[color,background-color,border-color,transform] active:scale-95 motion-reduce:transition-none;
 	}
 }
 </style>

@@ -31,9 +31,11 @@ app/
     useHomeHeroScrollMotion.ts
     useHomeIntroMotion.ts
     useGsap.ts
+    useHeaderSurface.ts
     useHoverBounce.ts
     useHoverRollover.ts
     useMenuLinkMotion.ts
+    useMoreWorksMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
     useSmoothScroll.ts
@@ -141,7 +143,25 @@ and the title split; the case study card supplies the `data-work-case`,
 `data-work-case-layer`, `data-work-case-image`, and `data-work-case-reveal`
 hooks the composable resolves inside that scope. One timeline per card carries
 both the media reveal and the text lines, so their relative timing cannot drift. Reduced motion resolves the
-title to visible words and leaves every card in its resting state.
+title to visible words and leaves every card in its resting state. It also
+owns the handoff from the last card to the MoreWorksPanel. It slows and fades
+the `data-work-case-list` element and brings in the `data-work-more-panel`
+surface inside the `data-work-more` track, because that handoff choreographs
+WorkSection's own cards against its closing panel.
+
+useMoreWorksMotion owns the MoreWorksPanel's internal motion: the character
+fade, the pinned word convergence and image scale, and the on-screen state that
+drives image cycling. The panel component
+owns the image list and the cycling interval, and the composable only reports
+whether cycling should run. The composable also reports through
+useHeaderSurface while the dark panel covers the header line.
+
+useHeaderSurface is the shared contract between dark page surfaces and the
+layout header. It keeps an SSR-safe useState counter of the dark surfaces
+covering the header, exposes the resolved `light` or `dark` surface, and removes
+its caller's contribution when the caller's scope is disposed. Sections report
+coverage through it rather than reaching into the header, and SiteHeader and
+SiteMenu only read it.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes
