@@ -16,7 +16,7 @@ interface ServicesMotionTargets {
 }
 
 interface ServicePanelParts {
-	descriptionWords: HTMLElement[];
+	descriptionLines: HTMLElement[];
 	panel: HTMLElement;
 	titleChars: HTMLElement[];
 }
@@ -43,7 +43,7 @@ const introWordFrom = {
 	scale: 0.6,
 };
 const textRevealAt = 0.6;
-const descriptionStagger = 0.025;
+const descriptionStagger = 0.1;
 const imageZoom = 1.3;
 const panelRunway = 1;
 const mediaPeakScale = 0.8;
@@ -153,11 +153,11 @@ export function useServicesMotion(
 	}
 
 	function revealText(
-		{ descriptionWords, panel, titleChars }: ServicePanelParts,
+		{ descriptionLines, panel, titleChars }: ServicePanelParts,
 		content: HTMLElement,
 	) {
 		const title = panel.querySelector<HTMLElement>(selectors.title);
-		if (!title || (!titleChars.length && !descriptionWords.length)) return;
+		if (!title || (!titleChars.length && !descriptionLines.length)) return;
 
 		const timeline = gsap.timeline({
 			scrollTrigger: {
@@ -174,7 +174,7 @@ export function useServicesMotion(
 		});
 
 		addCharReveal(timeline, titleChars);
-		addWordReveal(timeline, descriptionWords, {
+		addWordReveal(timeline, descriptionLines, {
 			position: 0,
 			stagger: descriptionStagger,
 		});
@@ -261,7 +261,7 @@ export function useServicesMotion(
 		const panels = [
 			...root.querySelectorAll<HTMLElement>(selectors.panel),
 		].map((panel, index) => ({
-			descriptionWords: splitWords(descriptionParts[index]),
+			descriptionLines: descriptionParts[index]?.lines ?? [],
 			panel,
 			titleChars: titleParts[index]?.chars ?? [],
 		}));
@@ -275,9 +275,9 @@ export function useServicesMotion(
 				if (context.conditions?.reduceMotion) {
 					showAll([
 						...introWords,
-						...panels.flatMap(({ descriptionWords, titleChars }) => [
+						...panels.flatMap(({ descriptionLines, titleChars }) => [
 							...titleChars,
-							...descriptionWords,
+							...descriptionLines,
 						]),
 					]);
 					return;

@@ -838,11 +838,15 @@ title reaches 60 percent of the viewport, it types itself in character by
 character with the work title's recipe from `app/lib/char-reveal.ts`: the
 title takes the `split-title` class group for its kerning compensation, and
 each character rises from its mask over `0.9s` with a `0.035s` stagger. The
-description starts at the same moment in the same timeline and rises word by
-word with the masked word recipe from `app/lib/word-reveal.ts`, using a
-`0.025s` stagger, slower than the Studio copy's `0.01s`, set through
-`descriptionStagger` in `useServicesMotion`. Sharing one trigger keeps
-the two in sync, even though the description sits below the title.
+description starts at the same moment in the same timeline and rises line by
+line from `SplitText` line masks, using the masked rise from
+`app/lib/word-reveal.ts` with a `0.1s` stagger set through
+`descriptionStagger` in `useServicesMotion`. Sharing one trigger keeps the two
+in sync, even though the description sits below the title. The lines and their
+masks are block elements, because the split emits them as inline spans and a
+transform has no effect on an inline element. The lines are split once, after
+the fonts load, and are not re-split on resize, so a large width change can
+wrap a split line inside its own mask.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at
 full size. It scales up from zero around its bottom center from the moment it

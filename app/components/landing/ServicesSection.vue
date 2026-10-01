@@ -119,8 +119,9 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 				<SplitText
 					class="service-description"
 					as="p"
-					mask="words"
+					mask="lines"
 					:text="service.description"
+					type="lines"
 					@split="setDescriptionSplit(index, $event)"
 				/>
 
@@ -203,12 +204,12 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 	@apply m-0 max-w-[38ch] text-xl leading-snug font-semibold tracking-tight text-balance text-foreground md:text-2xl xl:text-3xl;
 }
 
-.service-description :deep(.split-text-word),
-.service-description :deep(.split-text-word-mask) {
-	display: inline-block;
+.service-description :deep(.split-text-line),
+.service-description :deep(.split-text-line-mask) {
+	display: block;
 }
 
-.service-description :deep(.split-text-word) {
+.service-description :deep(.split-text-line) {
 	visibility: hidden;
 }
 

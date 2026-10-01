@@ -169,7 +169,7 @@ same TrailingTooltip the case cards use.
 useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the slowed travel of
 its `data-service-content` block, the title character rise and the description
-word rise together in one timeline, and the scrubbed bottom origin image entry
+line rise together in one timeline, and the scrubbed bottom origin image entry
 and top origin image exit. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. ServicesSection owns the copy, the image links, and
