@@ -817,6 +817,22 @@ description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
 measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
+Each service panel scrolls slower than the page, so the title, the
+description, and a future video stay on screen together while the video
+grows. While motion is enabled, the panel adds one viewport height of runway
+below its content through `--service-runway`, and the whole content block
+slides down through that runway as the panel crosses the viewport. At 1440 by
+900 the content moves about 0.7 times as fast as the scroll, and the text
+reveal and the image scale stretch across the longer distance. Reduced motion
+drops the runway.
+
+Because the content moves, its own elements cannot serve as ScrollTrigger
+triggers. Every text and image trigger is therefore a scroll position computed
+from untransformed layout: `scrollWhen` takes an element's offset inside the
+panel and a viewport line, and returns the scroll position at which that
+element reaches that line once the slowed travel is accounted for. The panel
+itself is never transformed, so it stays a reliable reference.
+
 The title and the description reveal together from one trigger. When the
 title reaches 60 percent of the viewport, it types itself in character by
 character with the work title's recipe from `app/lib/char-reveal.ts`: the
@@ -829,24 +845,16 @@ word with the masked word recipe from `app/lib/word-reveal.ts`, using a
 the two in sync, even though the description sits below the title.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at
-full size, and it travels slower than the page so a future video stays on
-screen longer. While motion is enabled, the frame adds one viewport height of
-runway below the image through `--service-media-runway`, and the image slides
-down through that runway as the frame crosses the viewport. At 1440 by 900 it
-moves about 0.65 times as fast as the scroll, and both the scale in and the
-scale out stretch across the longer distance. Reduced motion drops the runway.
-
-The image scales up from zero around its bottom center from the moment the
-frame enters the viewport until the image is centered in the viewport, easing
-out with `sine.out` to a peak of `0.8`, while the picture inside eases from
-`1.3` scale to rest. From that same point it eases back down to zero around
-its top center with `sine.in`, finishing as the image leaves the top. Both eases
-are slow at the peak, so the turn from growing to shrinking is smooth. The
-image never reaches its full layout size. Entry and exit live on
-two nested elements, the link for the bottom origin entry and its wrapper for
-the top origin exit, inside an untransformed frame that serves as the trigger,
-so the transform origins never fight and the trigger is never measured while
-scaled.
+full size. It scales up from zero around its bottom center from the moment it
+enters the viewport until it is centered in the viewport, easing out with
+`sine.out` to a peak of `0.8`, while the picture inside eases from `1.3`
+scale to rest. The title and description stay visible for most of that growth.
+From the same point it eases back down to zero around its top center with
+`sine.in`, finishing as the image leaves the top. Both eases are slow at the
+peak, so the turn from growing to shrinking is smooth. The image never reaches
+its full layout size. Entry and exit live on two nested elements, the link for
+the bottom origin entry and its wrapper for the top origin exit, so the
+transform origins never fight.
 
 Each image is a `NuxtLink` to the `/services` route, named for its service
 through `aria-label`. Hovering it opens the shared TrailingTooltip with the

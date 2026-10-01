@@ -22,6 +22,7 @@ interface ServicePanelParts {
 }
 
 const selectors = {
+	content: "[data-service-content]",
 	image: "[data-service-image]",
 	intro: "[data-services-intro]",
 	media: "[data-service-media]",
@@ -41,16 +42,28 @@ const introWordFrom = {
 	opacity: 0.12,
 	scale: 0.6,
 };
-const textRevealStart = "top 60%";
+const textRevealAt = 0.6;
 const descriptionStagger = 0.025;
 const imageZoom = 1.3;
-const mediaRunway = 1;
+const panelRunway = 1;
 const mediaPeakScale = 0.8;
 const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
 
 function splitWords(parts: SplitTextResult | undefined) {
 	return parts?.words ?? [];
+}
+
+function offsetWithin(element: HTMLElement, ancestor: HTMLElement) {
+	let offset = 0;
+	let node: HTMLElement | null = element;
+
+	while (node && node !== ancestor) {
+		offset += node.offsetTop;
+		node = node.offsetParent instanceof HTMLElement ? node.offsetParent : null;
+	}
+
+	return offset;
 }
 
 export function useServicesMotion(
@@ -94,20 +107,69 @@ export function useServicesMotion(
 			.to({}, { duration: introHold });
 	}
 
-	function revealText({
-		descriptionWords,
-		panel,
-		titleChars,
-	}: ServicePanelParts) {
+	function runwayOf(panel: HTMLElement, content: HTMLElement) {
+		return panel.clientHeight - content.offsetTop - content.offsetHeight;
+	}
+
+	function scrollWhen(
+		panel: HTMLElement,
+		content: HTMLElement,
+		offset: () => number,
+		viewportRatio: number,
+	) {
+		return () => {
+			const viewport = window.innerHeight;
+			const range = viewport + panel.offsetHeight;
+			const travel = range - runwayOf(panel, content);
+			const panelTop = panel.getBoundingClientRect().top + window.scrollY;
+
+			return (
+				panelTop -
+				viewport +
+				((viewport + offset() - viewportRatio * viewport) * range) / travel
+			);
+		};
+	}
+
+	function slowContent(panel: HTMLElement, content: HTMLElement) {
+		gsap.set(panel, { "--service-runway": panelRunway });
+
+		gsap.fromTo(
+			content,
+			{ y: 0 },
+			{
+				ease: "none",
+				y: () => runwayOf(panel, content),
+				scrollTrigger: {
+					end: "bottom top",
+					invalidateOnRefresh: true,
+					refreshPriority,
+					scrub: true,
+					start: "top bottom",
+					trigger: panel,
+				},
+			},
+		);
+	}
+
+	function revealText(
+		{ descriptionWords, panel, titleChars }: ServicePanelParts,
+		content: HTMLElement,
+	) {
 		const title = panel.querySelector<HTMLElement>(selectors.title);
 		if (!title || (!titleChars.length && !descriptionWords.length)) return;
 
 		const timeline = gsap.timeline({
 			scrollTrigger: {
+				invalidateOnRefresh: true,
 				once: true,
 				refreshPriority,
-				start: textRevealStart,
-				trigger: title,
+				start: scrollWhen(
+					panel,
+					content,
+					() => offsetWithin(title, panel),
+					textRevealAt,
+				),
 			},
 		});
 
@@ -118,49 +180,57 @@ export function useServicesMotion(
 		});
 	}
 
-	function scaleMedia(panel: HTMLElement) {
+	function scaleMedia(panel: HTMLElement, content: HTMLElement) {
 		const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
 		const media = panel.querySelector<HTMLElement>(selectors.media);
 		const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
 		const image = panel.querySelector<HTMLElement>(selectors.image);
 		if (!frame || !media || !mediaExit) return;
 
-		gsap.set(frame, { "--service-media-runway": mediaRunway });
+		const frameAt = (share: number) => () =>
+			offsetWithin(frame, panel) + frame.offsetHeight * share;
+		const peak = scrollWhen(panel, content, frameAt(0.5), 0.5);
 
-		const timeline = gsap
+		const entry = gsap
 			.timeline({
-				defaults: { duration: 1, ease: "none" },
+				defaults: { ease: mediaEntryEase },
 				scrollTrigger: {
-					end: "bottom top",
+					end: peak,
 					invalidateOnRefresh: true,
 					refreshPriority,
 					scrub: true,
-					start: "top bottom",
-					trigger: frame,
+					start: scrollWhen(panel, content, frameAt(0), 1),
 				},
 			})
-			.fromTo(
-				mediaExit,
-				{ y: 0 },
-				{ duration: 2, y: () => frame.offsetHeight - mediaExit.offsetHeight },
-				0,
-			)
-			.fromTo(
-				media,
-				{ scale: 0 },
-				{ ease: mediaEntryEase, scale: mediaPeakScale },
-				0,
-			)
-			.fromTo(
-				mediaExit,
-				{ scale: 1 },
-				{ ease: mediaExitEase, immediateRender: false, scale: 0 },
-				1,
-			);
+			.fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
 
-		if (image) {
-			timeline.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
-		}
+		if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
+
+		gsap.fromTo(
+			mediaExit,
+			{ scale: 1 },
+			{
+				ease: mediaExitEase,
+				immediateRender: false,
+				scale: 0,
+				scrollTrigger: {
+					end: scrollWhen(panel, content, frameAt(1), 0),
+					invalidateOnRefresh: true,
+					refreshPriority,
+					scrub: true,
+					start: peak,
+				},
+			},
+		);
+	}
+
+	function animatePanel(parts: ServicePanelParts) {
+		const content = parts.panel.querySelector<HTMLElement>(selectors.content);
+		if (!content) return;
+
+		slowContent(parts.panel, content);
+		revealText(parts, content);
+		scaleMedia(parts.panel, content);
 	}
 
 	function showAll(elements: HTMLElement[]) {
@@ -214,10 +284,7 @@ export function useServicesMotion(
 				}
 
 				revealIntro(intro, introWords);
-				for (const panel of panels) {
-					revealText(panel);
-					scaleMedia(panel.panel);
-				}
+				for (const panel of panels) animatePanel(panel);
 			},
 			scope,
 		);

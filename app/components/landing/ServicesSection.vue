@@ -13,7 +13,7 @@ interface Service {
 	title: string;
 }
 
-const introLines = ["What can we do", "for You"];
+const introLines = ["What can we do", "for You?"];
 const introTitle = introLines.join(" ");
 const servicesRoute = "/services";
 const tooltipText = "More Details";
@@ -105,47 +105,49 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			class="service-panel section-gutter"
 			data-service-panel
 		>
-			<SplitText
-				class="split-title service-title"
-				as="h3"
-				data-service-title
-				mask="chars"
-				type="words,chars"
-				:text="service.title"
-				@split="setTitleSplit(index, $event)"
-			/>
+			<div class="service-content" data-service-content>
+				<SplitText
+					class="split-title service-title"
+					as="h3"
+					data-service-title
+					mask="chars"
+					type="words,chars"
+					:text="service.title"
+					@split="setTitleSplit(index, $event)"
+				/>
 
-			<SplitText
-				class="service-description"
-				as="p"
-				mask="words"
-				:text="service.description"
-				@split="setDescriptionSplit(index, $event)"
-			/>
+				<SplitText
+					class="service-description"
+					as="p"
+					mask="words"
+					:text="service.description"
+					@split="setDescriptionSplit(index, $event)"
+				/>
 
-			<div class="service-media-frame" data-service-media-frame>
-				<div class="service-media-exit" data-service-media-exit>
-					<NuxtLink
-						class="service-media"
-						data-service-media
-						:to="servicesRoute"
-						:aria-label="`More details about ${service.title}`"
-						@pointerenter="showTooltip(service.image, tooltipText)"
-						@pointerleave="hideTooltip"
-					>
-						<NuxtImg
-							class="service-image"
-							data-service-image
-							:src="service.image"
-							alt=""
-							width="1456"
-							height="816"
-							sizes="sm:1024px md:1280px lg:1536px"
-							densities="x1"
-							loading="lazy"
-							draggable="false"
-						/>
-					</NuxtLink>
+				<div class="service-media-frame" data-service-media-frame>
+					<div class="service-media-exit" data-service-media-exit>
+						<NuxtLink
+							class="service-media"
+							data-service-media
+							:to="servicesRoute"
+							:aria-label="`More details about ${service.title}`"
+							@pointerenter="showTooltip(service.image, tooltipText)"
+							@pointerleave="hideTooltip"
+						>
+							<NuxtImg
+								class="service-image"
+								data-service-image
+								:src="service.image"
+								alt=""
+								width="1456"
+								height="816"
+								sizes="sm:1024px md:1280px lg:1536px"
+								densities="x1"
+								loading="lazy"
+								draggable="false"
+							/>
+						</NuxtLink>
+					</div>
 				</div>
 			</div>
 		</article>
@@ -185,7 +187,12 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-panel {
-	@apply flex flex-col items-center gap-5 pt-section text-center md:gap-7;
+	@apply relative pt-section;
+	padding-bottom: calc(var(--service-runway, 0) * 100svh);
+}
+
+.service-content {
+	@apply relative flex flex-col items-center gap-5 text-center md:gap-7;
 }
 
 .service-title {
@@ -207,7 +214,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .service-media-frame {
 	@apply mt-3 w-full;
-	padding-bottom: calc(var(--service-media-runway, 0) * 100svh);
 }
 
 .service-media-exit {
