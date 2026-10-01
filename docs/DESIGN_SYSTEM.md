@@ -594,8 +594,8 @@ already arriving while the last colored layers are still landing, and they rise
 from their masks over `0.8s` with a `0.08s` stagger. The position is read from
 the timeline's own duration after the stack tweens are added, so retiming the
 stack moves the text with it. The image inside the frame is held at `1.3` scale and scrubbed
-from `14` to `-14` percent as the card crosses the viewport, so it travels
-against the scroll rather than with it. The reveal and the parallax are on
+from `-14` to `14` percent as the card crosses the viewport, so it travels in
+the same direction as the scroll and lags behind its frame. The reveal and the parallax are on
 different elements: the image's layer wrapper owns the entry scale and the image
 inside it owns the parallax, so neither fights the other. Keep the scale ahead
 of the shift: the image only has `(scale - 1) / 2` of overflow on each edge, so

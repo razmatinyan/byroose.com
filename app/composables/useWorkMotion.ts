@@ -68,7 +68,7 @@ export function useWorkMotion(
 
       gsap.fromTo(
          image,
-         { yPercent: parallaxShift },
+         { yPercent: -parallaxShift },
          {
             ease: "none",
             scrollTrigger: {
@@ -77,7 +77,7 @@ export function useWorkMotion(
                start: "top bottom",
                trigger,
             },
-            yPercent: -parallaxShift,
+            yPercent: parallaxShift,
          },
       );
    }
