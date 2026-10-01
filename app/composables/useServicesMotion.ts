@@ -42,7 +42,6 @@ const introWordFrom = {
 	scale: 0.6,
 };
 const textRevealStart = "top 60%";
-const descriptionOverlap = 0.2;
 const imageZoom = 1.3;
 const mediaRunway = 1;
 const mediaPeakScale = 0.8;
@@ -113,7 +112,7 @@ export function useServicesMotion(
 
 		addCharReveal(timeline, titleChars);
 		addWordReveal(timeline, descriptionWords, {
-			position: Math.max(0, timeline.duration() - descriptionOverlap),
+			position: 0,
 			stagger: wordRevealDenseStagger,
 		});
 	}
