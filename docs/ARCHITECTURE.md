@@ -36,12 +36,14 @@ app/
     useHoverRollover.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
+    useServicesMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
     useSmoothScroll.ts
     useStudioMotion.ts
     useWorkMotion.ts
   lib/
+    char-reveal.ts
     icons.ts
     split-text.ts
     stack-reveal.ts
@@ -162,6 +164,15 @@ the composable only reports whether cycling should run. The panel emits its
 hover state with its current image and label, and WorkSection feeds them to the
 same TrailingTooltip the case cards use.
 
+useServicesMotion owns the services section: the title's character reveal with
+its trailing arrow, the rise of the service name words, the clip reveal of the
+service visual, and the clip-path swap between service images. ServicesSection
+owns the active service index and the hover, focus, and click handlers that set
+it, and the composable only watches that index and animates the matching
+`data-services-image`. It waits until the title and every service name have
+reported their splits. Reduced motion resolves every reveal to visible content
+and swaps images instantly.
+
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 scroll-direction thresholds, and responsive animation states. It composes
 useGsap and useSmoothScroll so the layout component remains focused on header
@@ -212,6 +223,10 @@ useSmoothScroll is the component-facing contract for the global Lenis instance. 
 
 app/lib contains pure helpers, shared constants, and stable names.
 
+- char-reveal.ts owns the shared character rise recipe. It appends a set and a
+  staggered rise to a timeline it is handed, so the work and services titles
+  keep identical timing from one definition. Like stack-reveal.ts, it never
+  queries the DOM or creates its own timeline.
 - icons.ts is the canonical map for shared Lucide icon names.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead

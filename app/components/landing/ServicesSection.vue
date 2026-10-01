@@ -1,140 +1,111 @@
 <script setup lang="ts">
-import { computed, shallowRef } from "vue";
-import MediaPlaceholder from "@/components/shared/MediaPlaceholder.vue";
-import { Button } from "@/components/ui/button";
+import { shallowRef, useTemplateRef } from "vue";
+import SplitText from "@/components/shared/SplitText.vue";
 import { appIcons } from "@/lib/icons";
-
-interface ClientStory {
-	quote: string;
-	name: string;
-	role: string;
-}
+import type { SplitTextResult } from "@/lib/split-text";
 
 interface Service {
+	image: string;
 	title: string;
-	body: string;
-	visual: string;
 }
 
-const storyData: ClientStory[] = [
-	{
-		quote: "“For years our site failed to show the work properly. Six weeks after relaunch we booked €180k in new business and get two or three qualified enquiries a week.”",
-		name: "Andrew Tynes",
-		role: "Owner, Mammoth Murals",
-	},
-	{
-		quote: "“Our reels stopped looking like stock footage. Same team, same budget, work that finally looks like us.”",
-		name: "Ilse Warner",
-		role: "CMO, Nova Dairy",
-	},
-	{
-		quote: "“Content output tripled without a single off-brand post going live. The review loop is the part nobody else offered.”",
-		name: "Tomas Brekke",
-		role: "Founder, Vestlund",
-	},
-];
+const servicesTitle = "We can help You with";
 
 const servicesData: Service[] = [
 	{
+		image: "/images/work/1.png",
 		title: "AI content creation",
-		body: "Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
-		visual: "content grid",
 	},
 	{
+		image: "/images/work/2.png",
 		title: "Web development",
-		body: "Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
-		visual: "product screenshot",
 	},
 ];
 
-const selectedStory = shallowRef(0);
-const selectedService = shallowRef(0);
-
-const activeStory = computed(() => storyData[selectedStory.value]!);
-const activeService = computed(() => servicesData[selectedService.value]!);
-const storyCounter = computed(
-	() =>
-		`${String(selectedStory.value + 1).padStart(2, "0")}/${String(storyData.length).padStart(2, "0")}`,
+const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
+const activeService = shallowRef(0);
+const titleSplit = shallowRef<SplitTextResult>();
+const optionSplits = shallowRef<(SplitTextResult | undefined)[]>(
+	servicesData.map(() => undefined),
 );
 
-function showPreviousStory() {
-	selectedStory.value =
-		(selectedStory.value - 1 + storyData.length) % storyData.length;
+useServicesMotion(servicesRoot, {
+	active: activeService,
+	optionSplits,
+	titleSplit,
+});
+
+function setTitleSplit(parts: SplitTextResult) {
+	titleSplit.value = parts;
 }
 
-function showNextStory() {
-	selectedStory.value = (selectedStory.value + 1) % storyData.length;
+function setOptionSplit(index: number, parts: SplitTextResult) {
+	optionSplits.value = optionSplits.value.map((entry, entryIndex) =>
+		entryIndex === index ? parts : entry,
+	);
+}
+
+function selectService(index: number) {
+	activeService.value = index;
 }
 </script>
 
 <template>
-	<section id="services" class="services section-gutter">
-		<h2 class="section-title services-title">What we can help with</h2>
+	<section id="services" ref="servicesRoot" class="services section-gutter">
+		<h2 class="section-title split-title services-title">
+			<span class="sr-only">{{ servicesTitle }}</span>
+			<span aria-hidden="true">
+				<SplitText
+					aria="none"
+					mask="chars"
+					:text="servicesTitle"
+					type="words,chars"
+					@split="setTitleSplit"
+				/>
+				<span class="services-title-arrow">
+					<span class="services-title-glyph" data-services-title-arrow>
+						<Icon :name="appIcons.arrowDown" />
+					</span>
+				</span>
+			</span>
+		</h2>
 
-		<div class="services-layout">
-			<article class="client-story">
-				<div class="client-story-controls">
-					<div class="client-story-arrows">
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							aria-label="Previous client story"
-							@click="showPreviousStory"
-						>
-							<Icon :name="appIcons.arrowLeft" class="size-4.5" />
-						</Button>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							aria-label="Next client story"
-							@click="showNextStory"
-						>
-							<Icon :name="appIcons.arrowRight" class="size-4.5" />
-						</Button>
-					</div>
-					<span class="client-story-counter">{{ storyCounter }}</span>
-				</div>
-
-				<p class="client-story-quote">{{ activeStory.quote }}</p>
-
-				<div class="client-story-person">
-					<MediaPlaceholder
-						class="client-story-avatar"
-						aria-hidden="true"
+		<div class="services-layout" data-services-layout>
+			<div class="services-options">
+				<button
+					v-for="(service, index) in servicesData"
+					:key="service.title"
+					class="services-option"
+					type="button"
+					:aria-pressed="index === activeService"
+					@click="selectService(index)"
+					@focus="selectService(index)"
+					@pointerenter="selectService(index)"
+				>
+					<SplitText
+						aria="none"
+						mask="words"
+						:text="service.title"
+						@split="setOptionSplit(index, $event)"
 					/>
-					<div>
-						<div class="client-story-name">
-							{{ activeStory.name }}
-						</div>
-						<div class="client-story-role">
-							{{ activeStory.role }}
-						</div>
-					</div>
-				</div>
-			</article>
-
-			<div class="service-picker">
-				<div class="service-picker-list">
-					<button
-						v-for="(service, index) in servicesData"
-						:key="service.title"
-						class="service-picker-option"
-						type="button"
-						:aria-pressed="index === selectedService"
-						@click="selectedService = index"
-					>
-						{{ service.title }}
-					</button>
-				</div>
-				<p class="service-picker-description">
-					{{ activeService.body }}
-				</p>
+				</button>
 			</div>
 
-			<MediaPlaceholder
-				class="service-visual"
-				:label="activeService.visual"
-			/>
+			<div class="services-visual" data-services-visual>
+				<NuxtImg
+					v-for="service in servicesData"
+					:key="service.image"
+					class="services-image"
+					data-services-image
+					:src="service.image"
+					alt=""
+					width="1080"
+					height="1919"
+					sizes="sm:448px"
+					loading="lazy"
+					draggable="false"
+				/>
+			</div>
 		</div>
 	</section>
 </template>
@@ -147,66 +118,52 @@ function showNextStory() {
 }
 
 .services-title {
-	@apply mb-10 max-w-[15ch] md:mb-14 xl:mb-18;
+	@apply text-center text-balance;
+}
+
+.services-title-arrow {
+	@apply ms-[0.12em] inline-block overflow-clip align-[-0.06em];
+}
+
+.services-title-glyph {
+	@apply invisible block size-[0.8em];
+}
+
+.services-title-glyph :deep(svg),
+.services-title-glyph :deep(.iconify) {
+	@apply block size-full;
 }
 
 .services-layout {
-	@apply grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(15rem,0.8fr)_minmax(24rem,1.5fr)_minmax(13rem,0.7fr)] lg:gap-8 xl:gap-16;
+	@apply mt-16 grid grid-cols-1 items-center gap-12 md:mt-20 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16 xl:mt-24 xl:gap-24;
 }
 
-.client-story {
-	@apply min-w-0 max-w-md;
+.services-options {
+	@apply flex flex-col items-start gap-3 md:gap-5;
 }
 
-.client-story-controls {
-	@apply flex items-center justify-between gap-4 border-t border-foreground/25 pt-3;
+.services-option {
+	@apply m-0 cursor-default border-0 bg-transparent p-0 text-left text-service font-bold tracking-[-0.045em] text-balance text-foreground/60 transition-colors duration-300 hover:text-foreground aria-pressed:text-foreground;
 }
 
-.client-story-arrows {
-	@apply flex gap-3;
+.services-option :deep(.split-text-word),
+.services-option :deep(.split-text-word-mask) {
+	display: inline-block;
 }
 
-.client-story-counter {
-	@apply text-sm tracking-[0.06em] text-brand-soft;
+.services-option :deep(.split-text-word) {
+	visibility: hidden;
 }
 
-.client-story-quote {
-	@apply mt-7 min-h-36 text-lg leading-relaxed text-foreground;
+.services-visual {
+	@apply relative aspect-9/16 w-full max-w-xs justify-self-center overflow-hidden rounded-2xl bg-muted sm:max-w-sm lg:w-[clamp(16rem,26vw,28rem)] lg:max-w-none lg:justify-self-end;
 }
 
-.client-story-person {
-	@apply mt-5 flex items-center gap-3;
+.services-image {
+	@apply pointer-events-none absolute inset-0 size-full object-cover select-none;
 }
 
-.client-story-avatar {
-	@apply size-10 shrink-0 rounded-full bg-size-[0.75rem_0.75rem];
-}
-
-.client-story-name {
-	@apply text-base font-semibold;
-}
-
-.client-story-role {
-	@apply text-sm text-brand-soft sm:text-base;
-}
-
-.service-picker {
-	@apply min-w-0;
-}
-
-.service-picker-list {
-	@apply flex flex-col;
-}
-
-.service-picker-option {
-	@apply m-0 border-0 bg-transparent p-0 text-left text-service font-bold tracking-[-0.04em] text-foreground/60 transition-colors duration-300 hover:text-foreground aria-pressed:text-foreground cursor-default;
-}
-
-.service-picker-description {
-	@apply mt-7 mb-0 max-w-[52ch] text-base leading-relaxed text-muted-foreground sm:text-lg;
-}
-
-.service-visual {
-	@apply aspect-3/4 w-full max-w-sm overflow-hidden rounded-2xl lg:aspect-square lg:max-w-xs;
+.services-image + .services-image {
+	clip-path: inset(100% 0% 0% 0%);
 }
 </style>

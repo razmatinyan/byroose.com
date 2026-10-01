@@ -90,13 +90,9 @@ or component-level font imports.
 - `text-hero` is reserved for the primary landing statement.
 - `text-section` is the default major section heading.
 - `text-statement` supports large editorial body statements.
-- `text-service` supports interactive service titles. Its leading is
-  deliberately loose so the two-item service picker ends level with the client
-  story column beside it. Tightening it reopens a vertical gap in the services
-  section, and the font size cannot compensate because the longest service name
-  wraps only a few pixels above its current size. For the same reason the
-  service visual switches from a 3:4 to a square ratio at `lg`, so all three
-  columns end at nearly the same height.
+- `text-service` supports the large hoverable service names. Its leading of
+  `1.08` leaves room for the descender of "development" inside its word
+  mask, so the rise never clips the glyph.
 - `text-journey` and `text-step` support the oversized process composition.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
@@ -178,7 +174,8 @@ Component-specific visual recipes live in the owning Vue single-file component's
 `<style scoped>` block. These blocks use `@reference` to access the theme and
 utilities from `app/assets/css/tailwind.css` without emitting the global sheet a
 second time. Cross-component recipes live under the global `@layer components`.
-Examples include `section-title`, `section-gutter`, and the shared tilt behavior.
+Examples include `section-title`, `section-gutter`, `split-title`, and the
+shared tilt behavior.
 Small reusable surface and media recipes use Tailwind v4 `@utility`, such as
 `surface-blue` and `pattern-orange`.
 
@@ -595,15 +592,17 @@ blocks, so each word holds together as a unit.
 
 Splitting drops the font's kerning pairs, because every character becomes its
 own inline block, so the split title would set wider than the same text unsplit.
-The heading therefore tracks at `-0.07em` through `--work-title-tracking`.
-`letter-spacing` would also shrink each character's mask box and clip the edges
-of wide bold glyphs, so in the split state each character resets its own
-`letter-spacing` to zero and its mask takes the tracking as a negative
-`margin-inline-end`. The masks keep each full glyph and still sit tighter than
-the old unsplit setting. When the section
+The heading therefore takes the global `split-title` class group, which tracks
+at `-0.07em` through `--split-title-tracking`. `letter-spacing` would also
+shrink each character's mask box and clip the edges of wide bold glyphs, so in
+the split state each character resets its own `letter-spacing` to zero and its
+mask takes the tracking as a negative `margin-inline-end`. The masks keep each
+full glyph and still sit tighter than the old unsplit setting. The group also
+hides every character until its reveal sets it visible. When the section
 reaches 90 percent of the viewport, each character rises from 115 percent below
 its mask over `0.9s` with `power3.out` easing and a `0.035s` stagger, so the
-title types itself in from left to right.
+title types itself in from left to right. That recipe lives in
+`app/lib/char-reveal.ts`, which the services title shares.
 
 Each case study reveals from its own trigger at the same line. The media frame
 fills with the preloader's stack reveal: five elements stacked on the frame all
@@ -783,6 +782,41 @@ The track carries `pointer-events: none` and only the panel accepts input.
 Reduced motion drops the runway, the pin, the fade, the slowdown, the reveal,
 and the cycling. It keeps a static dark panel with the words in place, the
 first image, and the full circular action, whose glyph swap resolves instantly.
+
+### Services section
+
+The services section centers its heading, currently "We can help You with",
+followed by a Lucide arrow down. The heading keeps `section-title` at
+`text-section` and adds `split-title`, so it shares the work title's kerning
+compensation and character reveal. Screen readers get the phrase from an
+`sr-only` copy, and the split characters and the arrow are hidden from them.
+The arrow is the last element of the reveal: it sits in its own mask at `0.8em`
+and rises with the characters as if it were one more letter. No whitespace
+separates it from the final word, so the arrow stays on the final word's line
+when the title wraps.
+
+Below the heading, the two service names sit on the left at `text-service` and
+a 9:16 service visual sits on the right. On phones the layout stacks with the
+visual centered under the names. The names are buttons with `aria-pressed`.
+Hovering, focusing, or clicking one makes it the active service, raises it from
+`foreground` at sixty percent to full `foreground`, and swaps the visual to its
+image. The section carries no service descriptions.
+
+The visual stacks one image per service. The incoming image moves to the top of
+the stack and opens with a `clip-path` inset wipe over `1.1s` with `expo.out`,
+so it starts fast and settles slowly. Moving to a later service wipes it up
+from the bottom edge, and moving to an earlier one wipes it down from the top.
+The outgoing image stays underneath until it is covered. Every image after the
+first rests fully clipped in CSS, so the server output shows only the first
+image. The images are decorative placeholders from `public/images/work` and
+will be replaced with real service media.
+
+The service names split into masked words. When the layout reaches 82 percent
+of the viewport, each word rises from 115 percent below its mask over `0.8s`
+with `power3.out` easing and a `0.06s` stagger. The visual opens top to bottom
+at the same moment with the Studio portrait's `1.2s` `power3.inOut` clip
+reveal. Every reveal runs once. Reduced motion displays the title, the arrow,
+the names, and the visual at rest, and swaps images in one step.
 
 ### Header motion
 

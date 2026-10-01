@@ -1,5 +1,6 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import { addCharReveal } from "@/lib/char-reveal";
 import { addStackReveal } from "@/lib/stack-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -21,8 +22,6 @@ const selectors = {
 } as const;
 
 const revealStart = "top 90%";
-const titleCharDuration = 0.9;
-const titleCharStagger = 0.035;
 const lineDuration = 0.8;
 const lineStagger = 0.08;
 const linesAtMedia = 0.1;
@@ -55,22 +54,15 @@ export function useWorkMotion(
    function revealTitleChars(chars: HTMLElement[], trigger: HTMLElement) {
       if (!chars.length) return;
 
-      gsap.set(chars, {
-         visibility: "inherit",
-         yPercent: 115,
-      });
-
-      gsap.to(chars, {
-         duration: titleCharDuration,
-         ease: "power3.out",
-         stagger: titleCharStagger,
+      const timeline = gsap.timeline({
          scrollTrigger: {
             once: true,
             start: revealStart,
             trigger,
          },
-         yPercent: 0,
       });
+
+      addCharReveal(timeline, chars);
    }
 
    function showTitleChars(chars: HTMLElement[]) {

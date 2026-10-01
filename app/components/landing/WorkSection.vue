@@ -120,7 +120,7 @@ function deactivateTooltip() {
 	<section id="work" ref="workRoot" class="work">
 		<div class="work-content section-gutter">
 			<SplitText
-				class="section-title work-title"
+				class="section-title split-title work-title"
 				as="h2"
 				mask="chars"
 				:text="workTitle"
@@ -163,24 +163,7 @@ function deactivateTooltip() {
 
 .work-title {
 	@apply text-center whitespace-nowrap;
-	--work-title-tracking: -0.07em;
 	font-size: clamp(2rem, 12vw, 13rem);
-	letter-spacing: var(--work-title-tracking);
-}
-
-.work-title :deep(.split-text-word),
-.work-title :deep(.split-text-char),
-.work-title :deep(.split-text-char-mask) {
-	display: inline-block;
-}
-
-.work-title :deep(.split-text-char) {
-	visibility: hidden;
-	letter-spacing: 0;
-}
-
-.work-title :deep(.split-text-char-mask) {
-	margin-inline-end: var(--work-title-tracking);
 }
 
 .case-list {

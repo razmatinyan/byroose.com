@@ -75,8 +75,8 @@
 	--text-section--line-height: 0.92;
 	--text-statement: clamp(1.875rem, 4.4vw, 3.75rem);
 	--text-statement--line-height: 1.06;
-	--text-service: clamp(1.875rem, 4.6vw, 3.875rem);
-	--text-service--line-height: 1.38;
+	--text-service: clamp(2.75rem, 6.5vw, 7rem);
+	--text-service--line-height: 1.08;
 	--text-journey: clamp(2.75rem, 10.4vw, 15rem);
 	--text-journey--line-height: 0.86;
 	--text-step: clamp(4rem, 9vw, 9rem);
@@ -234,6 +234,26 @@
 
 	.section-title {
 		@apply m-0 font-bold tracking-[-0.045em] text-section;
+	}
+
+	.split-title {
+		--split-title-tracking: -0.07em;
+		letter-spacing: var(--split-title-tracking);
+	}
+
+	.split-title .split-text-word,
+	.split-title .split-text-char,
+	.split-title .split-text-char-mask {
+		display: inline-block;
+	}
+
+	.split-title .split-text-char {
+		visibility: hidden;
+		letter-spacing: 0;
+	}
+
+	.split-title .split-text-char-mask {
+		margin-inline-end: var(--split-title-tracking);
 	}
 
 	.section-intro {
