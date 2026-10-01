@@ -168,9 +168,10 @@ same TrailingTooltip the case cards use.
 
 useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the title character
-rise followed by the description word rise in one timeline, and the scrubbed bottom origin image entry and top
-origin image exit measured against `data-service-media-frame`. ServicesSection owns the copy, the
-image links, and the tooltip handlers. The composable waits until the intro
+rise and the description word rise together in one timeline, and the scrubbed
+bottom origin image entry and top origin image exit measured against
+`data-service-media-frame`. ServicesSection owns the copy, the image links, and
+the tooltip handlers. The composable waits until the intro
 lines, every service title, and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
