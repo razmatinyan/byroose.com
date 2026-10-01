@@ -47,7 +47,7 @@ const introWordFrom = {
 };
 const textRevealStart = "top 60%";
 const imageZoom = 1.3;
-const mediaPeak = "center center";
+const mediaRunway = 1;
 const mediaPeakScale = 0.8;
 const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
@@ -140,37 +140,42 @@ export function useServicesMotion(
 		const image = panel.querySelector<HTMLElement>(selectors.image);
 		if (!frame || !media || !mediaExit) return;
 
-		const entry = gsap
+		gsap.set(frame, { "--service-media-runway": mediaRunway });
+
+		const timeline = gsap
 			.timeline({
-				defaults: { ease: mediaEntryEase },
+				defaults: { duration: 1, ease: "none" },
 				scrollTrigger: {
-					end: mediaPeak,
+					end: "bottom top",
+					invalidateOnRefresh: true,
 					refreshPriority,
 					scrub: true,
 					start: "top bottom",
 					trigger: frame,
 				},
 			})
-			.fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
+			.fromTo(
+				mediaExit,
+				{ y: 0 },
+				{ duration: 2, y: () => frame.offsetHeight - mediaExit.offsetHeight },
+				0,
+			)
+			.fromTo(
+				media,
+				{ scale: 0 },
+				{ ease: mediaEntryEase, scale: mediaPeakScale },
+				0,
+			)
+			.fromTo(
+				mediaExit,
+				{ scale: 1 },
+				{ ease: mediaExitEase, immediateRender: false, scale: 0 },
+				1,
+			);
 
-		if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
-
-		gsap.fromTo(
-			mediaExit,
-			{ scale: 1 },
-			{
-				ease: mediaExitEase,
-				immediateRender: false,
-				scale: 0,
-				scrollTrigger: {
-					end: "bottom top",
-					refreshPriority,
-					scrub: true,
-					start: mediaPeak,
-					trigger: frame,
-				},
-			},
-		);
+		if (image) {
+			timeline.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
+		}
 	}
 
 	function showAll(elements: HTMLElement[]) {

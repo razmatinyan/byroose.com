@@ -210,6 +210,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .service-media-frame {
 	@apply mt-3 w-full;
+	padding-bottom: calc(var(--service-media-runway, 0) * 100svh);
 }
 
 .service-media-exit {

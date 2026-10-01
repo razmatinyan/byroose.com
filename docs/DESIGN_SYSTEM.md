@@ -827,13 +827,20 @@ element reaches 60 percent of the viewport rather than Studio's 82, so the
 words rise once they are well inside the screen.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at
-full size. It scales up from zero around its bottom center from the moment its
-frame enters the viewport until the frame's center reaches the viewport center,
-easing out with `sine.out` to a peak of `0.8`, while the picture inside eases
-from `1.3` scale to rest. From that same point it eases back down to zero
-around its top center with `sine.in`, finishing as the frame leaves the top.
-Both eases are slow at the peak, so the turn from growing to shrinking is
-smooth. The image never reaches its full layout size. Entry and exit live on
+full size, and it travels slower than the page so a future video stays on
+screen longer. While motion is enabled, the frame adds one viewport height of
+runway below the image through `--service-media-runway`, and the image slides
+down through that runway as the frame crosses the viewport. At 1440 by 900 it
+moves about 0.65 times as fast as the scroll, and both the scale in and the
+scale out stretch across the longer distance. Reduced motion drops the runway.
+
+The image scales up from zero around its bottom center from the moment the
+frame enters the viewport until the image is centered in the viewport, easing
+out with `sine.out` to a peak of `0.8`, while the picture inside eases from
+`1.3` scale to rest. From that same point it eases back down to zero around
+its top center with `sine.in`, finishing as the image leaves the top. Both eases
+are slow at the peak, so the turn from growing to shrinking is smooth. The
+image never reaches its full layout size. Entry and exit live on
 two nested elements, the link for the bottom origin entry and its wrapper for
 the top origin exit, inside an untransformed frame that serves as the trigger,
 so the transform origins never fight and the trigger is never measured while
