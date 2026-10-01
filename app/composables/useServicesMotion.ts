@@ -1,6 +1,12 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import type { SplitTextResult } from "@/lib/split-text";
+import {
+	addWordReveal,
+	wordRevealDenseStagger,
+	wordRevealStagger,
+	wordRevealStart,
+} from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitListSource = MaybeRefOrGetter<
@@ -14,46 +20,36 @@ interface ServicesMotionTargets {
 }
 
 interface ServicePanelParts {
-	lines: HTMLElement[];
+	descriptionWords: HTMLElement[];
 	panel: HTMLElement;
-	words: HTMLElement[];
+	titleWords: HTMLElement[];
 }
 
 const selectors = {
+	description: "[data-service-description]",
 	image: "[data-service-image]",
 	intro: "[data-services-intro]",
 	media: "[data-service-media]",
 	mediaExit: "[data-service-media-exit]",
+	mediaFrame: "[data-service-media-frame]",
 	panel: "[data-service-panel]",
+	title: "[data-service-title]",
 } as const;
 
-const pinLength = 1.5;
 const refreshPriority = -1;
+const introPinLength = 1.5;
 const introWordDuration = 1;
 const introWordStagger = 0.45;
 const introHold = 0.6;
 const introWordFrom = {
 	filter: "blur(16px)",
 	opacity: 0.12,
-	scale: 1.6,
+	scale: 0.6,
 };
-const maskOffset = 115;
-const wordDuration = 0.45;
-const wordStagger = 0.08;
-const lineDuration = 0.45;
-const lineStagger = 0.1;
-const linesAt = 0.2;
-const mediaAt = 0.35;
-const mediaDuration = 1;
 const imageZoom = 1.3;
-const serviceHold = 0.3;
-const exitLength = 0.6;
 
-function splitPart(
-	parts: SplitTextResult | undefined,
-	key: "lines" | "words",
-) {
-	return parts?.[key] ?? [];
+function splitWords(parts: SplitTextResult | undefined) {
+	return parts?.words ?? [];
 }
 
 export function useServicesMotion(
@@ -65,26 +61,23 @@ export function useServicesMotion(
 	let disposed = false;
 	let initialized = false;
 
-	function pinnedTimeline(trigger: HTMLElement) {
-		return gsap.timeline({
-			defaults: { ease: "none" },
-			scrollTrigger: {
-				end: `+=${pinLength * 100}%`,
-				pin: true,
-				refreshPriority,
-				scrub: true,
-				start: "top top",
-				trigger,
-			},
-		});
-	}
-
 	function revealIntro(intro: HTMLElement, words: HTMLElement[]) {
 		if (!words.length) return;
 
 		gsap.set(words, { ...introWordFrom, visibility: "inherit" });
 
-		pinnedTimeline(intro)
+		gsap
+			.timeline({
+				defaults: { ease: "none" },
+				scrollTrigger: {
+					end: `+=${introPinLength * 100}%`,
+					pin: true,
+					refreshPriority,
+					scrub: true,
+					start: "top top",
+					trigger: intro,
+				},
+			})
 			.to(
 				words,
 				{
@@ -100,81 +93,80 @@ export function useServicesMotion(
 			.to({}, { duration: introHold });
 	}
 
-	function exitMedia(
-		mediaExit: HTMLElement,
-		timeline: gsap.core.Timeline,
+	function revealWords(
+		words: HTMLElement[],
+		trigger: HTMLElement | null,
+		stagger: number,
 	) {
-		const pinEnd = () => timeline.scrollTrigger?.end ?? 0;
+		if (!words.length || !trigger) return;
+
+		const timeline = gsap.timeline({
+			scrollTrigger: {
+				once: true,
+				refreshPriority,
+				start: wordRevealStart,
+				trigger,
+			},
+		});
+
+		addWordReveal(timeline, words, { stagger });
+	}
+
+	function revealText({
+		descriptionWords,
+		panel,
+		titleWords,
+	}: ServicePanelParts) {
+		revealWords(
+			titleWords,
+			panel.querySelector<HTMLElement>(selectors.title),
+			wordRevealStagger,
+		);
+		revealWords(
+			descriptionWords,
+			panel.querySelector<HTMLElement>(selectors.description),
+			wordRevealDenseStagger,
+		);
+	}
+
+	function scaleMedia(panel: HTMLElement) {
+		const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
+		const media = panel.querySelector<HTMLElement>(selectors.media);
+		const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
+		const image = panel.querySelector<HTMLElement>(selectors.image);
+		if (!frame || !media || !mediaExit) return;
+
+		const entry = gsap
+			.timeline({
+				defaults: { ease: "none" },
+				scrollTrigger: {
+					end: "center 60%",
+					refreshPriority,
+					scrub: true,
+					start: "top bottom",
+					trigger: frame,
+				},
+			})
+			.fromTo(media, { scale: 0 }, { scale: 1 }, 0);
+
+		if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
 
 		gsap.fromTo(
 			mediaExit,
 			{ scale: 1 },
 			{
-				ease: "power1.in",
+				ease: "none",
 				immediateRender: false,
 				scale: 0,
 				scrollTrigger: {
-					end: () => pinEnd() + window.innerHeight * exitLength,
-					invalidateOnRefresh: true,
+					end: "bottom top",
 					refreshPriority,
 					scrub: true,
-					start: pinEnd,
+					start: "center 40%",
+					trigger: frame,
 				},
 			},
 		);
-	}
-
-	function revealService({ lines, panel, words }: ServicePanelParts) {
-		const media = panel.querySelector<HTMLElement>(selectors.media);
-		const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
-		const image = panel.querySelector<HTMLElement>(selectors.image);
-		const timeline = pinnedTimeline(panel);
-
-		if (words.length) {
-			gsap.set(words, { visibility: "inherit", yPercent: maskOffset });
-			timeline.to(
-				words,
-				{
-					duration: wordDuration,
-					ease: "power3.out",
-					stagger: wordStagger,
-					yPercent: 0,
-				},
-				0,
-			);
-		}
-
-		if (lines.length) {
-			gsap.set(lines, { visibility: "inherit", yPercent: maskOffset });
-			timeline.to(
-				lines,
-				{
-					duration: lineDuration,
-					ease: "power3.out",
-					stagger: lineStagger,
-					yPercent: 0,
-				},
-				linesAt,
-			);
-		}
-
-		if (media) {
-			gsap.set(media, { scale: 0 });
-			timeline.to(
-				media,
-				{ duration: mediaDuration, ease: "power2.out", scale: 1 },
-				mediaAt,
-			);
-		}
-
-		if (image) {
-			gsap.set(image, { scale: imageZoom });
-			timeline.to(image, { duration: mediaDuration, scale: 1 }, mediaAt);
-		}
-
-		timeline.to({}, { duration: serviceHold });
-
-		if (mediaExit) exitMedia(mediaExit, timeline);
 	}
 
 	function showAll(elements: HTMLElement[]) {
@@ -205,9 +197,9 @@ export function useServicesMotion(
 		const panels = [
 			...root.querySelectorAll<HTMLElement>(selectors.panel),
 		].map((panel, index) => ({
-			lines: splitPart(descriptionParts[index], "lines"),
+			descriptionWords: splitWords(descriptionParts[index]),
 			panel,
-			words: splitPart(titleParts[index], "words"),
+			titleWords: splitWords(titleParts[index]),
 		}));
 
 		createMatchMedia(
@@ -219,16 +211,19 @@ export function useServicesMotion(
 				if (context.conditions?.reduceMotion) {
 					showAll([
 						...introWords,
-						...panels.flatMap(({ lines, words }) => [
-							...words,
-							...lines,
+						...panels.flatMap(({ descriptionWords, titleWords }) => [
+							...titleWords,
+							...descriptionWords,
 						]),
 					]);
 					return;
 				}
 
 				revealIntro(intro, introWords);
-				for (const panel of panels) revealService(panel);
+				for (const panel of panels) {
+					revealText(panel);
+					scaleMedia(panel.panel);
+				}
 			},
 			scope,
 		);
@@ -248,7 +243,7 @@ export function useServicesMotion(
 			if (splits.includes(undefined)) return;
 
 			return initialize(
-				intro.flatMap((parts) => splitPart(parts, "words")),
+				intro.flatMap(splitWords),
 				titles.filter((parts) => parts !== undefined),
 				descriptions.filter((parts) => parts !== undefined),
 			);

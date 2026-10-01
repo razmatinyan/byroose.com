@@ -50,6 +50,7 @@ app/
     stack-reveal.ts
     surfaces.ts
     utils.ts
+    word-reveal.ts
   layouts/
     default.vue
   pages/
@@ -165,13 +166,13 @@ the composable only reports whether cycling should run. The panel emits its
 hover state with its current image and label, and WorkSection feeds them to the
 same TrailingTooltip the case cards use.
 
-useServicesMotion owns the services section's pinned sequence: the intro panel's
-blurred word reveal and, for each `data-service-panel`, the pin, the title word
-rise, the description line rise, the bottom origin image entry, and the top
-origin image exit as the panel scrolls away. ServicesSection owns the copy, the
+useServicesMotion owns the services section's motion: the pinned intro panel's
+blurred word reveal and, for each `data-service-panel`, the title and
+description word rises and the scrubbed bottom origin image entry and top
+origin image exit measured against `data-service-media-frame`. ServicesSection owns the copy, the
 image links, and the tooltip handlers. The composable waits until the intro
 lines, every service title, and every description have reported their splits.
-Reduced motion resolves every reveal to visible content without pins.
+Reduced motion resolves every reveal to visible content without the pin.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the
 image and label, the 200ms close delay, and whether the fine-pointer tooltip
@@ -240,6 +241,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   never queries the DOM or creates its own timeline, which keeps trigger and
   lifecycle ownership with the calling composable.
 - surfaces.ts is the canonical map for semantic surface and foreground tone names.
+- word-reveal.ts owns the shared masked word rise recipe, its `top 82%` start,
+  and its two staggers. The Studio section and the services panels both append
+  it to their own timelines, so their word reveals keep identical timing.
 - utils.ts contains pure class and value helpers.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.

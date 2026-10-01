@@ -3,6 +3,12 @@ import type { MaybeRefOrGetter } from "vue";
 import { unrefElement } from "@vueuse/core";
 import type { MaybeComputedElementRef } from "@vueuse/core";
 import type { SplitTextResult } from "@/lib/split-text";
+import {
+	addWordReveal,
+	wordRevealDenseStagger,
+	wordRevealStagger,
+	wordRevealStart,
+} from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
@@ -17,7 +23,6 @@ interface StudioMotionTargets {
 
 const hiddenPortraitClip = "inset(0% 0% 100% 0%)";
 const visiblePortraitClip = "inset(0% 0% 0% 0%)";
-const revealStart = "top 82%";
 
 export function useStudioMotion(
 	scope: MotionScope,
@@ -35,22 +40,15 @@ export function useStudioMotion(
 	) {
 		if (!words.length) return;
 
-		gsap.set(words, {
-			visibility: "inherit",
-			yPercent: 115,
-		});
-
-		gsap.to(words, {
-			duration: 0.8,
-			ease: "power3.out",
-			stagger,
+		const timeline = gsap.timeline({
 			scrollTrigger: {
 				once: true,
-				start: revealStart,
+				start: wordRevealStart,
 				trigger,
 			},
-			yPercent: 0,
 		});
+
+		addWordReveal(timeline, words, { stagger });
 	}
 
 	function revealPortrait(image: HTMLElement) {
@@ -64,7 +62,7 @@ export function useStudioMotion(
 				ease: "power3.inOut",
 				scrollTrigger: {
 					once: true,
-					start: revealStart,
+					start: wordRevealStart,
 					trigger: image,
 				},
 			},
@@ -112,9 +110,9 @@ export function useStudioMotion(
 					return;
 				}
 
-				revealWords(statementWords, root, 0.03);
+				revealWords(statementWords, root, wordRevealStagger);
 				revealPortrait(image);
-				revealWords(paragraphWords, copyRoot, 0.01);
+				revealWords(paragraphWords, copyRoot, wordRevealDenseStagger);
 			},
 			scope,
 		);

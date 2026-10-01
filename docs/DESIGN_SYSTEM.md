@@ -540,7 +540,8 @@ the scroll transition enlarges it.
 Render the Studio statement and both copy paragraphs through the shared
 `SplitText` component with word masks. When the Studio section reaches 82
 percent of the viewport, each statement word rises from 115 percent below its
-mask over `0.8s` with `power3.out` easing and a `0.03s` stagger.
+mask over `0.8s` with `power3.out` easing and a `0.03s` stagger. The recipe
+lives in `app/lib/word-reveal.ts`, which the services panels share.
 
 The statement is start-aligned, so its large display lines keep natural word
 spacing. The copy paragraphs are justified so every full line ends on the
@@ -794,43 +795,46 @@ first image, and the full circular action, whose glyph swap resolves instantly.
 
 ### Services section
 
-The services section is a sequence of pinned full-viewport panels: one intro
-panel followed by one panel per service. `useServicesMotion` pins each panel
-at the top of the viewport for one and a half viewport heights and scrubs its
-reveal against that pin, so the scroll drives every reveal and reversing the
-scroll plays it back. The pins use a `refreshPriority` of `-1`, so they
+The services section opens with a pinned intro panel, followed by one panel
+per service that scrolls normally. `useServicesMotion` pins the intro at the
+top of the viewport for one and a half viewport heights and scrubs its title
+against that pin. Its triggers use a `refreshPriority` of `-1`, so they
 measure after the work section's pin above them.
 
 The intro panel centers its heading, currently "What can we do for You", on two
 lines at `clamp(3rem, 10vw, 12rem)`, with each line held to one line through
 `white-space: nowrap`. Each line is its own `SplitText` word split, and
 screen readers get the phrase from an `sr-only` copy. Every word starts faint,
-blurred, and oversized, at `0.12` opacity, `blur(16px)`, and `1.6` scale,
-and settles to full opacity, no blur, and its resting size. The words resolve
-one after another in reading order, and the pin holds the finished title for a
+blurred, and small, at `0.12` opacity, `blur(16px)`, and `0.6` scale, and
+grows to full opacity, no blur, and its resting size. The words resolve one
+after another in reading order, and the pin holds the finished title for a
 short beat before releasing it.
 
 Each service panel centers its title at `text-service`, a description below
-it, and a wide image below that. The service names stay in sentence case. On
-desktop the panel is exactly one viewport tall and the image fills the space
-left under the text at the full content width, so it reads as a wide banner.
-On phones the panel may grow taller and the image keeps a 16:9 ratio.
+it, and an image below that. The service names stay in sentence case. The
+description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
+`xl`, in medium weight with snug leading, balanced lines, and a `38ch`
+measure. The image spans the full content width at the source's natural
+`1456 / 816` ratio, so it is never cropped to fit the viewport.
 
-The title rises word by word from `SplitText` word masks. The description
-splits into masked lines and rises line by line, starting while the title is
-still arriving. The lines and their masks are block elements, because the
-split emits them as inline spans and a transform has no effect on an inline
-element. The image scales up from zero around its bottom center while the image
-inside it eases from `1.3` scale to rest, so it grows out of the description
-and keeps moving with the scroll. When the pin releases and the panel scrolls
-away toward the next one, the image scales back down to zero around its top
-center over the first sixty percent of a viewport height. Entry and exit live
-on two nested elements, the link for the bottom origin entry and its wrapper
-for the top origin exit, so the two transform origins never fight.
+The title and the description reveal exactly like the Studio statement and
+copy. Both split into masked words that rise from 115 percent below their masks
+over `0.8s` with `power3.out` easing once their own element reaches 82
+percent of the viewport. The title uses the statement's `0.03s` stagger and
+the description uses the copy's denser `0.01s` stagger. Both sections take
+that recipe from `app/lib/word-reveal.ts`, so their timing cannot drift.
 
-The lines are split once, after the fonts load, and are not re-split on resize.
-A large width change can therefore wrap a split line inside its own mask. Move
-to `autoSplit` with a rebuilt timeline if that becomes visible.
+The image is scrubbed with the scroll. It scales up from zero around its
+bottom center from the moment its frame enters the viewport until the frame's
+center reaches 60 percent of the viewport, while the picture inside eases from
+`1.3` scale to rest. Once the frame's center passes 40 percent of the viewport,
+the image scales back down to zero around its top center, finishing as the
+frame leaves the top. The gap between the two lines keeps a short rest at full
+size even when the image is taller than the viewport. Entry and exit live on
+two nested elements, the link for the bottom origin entry and its wrapper for
+the top origin exit, inside an untransformed frame that serves as the trigger,
+so the transform origins never fight and the trigger is never measured while
+scaled.
 
 Each image is a `NuxtLink` to the `/services` route, named for its service
 through `aria-label`. Hovering it opens the shared TrailingTooltip with the
@@ -838,9 +842,9 @@ service image and the label "More Details". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
 media.
 
-Reduced motion drops every pin, the scrubbed reveals, and the image scale. It
-displays the title words, the service titles, the description lines, and the
-images at rest.
+Reduced motion drops the intro pin, every reveal, and the image scale. It
+displays the title words, the service titles, the descriptions, and the images
+at rest.
 
 ### Header motion
 

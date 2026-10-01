@@ -108,6 +108,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			<SplitText
 				class="service-title"
 				as="h3"
+				data-service-title
 				mask="words"
 				:text="service.title"
 				@split="setTitleSplit(index, $event)"
@@ -116,34 +117,36 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			<SplitText
 				class="service-description"
 				as="p"
-				mask="lines"
+				data-service-description
+				mask="words"
 				:text="service.description"
-				type="lines"
 				@split="setDescriptionSplit(index, $event)"
 			/>
 
-			<div class="service-media-exit" data-service-media-exit>
-				<NuxtLink
-					class="service-media"
-					data-service-media
-					:to="servicesRoute"
-					:aria-label="`More details about ${service.title}`"
-					@pointerenter="showTooltip(service.image, tooltipText)"
-					@pointerleave="hideTooltip"
-				>
-					<NuxtImg
-						class="service-image"
-						data-service-image
-						:src="service.image"
-						alt=""
-						width="1456"
-						height="816"
-						sizes="sm:1024px md:1280px lg:1536px"
-						densities="x1"
-						loading="lazy"
-						draggable="false"
-					/>
-				</NuxtLink>
+			<div class="service-media-frame" data-service-media-frame>
+				<div class="service-media-exit" data-service-media-exit>
+					<NuxtLink
+						class="service-media"
+						data-service-media
+						:to="servicesRoute"
+						:aria-label="`More details about ${service.title}`"
+						@pointerenter="showTooltip(service.image, tooltipText)"
+						@pointerleave="hideTooltip"
+					>
+						<NuxtImg
+							class="service-image"
+							data-service-image
+							:src="service.image"
+							alt=""
+							width="1456"
+							height="816"
+							sizes="sm:1024px md:1280px lg:1536px"
+							densities="x1"
+							loading="lazy"
+							draggable="false"
+						/>
+					</NuxtLink>
+				</div>
 			</div>
 		</article>
 
@@ -182,7 +185,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-panel {
-	@apply flex min-h-svh flex-col items-center justify-center gap-5 py-24 text-center md:gap-7 lg:h-svh lg:pt-28 lg:pb-10;
+	@apply flex flex-col items-center gap-5 pt-section text-center md:gap-7;
 }
 
 .service-title {
@@ -190,30 +193,31 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-description {
-	@apply m-0 max-w-[46ch] text-base leading-relaxed text-muted-foreground sm:text-lg;
+	@apply m-0 max-w-[38ch] text-xl leading-snug font-medium tracking-tight text-balance text-muted-foreground md:text-2xl xl:text-3xl;
 }
 
 .service-title :deep(.split-text-word),
-.service-title :deep(.split-text-word-mask) {
+.service-title :deep(.split-text-word-mask),
+.service-description :deep(.split-text-word),
+.service-description :deep(.split-text-word-mask) {
 	display: inline-block;
 }
 
-.service-description :deep(.split-text-line),
-.service-description :deep(.split-text-line-mask) {
-	display: block;
-}
-
 .service-title :deep(.split-text-word),
-.service-description :deep(.split-text-line) {
+.service-description :deep(.split-text-word) {
 	visibility: hidden;
 }
 
+.service-media-frame {
+	@apply mt-3 w-full;
+}
+
 .service-media-exit {
-	@apply mt-3 w-full origin-top lg:min-h-0 lg:flex-1;
+	@apply origin-top;
 }
 
 .service-media {
-	@apply block aspect-video w-full origin-bottom overflow-hidden rounded-2xl bg-muted lg:aspect-auto lg:h-full;
+	@apply block aspect-[1456/816] w-full origin-bottom overflow-hidden rounded-2xl bg-muted;
 }
 
 .service-image {
