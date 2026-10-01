@@ -44,8 +44,7 @@ const endSplit = shallowRef<SplitTextResult>();
 const activeImage = shallowRef(0);
 const previewing = shallowRef(false);
 
-useHoverBounce(actionLink, { press: true });
-useHoverRollover(actionLink);
+useArrowSwapHover(actionLink);
 
 const { cycling } = useMoreWorksMotion(track, {
 	action,
@@ -170,15 +169,14 @@ function openWorks(event: MouseEvent) {
 					>
 						<span
 							class="more-works-action-icon"
-							data-rollover-icon
 							aria-hidden="true"
 						>
-							<span class="more-works-action-glyph" data-rollover-glyph>
+							<span class="more-works-action-glyph" data-arrow-swap-glyph>
 								<Icon :name="appIcons.arrowUpRight" />
 							</span>
 							<span
 								class="more-works-action-glyph"
-								data-rollover-glyph-copy
+								data-arrow-swap-glyph-copy
 							>
 								<Icon :name="appIcons.arrowUpRight" />
 							</span>
@@ -268,7 +266,7 @@ function openWorks(event: MouseEvent) {
 }
 
 .more-works-action-icon {
-	@apply absolute top-1/4 left-1/2 grid size-[28%] -translate-1/2 overflow-hidden;
+	@apply absolute top-1/4 left-1/2 grid size-[28%] -translate-1/2;
 }
 
 .more-works-action-glyph {
@@ -279,7 +277,7 @@ function openWorks(event: MouseEvent) {
 	@apply size-full;
 }
 
-.more-works-action-glyph[data-rollover-glyph-copy] {
-	transform: translate(-200%, 100%);
+.more-works-action-glyph[data-arrow-swap-glyph-copy] {
+	transform: translate(-200%, 150%);
 }
 </style>

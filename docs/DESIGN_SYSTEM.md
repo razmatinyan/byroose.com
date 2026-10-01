@@ -687,11 +687,18 @@ half its size sits its center on the panel's bottom edge. The panel clips its
 own overflow, so only the top half shows. The arrow up right glyph sits in that
 visible half, a quarter of the way down the circle.
 
-On hover the circle runs the shared `useHoverBounce` scale and the glyph half of
-`useHoverRollover`: the arrow leaves toward the upper right while its copy
-arrives from the lower left, exactly as on the CTA icon tiles. The circle has no
-rollover layers, so its surface never changes color. Visible keyboard focus
-runs the same swap and shows the standard focus ring. A click anywhere else on
+On hover the circle runs its own `useArrowSwapHover` rather than the CTA bounce
+and rollover. The scale and the arrow swap share one `0.7s` `power4.inOut`
+tween, which starts slowly, moves quickly through the middle, and settles slowly,
+in the style of a motion graphic rather than an elastic button. The circle
+scales to `1.08` without overshoot. The arrow leaves toward the upper right
+while its copy arrives from the lower left. The arrow box does not clip its
+glyphs. The circle's own rounded clip hides the departing arrow, and the copy
+is parked `200` percent left and `150` percent down, far enough to sit outside
+the circle and below the panel edge until it travels in. The surface never
+changes color. Visible keyboard focus runs the same swap and shows the
+standard focus ring. Reduced motion swaps the arrow instantly without scaling,
+and touch-first pointers swap the arrow without scaling. A click anywhere else on
 the panel also routes to `/works`, so the whole surface carries a pointer
 cursor. Keyboard users reach the destination through the action link.
 
@@ -900,10 +907,7 @@ can feel quicker without redefining its timings.
 The rollover is not limited to buttons. `SiteNavLink` uses the same composable
 with a pink, primary, dark sequence and a slightly higher speed, because a small
 navigation target reads better with a quicker sweep. Any element can join by
-becoming a clipped positioning host with the data attributes below. The layer
-group, the text grid, and the icon are each optional, but a host needs at least
-one of them. A present group must be complete. The More works circle uses the
-icon alone, so it swaps its arrow without a layer sweep or a label change.
+becoming a clipped positioning host with the data attributes below.
 
 Layer colors belong to the variant, not to the motion. `variantRolloverTones` in
 the button module maps each participating variant to a tuple of three semantic

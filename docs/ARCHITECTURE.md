@@ -27,6 +27,7 @@ app/
     shared/
     ui/
   composables/
+    useArrowSwapHover.ts
     useCookieBannerMotion.ts
     useHomeHeroScrollMotion.ts
     useHomeIntroMotion.ts
@@ -184,13 +185,20 @@ action sizes, SiteNavLink enables both, and SiteMenu enables both on the compact
 navigation control. This leaves generic markup, variant contracts, and
 accessibility behavior in their owning components.
 
-useHoverRollover owns the layered hover rollover. It reads independent text,
-layer, and glyph groups from a target through their data attributes, animates
-whichever groups are present, and coordinates their GSAP
+useHoverRollover owns the layered hover rollover. It reads independent text and
+layer groups from a target through their data attributes, coordinates their GSAP
 timelines, and tracks pointer and focus state together. It only animates elements
 the consuming components render. Those components own the markup, the semantic
 layer and copied-text colors, the paired glyphs, and the clipped positioning
 host.
+
+useArrowSwapHover owns the More works circle's hover: a slow-fast-slow scale and
+a diagonal swap between the glyphs marked `data-arrow-swap-glyph` and
+`data-arrow-swap-glyph-copy`. Both run on one shared `power4.inOut` timing. It
+tracks pointer and focus state together, scales only for hover-capable
+pointers with motion allowed, and resolves the swap instantly under reduced
+motion. It stays separate from useHoverBounce and useHoverRollover so the
+elastic CTA contract stays untouched.
 
 useCookieBannerMotion owns the cookie notice's entrance and exit. It returns the
 three Vue transition hooks that SiteCookieBanner binds, so the component keeps
