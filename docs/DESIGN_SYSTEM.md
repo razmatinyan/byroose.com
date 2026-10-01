@@ -564,10 +564,13 @@ their resting positions without a ScrollTrigger animation.
 
 The work section centers its heading, currently "What we've done", and gives
 each case study its own full-width row. The heading keeps `section-title` for
-its weight and tracking but overrides the font size in the component's own
+its weight but overrides the font size and tracking in the component's own
 scoped block. This heading is deliberately oversized: its clamp runs past
 `text-hero` and sits just below `text-journey`, so the section opens at display
-scale and the phrase wraps across the full column. Promote that clamp to a token
+scale. The phrase always sets on one line through `white-space: nowrap`. The
+line is about `7.4em` wide, so the clamp's floor is `2rem`, which lets `12vw`
+set the size on phones and keeps the line inside the column instead of
+overflowing it. Promote that clamp to a token
 if a second section ever wants the same step. From `md` the row is a `3fr 2fr` grid, so the media takes
 sixty percent of the width and the copy takes forty, and both columns align to
 the top of the row rather than to each other's center. On phones the row stacks
@@ -586,8 +589,17 @@ their own alternative text, and they will be replaced by real project media when
 case studies gain their own routes.
 
 The section heading is a `SplitText` character reveal. It splits into words and
-characters with a mask on every character. The word wrappers stay inline blocks,
-so lines still break between words and never inside one. When the section
+characters with a mask on every character. The word wrappers stay inline
+blocks, so each word holds together as a unit.
+
+Splitting drops the font's kerning pairs, because every character becomes its
+own inline block, so the split title would set wider than the same text unsplit.
+The heading therefore tracks at `-0.07em` through `--work-title-tracking`.
+`letter-spacing` would also shrink each character's mask box and clip the edges
+of wide bold glyphs, so in the split state each character resets its own
+`letter-spacing` to zero and its mask takes the tracking as a negative
+`margin-inline-end`. The masks keep each full glyph and still sit tighter than
+the old unsplit setting. When the section
 reaches 90 percent of the viewport, each character rises from 115 percent below
 its mask over `0.9s` with `power3.out` easing and a `0.035s` stagger, so the
 title types itself in from left to right.

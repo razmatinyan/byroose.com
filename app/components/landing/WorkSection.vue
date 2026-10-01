@@ -162,8 +162,10 @@ function deactivateTooltip() {
 }
 
 .work-title {
-	@apply mx-auto max-w-[16ch] text-center;
-	font-size: clamp(3.5rem, 12vw, 13rem);
+	@apply text-center whitespace-nowrap;
+	--work-title-tracking: -0.07em;
+	font-size: clamp(2rem, 12vw, 13rem);
+	letter-spacing: var(--work-title-tracking);
 }
 
 .work-title :deep(.split-text-word),
@@ -174,6 +176,11 @@ function deactivateTooltip() {
 
 .work-title :deep(.split-text-char) {
 	visibility: hidden;
+	letter-spacing: 0;
+}
+
+.work-title :deep(.split-text-char-mask) {
+	margin-inline-end: var(--work-title-tracking);
 }
 
 .case-list {
