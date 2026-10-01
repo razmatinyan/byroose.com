@@ -140,14 +140,14 @@ creates the section-scoped ScrollTriggers in page order. It resolves reduced
 motion to visible content and removes animation state when the section scope is
 disposed.
 
-useWorkMotion owns the work section: the centered title words, each
+useWorkMotion owns the work section: the centered title characters, each
 case study's stacked media reveal, its scrubbed image parallax, and the
 staggered rise of its masked text lines. WorkSection supplies the section scope
 and the title split; the case study card supplies the `data-work-case`,
 `data-work-case-layer`, `data-work-case-image`, and `data-work-case-reveal`
 hooks the composable resolves inside that scope. One timeline per card carries
 both the media reveal and the text lines, so their relative timing cannot drift. Reduced motion resolves the
-title to visible words and leaves every card in its resting state. It also
+title to visible characters and leaves every card in its resting state. It also
 owns the handoff from the last card to the MoreWorksPanel. It slows and fades
 the `data-work-case-list` element and brings in the `data-work-more-panel`
 surface inside the `data-work-more` track, because that handoff choreographs

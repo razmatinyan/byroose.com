@@ -21,6 +21,8 @@ const selectors = {
 } as const;
 
 const revealStart = "top 90%";
+const titleCharDuration = 0.9;
+const titleCharStagger = 0.035;
 const lineDuration = 0.8;
 const lineStagger = 0.08;
 const linesAtMedia = 0.1;
@@ -50,18 +52,18 @@ export function useWorkMotion(
    let disposed = false;
    let initialized = false;
 
-   function revealTitleWords(words: HTMLElement[], trigger: HTMLElement) {
-      if (!words.length) return;
+   function revealTitleChars(chars: HTMLElement[], trigger: HTMLElement) {
+      if (!chars.length) return;
 
-      gsap.set(words, {
+      gsap.set(chars, {
          visibility: "inherit",
          yPercent: 115,
       });
 
-      gsap.to(words, {
-         duration: 1.2,
+      gsap.to(chars, {
+         duration: titleCharDuration,
          ease: "power3.out",
-         stagger: 0.095,
+         stagger: titleCharStagger,
          scrollTrigger: {
             once: true,
             start: revealStart,
@@ -71,10 +73,10 @@ export function useWorkMotion(
       });
    }
 
-   function showTitleWords(words: HTMLElement[]) {
-      if (!words.length) return;
+   function showTitleChars(chars: HTMLElement[]) {
+      if (!chars.length) return;
 
-      gsap.set(words, {
+      gsap.set(chars, {
          clearProps: "transform",
          visibility: "inherit",
       });
@@ -190,7 +192,7 @@ export function useWorkMotion(
          );
    }
 
-   async function initialize(titleWords: HTMLElement[]) {
+   async function initialize(titleChars: HTMLElement[]) {
       if (initialized || disposed) return;
 
       initialized = true;
@@ -208,11 +210,11 @@ export function useWorkMotion(
          },
          (context) => {
             if (context.conditions?.reduceMotion) {
-               showTitleWords(titleWords);
+               showTitleChars(titleChars);
                return;
             }
 
-            revealTitleWords(titleWords, root);
+            revealTitleChars(titleChars, root);
             for (const caseElement of root.querySelectorAll<HTMLElement>(
                selectors.case,
             )) {
@@ -231,7 +233,7 @@ export function useWorkMotion(
       (parts) => {
          if (parts === undefined) return;
 
-         return initialize(parts?.words ?? []);
+         return initialize(parts?.chars ?? []);
       },
       { flush: "post", immediate: true },
    );

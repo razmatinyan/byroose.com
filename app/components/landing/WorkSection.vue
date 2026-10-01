@@ -122,9 +122,9 @@ function deactivateTooltip() {
 			<SplitText
 				class="section-title work-title"
 				as="h2"
-				mask="words"
+				mask="chars"
 				:text="workTitle"
-				type="words"
+				type="words,chars"
 				@split="setTitleSplit"
 			/>
 
@@ -167,11 +167,12 @@ function deactivateTooltip() {
 }
 
 .work-title :deep(.split-text-word),
-.work-title :deep(.split-text-word-mask) {
+.work-title :deep(.split-text-char),
+.work-title :deep(.split-text-char-mask) {
 	display: inline-block;
 }
 
-.work-title :deep(.split-text-word) {
+.work-title :deep(.split-text-char) {
 	visibility: hidden;
 }
 

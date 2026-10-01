@@ -585,10 +585,12 @@ Case images are currently reused from the hero set. They are content images with
 their own alternative text, and they will be replaced by real project media when
 case studies gain their own routes.
 
-The section heading is a `SplitText` word reveal. When the section reaches 82
-percent of the viewport, each word rises from 115 percent below its mask over
-`0.8s` with `power3.out` easing and a `0.03s` stagger, matching the Studio
-statement.
+The section heading is a `SplitText` character reveal. It splits into words and
+characters with a mask on every character. The word wrappers stay inline blocks,
+so lines still break between words and never inside one. When the section
+reaches 90 percent of the viewport, each character rises from 115 percent below
+its mask over `0.9s` with `power3.out` easing and a `0.035s` stagger, so the
+title types itself in from left to right.
 
 Each case study reveals from its own trigger at the same line. The media frame
 fills with the preloader's stack reveal: five elements stacked on the frame all
