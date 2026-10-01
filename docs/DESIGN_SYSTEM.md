@@ -152,7 +152,12 @@ paying for it. Tile dimensions only set the repeat period. One image pixel is
 always one CSS pixel, so resizing the asset never changes how coarse the grain
 looks.
 
-One opacity value tunes the whole effect. The light theme multiplies the light
+The texture, its opacity, and its light blend live in the `canvas-grain` utility,
+which both the body layer and the More works circle apply, so one value still
+tunes every grain surface. The dark override cannot nest inside that utility,
+because Tailwind cannot attach a `.dark` ancestor to an applied pseudo-element.
+Each consumer therefore repeats the two dark declarations next to its own
+selector. One opacity value tunes the whole effect. The light theme multiplies the light
 tile into the cream canvas, which keeps the warm hue and costs roughly three
 percent lightness. The dark theme inverts the same asset and screens it, so a
 near-black canvas gains a matching three percent instead of losing it. Keep both
@@ -649,19 +654,30 @@ touch-first devices never request or mount the tooltip chunk.
 The work section ends with four case studies and a full-width dark panel,
 `MoreWorksPanel`, that leads to the `/works` route. The panel uses the
 `foreground` surface with `background` text, fills at least one small viewport
-height, and stacks a centered title stage above one `cta-lg` "Explore Projects"
-action. The action is a `NuxtLink` in the `cream` variant with a primary, green,
-pink rollover, because the variant's own dark final layer would vanish into the
-panel. A click anywhere else on the panel also routes to `/works`, so the whole
-surface carries a pointer cursor. Keyboard users reach the destination through
-the action link.
+height, and stacks a centered title stage above one large circular action.
+
+The action is a `NuxtLink` named "Explore Projects" through `aria-label`. It is a
+circle of `clamp(9rem, 15vw, 15rem)` in the canvas `background` color, carrying
+the same grain as the page through the `canvas-grain` utility, so it reads as a
+piece of the canvas pushed up into the dark panel. A negative bottom margin of
+half its size sits its center on the panel's bottom edge. The panel clips its
+own overflow, so only the top half shows. The arrow up right glyph sits in that
+visible half, a quarter of the way down the circle.
+
+On hover the circle runs the shared `useHoverBounce` scale and the glyph half of
+`useHoverRollover`: the arrow leaves toward the upper right while its copy
+arrives from the lower left, exactly as on the CTA icon tiles. The circle has no
+rollover layers, so its surface never changes color. Visible keyboard focus
+runs the same swap and shows the standard focus ring. A click anywhere else on
+the panel also routes to `/works`, so the whole surface carries a pointer
+cursor. Keyboard users reach the destination through the action link.
 
 The panel is also a hover surface for the work section's shared trailing
 tooltip. While the pointer is on the panel, the tooltip reads "Explore Projects"
 instead of the cards' default label. Its thumbnail follows the panel's
 currently cycling image, so each cut swaps the thumbnail through the tooltip's
-layered reveal. The tooltip steps aside while the pointer is on the action
-itself, so its label never sits on top of the identical button label, and
+layered reveal. The tooltip steps aside while the pointer is on the circular
+action itself, so it never covers the control it describes, and
 returns when the pointer moves back onto the panel. Moving between a card and
 the panel keeps the same 200ms close window as moving between cards.
 
@@ -670,8 +686,8 @@ The panel is followed by `spacing-section` of canvas before the next section.
 The stage overlays the heading and a 3:4 image frame in one grid cell. The
 heading reads "View work", rendered as two uppercase words split into
 characters. Both words have four characters so they balance around the image.
-The heading is a `1fr gap 1fr` grid, with the gap set to `0.76` times the image
-width. The first word aligns to the end of its column and the second to the
+The heading is a `1fr gap 1fr` grid, with the gap set to `0.4` times the image
+width, so each word overlaps three tenths of the frame. The first word aligns to the end of its column and the second to the
 start of its column, so the gap stays centered on the image and both words
 overlap the frame by the same amount, whatever their glyph widths. The heading
 paints above the image with `mix-blend-mode: exclusion`, so the letters that
@@ -707,15 +723,18 @@ panel. `useMoreWorksMotion` owns the panel's own motion:
   `22` percent of the viewport width to their resting columns. The image frame
   scales up from zero. Each character fades in from zero opacity, working
   outward from the center, so "View" reveals right to left and "work" left to
-  right, and every character is visible before the words settle.
+  right, and every character is visible before the words settle. The circular
+  action scales up from zero around its center on the panel edge during the
+  pinned part of the timeline, with `power2.out` easing, so it rises out of the
+  bottom edge after the title has arrived.
 - Pin: the track pins for one viewport of scroll once its top reaches the
   viewport top.
 - Cycling: images only cycle while the panel is on screen.
 
 The track carries `pointer-events: none` and only the panel accepts input.
 Reduced motion drops the runway, the pin, the fade, the slowdown, the reveal,
-and the cycling. It keeps a static dark panel with the words in place and the
-first image.
+and the cycling. It keeps a static dark panel with the words in place, the
+first image, and the full circular action, whose glyph swap resolves instantly.
 
 ### Header motion
 
@@ -858,7 +877,10 @@ can feel quicker without redefining its timings.
 The rollover is not limited to buttons. `SiteNavLink` uses the same composable
 with a pink, primary, dark sequence and a slightly higher speed, because a small
 navigation target reads better with a quicker sweep. Any element can join by
-becoming a clipped positioning host with the data attributes below.
+becoming a clipped positioning host with the data attributes below. The layer
+group, the text grid, and the icon are each optional, but a host needs at least
+one of them. A present group must be complete. The More works circle uses the
+icon alone, so it swaps its arrow without a layer sweep or a label change.
 
 Layer colors belong to the variant, not to the motion. `variantRolloverTones` in
 the button module maps each participating variant to a tuple of three semantic

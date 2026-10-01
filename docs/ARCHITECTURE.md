@@ -179,8 +179,9 @@ action sizes, SiteNavLink enables both, and SiteMenu enables both on the compact
 navigation control. This leaves generic markup, variant contracts, and
 accessibility behavior in their owning components.
 
-useHoverRollover owns the layered hover rollover. It reads independent text and
-layer groups from a target through their data attributes, coordinates their GSAP
+useHoverRollover owns the layered hover rollover. It reads independent text,
+layer, and glyph groups from a target through their data attributes, animates
+whichever groups are present, and coordinates their GSAP
 timelines, and tracks pointer and focus state together. It only animates elements
 the consuming components render. Those components own the markup, the semantic
 layer and copied-text colors, the paired glyphs, and the clipped positioning

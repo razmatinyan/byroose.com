@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useIntervalFn } from "@vueuse/core";
 import { shallowRef, useTemplateRef, watch } from "vue";
-import { NuxtLink } from "#components";
+import type { ComponentPublicInstance } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
-import { Button, ButtonIcon } from "@/components/ui/button";
-import type { RolloverTones } from "@/components/ui/button";
+import { appIcons } from "@/lib/icons";
 import type { SplitTextResult } from "@/lib/split-text";
 
 interface MoreWorksImage {
@@ -22,7 +21,6 @@ const titleStart = "View";
 const titleEnd = "work";
 const actionLabel = "Explore Projects";
 const imageInterval = 750;
-const actionRolloverTones: RolloverTones = ["primary", "green", "pink"];
 
 const moreWorksImages: readonly MoreWorksImage[] = [
 	{ height: 1919, src: "/images/work/1.png" },
@@ -39,12 +37,18 @@ const panel = useTemplateRef<HTMLElement>("panel");
 const media = useTemplateRef<HTMLElement>("media");
 const startWord = useTemplateRef<HTMLElement>("startWord");
 const endWord = useTemplateRef<HTMLElement>("endWord");
+const action = useTemplateRef<HTMLElement>("action");
+const actionLink = useTemplateRef<ComponentPublicInstance>("actionLink");
 const startSplit = shallowRef<SplitTextResult>();
 const endSplit = shallowRef<SplitTextResult>();
 const activeImage = shallowRef(0);
 const previewing = shallowRef(false);
 
+useHoverBounce(actionLink, { press: true });
+useHoverRollover(actionLink);
+
 const { cycling } = useMoreWorksMotion(track, {
+	action,
 	endSplit,
 	endWord,
 	media,
@@ -155,20 +159,32 @@ function openWorks(event: MouseEvent) {
 			</div>
 
 			<div class="more-works-action">
-				<Button
-					:as="NuxtLink"
-					:to="worksRoute"
-					variant="cream"
-					size="cta-lg"
-					:rollover-tones="actionRolloverTones"
-					@pointerenter="hidePreview"
-					@pointerleave="showPreview"
-				>
-					{{ actionLabel }}
-					<template #icon>
-						<ButtonIcon tone="dark" />
-					</template>
-				</Button>
+				<div ref="action" class="more-works-action-reveal">
+					<NuxtLink
+						ref="actionLink"
+						class="more-works-action-link"
+						:to="worksRoute"
+						:aria-label="actionLabel"
+						@pointerenter="hidePreview"
+						@pointerleave="showPreview"
+					>
+						<span
+							class="more-works-action-icon"
+							data-rollover-icon
+							aria-hidden="true"
+						>
+							<span class="more-works-action-glyph" data-rollover-glyph>
+								<Icon :name="appIcons.arrowUpRight" />
+							</span>
+							<span
+								class="more-works-action-glyph"
+								data-rollover-glyph-copy
+							>
+								<Icon :name="appIcons.arrowUpRight" />
+							</span>
+						</span>
+					</NuxtLink>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -183,8 +199,9 @@ function openWorks(event: MouseEvent) {
 }
 
 .more-works {
-	@apply pointer-events-auto flex min-h-svh cursor-pointer flex-col bg-foreground px-page text-background;
+	@apply pointer-events-auto flex min-h-svh cursor-pointer flex-col overflow-clip bg-foreground px-page text-background;
 	--more-works-image: clamp(5rem, 17vw, 18rem);
+	--more-works-action: clamp(9rem, 15vw, 15rem);
 }
 
 .more-works-stage {
@@ -211,7 +228,7 @@ function openWorks(event: MouseEvent) {
 
 .more-works-title {
 	@apply relative z-10 m-0 grid w-full items-center leading-none font-bold tracking-[-0.045em] whitespace-nowrap uppercase mix-blend-exclusion;
-	grid-template-columns: 1fr calc(var(--more-works-image) * 0.76) 1fr;
+	grid-template-columns: 1fr calc(var(--more-works-image) * 0.4) 1fr;
 	font-size: clamp(2.75rem, 11vw, 13rem);
 }
 
@@ -228,6 +245,41 @@ function openWorks(event: MouseEvent) {
 }
 
 .more-works-action {
-	@apply flex justify-center pb-12 md:pb-16;
+	@apply flex justify-center;
+	margin-bottom: calc(var(--more-works-action) / -2);
+}
+
+.more-works-action-reveal {
+	@apply size-(--more-works-action);
+}
+
+.more-works-action-link {
+	@apply relative block size-full overflow-hidden rounded-full bg-background text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+}
+
+.more-works-action-link::before {
+	content: "";
+	@apply pointer-events-none absolute inset-0 canvas-grain;
+}
+
+:global(.dark) .more-works-action-link::before {
+	filter: invert(1);
+	mix-blend-mode: screen;
+}
+
+.more-works-action-icon {
+	@apply absolute top-1/4 left-1/2 grid size-[28%] -translate-1/2 overflow-hidden;
+}
+
+.more-works-action-glyph {
+	@apply col-start-1 row-start-1 grid place-items-center;
+}
+
+.more-works-action-glyph :deep(svg) {
+	@apply size-full;
+}
+
+.more-works-action-glyph[data-rollover-glyph-copy] {
+	transform: translate(-200%, 100%);
 }
 </style>

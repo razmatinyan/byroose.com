@@ -7,6 +7,7 @@ type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 type ScrollTriggerPlugin = typeof import("gsap/ScrollTrigger").ScrollTrigger;
 
 interface MoreWorksMotionTargets {
+   action: MotionTarget;
    endSplit: SplitSource;
    endWord: MotionTarget;
    media: MotionTarget;
@@ -16,6 +17,7 @@ interface MoreWorksMotionTargets {
 }
 
 interface MoreWorksElements {
+   action: HTMLElement;
    endWord: HTMLElement;
    media: HTMLElement;
    panel: HTMLElement;
@@ -31,7 +33,15 @@ const wordSpread = 0.22;
 
 export function useMoreWorksMotion(
    track: MotionTarget,
-   { endSplit, endWord, media, panel, startSplit, startWord }: MoreWorksMotionTargets,
+   {
+      action,
+      endSplit,
+      endWord,
+      media,
+      panel,
+      startSplit,
+      startWord,
+   }: MoreWorksMotionTargets,
 ) {
    const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
@@ -40,6 +50,7 @@ export function useMoreWorksMotion(
    let initialized = false;
 
    function resolveElements(): MoreWorksElements | null {
+      const actionElement = toValue(action);
       const endWordElement = toValue(endWord);
       const mediaElement = toValue(media);
       const panelElement = toValue(panel);
@@ -47,6 +58,7 @@ export function useMoreWorksMotion(
       const trackElement = toValue(track);
 
       if (
+         !actionElement ||
          !endWordElement ||
          !mediaElement ||
          !panelElement ||
@@ -57,6 +69,7 @@ export function useMoreWorksMotion(
       }
 
       return {
+         action: actionElement,
          endWord: endWordElement,
          media: mediaElement,
          panel: panelElement,
@@ -76,7 +89,7 @@ export function useMoreWorksMotion(
    }
 
    function revealTitle(
-      { endWord, media, startWord, track }: MoreWorksElements,
+      { action, endWord, media, startWord, track }: MoreWorksElements,
       startChars: HTMLElement[],
       endChars: HTMLElement[],
    ) {
@@ -101,7 +114,13 @@ export function useMoreWorksMotion(
          })
          .fromTo(startWord, { x: () => -spread() }, { duration, x: 0 }, 0)
          .fromTo(endWord, { x: spread }, { duration, x: 0 }, 0)
-         .fromTo(media, { scale: 0 }, { duration, scale: 1 }, 0);
+         .fromTo(media, { scale: 0 }, { duration, scale: 1 }, 0)
+         .fromTo(
+            action,
+            { scale: 0 },
+            { duration: pinLength, ease: "power2.out", scale: 1 },
+            revealLead,
+         );
 
       if (startChars.length) {
          timeline.fromTo(
