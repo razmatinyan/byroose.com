@@ -823,8 +823,9 @@ character with the work title's recipe from `app/lib/char-reveal.ts`: the
 title takes the `split-title` class group for its kerning compensation, and
 each character rises from its mask over `0.9s` with a `0.035s` stagger. The
 description starts at the same moment in the same timeline and rises word by
-word like the Studio copy, with the masked word recipe from
-`app/lib/word-reveal.ts` and its `0.01s` stagger. Sharing one trigger keeps
+word with the masked word recipe from `app/lib/word-reveal.ts`, using a
+`0.025s` stagger, slower than the Studio copy's `0.01s`, set through
+`descriptionStagger` in `useServicesMotion`. Sharing one trigger keeps
 the two in sync, even though the description sits below the title.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at

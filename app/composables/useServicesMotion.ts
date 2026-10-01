@@ -2,7 +2,7 @@ import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { addCharReveal } from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
-import { addWordReveal, wordRevealDenseStagger } from "@/lib/word-reveal";
+import { addWordReveal } from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitListSource = MaybeRefOrGetter<
@@ -42,6 +42,7 @@ const introWordFrom = {
 	scale: 0.6,
 };
 const textRevealStart = "top 60%";
+const descriptionStagger = 0.025;
 const imageZoom = 1.3;
 const mediaRunway = 1;
 const mediaPeakScale = 0.8;
@@ -113,7 +114,7 @@ export function useServicesMotion(
 		addCharReveal(timeline, titleChars);
 		addWordReveal(timeline, descriptionWords, {
 			position: 0,
-			stagger: wordRevealDenseStagger,
+			stagger: descriptionStagger,
 		});
 	}
 
