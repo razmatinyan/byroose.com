@@ -674,7 +674,8 @@ The heading is a `1fr gap 1fr` grid, with the gap set to `0.76` times the image
 width. The first word aligns to the end of its column and the second to the
 start of its column, so the gap stays centered on the image and both words
 overlap the frame by the same amount, whatever their glyph widths. The heading
-paints above the image. A visually hidden copy
+paints above the image with `mix-blend-mode: exclusion`, so the letters that
+cross the frame invert against the photograph. A visually hidden copy
 carries the accessible name while both visual words stay hidden from assistive
 technology. The frame cycles through the seven images in `public/images/work`,
 cutting to the next one every `750ms` without a crossfade. They are decorative,
