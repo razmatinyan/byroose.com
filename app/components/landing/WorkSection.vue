@@ -79,6 +79,7 @@ const {
 	label: tooltipLabel,
 	shouldLoad: shouldLoadTooltip,
 	show: showTooltip,
+	size: tooltipSize,
 } = useTrailingTooltip();
 
 useWorkMotion(workRoot, { titleSplit });
@@ -89,6 +90,10 @@ function setTitleSplit(parts: SplitTextResult) {
 
 function activateTooltip(item: CaseStudy) {
 	showTooltip(item.image);
+}
+
+function activatePanelTooltip(image: string, label: string) {
+	showTooltip(image, label, "compact");
 }
 </script>
 
@@ -115,13 +120,17 @@ function activateTooltip(item: CaseStudy) {
 			</div>
 		</div>
 
-		<MoreWorksPanel @activate="showTooltip" @deactivate="deactivateTooltip" />
+		<MoreWorksPanel
+			@activate="activatePanelTooltip"
+			@deactivate="deactivateTooltip"
+		/>
 
 		<TrailingTooltip
 			v-if="shouldLoadTooltip"
 			:active="tooltipActive"
 			:image="tooltipImage"
 			:label="tooltipLabel"
+			:size="tooltipSize"
 		/>
 	</section>
 </template>

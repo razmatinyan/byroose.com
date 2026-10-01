@@ -13,6 +13,8 @@ interface FeaturedCardTransform {
 }
 
 const centerArrivalProgress = 0.38;
+const releaseLength = 0.3;
+const releaseGrowth = 1.04;
 const featuredAspectRatio = 16 / 9;
 
 const selectors = {
@@ -156,6 +158,35 @@ export function useHomeHeroScrollMotion(
 							).scale,
 					},
 					0.12,
+				);
+
+				const release = () => window.innerHeight * releaseLength;
+				const featured = () =>
+					getFeaturedCardTransform(
+						hero,
+						featuredCard,
+						transitionSpace.offsetHeight,
+					);
+
+				gsap.fromTo(
+					featuredCard,
+					{
+						scale: () => featured().scale,
+						y: () => featured().yAtEnd,
+					},
+					{
+						ease: "power1.out",
+						force3D: false,
+						immediateRender: false,
+						scale: () => featured().scale * releaseGrowth,
+						scrollTrigger: {
+							end: () => transitionSpace.offsetHeight + release(),
+							invalidateOnRefresh: true,
+							scrub: true,
+							start: () => transitionSpace.offsetHeight,
+						},
+						y: () => featured().yAtEnd + release() / 2,
+					},
 				);
 			},
 			scope,

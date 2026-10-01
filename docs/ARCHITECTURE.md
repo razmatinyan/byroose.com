@@ -178,7 +178,7 @@ lines, every service title, and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the
-image and label, the 200ms close delay, and whether the fine-pointer tooltip
+image, label, and size, the 200ms close delay, and whether the fine-pointer tooltip
 should load. WorkSection and ServicesSection both compose it and keep their own
 TrailingTooltip instance.
 

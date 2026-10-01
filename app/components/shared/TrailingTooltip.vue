@@ -8,6 +8,7 @@ import {
    useTemplateRef,
    watch,
 } from "vue";
+import type { TrailingTooltipSize } from "@/composables/useTrailingTooltip";
 import { stackRevealEase } from "@/lib/stack-reveal";
 
 interface TooltipLayer {
@@ -19,10 +20,12 @@ const {
    active = false,
    image,
    label = "See Full Project",
+   size = "default",
 } = defineProps<{
    active?: boolean;
    image: string;
    label?: string;
+   size?: TrailingTooltipSize;
 }>();
 
 const swapDuration = 0.6;
@@ -141,6 +144,7 @@ onScopeDispose(() => {
          ref="tooltip"
          class="trailing-tooltip"
          :data-active="active"
+         :data-size="size"
          aria-hidden="true"
       >
          <span v-if="layers.length" ref="media" class="trailing-tooltip-media">
@@ -189,6 +193,19 @@ onScopeDispose(() => {
 
 .trailing-tooltip-label {
    @apply whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
+}
+
+.trailing-tooltip[data-size="compact"] {
+   @apply gap-3 p-1.5 pr-5;
+}
+
+.trailing-tooltip[data-size="compact"] .trailing-tooltip-media {
+   @apply size-16;
+   border-radius: calc(1.2rem - 0.375rem);
+}
+
+.trailing-tooltip[data-size="compact"] .trailing-tooltip-label {
+   @apply text-xl;
 }
 
 @media (prefers-reduced-motion: reduce) {

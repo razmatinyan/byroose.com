@@ -1,12 +1,15 @@
 import { useMediaQuery, useMounted, useTimeoutFn } from "@vueuse/core";
 import { computed, shallowRef } from "vue";
 
+export type TrailingTooltipSize = "compact" | "default";
+
 const closeDelay = 200;
 
 export function useTrailingTooltip() {
 	const active = shallowRef(false);
 	const image = shallowRef("");
 	const label = shallowRef<string>();
+	const size = shallowRef<TrailingTooltipSize>("default");
 	const mounted = useMounted();
 	const supportsFinePointer = useMediaQuery(
 		"(hover: hover) and (pointer: fine)",
@@ -22,10 +25,15 @@ export function useTrailingTooltip() {
 		{ immediate: false },
 	);
 
-	function show(nextImage: string, nextLabel?: string) {
+	function show(
+		nextImage: string,
+		nextLabel?: string,
+		nextSize: TrailingTooltipSize = "default",
+	) {
 		cancelClose();
 		image.value = nextImage;
 		label.value = nextLabel;
+		size.value = nextSize;
 		active.value = true;
 	}
 
@@ -33,5 +41,5 @@ export function useTrailingTooltip() {
 		scheduleClose();
 	}
 
-	return { active, hide, image, label, shouldLoad, show };
+	return { active, hide, image, label, shouldLoad, show, size };
 }

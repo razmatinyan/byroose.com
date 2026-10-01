@@ -50,6 +50,7 @@ const {
 	label: tooltipLabel,
 	shouldLoad: shouldLoadTooltip,
 	show: showTooltip,
+	size: tooltipSize,
 } = useTrailingTooltip();
 
 useServicesMotion(servicesRoot, {
@@ -131,7 +132,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 							data-service-media
 							:to="servicesRoute"
 							:aria-label="`More details about ${service.title}`"
-							@pointerenter="showTooltip(service.image, tooltipText)"
+							@pointerenter="showTooltip(service.image, tooltipText, 'compact')"
 							@pointerleave="hideTooltip"
 						>
 							<NuxtImg
@@ -157,6 +158,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			:active="tooltipActive"
 			:image="tooltipImage"
 			:label="tooltipLabel"
+			:size="tooltipSize"
 		/>
 	</section>
 </template>

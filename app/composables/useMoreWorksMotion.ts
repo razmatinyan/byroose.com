@@ -30,6 +30,7 @@ const pinLength = 1;
 const charDuration = 0.3;
 const charSpread = 0.6;
 const wordSpread = 0.22;
+const wordDriftShare = 0.3;
 
 export function useMoreWorksMotion(
    track: MotionTarget,
@@ -122,6 +123,8 @@ export function useMoreWorksMotion(
             revealLead,
          );
 
+      driftTitle({ endWord, media, startWord, track }, timeline);
+
       const chars = [...startChars, ...endChars];
       if (chars.length) gsap.set(chars, { opacity: 0 });
 
@@ -132,6 +135,52 @@ export function useMoreWorksMotion(
       if (endChars.length) {
          timeline.to(endChars, { ...charReveal }, 0);
       }
+   }
+
+   function driftTitle(
+      {
+         endWord,
+         media,
+         startWord,
+         track,
+      }: Pick<MoreWorksElements, "endWord" | "media" | "startWord" | "track">,
+      reveal: gsap.core.Timeline,
+   ) {
+      const revealEnd = () => reveal.scrollTrigger?.end ?? 0;
+      const driftShare = () =>
+         track.offsetHeight /
+         (2 * window.innerHeight * (revealLead + pinLength));
+      const wordGap = () =>
+         endWord.offsetLeft - (startWord.offsetLeft + startWord.offsetWidth);
+      const driftX = () =>
+         Math.min(
+            window.innerWidth * wordSpread * driftShare(),
+            Math.max(0, wordGap()) * wordDriftShare,
+         );
+
+      gsap
+         .timeline({
+            defaults: { immediateRender: false },
+            scrollTrigger: {
+               end: () => revealEnd() + track.offsetHeight,
+               invalidateOnRefresh: true,
+               scrub: true,
+               start: revealEnd,
+            },
+         })
+         .fromTo(startWord, { x: 0 }, { ease: "power2.out", x: driftX }, 0)
+         .fromTo(
+            endWord,
+            { x: 0 },
+            { ease: "power2.out", x: () => -driftX() },
+            0,
+         )
+         .fromTo(
+            media,
+            { scale: 1 },
+            { ease: "power1.out", scale: () => 1 + driftShare() },
+            0,
+         );
    }
 
    function syncCycling(panel: HTMLElement) {

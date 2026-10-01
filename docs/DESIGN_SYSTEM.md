@@ -520,7 +520,13 @@ viewport. The featured card offsets that document movement as it leaves its
 rotated grid position, reaches the viewport center, and expands to fit within 92
 percent of the viewport width and 82 percent of its height. The movement and
 scale are scrubbed directly to scroll progress, and the existing Lenis instance
-supplies the wheel smoothing. All hero cards remain 4:3 in the grid. The featured
+supplies the wheel smoothing. When the transition space ends, the card does not
+switch straight from holding at center to moving with the page. Over the next
+thirty percent of a viewport, it eases from holding into full scroll speed with
+`power1.out`, which offsets it upward by half that distance, and keeps growing
+by four percent. The handoff is velocity matched, so the card never looks like
+it stops and restarts. The window stays short so the card never covers the
+Studio statement entering below it. All hero cards remain 4:3 in the grid. The featured
 card alone transitions to the source image's native 16:9 ratio while it expands.
 
 `useHomeHeroScrollMotion` owns this behavior. It starts only after
@@ -662,7 +668,9 @@ destination exists. Its pointer cursor communicates the intended future link
 surface without introducing a no-op control or fake URL.
 
 The tooltip uses the hovered card image in a large 104-pixel thumbnail, the
-label "See Full Project" at `text-3xl`, and a fixed card surface. It opens from
+label "See Full Project" at `text-3xl`, and a fixed card surface. Its `size`
+prop also accepts `compact`, a 64-pixel thumbnail with a `text-xl` label and
+tighter padding, which the more works panel and the services images use. It opens from
 `inset(50% 100% 50% 0 round 1.2rem)` to
 `inset(0 0 0 0 round 1.2rem)` over `0.75s` with the
 `cubic-bezier(0.19, 1, 0.22, 1)` curve. GSAP `quickTo` owns only its `x` and `y`
@@ -731,7 +739,10 @@ currently cycling image, so each cut swaps the thumbnail through the tooltip's
 layered reveal. The tooltip steps aside while the pointer is on the circular
 action itself, so it never covers the control it describes, and
 returns when the pointer moves back onto the panel. Moving between a card and
-the panel keeps the same 200ms close window as moving between cards.
+the panel keeps the same 200ms close window as moving between cards. Over the
+panel, the tooltip uses its `compact` size: a 64-pixel thumbnail, a `text-xl`
+label, and tighter padding, so it stays secondary to the large title and the
+circular action.
 
 The panel is followed by `spacing-section` of canvas before the next section.
 
@@ -784,13 +795,22 @@ panel. `useMoreWorksMotion` owns the panel's own motion:
   action scales up from zero around its center on the panel edge during the
   pinned part of the timeline, with `power2.out` easing, so it rises out of the
   bottom edge after the title has arrived.
+- Drift: the reveal never stops dead. From the end of the pin until the panel
+  has scrolled one panel height further, a second scrubbed timeline keeps the
+  words moving toward each other past their resting columns and keeps the image
+  growing past full size. The image drift starts at the reveal's own speed and
+  slows with `power1.out`, so it grows by about thirty percent and never
+  visibly halts. The words must never collapse into each other, so each one
+  moves inward by at most thirty percent of the gap between them, measured from
+  layout on every refresh, with `power2.out` easing. At least forty percent of
+  the gap always stays open.
 - Pin: the track pins for one viewport of scroll once its top reaches the
   viewport top.
 - Cycling: images only cycle while the panel is on screen.
 
 The track carries `pointer-events: none` and only the panel accepts input.
 Reduced motion drops the runway, the pin, the fade, the slowdown, the reveal,
-and the cycling. It keeps a static dark panel with the words in place, the
+the drift, and the cycling. It keeps a static dark panel with the words in place, the
 first image, and the full circular action, whose glyph swap resolves instantly.
 
 ### Services section
@@ -863,8 +883,8 @@ the bottom origin entry and its wrapper for the top origin exit, so the
 transform origins never fight.
 
 Each image is a `NuxtLink` to the `/services` route, named for its service
-through `aria-label`. Hovering it opens the shared TrailingTooltip with the
-service image and the label "More Details". The images are decorative
+through `aria-label`. Hovering it opens the services section's TrailingTooltip
+at its `compact` size with the service image and the label "More Details". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
 media.
 
