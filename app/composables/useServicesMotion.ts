@@ -39,7 +39,7 @@ const introWordStagger = 0.45;
 const introHold = 0.6;
 const introWordFrom = {
 	filter: "blur(16px)",
-	opacity: 0.12,
+	opacity: 0,
 	scale: 0.6,
 };
 const textRevealAt = 0.6;
