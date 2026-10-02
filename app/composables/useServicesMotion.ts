@@ -75,6 +75,12 @@ export function useServicesMotion(
 	const { refresh } = useSmoothScroll();
 	let disposed = false;
 	let initialized = false;
+	let ready = false;
+	let reducedMotion = false;
+	let motionContext: gsap.Context | null = null;
+	let panels: ServicePanelParts[] = [];
+	const textTimelines = new Map<HTMLElement, gsap.core.Timeline>();
+	const revealedPanels = new WeakSet<HTMLElement>();
 
 	function revealIntro(intro: HTMLElement, words: HTMLElement[]) {
 		if (!words.length) return;
@@ -161,6 +167,7 @@ export function useServicesMotion(
 		if (!title || (!titleWords.length && !descriptionLines.length)) return;
 
 		const timeline = gsap.timeline({
+			onStart: () => revealedPanels.add(panel),
 			scrollTrigger: {
 				invalidateOnRefresh: true,
 				once: true,
@@ -180,6 +187,31 @@ export function useServicesMotion(
 			position: 0,
 			stagger: descriptionStagger,
 		});
+		textTimelines.set(panel, timeline);
+	}
+
+	function replaceDescriptionLines(index: number, lines: HTMLElement[]) {
+		const parts = panels[index];
+		if (!parts) return;
+
+		parts.descriptionLines = lines;
+		const content = parts.panel.querySelector<HTMLElement>(selectors.content);
+		const context = motionContext;
+
+		if (
+			reducedMotion ||
+			!context ||
+			!content ||
+			revealedPanels.has(parts.panel)
+		) {
+			showAll(lines);
+			return;
+		}
+
+		const previous = textTimelines.get(parts.panel);
+		previous?.scrollTrigger?.kill();
+		previous?.kill();
+		context.add(() => revealText(parts, content));
 	}
 
 	function scaleMedia(panel: HTMLElement, content: HTMLElement) {
@@ -260,7 +292,7 @@ export function useServicesMotion(
 		const intro = root?.querySelector<HTMLElement>(selectors.intro);
 		if (!root || !intro) return;
 
-		const panels = [
+		panels = [
 			...root.querySelectorAll<HTMLElement>(selectors.panel),
 		].map((panel, index) => ({
 			descriptionLines: descriptionParts[index]?.lines ?? [],
@@ -274,7 +306,10 @@ export function useServicesMotion(
 				reduceMotion: "(prefers-reduced-motion: reduce)",
 			},
 			(context) => {
-				if (context.conditions?.reduceMotion) {
+				motionContext = context;
+				reducedMotion = Boolean(context.conditions?.reduceMotion);
+
+				if (reducedMotion) {
 					showAll([
 						...introWords,
 						...panels.flatMap(({ descriptionLines, titleWords }) => [
@@ -291,6 +326,7 @@ export function useServicesMotion(
 			scope,
 		);
 
+		ready = true;
 		await refresh();
 	}
 
@@ -312,6 +348,20 @@ export function useServicesMotion(
 			);
 		},
 		{ flush: "post", immediate: true },
+	);
+
+	watch(
+		() => toValue(descriptionSplits),
+		(next, previous) => {
+			if (!ready) return;
+
+			next.forEach((parts, index) => {
+				if (parts && parts !== previous?.[index]) {
+					replaceDescriptionLines(index, parts.lines);
+				}
+			});
+		},
+		{ flush: "post" },
 	);
 
 	onScopeDispose(() => {

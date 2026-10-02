@@ -119,6 +119,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 				<SplitText
 					class="service-description"
 					as="p"
+					auto-split
 					mask="lines"
 					:text="service.description"
 					type="lines"

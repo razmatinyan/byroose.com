@@ -876,9 +876,13 @@ recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest over
 because a word split preserves kerning inside each word. Sharing one trigger keeps the two
 in sync, even though the description sits below the title. The lines and their
 masks are block elements, because the split emits them as inline spans and a
-transform has no effect on an inline element. The lines are split once, after
-the fonts load, and are not re-split on resize, so a large width change can
-wrap a split line inside its own mask.
+transform has no effect on an inline element. The description uses
+`SplitText`'s `autoSplit`, so its lines are split again whenever the fonts
+load or its width changes, and a split line never wraps inside its own mask.
+`useServicesMotion` watches those re-splits. If the panel's text has already
+started revealing, the new lines are shown at rest. Otherwise the panel's text
+timeline is killed and rebuilt with the new lines inside the same GSAP media
+context, so it is still reverted with the rest of the section.
 
 The image is scrubbed with the scroll in one continuous motion with no rest at
 full size. It scales up from zero around its bottom center from the moment it
