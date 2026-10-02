@@ -202,7 +202,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-description {
-	@apply m-0 max-w-[38ch] text-xl leading-tight font-semibold tracking-tight text-balance text-foreground md:text-2xl xl:text-3xl;
+	@apply m-0 max-w-[38ch] text-2xl leading-tight font-semibold tracking-tight text-balance text-foreground md:text-4xl xl:text-5xl;
 }
 
 .service-title :deep(.split-text-word),

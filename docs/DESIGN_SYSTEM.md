@@ -90,9 +90,11 @@ or component-level font imports.
 - `text-hero` is reserved for the primary landing statement.
 - `text-section` is the default major section heading.
 - `text-statement` supports large editorial body statements.
-- `text-service` supports the large hoverable service names. Its leading of
-  `1.08` leaves room for the descender of "development" inside its word
-  mask, so the rise never clips the glyph.
+- `text-service` sets the service panel titles at
+  `clamp(3.25rem, 8.5vw, 10rem)`, about 122px at 1440 wide, where the longest
+  name still holds one line. Its leading of `1.08` leaves room for the
+  descender of "Development" inside its word mask, so the rise never clips the
+  glyph.
 - `text-journey` and `text-step` support the oversized process composition.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
@@ -837,7 +839,7 @@ Each service panel centers its title at `text-service`, a description below
 it, and an image below that. The service names, "AI Content Creation" and
 "Website Development", are set in title case. The intro title is not
 selectable, so a drag across the pinned panel never highlights its words. The
-description sets at `text-xl`, `text-2xl` from `md`, and `text-3xl` from
+description sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from
 `xl`, in the default `foreground` color at weight 600 with tight leading,
 balanced lines, and a `38ch` measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.

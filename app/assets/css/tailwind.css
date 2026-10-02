@@ -75,7 +75,7 @@
 	--text-section--line-height: 0.92;
 	--text-statement: clamp(1.875rem, 4.4vw, 3.75rem);
 	--text-statement--line-height: 1.06;
-	--text-service: clamp(2.75rem, 6.5vw, 7rem);
+	--text-service: clamp(3.25rem, 8.5vw, 10rem);
 	--text-service--line-height: 1.08;
 	--text-journey: clamp(2.75rem, 10.4vw, 15rem);
 	--text-journey--line-height: 0.86;
