@@ -836,13 +836,19 @@ after another in reading order, and the pin holds the finished title for a
 short beat before releasing it.
 
 Each service panel stacks its title at `text-service`, a description below
-it, and an image below that. The service names, "AI Content Creation" and
+it, and an image below that. The panels use a narrower gutter than the
+site-wide `section-gutter`, `clamp(1rem, 2vw, 1.5rem)` instead of
+`spacing-page`, so the title, the description, and the image reach closer to
+the viewport edges. The service names, "AI Content Creation" and
 "Website Development", are set in title case. The intro title is not
 selectable, so a drag across the pinned panel never highlights its words.
 
 The title is left-aligned and starts at the left content edge. The description
 sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, in the
-default `foreground` color at weight 600 with `1.15` leading. On phones it
+default `foreground` color at weight 600 with `1.05` leading. That leading is
+tighter than the glyphs, so each line mask carries `0.12em` of block padding
+cancelled by an equal negative block margin, which keeps descenders inside the
+clip without moving the lines. On phones it
 spans the full column. From `md` it takes the right two thirds of the content
 width and ends exactly on the right content edge, so it reads as an editorial
 column from just left of center to the right side. Its text is left-aligned,

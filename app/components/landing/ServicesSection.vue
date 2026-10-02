@@ -103,7 +103,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 		<article
 			v-for="(service, index) in servicesData"
 			:key="service.title"
-			class="service-panel section-gutter"
+			class="service-panel"
 			data-service-panel
 		>
 			<div class="service-content" data-service-content>
@@ -190,7 +190,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-panel {
-	@apply relative pt-section;
+	@apply relative px-[clamp(1rem,2vw,1.5rem)] pt-section;
 	padding-bottom: calc(var(--service-runway, 0) * 100svh);
 }
 
@@ -203,7 +203,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-description {
-	@apply m-0 w-full text-left md:w-2/3 md:self-end text-2xl leading-[1.15] font-semibold tracking-tight text-pretty text-foreground md:text-4xl xl:text-5xl;
+	@apply m-0 w-full text-left md:w-2/3 md:self-end text-2xl leading-[1.05] font-semibold tracking-tight text-pretty text-foreground md:text-4xl xl:text-5xl;
 }
 
 .service-title :deep(.split-text-word),
@@ -218,6 +218,11 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .service-description :deep(.split-text-line) {
 	white-space: nowrap;
+}
+
+.service-description :deep(.split-text-line-mask) {
+	margin-block: -0.12em;
+	padding-block: 0.12em;
 }
 
 .service-description :deep(.split-text-word) {
