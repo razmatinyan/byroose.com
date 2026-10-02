@@ -841,7 +841,8 @@ it, and an image below that. The service names, "AI Content Creation" and
 selectable, so a drag across the pinned panel never highlights its words. The
 description sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from
 `xl`, in the default `foreground` color at weight 600 with `1.15` leading.
-It is a full-width box capped at a `30ch` measure, centered in the panel like
+It is a full-width box capped at a `36ch` measure, about 1180px at the `xl`
+size, centered in the panel like
 the title, while its text is left-aligned inside that box. It uses
 `text-pretty` rather than `text-balance`, because balanced lines inside a fixed
 box would leave a ragged gap on the right and read as off center. The image
@@ -879,6 +880,12 @@ masks are block elements, because the split emits them as inline spans and a
 transform has no effect on an inline element. The description uses
 `SplitText`'s `autoSplit`, so its lines are split again whenever the fonts
 load or its width changes, and a split line never wraps inside its own mask.
+It splits into lines and words, with every word an inline block, so the
+browser can only break between whole words. A plain line split lets the
+browser break inside a hyphenated word such as "one-off" while SplitText
+assigns the whole word to the first line, which makes that line too long for
+the box. Each split line is also `white-space: nowrap`, so sub-pixel rounding
+can never push its last word onto a second line.
 `useServicesMotion` watches those re-splits. If the panel's text has already
 started revealing, the new lines are shown at rest. Otherwise the panel's text
 timeline is killed and rebuilt with the new lines inside the same GSAP media

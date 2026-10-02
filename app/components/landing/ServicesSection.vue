@@ -122,7 +122,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 					auto-split
 					mask="lines"
 					:text="service.description"
-					type="lines"
+					type="lines,words"
 					@split="setDescriptionSplit(index, $event)"
 				/>
 
@@ -203,7 +203,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-description {
-	@apply m-0 w-full max-w-[30ch] text-left text-2xl leading-[1.15] font-semibold tracking-tight text-pretty text-foreground md:text-4xl xl:text-5xl;
+	@apply m-0 w-full max-w-[36ch] text-left text-2xl leading-[1.15] font-semibold tracking-tight text-pretty text-foreground md:text-4xl xl:text-5xl;
 }
 
 .service-title :deep(.split-text-word),
@@ -214,6 +214,14 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 .service-description :deep(.split-text-line),
 .service-description :deep(.split-text-line-mask) {
 	display: block;
+}
+
+.service-description :deep(.split-text-line) {
+	white-space: nowrap;
+}
+
+.service-description :deep(.split-text-word) {
+	display: inline-block;
 }
 
 .service-title :deep(.split-text-word),
