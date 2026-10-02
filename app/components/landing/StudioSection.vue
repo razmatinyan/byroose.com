@@ -66,9 +66,9 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 					ref="studioPortrait"
 					class="studio-portrait object-cover"
 					src="/images/founder.jpg"
-					alt="Founder of byroose against a blue sky"
-					width="720"
-					height="1280"
+					alt="Founder of byroose in a black armchair, holding a vintage phone and a coffee"
+					width="1344"
+					height="2016"
 					sizes="sm:100vw md:448px"
 					loading="lazy"
 				/>
