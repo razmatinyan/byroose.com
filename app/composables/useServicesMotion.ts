@@ -62,7 +62,8 @@ function offsetWithin(element: HTMLElement, ancestor: HTMLElement) {
 
 	while (node && node !== ancestor) {
 		offset += node.offsetTop;
-		node = node.offsetParent instanceof HTMLElement ? node.offsetParent : null;
+		node =
+			node.offsetParent instanceof HTMLElement ? node.offsetParent : null;
 	}
 
 	return offset;

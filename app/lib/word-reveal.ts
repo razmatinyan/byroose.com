@@ -1,15 +1,15 @@
-export const wordRevealDuration = 0.8
-export const wordRevealEase = "power3.out"
-export const wordRevealOffset = 115
-export const wordRevealStart = "top 82%"
-export const wordRevealStagger = 0.03
-export const wordRevealDenseStagger = 0.01
+export const wordRevealDuration = 0.8;
+export const wordRevealEase = "power3.out";
+export const wordRevealOffset = 115;
+export const wordRevealStart = "top 82%";
+export const wordRevealStagger = 0.03;
+export const wordRevealDenseStagger = 0.01;
 
 export interface WordRevealOptions {
-	duration?: number
-	ease?: gsap.EaseString
-	position?: gsap.Position
-	stagger?: number
+	duration?: number;
+	ease?: gsap.EaseString;
+	position?: gsap.Position;
+	stagger?: number;
 }
 
 export function addWordReveal(
@@ -22,7 +22,7 @@ export function addWordReveal(
 		stagger = wordRevealStagger,
 	}: WordRevealOptions = {},
 ) {
-	if (!elements.length) return timeline
+	if (!elements.length) return timeline;
 
 	return timeline
 		.set(
@@ -39,5 +39,5 @@ export function addWordReveal(
 				yPercent: 0,
 			},
 			position,
-		)
+		);
 }
