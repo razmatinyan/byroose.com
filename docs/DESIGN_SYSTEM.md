@@ -835,18 +835,20 @@ grows to full opacity, no blur, and its resting size. The words resolve one
 after another in reading order, and the pin holds the finished title for a
 short beat before releasing it.
 
-Each service panel centers its title at `text-service`, a description below
+Each service panel stacks its title at `text-service`, a description below
 it, and an image below that. The service names, "AI Content Creation" and
 "Website Development", are set in title case. The intro title is not
-selectable, so a drag across the pinned panel never highlights its words. The
-description sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from
-`xl`, in the default `foreground` color at weight 600 with `1.15` leading.
-It is a full-width box capped at a `36ch` measure, about 1180px at the `xl`
-size, centered in the panel like
-the title, while its text is left-aligned inside that box. It uses
-`text-pretty` rather than `text-balance`, because balanced lines inside a fixed
-box would leave a ragged gap on the right and read as off center. The image
-spans the full content width at the source's natural `1456 / 816` ratio, so it is never cropped to fit the viewport.
+selectable, so a drag across the pinned panel never highlights its words.
+
+The title is left-aligned and starts at the left content edge. The description
+sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, in the
+default `foreground` color at weight 600 with `1.15` leading. On phones it
+spans the full column. From `md` it takes the right two thirds of the content
+width and ends exactly on the right content edge, so it reads as an editorial
+column from just left of center to the right side. Its text is left-aligned,
+and it uses `text-pretty` so the last line never holds a single word. The
+image spans the full content width at the source's natural `1456 / 816`
+ratio, so it is never cropped to fit the viewport.
 
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
