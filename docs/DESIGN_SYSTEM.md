@@ -845,7 +845,9 @@ selectable, so a drag across the pinned panel never highlights its words.
 
 The title is left-aligned and starts at the left content edge. The description
 sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, in the
-default `foreground` color at weight 600 with `1.05` leading. That leading is
+default `foreground` color at weight 600 with `1.05` leading and `-0.04em`
+tracking. It sits further below the title than the panel's default gap, with a
+top margin of `1rem`, `2rem` from `md`, and `3rem` from `xl`. That leading is
 tighter than the glyphs, so each line mask carries `0.12em` of block padding
 cancelled by an equal negative block margin, which keeps descenders inside the
 clip without moving the lines. On phones it
@@ -878,8 +880,9 @@ title reaches 60 percent of the viewport, it rises word by word from
 and the description starts at the same moment in the same timeline, rising
 line by line from `SplitText` line masks with a `0.1s` stagger set through
 `descriptionStagger`, both in `useServicesMotion`. Each description line
-takes `1.1s` to rise, set through `descriptionDuration`, so the description
-settles a little after the title. Each mask rise uses the
+takes `1.5s` to rise with `power3` easing, which GSAP reads as
+`power3.out`, set through `descriptionDuration` and `descriptionEase`, so the
+description settles after the title. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest over
 `0.8s` with `power3.out` easing. The title keeps its `-0.045em` tracking,
 because a word split preserves kerning inside each word. Sharing one trigger keeps the two

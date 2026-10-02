@@ -7,6 +7,7 @@ export const wordRevealDenseStagger = 0.01
 
 export interface WordRevealOptions {
 	duration?: number
+	ease?: gsap.EaseString
 	position?: gsap.Position
 	stagger?: number
 }
@@ -16,6 +17,7 @@ export function addWordReveal(
 	elements: readonly Element[],
 	{
 		duration = wordRevealDuration,
+		ease = wordRevealEase,
 		position = 0,
 		stagger = wordRevealStagger,
 	}: WordRevealOptions = {},
@@ -32,7 +34,7 @@ export function addWordReveal(
 			elements,
 			{
 				duration,
-				ease: wordRevealEase,
+				ease,
 				stagger,
 				yPercent: 0,
 			},
