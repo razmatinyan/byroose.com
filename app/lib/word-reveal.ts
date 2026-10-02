@@ -6,6 +6,7 @@ export const wordRevealStagger = 0.03
 export const wordRevealDenseStagger = 0.01
 
 export interface WordRevealOptions {
+	duration?: number
 	position?: gsap.Position
 	stagger?: number
 }
@@ -13,7 +14,11 @@ export interface WordRevealOptions {
 export function addWordReveal(
 	timeline: gsap.core.Timeline,
 	elements: readonly Element[],
-	{ position = 0, stagger = wordRevealStagger }: WordRevealOptions = {},
+	{
+		duration = wordRevealDuration,
+		position = 0,
+		stagger = wordRevealStagger,
+	}: WordRevealOptions = {},
 ) {
 	if (!elements.length) return timeline
 
@@ -26,7 +31,7 @@ export function addWordReveal(
 		.to(
 			elements,
 			{
-				duration: wordRevealDuration,
+				duration,
 				ease: wordRevealEase,
 				stagger,
 				yPercent: 0,

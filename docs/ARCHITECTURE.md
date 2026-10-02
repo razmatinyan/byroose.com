@@ -245,8 +245,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   lifecycle ownership with the calling composable.
 - surfaces.ts is the canonical map for semantic surface and foreground tone names.
 - word-reveal.ts owns the shared masked word rise recipe, its `top 82%` start,
-  and its two staggers. The Studio section and the services panels both append
-  it to their own timelines, so their word reveals keep identical timing.
+  and its two staggers. Callers may override the stagger and the duration.
+  The Studio section and the services panels both append it to their own
+  timelines, so their word reveals share one recipe.
 - utils.ts contains pure class and value helpers.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.

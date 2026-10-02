@@ -44,6 +44,7 @@ const introWordFrom = {
 const textRevealAt = 0.6;
 const titleStagger = 0.08;
 const descriptionStagger = 0.1;
+const descriptionDuration = 1.1;
 const imageZoom = 1.3;
 const panelRunway = 1;
 const mediaPeakScale = 0.8;
@@ -175,6 +176,7 @@ export function useServicesMotion(
 
 		addWordReveal(timeline, titleWords, { stagger: titleStagger });
 		addWordReveal(timeline, descriptionLines, {
+			duration: descriptionDuration,
 			position: 0,
 			stagger: descriptionStagger,
 		});

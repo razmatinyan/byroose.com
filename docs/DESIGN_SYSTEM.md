@@ -840,7 +840,7 @@ it, and an image below that. The service names, "AI Content Creation" and
 "Website Development", are set in title case. The intro title is not
 selectable, so a drag across the pinned panel never highlights its words. The
 description sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from
-`xl`, in the default `foreground` color at weight 600 with tight leading,
+`xl`, in the default `foreground` color at weight 600 with `1.15` leading,
 balanced lines, and a `38ch` measure. The image spans the full content width at the source's natural
 `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
@@ -865,7 +865,9 @@ title reaches 60 percent of the viewport, it rises word by word from
 `SplitText` word masks with a `0.08s` stagger set through `titleStagger`,
 and the description starts at the same moment in the same timeline, rising
 line by line from `SplitText` line masks with a `0.1s` stagger set through
-`descriptionStagger`, both in `useServicesMotion`. Each mask rise uses the
+`descriptionStagger`, both in `useServicesMotion`. Each description line
+takes `1.1s` to rise, set through `descriptionDuration`, so the description
+settles a little after the title. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest over
 `0.8s` with `power3.out` easing. The title keeps its `-0.045em` tracking,
 because a word split preserves kerning inside each word. Sharing one trigger keeps the two
