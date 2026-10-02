@@ -840,9 +840,12 @@ it, and an image below that. The service names, "AI Content Creation" and
 "Website Development", are set in title case. The intro title is not
 selectable, so a drag across the pinned panel never highlights its words. The
 description sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from
-`xl`, in the default `foreground` color at weight 600 with `1.15` leading,
-balanced lines, and a `38ch` measure. The image spans the full content width at the source's natural
-`1456 / 816` ratio, so it is never cropped to fit the viewport.
+`xl`, in the default `foreground` color at weight 600 with `1.15` leading.
+It is a full-width box capped at a `30ch` measure, centered in the panel like
+the title, while its text is left-aligned inside that box. It uses
+`text-pretty` rather than `text-balance`, because balanced lines inside a fixed
+box would leave a ragged gap on the right and read as off center. The image
+spans the full content width at the source's natural `1456 / 816` ratio, so it is never cropped to fit the viewport.
 
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
