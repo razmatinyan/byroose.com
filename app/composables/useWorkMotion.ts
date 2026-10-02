@@ -1,6 +1,12 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { addCharReveal } from "@/lib/char-reveal";
+import {
+   imageParallaxEnd,
+   imageParallaxScale,
+   imageParallaxShift,
+   imageParallaxStart,
+} from "@/lib/image-parallax";
 import { addStackReveal } from "@/lib/stack-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -25,8 +31,6 @@ const revealStart = "top 90%";
 const lineDuration = 0.8;
 const lineStagger = 0.08;
 const linesAtMedia = 0.1;
-const parallaxScale = 1.3;
-const parallaxShift = 14;
 const caseListLag = 0.7;
 const caseListFadeStart = 0.3;
 
@@ -75,20 +79,20 @@ export function useWorkMotion(
    }
 
    function parallaxImage(image: HTMLElement, trigger: HTMLElement) {
-      gsap.set(image, { scale: parallaxScale });
+      gsap.set(image, { scale: imageParallaxScale });
 
       gsap.fromTo(
          image,
-         { yPercent: -parallaxShift },
+         { yPercent: -imageParallaxShift },
          {
             ease: "none",
             scrollTrigger: {
-               end: "bottom top",
+               end: imageParallaxEnd,
                scrub: true,
-               start: "top bottom",
+               start: imageParallaxStart,
                trigger,
             },
-            yPercent: parallaxShift,
+            yPercent: imageParallaxShift,
          },
       );
    }

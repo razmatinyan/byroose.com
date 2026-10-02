@@ -2,6 +2,12 @@ import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { unrefElement } from "@vueuse/core";
 import type { MaybeComputedElementRef } from "@vueuse/core";
+import {
+	imageParallaxEnd,
+	imageParallaxScale,
+	imageParallaxShift,
+	imageParallaxStart,
+} from "@/lib/image-parallax";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
 	addWordReveal,
@@ -21,6 +27,7 @@ interface StudioMotionTargets {
 	statementSplit: SplitSource;
 }
 
+const portraitImageSelector = "[data-studio-portrait-image]";
 const hiddenPortraitClip = "inset(0% 0% 100% 0%)";
 const visiblePortraitClip = "inset(0% 0% 0% 0%)";
 
@@ -51,9 +58,9 @@ export function useStudioMotion(
 		addWordReveal(timeline, words, { stagger });
 	}
 
-	function revealPortrait(image: HTMLElement) {
+	function revealPortrait(frame: HTMLElement) {
 		gsap.fromTo(
-			image,
+			frame,
 			{ clipPath: hiddenPortraitClip },
 			{
 				clipPath: visiblePortraitClip,
@@ -63,8 +70,29 @@ export function useStudioMotion(
 				scrollTrigger: {
 					once: true,
 					start: wordRevealStart,
-					trigger: image,
+					trigger: frame,
 				},
+			},
+		);
+	}
+
+	function parallaxPortrait(frame: HTMLElement) {
+		const image = frame.querySelector<HTMLElement>(portraitImageSelector);
+		if (!image) return;
+
+		gsap.set(image, { scale: imageParallaxScale });
+		gsap.fromTo(
+			image,
+			{ yPercent: -imageParallaxShift },
+			{
+				ease: "none",
+				scrollTrigger: {
+					end: imageParallaxEnd,
+					scrub: true,
+					start: imageParallaxStart,
+					trigger: frame,
+				},
+				yPercent: imageParallaxShift,
 			},
 		);
 	}
@@ -90,11 +118,11 @@ export function useStudioMotion(
 		if (!ScrollTrigger || disposed) return;
 
 		const root = toValue(scope);
-		const image = unrefElement(portrait);
+		const frame = unrefElement(portrait);
 		const copyRoot = unrefElement(copy);
 		if (
 			!root ||
-			!(image instanceof HTMLElement) ||
+			!(frame instanceof HTMLElement) ||
 			!(copyRoot instanceof HTMLElement)
 		)
 			return;
@@ -111,7 +139,8 @@ export function useStudioMotion(
 				}
 
 				revealWords(statementWords, root, wordRevealStagger);
-				revealPortrait(image);
+				revealPortrait(frame);
+				parallaxPortrait(frame);
 				revealWords(paragraphWords, copyRoot, wordRevealDenseStagger);
 			},
 			scope,

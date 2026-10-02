@@ -17,7 +17,7 @@ const copyParagraphs = [
 type CopyParagraphId = (typeof copyParagraphs)[number]["id"];
 
 const studioRoot = useTemplateRef<HTMLElement>("studioRoot");
-const studioPortrait = useTemplateRef("studioPortrait");
+const studioPortrait = useTemplateRef<HTMLElement>("studioPortrait");
 const studioCopy = useTemplateRef<HTMLElement>("studioCopy");
 const statementSplit = shallowRef<SplitTextResult>();
 const copySplits = shallowRef<
@@ -36,7 +36,7 @@ const copyWords = computed(() => {
 useStudioMotion(studioRoot, {
 	copy: studioCopy,
 	copyWords,
-	portrait: () => studioPortrait.value?.imgEl,
+	portrait: studioPortrait,
 	statementSplit,
 });
 
@@ -62,16 +62,20 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 
 		<div class="studio-grid">
 			<div class="studio-column">
-				<NuxtImg
-					ref="studioPortrait"
-					class="studio-portrait object-cover"
-					src="/images/founder.jpg"
-					alt="Founder of byroose in a black armchair, holding a vintage phone and a coffee"
-					width="1344"
-					height="2016"
-					sizes="sm:100vw md:448px"
-					loading="lazy"
-				/>
+				<div ref="studioPortrait" class="studio-portrait">
+					<NuxtImg
+						class="studio-portrait-image"
+						data-studio-portrait-image
+						src="/images/founder.jpg"
+						alt="Founder of byroose kicking one leg high beside a lamppost on a sunny street corner"
+						width="2048"
+						height="1536"
+						sizes="sm:1280px md:768px lg:1024px xl:1280px 2xl:1536px"
+						densities="x1"
+						loading="lazy"
+						draggable="false"
+					/>
+				</div>
 			</div>
 
 			<div ref="studioCopy" class="studio-column studio-copy">
@@ -122,7 +126,11 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 }
 
 .studio-portrait {
-	@apply aspect-4/5 w-full max-w-md overflow-hidden rounded-2xl;
+	@apply aspect-4/3 w-full overflow-hidden rounded-2xl;
+}
+
+.studio-portrait-image {
+	@apply size-full object-cover select-none;
 }
 
 .studio-copy {

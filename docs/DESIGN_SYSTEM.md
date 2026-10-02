@@ -314,8 +314,8 @@ Every width an image requests, including its 2x density, must be a value in
 `sizes` entry a screen key, such as `sm:100vw md:448px`. A bare entry like
 `100vw` is resolved against a 1px screen and produces a useless 1px candidate.
 When a fixed slot needs a width that is not a breakpoint, add it to `screens`
-under a descriptive key, as the founder portrait does with `portrait` and
-`portrait-2x`. Repeating CSS background textures are the exception and are
+under a descriptive key, as the 448px slots of the trailing tooltip and the more
+works frame do with `portrait` and `portrait-2x`. Repeating CSS background textures are the exception and are
 described in Canvas grain.
 
 The browser picks a candidate once, from the `sizes` value multiplied by the
@@ -568,15 +568,23 @@ the layout, the word spacing, and the justification stay exactly as before.
 The rule lives in the global `@layer components`, so every word mask on the
 site gets it.
 
-The founder portrait follows with a top to bottom clip reveal. When its top edge
-reaches 82 percent of the viewport, its `clip-path` inset opens from the bottom
-edge over `1.2s` with `power3.inOut`, and the inline clip is cleared once the
-image is fully visible. The copy words then use the statement's rise when the
+The founder photo is a landscape 4:3 image. It fills the full width of its
+column in a 4:3 frame with `rounded-2xl` corners, so the frame matches the
+source and nothing is cropped at rest. The frame is a wrapper around the
+image, which lets the frame and the image carry different motion.
+
+The frame follows with a top to bottom clip reveal. When its top edge reaches
+82 percent of the viewport, its `clip-path` inset opens from the bottom edge
+over `1.2s` with `power3.inOut`, and the inline clip is cleared once the image
+is fully visible. The image inside it runs the same parallax as the case study
+images: it is held at `1.3` scale and scrubbed from `-14` to `14` percent as
+the frame crosses the viewport, so it lags behind its frame. Both use the
+values in `app/lib/image-parallax.ts`. The copy words then use the statement's rise when the
 copy column reaches the same line, with a tighter `0.01s` stagger because the
 paragraphs hold many more words.
 
-Every reveal runs once. Reduced motion displays the portrait and every word in
-their resting positions without a ScrollTrigger animation.
+Every reveal runs once. Reduced motion displays the photo and every word in
+their resting positions without a ScrollTrigger animation or parallax.
 
 ### Work section
 
@@ -654,7 +662,8 @@ already arriving while the last colored layers are still landing, and they rise
 from their masks over `0.8s` with a `0.08s` stagger. The position is read from
 the timeline's own duration after the stack tweens are added, so retiming the
 stack moves the text with it. The image inside the frame is held at `1.3` scale and scrubbed
-from `-14` to `14` percent as the card crosses the viewport, so it travels in
+from `-14` to `14` percent as the card crosses the viewport, with the values
+shared through `app/lib/image-parallax.ts`, so it travels in
 the same direction as the scroll and lags behind its frame. The reveal and the parallax are on
 different elements: the image's layer wrapper owns the entry scale and the image
 inside it owns the parallax, so neither fights the other. Keep the scale ahead

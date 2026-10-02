@@ -46,6 +46,7 @@ app/
   lib/
     char-reveal.ts
     icons.ts
+    image-parallax.ts
     split-text.ts
     stack-reveal.ts
     surfaces.ts
@@ -139,7 +140,8 @@ space before Studio. Responsive measurements, the reduced-motion outcome,
 ScrollTrigger lifecycle, and route cleanup remain inside the composable.
 
 useStudioMotion owns the Studio section's entrance: the statement words, the
-portrait clip reveal, and the copy paragraph words. It waits until the shared
+founder photo's frame clip reveal and image parallax, and the copy paragraph
+words. It waits until the shared
 SplitText component has reported every statement and copy paragraph split, then
 creates the section-scoped ScrollTriggers in page order. It resolves reduced
 motion to visible content and removes animation state when the section scope is
@@ -238,6 +240,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   queries the DOM or creates its own timeline.
 - icons.ts is the canonical map for shared Lucide icon names.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
+- image-parallax.ts holds the shared image parallax values: the `1.3` hold
+  scale, the `14` percent travel, and the trigger range. The work case images
+  and the founder photo both read them.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It
