@@ -695,7 +695,14 @@ surface without introducing a no-op control or fake URL.
 The tooltip uses the hovered card image in a large 104-pixel thumbnail, the
 label "See Full Project" at `text-3xl`, and a fixed card surface. Its `size`
 prop also accepts `compact`, a 64-pixel thumbnail with a `text-xl` label and
-tighter padding, which the more works panel and the services images use. It opens from
+tighter padding, which the more works panel and the services images use. When
+the size changes while the tooltip is already open, such as moving from the
+last case card onto the more works panel, the padding, gap, thumbnail size and
+radius, and label size transition over `0.5s` on the tooltip's
+`cubic-bezier(0.19, 1, 0.22, 1)` curve, so the panel resizes smoothly instead of
+jumping. The component only sets `data-resize="smooth"` when the tooltip was
+already active before the change, so opening from a closed state still takes
+the new size in one step, and reduced motion keeps every change instant. It opens from
 `inset(50% 100% 50% 0 round 1.2rem)` to
 `inset(0 0 0 0 round 1.2rem)` over `0.75s` with the
 `cubic-bezier(0.19, 1, 0.22, 1)` curve. GSAP `quickTo` owns only its `x` and `y`

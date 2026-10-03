@@ -33,6 +33,7 @@ const swapDuration = 0.6;
 const tooltip = useTemplateRef<HTMLElement>("tooltip");
 const media = useTemplateRef<HTMLElement>("media");
 const layers = ref<TooltipLayer[]>([]);
+const resizesSmoothly = ref(false);
 const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 const { createMatchMedia, gsap } = useGsap();
 let nextLayerId = 0;
@@ -81,6 +82,13 @@ watch(
       return revealLayer(id);
    },
    { flush: "post", immediate: true },
+);
+
+watch(
+   () => [active, size] as const,
+   ([isActive], previous) => {
+      resizesSmoothly.value = Boolean(previous?.[0]) && isActive;
+   },
 );
 
 onMounted(() => {
@@ -145,6 +153,7 @@ onScopeDispose(() => {
          class="trailing-tooltip"
          :data-active="active"
          :data-size="size"
+         :data-resize="resizesSmoothly ? 'smooth' : undefined"
          aria-hidden="true"
       >
          <span v-if="layers.length" ref="media" class="trailing-tooltip-media">
@@ -171,6 +180,7 @@ onScopeDispose(() => {
 @reference '../../assets/css/tailwind.css';
 
 .trailing-tooltip {
+   --tooltip-resize: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
    @apply pointer-events-none fixed top-0 left-0 z-50 flex items-center gap-5 overflow-hidden bg-card p-2 pr-8 text-card-foreground shadow-xl;
    border-radius: 1.2rem;
    clip-path: inset(50% 100% 50% 0 round 1.2rem);
@@ -206,6 +216,26 @@ onScopeDispose(() => {
 
 .trailing-tooltip[data-size="compact"] .trailing-tooltip-label {
    @apply text-xl;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+   .trailing-tooltip[data-resize="smooth"] {
+      transition:
+         clip-path 0.75s cubic-bezier(0.19, 1, 0.22, 1),
+         padding var(--tooltip-resize),
+         gap var(--tooltip-resize);
+   }
+
+   .trailing-tooltip[data-resize="smooth"] .trailing-tooltip-media {
+      transition:
+         width var(--tooltip-resize),
+         height var(--tooltip-resize),
+         border-radius var(--tooltip-resize);
+   }
+
+   .trailing-tooltip[data-resize="smooth"] .trailing-tooltip-label {
+      transition: font-size var(--tooltip-resize);
+   }
 }
 
 @media (prefers-reduced-motion: reduce) {
