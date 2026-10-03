@@ -4,14 +4,14 @@ import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const copyParagraphs = [
-	{
-		id: "team",
-		text: "Nine people in one room: editors, designers, engineers and an AI pipeline that does the boring half. No account layer, no handoff tax. You talk to the people doing the work.",
-	},
-	{
-		id: "method",
-		text: "Every engagement starts with a hypothesis and ends with a number. If a format does not work, we kill it and say so out loud, in the readout, with the maths attached.",
-	},
+   {
+      id: "team",
+      text: "Nine people in one room: editors, designers, engineers and an AI pipeline that does the boring half. No account layer, no handoff tax. You talk to the people doing the work.",
+   },
+   {
+      id: "method",
+      text: "Every engagement starts with a hypothesis and ends with a number. If a format does not work, we kill it and say so out loud, in the readout, with the maths attached.",
+   },
 ] as const;
 
 type CopyParagraphId = (typeof copyParagraphs)[number]["id"];
@@ -21,128 +21,128 @@ const studioPortrait = useTemplateRef<HTMLElement>("studioPortrait");
 const studioCopy = useTemplateRef<HTMLElement>("studioCopy");
 const statementSplit = shallowRef<SplitTextResult>();
 const copySplits = shallowRef<
-	Partial<Record<CopyParagraphId, SplitTextResult>>
+   Partial<Record<CopyParagraphId, SplitTextResult>>
 >({});
 const studioStatement =
-	"We make work that gets chosen, not just seen. Sharp thinking, fast execution, numbers you can defend.";
+   "We make work that gets chosen, not just seen. Sharp thinking, fast execution, numbers you can defend.";
 
 const copyWords = computed(() => {
-	const results = copyParagraphs.map(({ id }) => copySplits.value[id]);
-	if (results.includes(undefined)) return undefined;
+   const results = copyParagraphs.map(({ id }) => copySplits.value[id]);
+   if (results.includes(undefined)) return undefined;
 
-	return results.flatMap((parts) => parts?.words ?? []);
+   return results.flatMap((parts) => parts?.words ?? []);
 });
 
 useStudioMotion(studioRoot, {
-	copy: studioCopy,
-	copyWords,
-	portrait: studioPortrait,
-	statementSplit,
+   copy: studioCopy,
+   copyWords,
+   portrait: studioPortrait,
+   statementSplit,
 });
 
 function setStatementSplit(parts: SplitTextResult) {
-	statementSplit.value = parts;
+   statementSplit.value = parts;
 }
 
 function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
-	copySplits.value = { ...copySplits.value, [id]: parts };
+   copySplits.value = { ...copySplits.value, [id]: parts };
 }
 </script>
 
 <template>
-	<section id="studio" ref="studioRoot" class="studio section-gutter">
-		<SplitText
-			class="studio-statement"
-			as="p"
-			mask="words"
-			:text="studioStatement"
-			type="words"
-			@split="setStatementSplit"
-		/>
+   <section id="studio" ref="studioRoot" class="studio section-gutter">
+      <SplitText
+         class="studio-statement"
+         as="p"
+         mask="words"
+         :text="studioStatement"
+         type="words"
+         @split="setStatementSplit"
+      />
 
-		<div class="studio-grid">
-			<div class="studio-column">
-				<div ref="studioPortrait" class="studio-portrait">
-					<NuxtImg
-						class="studio-portrait-image"
-						data-studio-portrait-image
-						src="/images/founder.jpg"
-						alt="Founder of byroose kicking one leg high beside a lamppost on a sunny street corner"
-						width="2048"
-						height="1536"
-						sizes="sm:1280px md:768px lg:1024px xl:1280px 2xl:1536px"
-						densities="x1"
-						loading="lazy"
-						draggable="false"
-					/>
-				</div>
-			</div>
+      <div class="studio-grid">
+         <div class="studio-column">
+            <div ref="studioPortrait" class="studio-portrait">
+               <NuxtImg
+                  class="studio-portrait-image"
+                  data-studio-portrait-image
+                  src="/images/founder.jpg"
+                  alt="Founder of byroose kicking one leg high beside a lamppost on a sunny street corner"
+                  width="2048"
+                  height="1536"
+                  sizes="sm:1280px md:768px lg:1024px xl:1280px 2xl:1536px"
+                  densities="x1"
+                  loading="lazy"
+                  draggable="false"
+               />
+            </div>
+         </div>
 
-			<div ref="studioCopy" class="studio-column studio-copy">
-				<SplitText
-					v-for="paragraph in copyParagraphs"
-					:key="paragraph.id"
-					class="studio-copy-paragraph"
-					as="p"
-					mask="words"
-					:text="paragraph.text"
-					type="words"
-					@split="setCopySplit(paragraph.id, $event)"
-				/>
-			</div>
-		</div>
-	</section>
+         <div ref="studioCopy" class="studio-column studio-copy">
+            <SplitText
+               v-for="paragraph in copyParagraphs"
+               :key="paragraph.id"
+               class="studio-copy-paragraph"
+               as="p"
+               mask="words"
+               :text="paragraph.text"
+               type="words"
+               @split="setCopySplit(paragraph.id, $event)"
+            />
+         </div>
+      </div>
+   </section>
 </template>
 
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
 .studio {
-	@apply w-full py-section;
+   @apply w-full py-section;
 }
 
 .studio-statement {
-	@apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
+   @apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
 }
 
 .studio-statement :deep(.split-text-word),
 .studio-statement :deep(.split-text-word-mask),
 .studio-copy-paragraph :deep(.split-text-word),
 .studio-copy-paragraph :deep(.split-text-word-mask) {
-	display: inline-block;
+   display: inline-block;
 }
 
 .studio-statement :deep(.split-text-word),
 .studio-copy-paragraph :deep(.split-text-word) {
-	visibility: hidden;
+   visibility: hidden;
 }
 
 .studio-copy-paragraph :deep(.split-text-word-mask) {
-	margin-block: -0.12em;
-	padding-block: 0.12em;
+   margin-block: -0.12em;
+   padding-block: 0.12em;
 }
 
 .studio-grid {
-	@apply mt-12 flex flex-wrap items-center gap-8 md:mt-16 md:gap-12 xl:mt-20 xl:gap-18;
+   @apply mt-12 flex flex-wrap items-center gap-8 md:mt-16 md:gap-12 xl:mt-20 xl:gap-18;
 }
 
 .studio-column {
-	@apply min-w-0 flex-1 basis-80;
+   @apply min-w-0 flex-1 basis-80;
 }
 
 .studio-portrait {
-	@apply aspect-4/3 w-full overflow-hidden rounded-2xl;
+   @apply aspect-4/3 w-full overflow-hidden rounded-2xl;
 }
 
 .studio-portrait-image {
-	@apply size-full object-cover select-none;
+   @apply size-full object-cover select-none;
 }
 
 .studio-copy {
-	@apply space-y-6;
+   @apply space-y-6;
 }
 
 .studio-copy-paragraph {
-	@apply m-0 max-w-[46ch] text-justify text-xl leading-[1.05] tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
+   @apply m-0 max-w-[46ch] text-justify text-xl leading-[1.05] tracking-tight font-semibold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
 }
 </style>
