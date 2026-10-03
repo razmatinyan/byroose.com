@@ -1058,10 +1058,11 @@ panel's text. `backdropRevealDelay` in `useServicesMotion` places its start
 between the moment the panel top enters the viewport bottom, at `0`, and the
 title and description reveal, at `1`, which begins when the title reaches 60
 percent of the viewport through the shared `textRevealStart` position. It
-currently sits at `0.5`, halfway between the two. A scrubbed
+currently sits at `0.7`, closer to the text reveal. A scrubbed
 `clip-path` inset with a `32px` corner radius then grows from zero to the full
-viewport over half a viewport height of scroll, so the dark top edge climbs at
-twice the scroll speed. It is anchored to the viewport bottom throughout, so it
+viewport over `0.8` of a viewport height of scroll, set through
+`backdropRiseLength`, so the dark top edge climbs at 1.25 times the scroll
+speed. Raise that length to slow the growth and lower it to quicken it. It is anchored to the viewport bottom throughout, so it
 reads as one card scaling up from the bottom center, and its radius resolves to
 zero as it fills the screen. The backdrop extends one viewport above the panel
 through `--service-backdrop-lead`, and the final inset keeps the dark surface

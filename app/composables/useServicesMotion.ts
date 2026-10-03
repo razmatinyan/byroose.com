@@ -78,7 +78,7 @@ const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
 const backdropLead = 1;
 const backdropRevealDelay = 0.7;
-const backdropRiseLength = 0.5;
+const backdropRiseLength = 0.8;
 const backdropRadius = 32;
 const backdropExitLift = 0.15;
 
