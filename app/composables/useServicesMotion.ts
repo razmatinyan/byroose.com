@@ -5,30 +5,30 @@ import { addWordReveal } from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitListSource = MaybeRefOrGetter<
-	readonly (SplitTextResult | undefined)[]
+   readonly (SplitTextResult | undefined)[]
 >;
 
 interface ServicesMotionTargets {
-	descriptionSplits: SplitListSource;
-	introSplits: SplitListSource;
-	titleSplits: SplitListSource;
+   descriptionSplits: SplitListSource;
+   introSplits: SplitListSource;
+   titleSplits: SplitListSource;
 }
 
 interface ServicePanelParts {
-	descriptionLines: HTMLElement[];
-	panel: HTMLElement;
-	titleWords: HTMLElement[];
+   descriptionLines: HTMLElement[];
+   panel: HTMLElement;
+   titleWords: HTMLElement[];
 }
 
 const selectors = {
-	content: "[data-service-content]",
-	image: "[data-service-image]",
-	intro: "[data-services-intro]",
-	media: "[data-service-media]",
-	mediaExit: "[data-service-media-exit]",
-	mediaFrame: "[data-service-media-frame]",
-	panel: "[data-service-panel]",
-	title: "[data-service-title]",
+   content: "[data-service-content]",
+   image: "[data-service-image]",
+   intro: "[data-services-intro]",
+   media: "[data-service-media]",
+   mediaExit: "[data-service-media-exit]",
+   mediaFrame: "[data-service-media-frame]",
+   panel: "[data-service-panel]",
+   title: "[data-service-title]",
 } as const;
 
 const refreshPriority = -1;
@@ -37,9 +37,9 @@ const introWordDuration = 1;
 const introWordStagger = 0.45;
 const introHold = 0.6;
 const introWordFrom = {
-	filter: "blur(16px)",
-	opacity: 0,
-	scale: 0.6,
+   filter: "blur(16px)",
+   opacity: 0,
+   scale: 0.6,
 };
 const textRevealAt = 0.6;
 const titleStagger = 0.08;
@@ -53,321 +53,321 @@ const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
 
 function splitWords(parts: SplitTextResult | undefined) {
-	return parts?.words ?? [];
+   return parts?.words ?? [];
 }
 
 function offsetWithin(element: HTMLElement, ancestor: HTMLElement) {
-	let offset = 0;
-	let node: HTMLElement | null = element;
+   let offset = 0;
+   let node: HTMLElement | null = element;
 
-	while (node && node !== ancestor) {
-		offset += node.offsetTop;
-		node =
-			node.offsetParent instanceof HTMLElement ? node.offsetParent : null;
-	}
+   while (node && node !== ancestor) {
+      offset += node.offsetTop;
+      node =
+         node.offsetParent instanceof HTMLElement ? node.offsetParent : null;
+   }
 
-	return offset;
+   return offset;
 }
 
 export function useServicesMotion(
-	scope: MotionScope,
-	{ descriptionSplits, introSplits, titleSplits }: ServicesMotionTargets,
+   scope: MotionScope,
+   { descriptionSplits, introSplits, titleSplits }: ServicesMotionTargets,
 ) {
-	const { createMatchMedia, gsap, loadPlugin } = useGsap();
-	const { refresh } = useSmoothScroll();
-	let disposed = false;
-	let initialized = false;
-	let ready = false;
-	let reducedMotion = false;
-	let motionContext: gsap.Context | null = null;
-	let panels: ServicePanelParts[] = [];
-	const textTimelines = new Map<HTMLElement, gsap.core.Timeline>();
-	const revealedPanels = new WeakSet<HTMLElement>();
+   const { createMatchMedia, gsap, loadPlugin } = useGsap();
+   const { refresh } = useSmoothScroll();
+   let disposed = false;
+   let initialized = false;
+   let ready = false;
+   let reducedMotion = false;
+   let motionContext: gsap.Context | null = null;
+   let panels: ServicePanelParts[] = [];
+   const textTimelines = new Map<HTMLElement, gsap.core.Timeline>();
+   const revealedPanels = new WeakSet<HTMLElement>();
 
-	function revealIntro(intro: HTMLElement, words: HTMLElement[]) {
-		if (!words.length) return;
+   function revealIntro(intro: HTMLElement, words: HTMLElement[]) {
+      if (!words.length) return;
 
-		gsap.set(words, { ...introWordFrom, visibility: "inherit" });
+      gsap.set(words, { ...introWordFrom, visibility: "inherit" });
 
-		gsap
-			.timeline({
-				defaults: { ease: "none" },
-				scrollTrigger: {
-					end: `+=${introPinLength * 100}%`,
-					pin: true,
-					refreshPriority,
-					scrub: true,
-					start: "top top",
-					trigger: intro,
-				},
-			})
-			.to(
-				words,
-				{
-					duration: introWordDuration,
-					ease: "power2.out",
-					filter: "blur(0px)",
-					opacity: 1,
-					scale: 1,
-					stagger: introWordStagger,
-				},
-				0,
-			)
-			.to({}, { duration: introHold });
-	}
+      gsap
+         .timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+               end: `+=${introPinLength * 100}%`,
+               pin: true,
+               refreshPriority,
+               scrub: true,
+               start: "top top",
+               trigger: intro,
+            },
+         })
+         .to(
+            words,
+            {
+               duration: introWordDuration,
+               ease: "power2.out",
+               filter: "blur(0px)",
+               opacity: 1,
+               scale: 1,
+               stagger: introWordStagger,
+            },
+            0,
+         )
+         .to({}, { duration: introHold });
+   }
 
-	function runwayOf(panel: HTMLElement, content: HTMLElement) {
-		return panel.clientHeight - content.offsetTop - content.offsetHeight;
-	}
+   function runwayOf(panel: HTMLElement, content: HTMLElement) {
+      return panel.clientHeight - content.offsetTop - content.offsetHeight;
+   }
 
-	function scrollWhen(
-		panel: HTMLElement,
-		content: HTMLElement,
-		offset: () => number,
-		viewportRatio: number,
-	) {
-		return () => {
-			const viewport = window.innerHeight;
-			const range = viewport + panel.offsetHeight;
-			const travel = range - runwayOf(panel, content);
-			const panelTop = panel.getBoundingClientRect().top + window.scrollY;
+   function scrollWhen(
+      panel: HTMLElement,
+      content: HTMLElement,
+      offset: () => number,
+      viewportRatio: number,
+   ) {
+      return () => {
+         const viewport = window.innerHeight;
+         const range = viewport + panel.offsetHeight;
+         const travel = range - runwayOf(panel, content);
+         const panelTop = panel.getBoundingClientRect().top + window.scrollY;
 
-			return (
-				panelTop -
-				viewport +
-				((viewport + offset() - viewportRatio * viewport) * range) / travel
-			);
-		};
-	}
+         return (
+            panelTop -
+            viewport +
+            ((viewport + offset() - viewportRatio * viewport) * range) / travel
+         );
+      };
+   }
 
-	function slowContent(panel: HTMLElement, content: HTMLElement) {
-		gsap.set(panel, { "--service-runway": panelRunway });
+   function slowContent(panel: HTMLElement, content: HTMLElement) {
+      gsap.set(panel, { "--service-runway": panelRunway });
 
-		gsap.fromTo(
-			content,
-			{ y: 0 },
-			{
-				ease: "none",
-				y: () => runwayOf(panel, content),
-				scrollTrigger: {
-					end: "bottom top",
-					invalidateOnRefresh: true,
-					refreshPriority,
-					scrub: true,
-					start: "top bottom",
-					trigger: panel,
-				},
-			},
-		);
-	}
+      gsap.fromTo(
+         content,
+         { y: 0 },
+         {
+            ease: "none",
+            y: () => runwayOf(panel, content),
+            scrollTrigger: {
+               end: "bottom top",
+               invalidateOnRefresh: true,
+               refreshPriority,
+               scrub: true,
+               start: "top bottom",
+               trigger: panel,
+            },
+         },
+      );
+   }
 
-	function revealText(
-		{ descriptionLines, panel, titleWords }: ServicePanelParts,
-		content: HTMLElement,
-	) {
-		const title = panel.querySelector<HTMLElement>(selectors.title);
-		if (!title || (!titleWords.length && !descriptionLines.length)) return;
+   function revealText(
+      { descriptionLines, panel, titleWords }: ServicePanelParts,
+      content: HTMLElement,
+   ) {
+      const title = panel.querySelector<HTMLElement>(selectors.title);
+      if (!title || (!titleWords.length && !descriptionLines.length)) return;
 
-		const timeline = gsap.timeline({
-			onStart: () => revealedPanels.add(panel),
-			scrollTrigger: {
-				invalidateOnRefresh: true,
-				once: true,
-				refreshPriority,
-				start: scrollWhen(
-					panel,
-					content,
-					() => offsetWithin(title, panel),
-					textRevealAt,
-				),
-			},
-		});
+      const timeline = gsap.timeline({
+         onStart: () => revealedPanels.add(panel),
+         scrollTrigger: {
+            invalidateOnRefresh: true,
+            once: true,
+            refreshPriority,
+            start: scrollWhen(
+               panel,
+               content,
+               () => offsetWithin(title, panel),
+               textRevealAt,
+            ),
+         },
+      });
 
-		addWordReveal(timeline, titleWords, { stagger: titleStagger });
-		addWordReveal(timeline, descriptionLines, {
-			duration: descriptionDuration,
-			ease: descriptionEase,
-			position: 0,
-			stagger: descriptionStagger,
-		});
-		textTimelines.set(panel, timeline);
-	}
+      addWordReveal(timeline, titleWords, { stagger: titleStagger });
+      addWordReveal(timeline, descriptionLines, {
+         duration: descriptionDuration,
+         ease: descriptionEase,
+         position: 0,
+         stagger: descriptionStagger,
+      });
+      textTimelines.set(panel, timeline);
+   }
 
-	function replaceDescriptionLines(index: number, lines: HTMLElement[]) {
-		const parts = panels[index];
-		if (!parts) return;
+   function replaceDescriptionLines(index: number, lines: HTMLElement[]) {
+      const parts = panels[index];
+      if (!parts) return;
 
-		parts.descriptionLines = lines;
-		const content = parts.panel.querySelector<HTMLElement>(selectors.content);
-		const context = motionContext;
+      parts.descriptionLines = lines;
+      const content = parts.panel.querySelector<HTMLElement>(selectors.content);
+      const context = motionContext;
 
-		if (
-			reducedMotion ||
-			!context ||
-			!content ||
-			revealedPanels.has(parts.panel)
-		) {
-			showAll(lines);
-			return;
-		}
+      if (
+         reducedMotion ||
+         !context ||
+         !content ||
+         revealedPanels.has(parts.panel)
+      ) {
+         showAll(lines);
+         return;
+      }
 
-		const previous = textTimelines.get(parts.panel);
-		previous?.scrollTrigger?.kill();
-		previous?.kill();
-		context.add(() => revealText(parts, content));
-	}
+      const previous = textTimelines.get(parts.panel);
+      previous?.scrollTrigger?.kill();
+      previous?.kill();
+      context.add(() => revealText(parts, content));
+   }
 
-	function scaleMedia(panel: HTMLElement, content: HTMLElement) {
-		const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
-		const media = panel.querySelector<HTMLElement>(selectors.media);
-		const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
-		const image = panel.querySelector<HTMLElement>(selectors.image);
-		if (!frame || !media || !mediaExit) return;
+   function scaleMedia(panel: HTMLElement, content: HTMLElement) {
+      const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
+      const media = panel.querySelector<HTMLElement>(selectors.media);
+      const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
+      const image = panel.querySelector<HTMLElement>(selectors.image);
+      if (!frame || !media || !mediaExit) return;
 
-		const frameAt = (share: number) => () =>
-			offsetWithin(frame, panel) + frame.offsetHeight * share;
-		const peak = scrollWhen(panel, content, frameAt(0.5), 0.5);
+      const frameAt = (share: number) => () =>
+         offsetWithin(frame, panel) + frame.offsetHeight * share;
+      const peak = scrollWhen(panel, content, frameAt(0.5), 0.5);
 
-		const entry = gsap
-			.timeline({
-				defaults: { ease: mediaEntryEase },
-				scrollTrigger: {
-					end: peak,
-					invalidateOnRefresh: true,
-					refreshPriority,
-					scrub: true,
-					start: scrollWhen(panel, content, frameAt(0), 1),
-				},
-			})
-			.fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
+      const entry = gsap
+         .timeline({
+            defaults: { ease: mediaEntryEase },
+            scrollTrigger: {
+               end: peak,
+               invalidateOnRefresh: true,
+               refreshPriority,
+               scrub: true,
+               start: scrollWhen(panel, content, frameAt(0), 1),
+            },
+         })
+         .fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
 
-		if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
+      if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
 
-		gsap.fromTo(
-			mediaExit,
-			{ scale: 1 },
-			{
-				ease: mediaExitEase,
-				immediateRender: false,
-				scale: 0,
-				scrollTrigger: {
-					end: scrollWhen(panel, content, frameAt(1), 0),
-					invalidateOnRefresh: true,
-					refreshPriority,
-					scrub: true,
-					start: peak,
-				},
-			},
-		);
-	}
+      gsap.fromTo(
+         mediaExit,
+         { scale: 1 },
+         {
+            ease: mediaExitEase,
+            immediateRender: false,
+            scale: 0,
+            scrollTrigger: {
+               end: scrollWhen(panel, content, frameAt(1), 0),
+               invalidateOnRefresh: true,
+               refreshPriority,
+               scrub: true,
+               start: peak,
+            },
+         },
+      );
+   }
 
-	function animatePanel(parts: ServicePanelParts) {
-		const content = parts.panel.querySelector<HTMLElement>(selectors.content);
-		if (!content) return;
+   function animatePanel(parts: ServicePanelParts) {
+      const content = parts.panel.querySelector<HTMLElement>(selectors.content);
+      if (!content) return;
 
-		slowContent(parts.panel, content);
-		revealText(parts, content);
-		scaleMedia(parts.panel, content);
-	}
+      slowContent(parts.panel, content);
+      revealText(parts, content);
+      scaleMedia(parts.panel, content);
+   }
 
-	function showAll(elements: HTMLElement[]) {
-		if (!elements.length) return;
+   function showAll(elements: HTMLElement[]) {
+      if (!elements.length) return;
 
-		gsap.set(elements, {
-			clearProps: "transform",
-			visibility: "inherit",
-		});
-	}
+      gsap.set(elements, {
+         clearProps: "transform",
+         visibility: "inherit",
+      });
+   }
 
-	async function initialize(
-		introWords: HTMLElement[],
-		titleParts: readonly SplitTextResult[],
-		descriptionParts: readonly SplitTextResult[],
-	) {
-		if (initialized || disposed) return;
+   async function initialize(
+      introWords: HTMLElement[],
+      titleParts: readonly SplitTextResult[],
+      descriptionParts: readonly SplitTextResult[],
+   ) {
+      if (initialized || disposed) return;
 
-		initialized = true;
-		await nextTick();
-		const ScrollTrigger = await loadPlugin("ScrollTrigger");
-		if (!ScrollTrigger || disposed) return;
+      initialized = true;
+      await nextTick();
+      const ScrollTrigger = await loadPlugin("ScrollTrigger");
+      if (!ScrollTrigger || disposed) return;
 
-		const root = toValue(scope);
-		const intro = root?.querySelector<HTMLElement>(selectors.intro);
-		if (!root || !intro) return;
+      const root = toValue(scope);
+      const intro = root?.querySelector<HTMLElement>(selectors.intro);
+      if (!root || !intro) return;
 
-		panels = [
-			...root.querySelectorAll<HTMLElement>(selectors.panel),
-		].map((panel, index) => ({
-			descriptionLines: descriptionParts[index]?.lines ?? [],
-			panel,
-			titleWords: splitWords(titleParts[index]),
-		}));
+      panels = [
+         ...root.querySelectorAll<HTMLElement>(selectors.panel),
+      ].map((panel, index) => ({
+         descriptionLines: descriptionParts[index]?.lines ?? [],
+         panel,
+         titleWords: splitWords(titleParts[index]),
+      }));
 
-		createMatchMedia(
-			{
-				motion: "(prefers-reduced-motion: no-preference)",
-				reduceMotion: "(prefers-reduced-motion: reduce)",
-			},
-			(context) => {
-				motionContext = context;
-				reducedMotion = Boolean(context.conditions?.reduceMotion);
+      createMatchMedia(
+         {
+            motion: "(prefers-reduced-motion: no-preference)",
+            reduceMotion: "(prefers-reduced-motion: reduce)",
+         },
+         (context) => {
+            motionContext = context;
+            reducedMotion = Boolean(context.conditions?.reduceMotion);
 
-				if (reducedMotion) {
-					showAll([
-						...introWords,
-						...panels.flatMap(({ descriptionLines, titleWords }) => [
-							...titleWords,
-							...descriptionLines,
-						]),
-					]);
-					return;
-				}
+            if (reducedMotion) {
+               showAll([
+                  ...introWords,
+                  ...panels.flatMap(({ descriptionLines, titleWords }) => [
+                     ...titleWords,
+                     ...descriptionLines,
+                  ]),
+               ]);
+               return;
+            }
 
-				revealIntro(intro, introWords);
-				for (const panel of panels) animatePanel(panel);
-			},
-			scope,
-		);
+            revealIntro(intro, introWords);
+            for (const panel of panels) animatePanel(panel);
+         },
+         scope,
+      );
 
-		ready = true;
-		await refresh();
-	}
+      ready = true;
+      await refresh();
+   }
 
-	watch(
-		() =>
-			[
-				toValue(introSplits),
-				toValue(titleSplits),
-				toValue(descriptionSplits),
-			] as const,
-		([intro, titles, descriptions]) => {
-			const splits = [...intro, ...titles, ...descriptions];
-			if (splits.includes(undefined)) return;
+   watch(
+      () =>
+         [
+            toValue(introSplits),
+            toValue(titleSplits),
+            toValue(descriptionSplits),
+         ] as const,
+      ([intro, titles, descriptions]) => {
+         const splits = [...intro, ...titles, ...descriptions];
+         if (splits.includes(undefined)) return;
 
-			return initialize(
-				intro.flatMap(splitWords),
-				titles.filter((parts) => parts !== undefined),
-				descriptions.filter((parts) => parts !== undefined),
-			);
-		},
-		{ flush: "post", immediate: true },
-	);
+         return initialize(
+            intro.flatMap(splitWords),
+            titles.filter((parts) => parts !== undefined),
+            descriptions.filter((parts) => parts !== undefined),
+         );
+      },
+      { flush: "post", immediate: true },
+   );
 
-	watch(
-		() => toValue(descriptionSplits),
-		(next, previous) => {
-			if (!ready) return;
+   watch(
+      () => toValue(descriptionSplits),
+      (next, previous) => {
+         if (!ready) return;
 
-			next.forEach((parts, index) => {
-				if (parts && parts !== previous?.[index]) {
-					replaceDescriptionLines(index, parts.lines);
-				}
-			});
-		},
-		{ flush: "post" },
-	);
+         next.forEach((parts, index) => {
+            if (parts && parts !== previous?.[index]) {
+               replaceDescriptionLines(index, parts.lines);
+            }
+         });
+      },
+      { flush: "post" },
+   );
 
-	onScopeDispose(() => {
-		disposed = true;
-	});
+   onScopeDispose(() => {
+      disposed = true;
+   });
 }
