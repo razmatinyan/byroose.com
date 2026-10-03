@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 
+type CookieConsent = 'accepted' | 'declined'
+
 const consentMaxAge = 60 * 60 * 24 * 365
 
-const consent = useCookie<'accepted' | null>('byroose-cookie-consent', {
+const consent = useCookie<CookieConsent | null>('byroose-cookie-consent', {
 	default: () => null,
 	maxAge: consentMaxAge,
 	path: '/',
@@ -12,8 +14,8 @@ const consent = useCookie<'accepted' | null>('byroose-cookie-consent', {
 
 const { enter, leave, prepare } = useCookieBannerMotion()
 
-function acceptCookies() {
-	consent.value = 'accepted'
+function answerCookies(answer: CookieConsent) {
+	consent.value = answer
 }
 </script>
 
@@ -26,25 +28,24 @@ function acceptCookies() {
 		@leave="leave"
 	>
 		<aside
-			v-if="consent !== 'accepted'"
+			v-if="consent === null"
 			class="cookie-banner surface-card"
-			aria-labelledby="cookie-banner-title"
+			aria-label="Cookie notice"
 		>
-			<h2 id="cookie-banner-title" class="cookie-banner-title">
-				We Use Cookies
-			</h2>
-			<div class="cookie-banner-row">
-				<p class="cookie-banner-copy">
-					They help us understand how this site is used so we can keep
-					improving it.
-				</p>
+			<p class="cookie-banner-copy">
+				We use cookies to understand how this site is used so we can keep
+				improving your experience.
+			</p>
+			<div class="cookie-banner-actions">
 				<Button
-					class="cookie-banner-action"
-					size="cta-sm"
-					variant="dark"
-					@click="acceptCookies"
+					size="sm"
+					variant="outline"
+					@click="answerCookies('declined')"
 				>
-					Accept
+					Decline all
+				</Button>
+				<Button size="sm" variant="dark" @click="answerCookies('accepted')">
+					Accept all
 				</Button>
 			</div>
 		</aside>
@@ -55,22 +56,14 @@ function acceptCookies() {
 @reference '../../assets/css/tailwind.css';
 
 .cookie-banner {
-	@apply fixed right-4 bottom-4 left-4 z-40 rounded-xl border border-border p-4 shadow-xl sm:left-auto sm:max-w-md;
-}
-
-.cookie-banner-title {
-	@apply m-0 text-base font-semibold;
-}
-
-.cookie-banner-row {
-	@apply mt-2 flex items-center gap-4;
+	@apply fixed right-4 bottom-4 left-4 z-40 rounded-xl border border-border shadow-xl sm:left-auto sm:max-w-sm;
 }
 
 .cookie-banner-copy {
-	@apply m-0 text-sm leading-relaxed text-muted-foreground;
+	@apply m-0 px-4 py-3 text-sm leading-relaxed text-foreground;
 }
 
-.cookie-banner-action {
-	@apply shrink-0 gap-0 pr-4;
+.cookie-banner-actions {
+	@apply flex justify-end gap-2 border-t border-border px-4 py-3;
 }
 </style>

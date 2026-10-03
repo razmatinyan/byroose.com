@@ -94,8 +94,8 @@ section.
 
 SiteCookieBanner owns the cookie notice. Its consent value lives in the
 byroose-cookie-consent cookie through Nuxt's useCookie, so the server and the
-first client render agree on whether the notice is visible and an accepted
-notice never reappears. The layout withholds the banner until the home intro
+first client render agree on whether the notice is visible and an accepted or
+declined notice never reappears. The layout withholds the banner until the home intro
 reports a complete state, so it never paints over the preloader.
 
 SiteScrollbar owns the overlay scroll thumb that replaces the hidden root

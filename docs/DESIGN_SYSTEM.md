@@ -254,32 +254,30 @@ overlay is the elevation exception to the borders before shadows rule. On phones
 it spans the viewport inset. From `sm` it settles into a compact panel in the
 corner.
 
-A title sits above a single row that keeps the explanation and the accept action
-inline, so the notice reads as one short block rather than a stack. The action
-carries `shrink-0`, so the copy wraps beside it instead of crushing it.
+The notice has two bands. The explanation sits on top in foreground text, and a
+`border-border` divider separates it from an action row aligned to the end. It
+has no visible title.
 
-It is an `aside` named by its own title through `aria-labelledby` rather than a
-dialog, because it never traps focus and never blocks the page. Its single
-action is a `cta-sm` button in the `dark` variant, so the accept control
-inherits the shared hover bounce and the masked three-stage rollover without
-redefining either.
-
-That size reserves trailing space for an icon tile. A label-only call to action
-therefore closes the variant gap and restores symmetric horizontal padding in
-the banner's own scoped style, rather than changing the shared size contract.
-Prefer this local correction whenever a CTA size is reused without its icon.
+It is an `aside` named "Cookie notice" through `aria-label` rather than a
+dialog, because it never traps focus and never blocks the page. Its two actions
+are `sm` buttons: "Decline all" in the `outline` variant and "Accept all" in the
+`dark` variant. The `sm` size keeps them compact and outside the CTA rollover
+and hover bounce, so they use the plain color hover and the shared press
+feedback only.
 
 The notice enters and leaves through a `Transition` with `:css="false"`, driven
 by `useCookieBannerMotion`. It rises `24px` with a slight scale over `0.5s` on
-`power3.out`, and it settles back down over `0.3s` on `power2.in` when accepted.
+`power3.out`, and it settles back down over `0.3s` on `power2.in` when answered.
 The transition carries `appear`, so the notice animates on its first paint as
 well as when the home intro finally releases it. Reduced motion resolves both
 directions with `gsap.set`, so the notice still appears and still dismisses
 without travelling.
 
-Accepting writes `accepted` to the `byroose-cookie-consent` cookie for one year.
-Because the value is read through `useCookie`, the server already knows whether
-to render the notice, so an accepted banner never flashes during hydration.
+Accepting writes `accepted` and declining writes `declined` to the
+`byroose-cookie-consent` cookie for one year. Any future tracking must check for
+`accepted` before it runs. Because the value is read through `useCookie`, the
+server already knows whether to render the notice, so an answered banner never
+flashes during hydration.
 
 ## Responsive rules
 
