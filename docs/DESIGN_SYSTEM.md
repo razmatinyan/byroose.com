@@ -168,7 +168,7 @@ looks.
 
 The texture, its opacity, and its light blend live in the `canvas-grain` utility.
 The body layer is its only consumer, and one opacity value tunes the whole
-effect, currently `opacity-90`. The dark override sits next to the `body::before` selector, because
+effect, currently `opacity-30`. The dark override sits next to the `body::before` selector, because
 Tailwind cannot attach a `.dark` ancestor to an applied pseudo-element. The
 light theme multiplies the light tile into everything beneath it, which keeps
 warm hues. At the earlier 35 percent it cost roughly three percent lightness,
