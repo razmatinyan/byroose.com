@@ -536,9 +536,7 @@ that range. The font and the title both scale with the viewport, and the
 tracking is in `em`, so the wrap is identical at every desktop width and the
 copy column stays wider than the cap down to 1024 wide. Chrome's balanced
 wrapping does not even out these lines, so recheck the cap whenever the
-description copy changes. Its line masks carry `0.2em` of bottom padding cancelled
-by an equal negative bottom margin, so descenders are not clipped at the tight
-leading while the line spacing and paragraph height stay unchanged.
+description copy changes.
 
 The hero is at least one viewport tall, minus the header, plus half a card
 height, minus the `40px` dock offset. The media row therefore rests about half
