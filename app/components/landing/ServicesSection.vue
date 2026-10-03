@@ -10,6 +10,7 @@ const TrailingTooltip = defineAsyncComponent(
 interface Service {
 	description: string;
 	image: string;
+	surface: "canvas" | "dark";
 	title: string;
 }
 
@@ -23,12 +24,14 @@ const servicesData: Service[] = [
 		description:
 			"Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
 		image: "/images/hero/5.png",
+		surface: "canvas",
 		title: "AI Content Creation",
 	},
 	{
 		description:
 			"Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
 		image: "/images/hero/6.png",
+		surface: "dark",
 		title: "Website Development",
 	},
 ];
@@ -104,8 +107,21 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			v-for="(service, index) in servicesData"
 			:key="service.title"
 			class="service-panel"
+			:class="{ 'service-panel-dark': service.surface === 'dark' }"
 			data-service-panel
 		>
+			<div
+				v-if="service.surface === 'dark'"
+				class="service-backdrop"
+				data-service-backdrop
+				aria-hidden="true"
+			>
+				<div
+					class="service-backdrop-surface"
+					data-service-backdrop-surface
+				/>
+				<div class="service-backdrop-curve" data-service-backdrop-curve />
+			</div>
 			<div class="service-content" data-service-content>
 				<SplitText
 					class="service-title"
@@ -192,6 +208,26 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 .service-panel {
 	@apply relative px-[clamp(1rem,2vw,1.5rem)] pt-section;
 	padding-bottom: calc(var(--service-runway, 0) * 100svh);
+}
+
+.service-panel-dark .service-title,
+.service-panel-dark .service-description {
+	@apply text-background mix-blend-difference;
+}
+
+.service-backdrop {
+	@apply absolute inset-x-0 bottom-0 -z-10;
+	top: calc(var(--service-backdrop-lead, 0) * -100svh);
+}
+
+.service-backdrop-surface {
+	@apply absolute inset-0 bg-foreground;
+}
+
+.service-backdrop-curve {
+	@apply absolute top-full -left-1/4 -mt-px h-[clamp(4rem,10vw,10rem)] w-[150%] origin-top bg-foreground;
+	border-radius: 0 0 50% 50% / 0 0 100% 100%;
+	transform: scaleY(0);
 }
 
 .service-content {

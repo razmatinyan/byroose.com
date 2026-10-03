@@ -21,6 +21,9 @@ interface ServicePanelParts {
 }
 
 const selectors = {
+   backdrop: "[data-service-backdrop]",
+   backdropCurve: "[data-service-backdrop-curve]",
+   backdropSurface: "[data-service-backdrop-surface]",
    content: "[data-service-content]",
    image: "[data-service-image]",
    intro: "[data-services-intro]",
@@ -51,6 +54,11 @@ const panelRunway = 1;
 const mediaPeakScale = 0.8;
 const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
+const backdropLead = 1;
+const backdropRevealDelay = 0.7;
+const backdropRiseLength = 0.5;
+const backdropRadius = 32;
+const backdropExitLift = 0.15;
 
 function splitWords(parts: SplitTextResult | undefined) {
    return parts?.words ?? [];
@@ -144,7 +152,7 @@ export function useServicesMotion(
       gsap.set(panel, { "--service-runway": panelRunway });
 
       gsap.fromTo(
-         content,
+         [...content.children],
          { y: 0 },
          {
             ease: "none",
@@ -161,6 +169,19 @@ export function useServicesMotion(
       );
    }
 
+   function textRevealStart(
+      panel: HTMLElement,
+      content: HTMLElement,
+      title: HTMLElement,
+   ) {
+      return scrollWhen(
+         panel,
+         content,
+         () => offsetWithin(title, panel),
+         textRevealAt,
+      );
+   }
+
    function revealText(
       { descriptionLines, panel, titleWords }: ServicePanelParts,
       content: HTMLElement,
@@ -174,12 +195,7 @@ export function useServicesMotion(
             invalidateOnRefresh: true,
             once: true,
             refreshPriority,
-            start: scrollWhen(
-               panel,
-               content,
-               () => offsetWithin(title, panel),
-               textRevealAt,
-            ),
+            start: textRevealStart(panel, content, title),
          },
       });
 
@@ -217,6 +233,19 @@ export function useServicesMotion(
       context.add(() => revealText(parts, content));
    }
 
+   function mediaPeakOf(
+      panel: HTMLElement,
+      content: HTMLElement,
+      frame: HTMLElement,
+   ) {
+      return scrollWhen(
+         panel,
+         content,
+         () => offsetWithin(frame, panel) + frame.offsetHeight / 2,
+         0.5,
+      );
+   }
+
    function scaleMedia(panel: HTMLElement, content: HTMLElement) {
       const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
       const media = panel.querySelector<HTMLElement>(selectors.media);
@@ -226,7 +255,7 @@ export function useServicesMotion(
 
       const frameAt = (share: number) => () =>
          offsetWithin(frame, panel) + frame.offsetHeight * share;
-      const peak = scrollWhen(panel, content, frameAt(0.5), 0.5);
+      const peak = mediaPeakOf(panel, content, frame);
 
       const entry = gsap
          .timeline({
@@ -261,10 +290,90 @@ export function useServicesMotion(
       );
    }
 
+   function riseBackdrop(panel: HTMLElement, content: HTMLElement) {
+      const backdrop = panel.querySelector<HTMLElement>(selectors.backdrop);
+      const surface = panel.querySelector<HTMLElement>(
+         selectors.backdropSurface,
+      );
+      const title = panel.querySelector<HTMLElement>(selectors.title);
+      if (!backdrop || !surface || !title) return;
+
+      gsap.set(panel, { "--service-backdrop-lead": backdropLead });
+
+      const textStart = textRevealStart(panel, content, title);
+      const panelEntry = () =>
+         panel.getBoundingClientRect().top +
+         window.scrollY -
+         window.innerHeight;
+      const start = () =>
+         gsap.utils.interpolate(panelEntry(), textStart(), backdropRevealDelay);
+      const distance = () => window.innerHeight * backdropRiseLength;
+      const lead = () => -backdrop.offsetTop;
+      const halfWidth = () => surface.offsetWidth / 2;
+      const panelTopAtStart = () =>
+         panel.getBoundingClientRect().top + window.scrollY - start();
+      const viewportBottomAtStart = () =>
+         window.innerHeight - panelTopAtStart() + lead();
+      const viewportTopAtEnd = () =>
+         lead() - Math.max(0, panelTopAtStart() - distance());
+
+      gsap.fromTo(
+         surface,
+         {
+            clipPath: () =>
+               `inset(${viewportBottomAtStart()}px ${halfWidth()}px ${surface.offsetHeight - viewportBottomAtStart()}px ${halfWidth()}px round ${backdropRadius}px)`,
+         },
+         {
+            clipPath: () =>
+               `inset(${viewportTopAtEnd()}px 0px 0px 0px round 0px)`,
+            ease: "none",
+            scrollTrigger: {
+               end: () => start() + distance(),
+               invalidateOnRefresh: true,
+               refreshPriority,
+               scrub: true,
+               start,
+            },
+         },
+      );
+   }
+
+   function curveBackdrop(panel: HTMLElement, content: HTMLElement) {
+      const backdrop = panel.querySelector<HTMLElement>(selectors.backdrop);
+      const curve = panel.querySelector<HTMLElement>(selectors.backdropCurve);
+      const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
+      if (!backdrop || !curve || !frame) return;
+
+      gsap
+         .timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: {
+               end: "bottom top",
+               invalidateOnRefresh: true,
+               refreshPriority,
+               scrub: true,
+               start: mediaPeakOf(panel, content, frame),
+               trigger: panel,
+            },
+         })
+         .fromTo(curve, { scaleY: 0 }, { scaleY: 1 }, 0)
+         .fromTo(
+            backdrop,
+            { y: 0 },
+            {
+               y: () =>
+                  -(curve.offsetHeight + window.innerHeight * backdropExitLift),
+            },
+            0,
+         );
+   }
+
    function animatePanel(parts: ServicePanelParts) {
       const content = parts.panel.querySelector<HTMLElement>(selectors.content);
       if (!content) return;
 
+      riseBackdrop(parts.panel, content);
+      curveBackdrop(parts.panel, content);
       slowContent(parts.panel, content);
       revealText(parts, content);
       scaleMedia(parts.panel, content);
@@ -295,13 +404,13 @@ export function useServicesMotion(
       const intro = root?.querySelector<HTMLElement>(selectors.intro);
       if (!root || !intro) return;
 
-      panels = [
-         ...root.querySelectorAll<HTMLElement>(selectors.panel),
-      ].map((panel, index) => ({
-         descriptionLines: descriptionParts[index]?.lines ?? [],
-         panel,
-         titleWords: splitWords(titleParts[index]),
-      }));
+      panels = [...root.querySelectorAll<HTMLElement>(selectors.panel)].map(
+         (panel, index) => ({
+            descriptionLines: descriptionParts[index]?.lines ?? [],
+            panel,
+            titleWords: splitWords(titleParts[index]),
+         }),
+      );
 
       createMatchMedia(
          {

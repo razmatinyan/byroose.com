@@ -881,8 +881,12 @@ ratio, so it is never cropped to fit the viewport.
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
 grows. While motion is enabled, the panel adds one viewport height of runway
-below its content through `--service-runway`, and the whole content block
-slides down through that runway as the panel crosses the viewport. At 1440 by
+below its content through `--service-runway`, and the title, the description,
+and the image frame slide down together through that runway as the panel
+crosses the viewport. The shared offset is applied to each child of
+`data-service-content` rather than to the block itself, because a transform on
+the block would make it an isolated group and stop its text from blending with
+the dark backdrop. At 1440 by
 900 the content moves about 0.7 times as fast as the scroll, and the text
 reveal and the image scale stretch across the longer distance. Reduced motion
 drops the runway.
@@ -940,9 +944,60 @@ at its `compact` size with the service image and the label "More Details". The i
 placeholders from `public/images/hero` and will be replaced with real service
 media.
 
-Reduced motion drops the intro pin, every reveal, and the image scale. It
-displays the title words, the service titles, the descriptions, and the images
-at rest.
+Each service declares a `surface`. The Website Development panel uses `dark`,
+so it renders a `foreground` backdrop behind its content. Its title and
+description are set in `background` with `mix-blend-mode: difference`, so they
+read dark over the canvas and cream over the backdrop, including the moment the
+rising edge crosses a line. The backdrop covers the panel's full width and
+height, including its runway, and ends at the panel's bottom edge, so the
+section's closing `spacing-section` stays on the canvas before the journey
+section. The backdrop sits at `-z-10`, so the previous panel's content still
+paints above the dark surface while the two overlap.
+
+The blend only works while nothing between the text and the canvas forms an
+isolated group. Keep the section, the panel, and `data-service-content` free of
+`isolation`, `z-index` stacking, opacity below one, filters, and transforms.
+Motion that moves the text must transform the text elements themselves.
+
+The backdrop rises from the bottom center of the viewport just ahead of the
+panel's text. `backdropRevealDelay` in `useServicesMotion` places its start
+between the moment the panel top enters the viewport bottom, at `0`, and the
+title and description reveal, at `1`, which begins when the title reaches 60
+percent of the viewport through the shared `textRevealStart` position. It
+currently sits at `0.5`, halfway between the two. A scrubbed
+`clip-path` inset with a `32px` corner radius then grows from zero to the full
+viewport over half a viewport height of scroll, so the dark top edge climbs at
+twice the scroll speed. It is anchored to the viewport bottom throughout, so it
+reads as one card scaling up from the bottom center, and its radius resolves to
+zero as it fills the screen. The backdrop extends one viewport above the panel
+through `--service-backdrop-lead`, and the final inset keeps the dark surface
+starting exactly where the viewport top was when the rise completed. The tween
+uses a linear ease because the bottom anchor depends on the clip moving in step
+with the scroll.
+
+The backdrop is a wrapper around two layers. `data-service-backdrop-surface`
+carries the dark fill and the rise clip. `data-service-backdrop-curve` hangs
+from the wrapper's bottom edge: a half ellipse 150 percent of the panel width,
+centered so its sides run past the viewport, `clamp(4rem, 10vw, 10rem)` tall,
+and resting at `scaleY(0)` from its top edge. The rest state is a plain CSS
+`transform` rather than Tailwind's `scale-y-0`, because that utility writes the
+separate `scale` property, which would stack with the transform GSAP writes.
+
+As the reader leaves the panel, one scrubbed timeline grows the curve
+to full height and lifts the whole wrapper by the curve's height plus `0.15`
+of the viewport, set through `backdropExitLift`. The dark bottom edge bows
+downward into an arc while the dark area slowly retreats upward. The curve's
+tip therefore ends `0.15` of a viewport above the panel's bottom edge and never
+reaches the journey section. The landing wrapper's horizontal clip hides the
+curve where it runs past the viewport. The timeline starts at the image's peak,
+the shared `mediaPeakOf` position where the image stops growing and starts to
+scale down, so the curve and the image exit begin together. It ends when the
+panel's bottom edge reaches the viewport top.
+
+Reduced motion drops the intro pin, every reveal, the image scale, and the
+backdrop rise, curve, and lift. It displays the title words, the service
+titles, the descriptions, and the images at rest, and the dark panel keeps a
+flat backdrop without the lead.
 
 ### Header motion
 
