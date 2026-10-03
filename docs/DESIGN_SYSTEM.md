@@ -902,10 +902,10 @@ ratio, so it is never cropped to fit the viewport.
 
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
-grows. While motion is enabled, the panel adds one viewport height of runway
-below its content through `--service-runway`, and the title, the description,
-and the image frame slide down together through that runway as the panel
-crosses the viewport. The shared offset is applied to each child of
+grows. While motion is enabled, the panel adds runway below its content
+through `--service-runway`: one viewport height for the slowed travel plus the
+image hold described below. The title, the description, and the image frame
+slide down together through that runway as the panel crosses the viewport. The shared offset is applied to each child of
 `data-service-content` rather than to the block itself, because a transform on
 the block would make it an isolated group and stop its text from blending with
 the dark backdrop. At 1440 by
@@ -917,8 +917,9 @@ Because the content moves, its own elements cannot serve as ScrollTrigger
 triggers. Every text and image trigger is therefore a scroll position computed
 from untransformed layout: `scrollWhen` takes an element's offset inside the
 panel and a viewport line, and returns the scroll position at which that
-element reaches that line once the slowed travel is accounted for. The panel
-itself is never transformed, so it stays a reliable reference.
+element reaches that line once the slowed travel and the image hold are
+accounted for. The panel itself is never transformed, so it stays a reliable
+reference.
 
 The service titles do not animate. Each is a plain `h3` that is visible in
 the server output and at rest from the start, so the panel always names its
@@ -946,17 +947,24 @@ started revealing, the new lines are shown at rest. Otherwise the panel's text
 timeline is killed and rebuilt with the new lines inside the same GSAP media
 context, so it is still reverted with the rest of the section.
 
-The image is scrubbed with the scroll in one continuous motion with no rest at
-full size. It scales up from zero around its bottom center from the moment it
-enters the viewport until it is centered in the viewport, easing out with
-`sine.out` to a peak of `0.8`, while the picture inside eases from `1.3`
-scale to rest. The title and description stay visible for most of that growth.
-From the same point it eases back down to zero around its top center with
-`sine.in`, finishing as the image leaves the top. Both eases are slow at the
-peak, so the turn from growing to shrinking is smooth. The image never reaches
-its full layout size. Entry and exit live on two nested elements, the link for
-the bottom origin entry and its wrapper for the top origin exit, so the
-transform origins never fight.
+The image is scrubbed with the scroll in three phases, so a future video gets
+time on screen. It scales up from zero around its bottom center from the moment
+it enters the viewport until it is centered in the viewport, easing out with
+`sine.out` to `0.75`, set through `mediaHoldScale`. It then holds for two
+viewport heights of scroll, set through `mediaHoldLength`. During the hold the
+content travels with the scroll, so the image stays near the viewport center
+and only drifts up by `0.1` of the scrolled distance, set through
+`mediaHoldDrift`. Across the first half of the hold the image keeps growing
+slowly and linearly to its peak of `0.8`, while the picture inside finishes
+easing from `1.3` scale to rest. Across the second half it shrinks just as
+slowly back to `0.75` around its top center. When the hold ends the content
+returns to its slowed travel, and the image drops quickly to zero with
+`sine.in`, finishing as it leaves the top over the same scroll distance as
+before the hold existed. The two halves of the hold use custom eases built from
+the trigger's measured span, because the hold length depends on the viewport.
+The image never reaches its full layout size. Entry and exit live on two nested
+elements, the link for the bottom origin entry and its wrapper for the top
+origin exit, so the transform origins never fight.
 
 Each image is a `NuxtLink` to the `/services` route, named for its service
 through `aria-label`. Hovering it opens the services section's TrailingTooltip
@@ -1009,10 +1017,10 @@ of the viewport, set through `backdropExitLift`. The dark bottom edge bows
 downward into an arc while the dark area slowly retreats upward. The curve's
 tip therefore ends `0.15` of a viewport above the panel's bottom edge and never
 reaches the journey section. The landing wrapper's horizontal clip hides the
-curve where it runs past the viewport. The timeline starts at the image's peak,
-the shared `mediaPeakOf` position where the image stops growing and starts to
-scale down, so the curve and the image exit begin together. It ends when the
-panel's bottom edge reaches the viewport top.
+curve where it runs past the viewport. The timeline starts at the end of the
+image hold, the shared `holdPoint` position where the image begins its quick
+exit, so the curve and the quick exit begin together. It ends when the panel's
+bottom edge reaches the viewport top.
 
 Reduced motion drops the intro pin, every reveal, the image scale, and the
 backdrop rise, curve, and lift. It displays the intro title words, the

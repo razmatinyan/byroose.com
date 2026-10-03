@@ -172,7 +172,8 @@ useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the slowed travel of
 the children of its `data-service-content` block, the description line rise
 anchored to the static service title, and the scrubbed bottom origin image entry
-and top origin image exit. It also owns the scrubbed rise of a dark panel's
+and top origin image exit with the scroll hold between them that keeps the image
+near the viewport center. It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved,
 lifting exit as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
