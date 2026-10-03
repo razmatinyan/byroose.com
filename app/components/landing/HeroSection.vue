@@ -216,6 +216,11 @@ function handleDescriptionSplit(parts: SplitTextResult) {
 	padding-block: 0.22em;
 }
 
+.hero-description :deep(.split-text-line-mask) {
+	margin-bottom: -0.2em;
+	padding-bottom: 0.2em;
+}
+
 .hero-action-inner {
 	@apply block;
 	will-change: transform;
