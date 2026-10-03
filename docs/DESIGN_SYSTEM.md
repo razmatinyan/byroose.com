@@ -254,6 +254,12 @@ overlay is the elevation exception to the borders before shadows rule. On phones
 it spans the viewport inset. From `sm` it settles into a compact panel in the
 corner.
 
+The notice sits at `z-70`, above the featured hero card's `50` scroll
+transition layer, the `z-50` menu panel and trailing tooltip, and the `z-60`
+header, and below the `z-80` overlay scrollbar. The home intro's `70` media
+grid never meets it, because the layout withholds the notice until the intro
+completes.
+
 The notice has two bands. The explanation sits on top in foreground text with
 `leading-snug`, and a `border-border` divider separates it from an action row
 aligned to the end. It has no visible title. The panel and both actions use

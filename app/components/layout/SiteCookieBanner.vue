@@ -62,7 +62,7 @@ function answerCookies(answer: CookieConsent) {
 @reference '../../assets/css/tailwind.css';
 
 .cookie-banner {
-	@apply fixed right-4 bottom-4 left-4 z-40 rounded-xs border border-border shadow-xl sm:right-auto sm:max-w-sm;
+	@apply fixed right-4 bottom-4 left-4 z-70 rounded-xs border border-border shadow-xl sm:right-auto sm:max-w-sm;
 }
 
 .cookie-banner-copy {
