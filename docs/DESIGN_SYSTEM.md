@@ -87,7 +87,9 @@ semantic palette over many near-duplicate colors.
 Geist is the primary font and loads through Nuxt Fonts. Do not add font link tags
 or component-level font imports.
 
-- `text-hero` is reserved for the primary landing statement.
+- `text-hero` is reserved for the primary landing statement. It sets
+  `clamp(2.875rem, 8.8vw, 9.5rem)`, about 127px at 1440 wide. See Home hero
+  layout for how the hero title uses it.
 - `text-section` is the default major section heading.
 - `text-statement` supports large editorial body statements.
 - `text-service` sets the service panel titles at
@@ -505,6 +507,37 @@ motion target through VueUse's `unrefElement` and confirm the result is an
 `HTMLElement` before animating it, so a plain element can become a component
 later without breaking the animation.
 
+### Home hero layout
+
+The hero leads with the problem, the solution, and the action. From `lg` the
+intro is a two-column grid. The description and the dark `cta-lg` action sit in
+the flexible left column, and the title sits in an auto-width right column. The
+column gap is `3rem` at `lg` and `4rem` from `xl`. Below `lg` the title stacks
+above the copy, which is capped at `max-w-md`.
+
+The title is bold with `-0.05em` tracking and `0.82` leading. It is capped at
+`7.4em` wide, so it always wraps into the same four near-equal lines. From `lg`
+its size is `text-hero`. Below `lg` it scales to the content width divided by
+`7.6`, so a phone still shows four lines. Each line mask carries `0.22em` of
+block padding, so ascenders and descenders are not clipped at the tight
+leading. A negative bottom margin of twice that amount cancels the padding.
+Only the bottom margin is negative, because adjacent negative block margins
+collapse, and the title shifts up by the same `0.22em`. Do not make the title a
+flex or grid container. SplitText measures lines with the words as direct
+children, and those would each become an item on their own row.
+
+The description is semibold with `-0.04em` tracking and tight leading, at
+`text-xl` up to `xl` and `text-2xl` from there. From `lg` it is capped at
+`11.8em`, where ordinary wrapping gives seven lines of nearly equal width.
+Because the tracking is in `em`, the same wrap holds at both sizes. The column
+gaps keep the copy column wider than that cap down to 1024 wide. Chrome's
+balanced wrapping does not even out these lines, so recheck the cap whenever the
+description copy changes.
+
+The hero is at least one viewport tall, minus the header, plus half a card
+height, minus the `40px` dock offset. The media row therefore rests about half
+visible at the bottom of the first screen, and the copy sits at the top.
+
 ### Home intro motion
 
 The home route owns a two-stage hero entrance through `useHomeIntroMotion`. The
@@ -527,9 +560,10 @@ all be anchored to that same label so the stage reads as one movement.
 
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
-The expansion reveals the site header `0.4s` after the label and starts the hero
-title line sequence `0.5s` after it. Reduced motion must resolve directly to this
-complete state with scrolling available.
+The expansion reveals the site header `0.1s` after the label. The hero title
+lines, the description lines, and the call to action start rising at that same
+moment. Reduced motion must resolve directly to this complete state with
+scrolling available.
 
 The preloader has no curtain. Because both scrolling systems are pinned to the
 document top, the only thing behind the centered stack is the hero section with
@@ -541,8 +575,13 @@ Render animated titles through the shared `SplitText` component. Its server
 output must remain the complete text node for indexing and assistive technology.
 After mount, the component may split into words, lines, or characters and pass
 those elements to the consuming animation. The home title animates its generated
-visual lines in order. Each fully opaque line rises from 115% below its own
-clipping mask over `0.8s` with `power3.out` easing and a `0.1s` stagger.
+visual lines in order. Each fully opaque line rises from 150% below its own
+clipping mask over `0.8s` with `power3.out` easing and a `0.1s` stagger. The
+start is deeper than the usual 115% because the padded title masks would
+otherwise show the tops of the waiting glyphs. The description lines and then the
+call to action follow the same rise from 115% with a `0.06s` stagger. The action
+rises inside a wrapper that clips it only during the intro, so the hover bounce
+and focus ring are not cut off afterwards.
 
 ### Home hero scroll transition
 

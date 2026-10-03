@@ -15,11 +15,20 @@ import WorkSection from "./WorkSection.vue";
 
 const landingRoot = useTemplateRef<HTMLElement>("landingRoot");
 const titleSplit = shallowRef<SplitTextResult>();
-const { introState } = useHomeIntroMotion(landingRoot, titleSplit);
+const descriptionSplit = shallowRef<SplitTextResult>();
+const { introState } = useHomeIntroMotion(
+	landingRoot,
+	titleSplit,
+	descriptionSplit,
+);
 useHomeHeroScrollMotion(landingRoot, introState);
 
 function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts;
+}
+
+function setDescriptionSplit(parts: SplitTextResult) {
+	descriptionSplit.value = parts;
 }
 </script>
 
@@ -29,7 +38,10 @@ function setTitleSplit(parts: SplitTextResult) {
 		class="landing-page"
 		:data-home-intro-state="introState"
 	>
-		<HeroSection @title-split="setTitleSplit" />
+		<HeroSection
+			@title-split="setTitleSplit"
+			@description-split="setDescriptionSplit"
+		/>
 		<div
 			data-home-hero-scroll-space
 			class="home-hero-scroll-space"
@@ -62,6 +74,8 @@ function setTitleSplit(parts: SplitTextResult) {
 .landing-page:not([data-home-intro-state="complete"])
 	:deep([data-home-intro-title]),
 .landing-page:not([data-home-intro-state="complete"])
+	:deep([data-home-intro-copy]),
+.landing-page:not([data-home-intro-state="complete"])
 	:deep([data-home-intro-card]) {
 	visibility: hidden;
 }
@@ -77,6 +91,8 @@ function setTitleSplit(parts: SplitTextResult) {
 
 	.landing-page:not([data-home-intro-state="complete"])
 		:deep([data-home-intro-title]),
+	.landing-page:not([data-home-intro-state="complete"])
+		:deep([data-home-intro-copy]),
 	.landing-page:not([data-home-intro-state="complete"])
 		:deep([data-home-intro-card]) {
 		visibility: inherit;

@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { NuxtLink } from "#components";
 import SplitText from "@/components/shared/SplitText.vue";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const emit = defineEmits<{
+	descriptionSplit: [parts: SplitTextResult];
 	titleSplit: [parts: SplitTextResult];
 }>();
 
-const heroTitle = "Make noise. Make sense. Make money.";
+const heroTitle =
+	"Scrolled past? Make AI content that turns views into new clients.";
+const heroDescription =
+	"Most brands post more and get noticed less. We pair AI content creation with web development, so your visuals get seen and your website turns that attention into enquiries.";
+const heroActionLabel = "Start a project";
 
 const heroImages = [
 	{
@@ -84,6 +91,10 @@ const heroImages = [
 function handleTitleSplit(parts: SplitTextResult) {
 	emit("titleSplit", parts);
 }
+
+function handleDescriptionSplit(parts: SplitTextResult) {
+	emit("descriptionSplit", parts);
+}
 </script>
 
 <template>
@@ -98,6 +109,34 @@ function handleTitleSplit(parts: SplitTextResult) {
 				type="lines"
 				@split="handleTitleSplit"
 			/>
+
+			<div class="hero-copy">
+				<SplitText
+					class="hero-description"
+					data-home-intro-copy
+					as="p"
+					mask="lines"
+					:text="heroDescription"
+					type="lines"
+					@split="handleDescriptionSplit"
+				/>
+
+				<div data-home-intro-copy data-home-intro-action-mask>
+					<span data-home-intro-action class="hero-action-inner">
+						<Button
+							:as="NuxtLink"
+							to="/contact"
+							variant="dark"
+							size="cta-lg"
+						>
+							{{ heroActionLabel }}
+							<template #icon>
+								<ButtonIcon />
+							</template>
+						</Button>
+					</span>
+				</div>
+			</div>
 		</div>
 
 		<div data-home-intro-media-grid class="hero-media-grid">
@@ -134,27 +173,51 @@ function handleTitleSplit(parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .hero {
+	--hero-card-height: calc(
+		(100vw - 2 * var(--spacing-page) - 0.5rem) / 2 * 0.75
+	);
 	@apply relative grid w-full grid-rows-[minmax(0,1fr)_auto] pt-4 pb-4 sm:pt-6 sm:pb-6;
-	min-height: calc(100svh - 5rem);
+	min-height: calc(100svh - 5rem + var(--hero-card-height) / 2 - 2.5rem);
 }
 
 .hero-intro {
-	@apply flex min-h-0 items-center justify-center py-10 sm:py-14;
+	@apply grid min-h-0 content-start gap-8 pt-6 pb-10 sm:pt-8 sm:pb-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-12 lg:pt-10 xl:gap-x-16;
 }
 
 .hero-title {
-	@apply m-0 w-full text-center font-bold tracking-[-0.045em];
-	font-size: clamp(1.75rem, 6.8vw, 7.25rem);
-	line-height: 0.99;
-	max-width: min(100%, 13.5em);
+	@apply m-0 leading-[0.82] font-bold tracking-[-0.05em] lg:col-start-2 lg:row-start-1;
+	font-size: calc((100vw - 2 * var(--spacing-page)) / 7.6);
+	margin-top: -0.22em;
+	max-width: 7.4em;
+}
+
+.hero-copy {
+	@apply flex max-w-md flex-col items-start gap-6 lg:col-start-1 lg:row-start-1 lg:max-w-none lg:pt-3;
+}
+
+.hero-description {
+	@apply m-0 text-xl leading-tight font-semibold tracking-[-0.04em] text-balance text-foreground xl:text-2xl;
 }
 
 .hero-title :deep(.split-text-line),
-.hero-title :deep(.split-text-line-mask) {
+.hero-title :deep(.split-text-line-mask),
+.hero-description :deep(.split-text-line),
+.hero-description :deep(.split-text-line-mask) {
 	display: block;
 }
 
-.hero-title :deep(.split-text-line) {
+.hero-title :deep(.split-text-line),
+.hero-description :deep(.split-text-line) {
+	will-change: transform;
+}
+
+.hero-title :deep(.split-text-line-mask) {
+	margin-bottom: -0.44em;
+	padding-block: 0.22em;
+}
+
+.hero-action-inner {
+	@apply block;
 	will-change: transform;
 }
 
@@ -189,6 +252,23 @@ function handleTitleSplit(parts: SplitTextResult) {
 
 .hero-media-card[data-home-intro-card-rotation="2.5"] {
 	--hero-card-rotation: 2.5deg;
+}
+
+@media (min-width: 64rem) {
+	.hero-title {
+		font-size: var(--text-hero);
+	}
+
+	.hero-description {
+		@apply text-wrap;
+		max-width: 11.8em;
+	}
+
+	.hero {
+		--hero-card-height: calc(
+			(100vw - 2 * var(--spacing-page) - 2.25rem) / 4 * 0.75
+		);
+	}
 }
 
 .hero-media-image {

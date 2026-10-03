@@ -69,7 +69,7 @@
    --spacing-page: clamp(1.25rem, 4vw, 3.5rem);
    --spacing-section: clamp(6rem, 10vw, 11rem);
 
-   --text-hero: clamp(2.875rem, 8vw, 7.25rem);
+   --text-hero: clamp(2.875rem, 8.8vw, 9.5rem);
    --text-hero--line-height: 0.9;
    --text-section: clamp(2.375rem, 6vw, 5.25rem);
    --text-section--line-height: 0.92;

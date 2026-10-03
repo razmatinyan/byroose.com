@@ -12,7 +12,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 
 export type HomeIntroState = "complete" | "pending" | "playing";
 type IntroScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
-type TitleSplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
+type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
 interface CardPlacement {
 	startX: number;
@@ -30,7 +30,10 @@ interface NativeScrollStyles {
 const DOCK_OFFSET_Y = 40;
 
 const selectors = {
+	action: "[data-home-intro-action]",
+	actionMask: "[data-home-intro-action-mask]",
 	card: "[data-home-intro-card]",
+	copy: "[data-home-intro-copy]",
 	removedCard: "[data-home-intro-card-remove]",
 	header: "[data-home-intro-header]",
 	mediaGrid: "[data-home-intro-media-grid]",
@@ -45,7 +48,7 @@ export function useHomeIntroState() {
 	);
 }
 
-function waitForTitleSplit(source: TitleSplitSource) {
+function waitForSplit(source: SplitSource) {
 	const current = toValue(source);
 	if (current !== undefined) return Promise.resolve(current);
 
@@ -100,7 +103,8 @@ function getStackPlacements(
 
 export function useHomeIntroMotion(
 	scope: IntroScope,
-	titleSplitSource: TitleSplitSource,
+	titleSplitSource: SplitSource,
+	descriptionSplitSource: SplitSource,
 ) {
 	const introState = useHomeIntroState();
 	introState.value = "pending";
@@ -197,8 +201,9 @@ export function useHomeIntroMotion(
 		});
 
 		await nextTick();
-		const [titleSplit] = await Promise.all([
-			waitForTitleSplit(titleSplitSource),
+		const [titleSplit, descriptionSplit] = await Promise.all([
+			waitForSplit(titleSplitSource),
+			waitForSplit(descriptionSplitSource),
 			document.fonts.ready,
 			Promise.all(imageElements.map(waitForImage)),
 		]);
@@ -219,10 +224,21 @@ export function useHomeIntroMotion(
 				);
 				const title = root.querySelector<HTMLElement>(selectors.title);
 				const titleLines = titleSplit?.lines ?? [];
+				const descriptionLines = descriptionSplit?.lines ?? [];
+				const copyElements = Array.from(
+					root.querySelectorAll<HTMLElement>(selectors.copy),
+				);
+				const actionMask = root.querySelector<HTMLElement>(
+					selectors.actionMask,
+				);
+				const action = root.querySelector<HTMLElement>(selectors.action);
 				const animatedElements = [
 					...(header ? [header] : []),
 					...(title ? [title] : []),
 					...titleLines,
+					...copyElements,
+					...descriptionLines,
+					...(action ? [action] : []),
 					...images,
 					...(mediaGrid ? [mediaGrid] : []),
 				];
@@ -243,7 +259,10 @@ export function useHomeIntroMotion(
 					!title ||
 					!firstImage ||
 					!finalImages.length ||
-					!titleLines.length
+					!titleLines.length ||
+					!descriptionLines.length ||
+					!actionMask ||
+					!action
 				) {
 					completeImmediately(
 						animatedElements,
@@ -273,10 +292,10 @@ export function useHomeIntroMotion(
 					pointerEvents: "none",
 					y: -24,
 				});
-				gsap.set(titleLines, {
-					yPercent: 115,
-				});
-				gsap.set(title, { visibility: "inherit" });
+				gsap.set(titleLines, { yPercent: 150 });
+				gsap.set([...descriptionLines, action], { yPercent: 115 });
+				gsap.set(actionMask, { clipPath: "inset(0)" });
+				gsap.set([title, ...copyElements], { visibility: "inherit" });
 				gsap.set(mediaGrid, { zIndex: 70 });
 				images.forEach((image, index) => {
 					const placement = placements[index];
@@ -343,6 +362,16 @@ export function useHomeIntroMotion(
 						duration: 0.8,
 						ease: "power3.out",
 						stagger: 0.1,
+						yPercent: 0,
+					},
+					"expand+=0.1",
+				);
+				tl.to(
+					[...descriptionLines, action],
+					{
+						duration: 0.8,
+						ease: "power3.out",
+						stagger: 0.06,
 						yPercent: 0,
 					},
 					"expand+=0.1",

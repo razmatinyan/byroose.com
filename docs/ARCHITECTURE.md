@@ -130,7 +130,7 @@ Use a composable when logic:
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
-useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
