@@ -512,12 +512,13 @@ later without breaking the animation.
 The hero leads with the problem, the solution, and the action. From `lg` the
 intro is a two-column grid. The description and the dark `cta-lg` action sit in
 the flexible left column, and the title sits in an auto-width right column. The
-column gap is `3rem` at `lg` and `4rem` from `xl`. Below `lg` the title stacks
-above the copy, which is capped at `max-w-md`.
+column gap is `3rem`. Below `lg` the title stacks above the copy, which is
+capped at `max-w-md`.
 
-The title is bold with `-0.05em` tracking and `0.82` leading. It is capped at
-`7.4em` wide, so it always wraps into the same four near-equal lines. From `lg`
-its size is `text-hero`. Below `lg` it scales to the content width divided by
+The title is bold with `-0.05em` tracking and `0.82` leading. Its longest line
+measures about `7.2em`. The title is capped at `7.4em` below `lg` and `7.25em`
+from `lg`, so it always wraps into the same four near-equal lines while leaving
+the copy column as much width as possible. From `lg` its size is `text-hero`. Below `lg` it scales to the content width divided by
 `7.6`, so a phone still shows four lines. Each line mask carries `0.22em` of
 block padding, so ascenders and descenders are not clipped at the tight
 leading. A negative bottom margin of twice that amount cancels the padding.
@@ -527,11 +528,14 @@ flex or grid container. SplitText measures lines with the words as direct
 children, and those would each become an item on their own row.
 
 The description is semibold with `-0.04em` tracking and tight leading, at
-`text-xl` up to `xl` and `text-2xl` from there. From `lg` it is capped at
-`11.8em`, where ordinary wrapping gives seven lines of nearly equal width.
-Because the tracking is in `em`, the same wrap holds at both sizes. The column
-gaps keep the copy column wider than that cap down to 1024 wide. Chrome's
-balanced wrapping does not even out these lines, so recheck the cap whenever the
+`text-xl` below `lg`. From `lg` it scales with the viewport at
+`clamp(1.0625rem, 1.7vw, 1.75rem)`, about 24px at 1440 wide. It is capped at
+`13.4em`, where ordinary wrapping gives six lines of nearly equal width. The
+same wrap holds from about `13em` to `13.75em`, so the cap sits in the middle of
+that range. The font and the title both scale with the viewport, and the
+tracking is in `em`, so the wrap is identical at every desktop width and the
+copy column stays wider than the cap down to 1024 wide. Chrome's balanced
+wrapping does not even out these lines, so recheck the cap whenever the
 description copy changes.
 
 The hero is at least one viewport tall, minus the header, plus half a card

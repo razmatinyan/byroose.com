@@ -12,7 +12,7 @@ const emit = defineEmits<{
 const heroTitle =
 	"Scrolled past? Make AI content that turns views into new clients.";
 const heroDescription =
-	"Most brands post more and get noticed less. We pair AI content creation with web development, so your visuals get seen and your website turns that attention into enquiries.";
+	"Most brands post more and get noticed less. We pair AI content creation with web development, so your visuals get seen and your site turns that attention into enquiries.";
 const heroActionLabel = "Start a project";
 
 const heroImages = [
@@ -181,7 +181,7 @@ function handleDescriptionSplit(parts: SplitTextResult) {
 }
 
 .hero-intro {
-	@apply grid min-h-0 content-start gap-8 pt-6 pb-10 sm:pt-8 sm:pb-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-12 lg:pt-10 xl:gap-x-16;
+	@apply grid min-h-0 content-start gap-8 pt-6 pb-10 sm:pt-8 sm:pb-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-12 lg:pt-10;
 }
 
 .hero-title {
@@ -196,7 +196,7 @@ function handleDescriptionSplit(parts: SplitTextResult) {
 }
 
 .hero-description {
-	@apply m-0 text-xl leading-tight font-semibold tracking-[-0.04em] text-balance text-foreground xl:text-2xl;
+	@apply m-0 text-xl leading-tight font-semibold tracking-[-0.04em] text-balance text-foreground;
 }
 
 .hero-title :deep(.split-text-line),
@@ -257,11 +257,13 @@ function handleDescriptionSplit(parts: SplitTextResult) {
 @media (min-width: 64rem) {
 	.hero-title {
 		font-size: var(--text-hero);
+		max-width: 7.25em;
 	}
 
 	.hero-description {
 		@apply text-wrap;
-		max-width: 11.8em;
+		font-size: clamp(1.0625rem, 1.7vw, 1.75rem);
+		max-width: 13.4em;
 	}
 
 	.hero {
