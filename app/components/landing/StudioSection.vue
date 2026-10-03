@@ -117,6 +117,11 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 	visibility: hidden;
 }
 
+.studio-copy-paragraph :deep(.split-text-word-mask) {
+	margin-block: -0.12em;
+	padding-block: 0.12em;
+}
+
 .studio-grid {
 	@apply mt-12 flex flex-wrap items-center gap-8 md:mt-16 md:gap-12 xl:mt-20 xl:gap-18;
 }
@@ -138,6 +143,6 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 }
 
 .studio-copy-paragraph {
-	@apply m-0 max-w-[46ch] text-justify text-xl leading-tight tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
+	@apply m-0 max-w-[46ch] text-justify text-xl leading-[1.05] tracking-tight font-bold first:mb-8 text-foreground md:text-2xl xl:text-4xl;
 }
 </style>

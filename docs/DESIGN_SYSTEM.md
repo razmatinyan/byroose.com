@@ -566,6 +566,11 @@ same edge, while a short final line stays start-aligned. Justification still
 applies after splitting because each masked word is an inline block and the
 split keeps the spaces between words, which the browser stretches.
 
+The copy paragraphs share the service description's `1.05` leading. That is
+tighter than the glyphs, so each Studio copy word mask carries `0.12em` of
+block padding cancelled by an equal negative block margin, which keeps
+descenders inside the clip without moving the lines.
+
 Negative tracking ends a word's box slightly before the right edge of its last
 glyph, so a word mask would clip that edge, as it did to the b in "Web". Every
 `.split-text-word-mask` therefore carries `0.1em` of inline padding cancelled
