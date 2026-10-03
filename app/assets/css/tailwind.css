@@ -188,7 +188,16 @@
 
 	body::before {
 		content: "";
-		@apply pointer-events-none fixed inset-0 -z-10 canvas-grain;
+		@apply pointer-events-none fixed -inset-1/2 z-999 select-none canvas-grain;
+		animation: canvas-grain-shift 1s steps(10) infinite;
+		animation-play-state: paused;
+		will-change: transform;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		body::before {
+			animation: none;
+		}
 	}
 
 	.dark body::before {
@@ -270,8 +279,51 @@
 	}
 }
 
+@keyframes canvas-grain-shift {
+	0%,
+	100% {
+		transform: translate(0, 0);
+	}
+
+	10% {
+		transform: translate(-5%, -10%);
+	}
+
+	20% {
+		transform: translate(-15%, 5%);
+	}
+
+	30% {
+		transform: translate(7%, -20%);
+	}
+
+	40% {
+		transform: translate(-5%, 20%);
+	}
+
+	50% {
+		transform: translate(-15%, 10%);
+	}
+
+	60% {
+		transform: translate(15%, 0);
+	}
+
+	70% {
+		transform: translate(0, 15%);
+	}
+
+	80% {
+		transform: translate(3%, -15%);
+	}
+
+	90% {
+		transform: translate(-10%, 10%);
+	}
+}
+
 @utility canvas-grain {
-	@apply opacity-35;
+	@apply opacity-90;
 	background-image: url("/images/noise.webp");
 	mix-blend-mode: multiply;
 }

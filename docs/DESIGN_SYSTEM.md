@@ -135,12 +135,28 @@ communicates layering, such as an open mobile menu or floating overlay.
 
 ## Canvas grain
 
-The page canvas carries a fine grain texture so large flat areas read as printed
-paper rather than flat screen color. The texture is `public/images/noise.webp`,
-a 256px neutral noise tile stored losslessly. A fixed `body::before` layer in the
-global base layer tiles it across the viewport at its natural size, sits at
-`-z-10` behind every page element, and is `pointer-events-none`. Because the
-layer is fixed and never repaints, the grain stays still while the page scrolls.
+The whole page carries a fine, moving grain so flat areas read as printed film
+rather than flat screen color. The texture is `public/images/noise.webp`, a
+256px neutral noise tile stored losslessly. A fixed `body::before` layer in the
+global base layer tiles it at its natural size and sits at `z-999`, above every
+page element, including the header, overlays, the cookie notice, the trailing
+tooltip, and the scrollbar. It is `pointer-events-none` and `select-none`, so it
+never intercepts a click, a hover, or a text selection.
+
+The grain is built to keep moving. The layer is twice the viewport in each direction
+through `-inset-1/2`, and the `canvas-grain-shift` keyframes jump it between ten
+offsets each second with `steps(10)`, so the grain flickers like film rather than
+sliding. Every offset stays within twenty percent of the layer, which is forty
+percent of the viewport and inside the half viewport of overhang on each side,
+so the viewport is always covered. The
+motion is transform only and the layer carries `will-change: transform`, so the
+compositor moves it without repainting the page. Reduced motion stops the
+animation and leaves a still grain.
+
+The animation is temporarily paused through `animation-play-state: paused` on
+`body::before`, so the grain currently holds still at its first offset for
+everyone. The keyframes and the rest of the setup stay in place. Remove that one
+declaration to turn the movement back on.
 
 The tile must stay lossless. A lossy codec cannot encode random noise, so it
 substitutes a field with the right per-pixel statistics but roughly double the
@@ -150,21 +166,20 @@ paying for it. Tile dimensions only set the repeat period. One image pixel is
 always one CSS pixel, so resizing the asset never changes how coarse the grain
 looks.
 
-The texture, its opacity, and its light blend live in the `canvas-grain` utility,
-which both the body layer and the More works circle apply, so one value still
-tunes every grain surface. The dark override cannot nest inside that utility,
-because Tailwind cannot attach a `.dark` ancestor to an applied pseudo-element.
-Each consumer therefore repeats the two dark declarations next to its own
-selector. One opacity value tunes the whole effect. The light theme multiplies the light
-tile into the cream canvas, which keeps the warm hue and costs roughly three
-percent lightness. The dark theme inverts the same asset and screens it, so a
-near-black canvas gains a matching three percent instead of losing it. Keep both
-blend modes paired when the opacity changes.
+The texture, its opacity, and its light blend live in the `canvas-grain` utility.
+The body layer is its only consumer, and one opacity value tunes the whole
+effect, currently `opacity-90`. The dark override sits next to the `body::before` selector, because
+Tailwind cannot attach a `.dark` ancestor to an applied pseudo-element. The
+light theme multiplies the light tile into everything beneath it, which keeps
+warm hues. At the earlier 35 percent it cost roughly three percent lightness,
+so at 90 percent expect roughly eight. The dark theme inverts the same asset
+and screens it, so a near-black surface gains a matching amount instead of
+losing it. Keep both blend modes paired when the opacity
+changes.
 
-The layer sits behind page content, so any element painted with `bg-background`
-hides the grain beneath it. Surfaces that only repeat the canvas color must stay
-transparent and let the body background show through. The landing wrapper and the
-brand grid cells follow that rule.
+Because the layer sits above the page and blends into it, every surface,
+image, and control is grained by the same layer, and no component needs its own
+grain. A surface painted with `bg-background` no longer hides the texture.
 
 The tile is referenced directly from CSS with a root-relative URL because it is a
 repeating decorative texture rather than a content image, so it does not pass
@@ -742,9 +757,9 @@ The work section ends with four case studies and a full-width dark panel,
 height, and stacks a centered title stage above one large circular action.
 
 The action is a `NuxtLink` named "Explore Projects" through `aria-label`. It is a
-circle of `clamp(9rem, 15vw, 15rem)` in the canvas `background` color, carrying
-the same grain as the page through the `canvas-grain` utility, so it reads as a
-piece of the canvas pushed up into the dark panel. A negative bottom margin of
+circle of `clamp(9rem, 15vw, 15rem)` in the canvas `background` color. The
+page's grain overlay textures it like the canvas, so it reads as a piece of the
+canvas pushed up into the dark panel. A negative bottom margin of
 half its size sits its center on the panel's bottom edge. The panel clips its
 own overflow, so only the top half shows. The arrow up right glyph sits in that
 visible half, a quarter of the way down the circle.

@@ -255,16 +255,6 @@ function openWorks(event: MouseEvent) {
 	@apply relative block size-full overflow-hidden rounded-full bg-background text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
 }
 
-.more-works-action-link::before {
-	content: "";
-	@apply pointer-events-none absolute inset-0 canvas-grain;
-}
-
-:global(.dark) .more-works-action-link::before {
-	filter: invert(1);
-	mix-blend-mode: screen;
-}
-
 .more-works-action-icon {
 	@apply absolute top-1/4 left-1/2 grid size-[28%] -translate-1/2;
 }
