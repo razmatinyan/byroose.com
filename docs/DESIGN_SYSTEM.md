@@ -124,7 +124,8 @@ measure, not to force a fixed desktop canvas.
 ## Radius and surface hierarchy
 
 The base radius is `1rem`. Cards may use larger radius tokens to create editorial
-softness. Controls use `radius-action`.
+softness. Controls use `radius-action`, which maps to `radius-sm` so every CTA
+shares the compact control radius.
 
 Action icon wrappers use `radius-action-icon`, calculated from the outer action
 radius minus the shared inset. This keeps the outer and inner curves concentric.
