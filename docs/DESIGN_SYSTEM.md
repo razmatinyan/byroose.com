@@ -84,8 +84,18 @@ semantic palette over many near-duplicate colors.
 
 ## Typography
 
-Geist is the primary font and loads through Nuxt Fonts. Do not add font link tags
-or component-level font imports.
+Switzer is the primary font. Nuxt Fonts loads it from the Fontshare provider in
+weights 400 to 800, then downloads and self-hosts the files, so the site never
+requests fonts from a third party at runtime. Do not add font link tags or
+component-level font imports.
+
+Switzer's descenders reach `0.24em` below the baseline and its ascenders `0.74em`
+above it. Text set tighter than about `1.2` leading therefore overflows its line
+box, and a word or line mask needs roughly `(1.21 - leading) / 2` em of bottom
+padding, cancelled by an equal negative margin, to keep descenders visible. Keep
+that padding below the reveal's starting offset so a waiting word does not peek
+through the extra space. Recheck every mask and every measured wrap when the font
+changes.
 
 - `text-hero` is reserved for the primary landing statement. It sets
   `clamp(2.875rem, 8.8vw, 9.5rem)`, about 127px at 1440 wide. See Home hero
@@ -516,7 +526,7 @@ column gap is `3rem`. Below `lg` the title stacks above the copy, which is
 capped at `max-w-md`.
 
 The title is bold with `-0.05em` tracking and `0.82` leading. Its longest line
-measures about `7.2em`. The title is capped at `7.4em` below `lg` and `7.25em`
+measures about `6.8em`. The title is capped at `7.4em` below `lg` and `7.25em`
 from `lg`, so it always wraps into the same four near-equal lines while leaving
 the copy column as much width as possible. From `lg` its size is `text-hero`. Below `lg` it scales to the content width divided by
 `7.6`, so a phone still shows four lines. Each line mask carries `0.22em` of
@@ -530,8 +540,8 @@ children, and those would each become an item on their own row.
 The description is semibold with `-0.04em` tracking and tight leading, at
 `text-xl` below `lg`. From `lg` it scales with the viewport at
 `clamp(1.0625rem, 1.7vw, 1.75rem)`, about 24px at 1440 wide. It is capped at
-`13.4em`, where ordinary wrapping gives six lines of nearly equal width. The
-same wrap holds from about `13em` to `13.75em`, so the cap sits in the middle of
+`12.7em`, where ordinary wrapping gives six lines of nearly equal width. The
+same wrap holds from about `12.25em` to `13.1em`, so the cap sits in the middle of
 that range. The font and the title both scale with the viewport, and the
 tracking is in `em`, so the wrap is identical at every desktop width and the
 copy column stays wider than the cap down to 1024 wide. Chrome's balanced
@@ -635,9 +645,10 @@ applies after splitting because each masked word is an inline block and the
 split keeps the spaces between words, which the browser stretches.
 
 The copy paragraphs use `1.05` leading. That is
-tighter than the glyphs, so each Studio copy word mask carries `0.12em` of
+tighter than the glyphs, so each Studio copy word mask carries `0.16em` of
 block padding cancelled by an equal negative block margin, which keeps
-descenders inside the clip without moving the lines.
+descenders inside the clip without moving the lines. The statement's word masks
+carry `0.12em` the same way for its `1.06` leading.
 
 Negative tracking ends a word's box slightly before the right edge of its last
 glyph, so a word mask would clip that edge, as it did to the b in "Web". Every
@@ -943,9 +954,11 @@ sets at `text-2xl`, `text-4xl` from `md`, and `text-6xl` from `xl`, in the
 default `foreground` color at weight 600 with `0.9` leading and `-0.04em`
 tracking. It sits further below the title than the panel's default gap, with a
 top margin of `1rem`, `2rem` from `md`, and `3rem` from `xl`. That leading is
-tighter than the glyphs, so each line mask carries `0.12em` of block padding
-cancelled by an equal negative block margin, which keeps descenders inside the
-clip without moving the lines. On phones it
+tighter than the glyphs, so each line mask carries `0.12em` of top and `0.18em`
+of bottom padding, each cancelled by an equal negative margin, which keeps
+descenders inside the clip without moving the lines. Adjacent block masks
+collapse their negative margins into the larger one, so the line pitch stays at
+`1.02em`. On phones it
 spans the full column. From `md` it takes the right two thirds of the content
 width and ends exactly on the right content edge, so it reads as an editorial
 column from just left of center to the right side. Its text is left-aligned,

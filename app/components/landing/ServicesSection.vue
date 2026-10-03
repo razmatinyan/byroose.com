@@ -241,8 +241,8 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-description :deep(.split-text-line-mask) {
-   margin-block: -0.12em;
-   padding-block: 0.12em;
+   margin-block: -0.12em -0.18em;
+   padding-block: 0.12em 0.18em;
 }
 
 .service-description :deep(.split-text-word) {

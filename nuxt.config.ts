@@ -27,8 +27,8 @@ export default defineNuxtConfig({
 	fonts: {
 		families: [
 			{
-				name: 'Geist',
-				provider: 'google',
+				name: 'Switzer',
+				provider: 'fontshare',
 				weights: [400, 500, 600, 700, 800],
 				styles: ['normal'],
 				subsets: ['latin'],

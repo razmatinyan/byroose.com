@@ -263,7 +263,7 @@ function handleDescriptionSplit(parts: SplitTextResult) {
    .hero-description {
       @apply text-wrap;
       font-size: clamp(1.0625rem, 1.7vw, 1.75rem);
-      max-width: 13.4em;
+      max-width: 12.7em;
    }
 
    .hero {

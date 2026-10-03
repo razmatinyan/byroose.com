@@ -117,9 +117,14 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
    visibility: hidden;
 }
 
-.studio-copy-paragraph :deep(.split-text-word-mask) {
+.studio-statement :deep(.split-text-word-mask) {
    margin-block: -0.12em;
    padding-block: 0.12em;
+}
+
+.studio-copy-paragraph :deep(.split-text-word-mask) {
+   margin-block: -0.16em;
+   padding-block: 0.16em;
 }
 
 .studio-grid {
