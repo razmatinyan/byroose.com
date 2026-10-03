@@ -38,13 +38,19 @@ function answerCookies(answer: CookieConsent) {
 			</p>
 			<div class="cookie-banner-actions">
 				<Button
+					class="cookie-banner-action"
 					size="sm"
 					variant="outline"
 					@click="answerCookies('declined')"
 				>
 					Decline all
 				</Button>
-				<Button size="sm" variant="dark" @click="answerCookies('accepted')">
+				<Button
+					class="cookie-banner-action"
+					size="sm"
+					variant="dark"
+					@click="answerCookies('accepted')"
+				>
 					Accept all
 				</Button>
 			</div>
@@ -56,14 +62,18 @@ function answerCookies(answer: CookieConsent) {
 @reference '../../assets/css/tailwind.css';
 
 .cookie-banner {
-	@apply fixed right-4 bottom-4 left-4 z-40 rounded-xl border border-border shadow-xl sm:left-auto sm:max-w-sm;
+	@apply fixed right-4 bottom-4 left-4 z-40 rounded-xs border border-border shadow-xl sm:right-auto sm:max-w-sm;
 }
 
 .cookie-banner-copy {
-	@apply m-0 px-4 py-3 text-sm leading-relaxed text-foreground;
+	@apply m-0 px-4 py-3 text-sm leading-snug text-foreground;
 }
 
 .cookie-banner-actions {
 	@apply flex justify-end gap-2 border-t border-border px-4 py-3;
+}
+
+.cookie-banner-action {
+	@apply rounded-xs;
 }
 </style>

@@ -248,15 +248,17 @@ alias would not improve clarity.
 
 ## Cookie notice
 
-`SiteCookieBanner` is a small fixed notice in the bottom right corner of every
+`SiteCookieBanner` is a small fixed notice in the bottom left corner of every
 route. It uses the card surface, a border, and `shadow-xl`, because a floating
 overlay is the elevation exception to the borders before shadows rule. On phones
 it spans the viewport inset. From `sm` it settles into a compact panel in the
 corner.
 
-The notice has two bands. The explanation sits on top in foreground text, and a
-`border-border` divider separates it from an action row aligned to the end. It
-has no visible title.
+The notice has two bands. The explanation sits on top in foreground text with
+`leading-snug`, and a `border-border` divider separates it from an action row
+aligned to the end. It has no visible title. The panel and both actions use
+`rounded-xs`, Tailwind's default `0.125rem`, so the notice reads as a crisp
+utility surface rather than a rounded brand card.
 
 It is an `aside` named "Cookie notice" through `aria-label` rather than a
 dialog, because it never traps focus and never blocks the page. Its two actions
