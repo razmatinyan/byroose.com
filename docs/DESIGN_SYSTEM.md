@@ -566,7 +566,7 @@ same edge, while a short final line stays start-aligned. Justification still
 applies after splitting because each masked word is an inline block and the
 split keeps the spaces between words, which the browser stretches.
 
-The copy paragraphs share the service description's `1.05` leading. That is
+The copy paragraphs use `1.05` leading. That is
 tighter than the glyphs, so each Studio copy word mask carries `0.12em` of
 block padding cancelled by an equal negative block margin, which keeps
 descenders inside the clip without moving the lines.
@@ -871,8 +871,8 @@ the viewport edges. The service names, "AI Content Creation" and
 selectable, so a drag across the pinned panel never highlights its words.
 
 The title is left-aligned and starts at the left content edge. The description
-sets at `text-2xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, in the
-default `foreground` color at weight 600 with `1.05` leading and `-0.04em`
+sets at `text-2xl`, `text-4xl` from `md`, and `text-6xl` from `xl`, in the
+default `foreground` color at weight 600 with `0.9` leading and `-0.04em`
 tracking. It sits further below the title than the panel's default gap, with a
 top margin of `1rem`, `2rem` from `md`, and `3rem` from `xl`. That leading is
 tighter than the glyphs, so each line mask carries `0.12em` of block padding
