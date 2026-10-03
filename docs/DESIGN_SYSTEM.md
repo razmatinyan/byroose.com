@@ -574,7 +574,8 @@ all be anchored to that same label so the stage reads as one movement.
 
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
-The expansion reveals the site header `0.1s` after the label. The hero title
+The expansion reveals the site header `0.1s` after the label, and the header's
+navigation links rise one by one from their masks at the same moment. The hero title
 lines, the description lines, and the call to action start rising at that same
 moment. Reduced motion must resolve directly to this complete state with
 scrolling available.
@@ -1096,14 +1097,41 @@ flat backdrop without the lead.
 
 ### Header motion
 
-The site header has full and compact sticky states. It stays full at the top of
-the page, compacts after intentional downward travel, and returns after a short
-upward movement. The compact state keeps the Start a project action visible and
-pairs it with a single responsive SiteMenu control. The control uses the same
-dark action surface, outer radius, and control height without using the shared
-CTA icon tile. Its glyph is two horizontal one-pixel lines that morph into an X
-when expanded. Activating the control opens its own menu and never restores the
-header logo or primary navigation. There is no separate mobile dropdown.
+The site header has full and compact sticky states. The full state, with the
+primary navigation, exists only at the top of the page. The header compacts once
+the reader has scrolled `96px` down and stays compact while they scroll back up,
+returning to full only within `24px` of the top. The logo stays visible in both
+states. The compact state keeps the Start a project action visible and pairs it
+with a single responsive SiteMenu control labelled "Menu" in uppercase. The
+control uses the same dark action surface, `radius-action` corners, and `44px`
+height as the CTA, with a fixed `w-26` width. Its glyph is two horizontal
+one-pixel lines with no tile behind them that morph into an X when expanded.
+The control has no hover motion, only the shared press feedback. Activating it
+opens its own menu and never restores the primary navigation. There is no
+separate mobile dropdown.
+
+The primary navigation is plain text: no surface, padding, or shadow on the
+`nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.
+Each `SiteNavLink` sets its label in uppercase at `text-lg` and stacks a hidden
+copy in the same grid cell. The header's Start a project action is uppercase
+too. On hover or visible keyboard focus, `useNavLinkMotion` scales the
+label to zero toward its top center while the copy scales up from zero at its
+bottom center, and a one-pixel underline below the label draws outward from its
+center. All three share the More works action's `0.7s` `power4.inOut` timing,
+and leaving reverses them. The copy and the underline rest at zero scale in CSS
+so they never flash before hydration. Reduced motion switches states instantly.
+
+The navigation links rise into place one by one when a page loads. Each link sits
+in its own `site-nav-item` mask, which carries `0.25em` of padding cancelled by
+an equal negative margin so the hover underline and the focus ring stay inside
+the clip. Every link rises from 115 percent below its mask with the shared
+`addWordReveal` recipe, `0.8s` on `power3.out`, with the `navRevealStagger` of
+`0.08s` from `app/lib/word-reveal.ts`. On the home route the intro timeline runs
+this reveal at the same `expand+=0.1` position as the header reveal. On every
+other route `useSiteHeaderMotion` runs it after mount. Until the reveal finishes
+the `nav` has no `data-nav-revealed` attribute and its links stay hidden in CSS,
+so a server-rendered link never flashes before it rises. Reduced motion shows
+the links at rest without the rise.
 
 The header logo always renders a real link to the home route so it stays
 crawlable and opens in a new tab on a modified click. On the home route a plain
@@ -1115,7 +1143,7 @@ the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
 limited to transforms and opacity. Reduced motion must switch between complete
 states without animated travel.
 
-The expanded menu is a dark rounded panel teleported to Nuxt's shared overlay
+The expanded menu is a dark panel with the control's `radius-action` corners, teleported to Nuxt's shared overlay
 target, outside the header action group. Position its fixed surface from the
 control's live viewport bounds, resting eight pixels above and to the right
 while keeping a safe viewport inset. It grows from the control's exact width and
@@ -1152,7 +1180,8 @@ without handing those gestures to the page's Lenis instance.
 
 The Start a project action and the navigation control share one slot on desktop,
 because the full state slides the action across the space the control occupies in
-the compact state. Offset the two rather than running them in step, so one is
+the compact state. The action's server-rendered `translate-x-28` offset therefore
+equals the control's fixed width plus the `0.5rem` gap. Offset the two rather than running them in step, so one is
 still travelling while the other scales. Entering the compact state starts the
 action moving back and begins scaling the control up from zero shortly after.
 Entering the full state starts the control scaling down to zero and sends the
@@ -1171,11 +1200,11 @@ competing scroll container that breaks sticky positioning.
 
 Actions bounce on hover. `useHoverBounce` attaches GSAP scale tweens to a target,
 scales it to `1.08` with an elastic ease, and settles it back with a short
-overshoot when the pointer leaves. The `cta-sm` and `cta-lg` button sizes, each
-`SiteNavLink`, and the header navigation control share this motion character.
+overshoot when the pointer leaves. The `cta-sm` and `cta-lg` button sizes share
+this motion character.
 
-`SiteNavLink` and every size of the shared button primitive also enable press
-feedback. Pointer down and keyboard activation scale the control to `0.96`, then
+Every size of the shared button primitive and the header navigation control
+also enable press feedback. Pointer down and keyboard activation scale the control to `0.96`, then
 release returns it to `1.08` while still hovered or `1` at rest. Disabled controls
 ignore the press state. Hover enlargement only runs for hover-capable pointers,
 while press feedback also works with touch. Readers who prefer reduced motion
@@ -1236,10 +1265,8 @@ so a `:focus-visible` control shows the same covered state as a hovered one. A
 `speed` option scales the whole timeline through `timeScale`, so a smaller control
 can feel quicker without redefining its timings.
 
-The rollover is not limited to buttons. `SiteNavLink` uses the same composable
-with a pink, primary, dark sequence and a slightly higher speed, because a small
-navigation target reads better with a quicker sweep. Any element can join by
-becoming a clipped positioning host with the data attributes below.
+The rollover is not limited to buttons. Any element can join by becoming a
+clipped positioning host with the data attributes below.
 
 Layer colors belong to the variant, not to the motion. `variantRolloverTones` in
 the button module maps each participating variant to a tuple of three semantic

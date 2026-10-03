@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick } from 'vue'
+import { nextTick } from 'vue'
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import SiteMenuLink from '@/components/layout/SiteMenuLink.vue'
 
@@ -17,13 +17,10 @@ const emit = defineEmits<{
 	'update:open': [open: boolean]
 }>()
 
-const buttonLabel = computed(() =>
-	open ? 'Close navigation' : 'Open navigation',
-)
 const { menuButton, menuLineBottom, menuLineTop, menuPanel, siteMenuRoot } =
 	useSiteMenuMotion(() => open)
 
-useHoverBounce(menuButton, { press: true })
+useHoverBounce(menuButton, { hover: false, press: true })
 
 function setOpen(nextOpen: boolean) {
 	emit('update:open', nextOpen)
@@ -71,9 +68,9 @@ onKeyStroke(
 			type="button"
 			:aria-expanded="open"
 			aria-controls="site-menu-navigation"
-			:aria-label="buttonLabel"
 			@click="toggleMenu"
 		>
+			<span class="site-menu-button-label">Menu</span>
 			<span class="site-menu-icon" aria-hidden="true">
 				<span
 					ref="menuLineTop"
@@ -153,15 +150,19 @@ onKeyStroke(
 @reference '../../assets/css/tailwind.css';
 
 .site-menu {
-	@apply relative size-[2.875rem];
+	@apply relative inline-flex;
 }
 
 .site-menu-button {
-	@apply relative z-20 grid size-[2.875rem] shrink-0 place-items-center rounded-full border aria-expanded:border-background/20 bg-foreground text-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+	@apply relative z-20 inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2.5 rounded-action border aria-expanded:border-background/20 bg-foreground text-sm font-semibold uppercase text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-26 sm:text-base;
+}
+
+.site-menu-button-label {
+	@apply sr-only leading-none sm:not-sr-only;
 }
 
 .site-menu-icon {
-	@apply relative block size-5;
+	@apply relative block size-5 shrink-0;
 }
 
 .site-menu-line {
@@ -177,7 +178,7 @@ onKeyStroke(
 }
 
 .site-menu-panel {
-	@apply invisible pointer-events-none scrollbar-none fixed top-0 left-0 z-50 overflow-y-auto rounded-2xl border border-background/15 bg-foreground text-background shadow-xl;
+	@apply invisible pointer-events-none scrollbar-none fixed top-0 left-0 z-50 overflow-y-auto rounded-action border border-background/15 bg-foreground text-background shadow-xl;
 	width: min(22.5rem, calc(100vw - 2rem));
 	height: min(36rem, calc(100dvh - 2rem));
 }

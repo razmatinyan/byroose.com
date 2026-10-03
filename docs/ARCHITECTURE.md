@@ -36,6 +36,7 @@ app/
     useHoverRollover.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
+    useNavLinkMotion.ts
     useServicesMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -130,7 +131,7 @@ Use a composable when logic:
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
-useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It also rises the header's `data-home-intro-nav-item` links with the header reveal. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
@@ -188,7 +189,10 @@ should load. WorkSection and ServicesSection both compose it and keep their own
 TrailingTooltip instance.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
-scroll-direction thresholds, and responsive animation states. It composes
+the top-of-page scroll thresholds, and responsive animation states. It also
+owns the navigation link reveal on routes other than home and the
+`navRevealed` flag that lifts the links' hidden CSS rest state once a reveal has
+finished, whether it ran there or in the home intro. It composes
 useGsap and useSmoothScroll so the layout component remains focused on header
 structure and navigation content.
 
@@ -202,12 +206,18 @@ copies into characters, then owns their vertical rollover and its forward-ordere
 return on hover and visible keyboard focus. Both composables scope their GSAP work and cleanup
 to their consuming layout components.
 
+useNavLinkMotion owns the primary navigation link hover: the resting label
+scales away to its top center, its copy scales up from its bottom center, and an
+underline draws outward from its center, all on the More works action's
+`power4.inOut` timing. It tracks pointer and visible keyboard focus together and
+resolves instantly under reduced motion. SiteNavLink owns the markup.
+
 useHoverBounce owns the hover and press scale states of action surfaces. It
 receives a target plus optional hover and press behavior, composes useGsap, and
 keeps its listeners and tweens inside a motion media context. The button
 primitive enables press feedback for every size and hover bounce for call to
-action sizes, SiteNavLink enables both, and SiteMenu enables both on the compact
-navigation control. This leaves generic markup, variant contracts, and
+action sizes, and SiteMenu enables press feedback only on the compact navigation
+control. This leaves generic markup, variant contracts, and
 accessibility behavior in their owning components.
 
 useHoverRollover owns the layered hover rollover. It reads independent text and
@@ -255,7 +265,9 @@ app/lib contains pure helpers, shared constants, and stable names.
 - word-reveal.ts owns the shared masked word rise recipe, its `top 82%` start,
   and its two staggers. Callers may override the stagger, the duration, and
   the ease. The Studio section and the services panels both append it to their
-  own timelines, so their word reveals share one recipe.
+  own timelines, so their word reveals share one recipe. It also exports
+  `navRevealStagger`, which the home intro and the site header share for the
+  navigation link rise.
 - utils.ts contains pure class and value helpers.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.

@@ -8,6 +8,7 @@ import {
 } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { addStackReveal } from "@/lib/stack-reveal";
+import { addWordReveal, navRevealStagger } from "@/lib/word-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 
 export type HomeIntroState = "complete" | "pending" | "playing";
@@ -37,6 +38,7 @@ const selectors = {
    removedCard: "[data-home-intro-card-remove]",
    header: "[data-home-intro-header]",
    mediaGrid: "[data-home-intro-media-grid]",
+   navItem: "[data-home-intro-nav-item]",
    title: "[data-home-intro-title]",
 } as const;
 
@@ -222,6 +224,9 @@ export function useHomeIntroMotion(
             const mediaGrid = root.querySelector<HTMLElement>(
                selectors.mediaGrid,
             );
+            const navItems = Array.from(
+               header?.querySelectorAll<HTMLElement>(selectors.navItem) ?? [],
+            );
             const title = root.querySelector<HTMLElement>(selectors.title);
             const titleLines = titleSplit?.lines ?? [];
             const descriptionLines = descriptionSplit?.lines ?? [];
@@ -234,6 +239,7 @@ export function useHomeIntroMotion(
             const action = root.querySelector<HTMLElement>(selectors.action);
             const animatedElements = [
                ...(header ? [header] : []),
+               ...navItems,
                ...(title ? [title] : []),
                ...titleLines,
                ...copyElements,
@@ -344,6 +350,10 @@ export function useHomeIntroMotion(
                },
                "expand+=0.1",
             );
+            addWordReveal(tl, navItems, {
+               position: "expand+=0.1",
+               stagger: navRevealStagger,
+            });
             tl.to(
                titleLines,
                {

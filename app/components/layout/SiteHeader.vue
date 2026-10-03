@@ -11,11 +11,11 @@ interface NavItem {
 }
 
 const defaultNavItems: NavItem[] = [
+	{ href: '/', label: 'Home' },
 	{ href: '/about', label: 'About' },
 	{ href: '/works', label: 'Works' },
 	{ href: '/services', label: 'Services' },
-	{ href: '/journey', label: 'Journey' },
-	{ href: '/courses', label: 'Courses' },
+	// { href: '/courses', label: 'Courses' },
 	{ href: '/blog', label: 'Blog' },
 	{ href: '/contact', label: 'Contact' },
 ]
@@ -36,7 +36,7 @@ const headerCtaVariant = computed(() => (menuOpen.value ? 'default' : 'dark'))
 const isDesktop = useMediaQuery('(min-width: 64rem)')
 const route = useRoute()
 const { scrollTo } = useSmoothScroll()
-const { headerMode } = useSiteHeaderMotion()
+const { headerMode, navRevealed } = useSiteHeaderMotion()
 
 function setMenuOpen(open: boolean) {
 	menuOpen.value = open
@@ -66,7 +66,6 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 	<header ref="headerRoot" class="site-header" :data-header-mode="headerMode">
 		<div class="site-header-inner">
 			<NuxtLink
-				ref="logoLink"
 				class="site-logo-link"
 				to="/"
 				aria-label="byroose home"
@@ -88,13 +87,19 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 				ref="primaryNavigation"
 				class="site-nav"
 				aria-label="Main navigation"
+				:data-nav-revealed="navRevealed || undefined"
 			>
-				<SiteNavLink
+				<span
 					v-for="item in resolvedNavItems"
 					:key="item.href"
-					:href="item.href"
-					:label="item.label"
-				/>
+					class="site-nav-item"
+				>
+					<SiteNavLink
+						:href="item.href"
+						:label="item.label"
+						data-home-intro-nav-item
+					/>
+				</span>
 			</nav>
 
 			<div class="site-header-actions">
@@ -138,7 +143,6 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 
 .site-logo-link {
 	@apply col-start-1 row-start-1 flex shrink-0 items-center justify-self-start text-foreground hover:text-foreground;
-	will-change: transform, opacity;
 }
 
 .site-logo {
@@ -146,8 +150,18 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-nav {
-	@apply hidden items-center gap-1 rounded-lg bg-card px-2 py-1 lg:col-start-2 lg:row-start-1 lg:flex shadow-lg shadow-black/4;
+	@apply hidden items-center gap-6 lg:col-start-2 lg:row-start-1 lg:flex xl:gap-8;
 	will-change: transform, opacity;
+}
+
+.site-nav-item {
+	@apply inline-flex overflow-hidden;
+	margin: -0.25em;
+	padding: 0.25em;
+}
+
+.site-nav:not([data-nav-revealed]) [data-home-intro-nav-item] {
+	visibility: hidden;
 }
 
 .site-header-actions {
@@ -161,10 +175,11 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-header-cta-wrap {
-	@apply relative z-30 lg:translate-x-13;
+	@apply relative z-30 lg:translate-x-28;
 }
 
 .site-header-cta {
+	@apply uppercase;
 	transition-duration: 440ms;
 	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -176,6 +191,10 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 @media (prefers-reduced-motion: reduce) {
 	.site-header-cta {
 		transition-duration: 0ms;
+	}
+
+	.site-nav:not([data-nav-revealed]) [data-home-intro-nav-item] {
+		visibility: inherit;
 	}
 }
 </style>

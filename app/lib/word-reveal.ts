@@ -4,6 +4,7 @@ export const wordRevealOffset = 115;
 export const wordRevealStart = "top 82%";
 export const wordRevealStagger = 0.03;
 export const wordRevealDenseStagger = 0.01;
+export const navRevealStagger = 0.08;
 
 export interface WordRevealOptions {
 	duration?: number;

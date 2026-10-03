@@ -1,9 +1,13 @@
-import { onMounted, readonly, shallowRef, useTemplateRef } from 'vue'
-import type { ComponentPublicInstance } from 'vue'
+import { onMounted, readonly, shallowRef, useTemplateRef, watch } from 'vue'
 import { unrefElement } from '@vueuse/core'
 import type { MaybeComputedElementRef } from '@vueuse/core'
+import { addWordReveal, navRevealStagger } from '@/lib/word-reveal'
 
 type HeaderMode = 'compact' | 'full'
+
+const fullModeScrollLimit = 24
+const compactModeScrollStart = 96
+const navItemSelector = '[data-home-intro-nav-item]'
 
 interface HeaderMotionOptions {
 	immediate?: boolean
@@ -16,15 +20,50 @@ function resolveElement(target: MaybeComputedElementRef): HTMLElement | null {
 
 export function useSiteHeaderMotion() {
 	const headerMode = shallowRef<HeaderMode>('full')
+	const navRevealed = shallowRef(false)
 	const headerRoot = useTemplateRef<HTMLElement>('headerRoot')
-	const logoLink = useTemplateRef<ComponentPublicInstance>('logoLink')
 	const primaryNavigation = useTemplateRef<HTMLElement>('primaryNavigation')
 	const headerCta = useTemplateRef<HTMLElement>('headerCta')
 	const menuButton = useTemplateRef<HTMLElement>('menuButton')
-	const { createMatchMedia, gsap } = useGsap()
+	const { createContext, createMatchMedia, gsap } = useGsap()
 	const { onScroll } = useSmoothScroll()
+	const introState = useHomeIntroState()
+	const route = useRoute()
+
+	watch(introState, state => {
+		if (state === 'complete') navRevealed.value = true
+	})
+
+	function revealNavigation() {
+		const navigation = resolveElement(primaryNavigation)
+		const items = Array.from(
+			navigation?.querySelectorAll<HTMLElement>(navItemSelector) ?? [],
+		)
+		const reduceMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)',
+		).matches
+
+		if (!items.length || reduceMotion) {
+			navRevealed.value = true
+			return
+		}
+
+		createContext(() => {
+			const timeline = gsap.timeline({
+				onComplete: () => {
+					navRevealed.value = true
+					gsap.set(items, { clearProps: 'all' })
+				},
+			})
+			addWordReveal(timeline, items, { stagger: navRevealStagger })
+		}, headerRoot)
+	}
 
 	onMounted(() => {
+		if (route.path !== '/' || introState.value === 'complete') {
+			revealNavigation()
+		}
+
 		createMatchMedia(
 			{
 				desktop: '(min-width: 64rem)',
@@ -33,28 +72,23 @@ export function useSiteHeaderMotion() {
 			},
 			context => {
 				const cta = resolveElement(headerCta)
-				const logo = resolveElement(logoLink)
 				const navigation = resolveElement(primaryNavigation)
 				const menu = resolveElement(menuButton)
 
-				if (!cta || !logo || !navigation || !menu) return
+				if (!cta || !navigation || !menu) return
 
 				const desktop = Boolean(context.conditions?.desktop)
 				const reduceMotion = Boolean(context.conditions?.reduceMotion)
-				const revealTargets = desktop ? [logo, navigation] : [logo]
 				const menuOffset = menu.offsetWidth + 8
 				let activeTimeline: gsap.core.Timeline | null = null
-				let previousScroll = window.scrollY
-				let previousDirection: -1 | 0 | 1 = 0
-				let directionalDistance = 0
 
 				function setImmediateState(mode: HeaderMode) {
 					const compact = mode === 'compact'
 
-					gsap.set(revealTargets, {
-						autoAlpha: compact ? 0 : 1,
-						pointerEvents: compact ? 'none' : 'auto',
-						yPercent: compact ? -135 : 0,
+					gsap.set(navigation, {
+						autoAlpha: desktop && compact ? 0 : 1,
+						pointerEvents: desktop && compact ? 'none' : 'auto',
+						yPercent: desktop && compact ? -135 : 0,
 					})
 					gsap.set(cta, {
 						x: desktop && !compact ? menuOffset : 0,
@@ -75,51 +109,8 @@ export function useSiteHeaderMotion() {
 					headerMode.value = mode
 					activeTimeline?.kill()
 
-					if (immediate || reduceMotion) {
+					if (immediate || reduceMotion || !desktop) {
 						setImmediateState(mode)
-						return
-					}
-
-					if (mode === 'compact') {
-						activeTimeline = gsap.timeline({
-							defaults: { overwrite: 'auto' },
-						})
-						activeTimeline.to(
-							revealTargets,
-							{
-								autoAlpha: 0,
-								duration: 0.24,
-								ease: 'power4.out',
-								pointerEvents: 'none',
-								stagger: 0.018,
-								yPercent: -135,
-							},
-							0,
-						)
-
-						if (desktop) {
-							activeTimeline.to(
-								cta,
-								{
-									duration: 0.28,
-									ease: 'power4.out',
-									x: 0,
-								},
-								0,
-							)
-							activeTimeline.to(
-								menu,
-								{
-									autoAlpha: 1,
-									duration: 0.3,
-									ease: 'back.out(1.7)',
-									pointerEvents: 'auto',
-									scale: 1,
-								},
-								0.1,
-							)
-						}
-
 						return
 					}
 
@@ -127,37 +118,68 @@ export function useSiteHeaderMotion() {
 						defaults: { overwrite: 'auto' },
 					})
 
-					if (desktop) {
+					if (mode === 'compact') {
 						activeTimeline.to(
-							menu,
+							navigation,
 							{
 								autoAlpha: 0,
-								duration: 0.3,
+								duration: 0.24,
 								ease: 'power4.out',
 								pointerEvents: 'none',
-								scale: 0,
+								yPercent: -135,
 							},
 							0,
 						)
 						activeTimeline.to(
 							cta,
 							{
-								duration: 0.3,
-								ease: 'power2.out',
-								x: menuOffset,
+								duration: 0.28,
+								ease: 'power4.out',
+								x: 0,
 							},
-							0.05,
+							0,
 						)
+						activeTimeline.to(
+							menu,
+							{
+								autoAlpha: 1,
+								duration: 0.3,
+								ease: 'back.out(1.7)',
+								pointerEvents: 'auto',
+								scale: 1,
+							},
+							0.1,
+						)
+						return
 					}
 
 					activeTimeline.to(
-						revealTargets,
+						menu,
+						{
+							autoAlpha: 0,
+							duration: 0.3,
+							ease: 'power4.out',
+							pointerEvents: 'none',
+							scale: 0,
+						},
+						0,
+					)
+					activeTimeline.to(
+						cta,
+						{
+							duration: 0.3,
+							ease: 'power2.out',
+							x: menuOffset,
+						},
+						0.05,
+					)
+					activeTimeline.to(
+						navigation,
 						{
 							autoAlpha: 1,
 							duration: 0.3,
 							ease: 'power4.out',
 							pointerEvents: 'auto',
-							stagger: 0.025,
 							yPercent: 0,
 						},
 						0.04,
@@ -167,35 +189,14 @@ export function useSiteHeaderMotion() {
 				setHeaderMode(headerMode.value, { immediate: true })
 
 				const unsubscribe = onScroll(lenis => {
-					const nextScroll = Math.max(0, lenis.animatedScroll)
-					const delta = nextScroll - previousScroll
-					const direction: -1 | 0 | 1 =
-						delta > 0.25 ? 1 : delta < -0.25 ? -1 : 0
+					const scroll = Math.max(0, lenis.animatedScroll)
 
-					previousScroll = nextScroll
-
-					if (nextScroll <= 24) {
-						directionalDistance = 0
-						previousDirection = 0
+					if (scroll <= fullModeScrollLimit) {
 						setHeaderMode('full')
 						return
 					}
 
-					if (direction === 0) return
-
-					if (direction !== previousDirection) {
-						directionalDistance = 0
-						previousDirection = direction
-					}
-
-					directionalDistance += Math.abs(delta)
-
-					if (direction === -1) {
-						if (directionalDistance >= 8) setHeaderMode('full')
-						return
-					}
-
-					if (nextScroll >= 96 && directionalDistance >= 12) {
+					if (scroll >= compactModeScrollStart) {
 						setHeaderMode('compact')
 					}
 				})
@@ -211,5 +212,6 @@ export function useSiteHeaderMotion() {
 
 	return {
 		headerMode: readonly(headerMode),
+		navRevealed: readonly(navRevealed),
 	}
 }

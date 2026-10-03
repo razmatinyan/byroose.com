@@ -9,42 +9,20 @@ const { href, label } = defineProps<{
 
 const link = useTemplateRef<ComponentPublicInstance>('link')
 
-useHoverBounce(link, { press: true })
-useHoverRollover(link, { speed: 1.4 })
+useNavLinkMotion(link)
 </script>
 
 <template>
 	<NuxtLink ref="link" class="site-nav-link" :to="href">
+		<span class="site-nav-link-label" data-nav-label>{{ label }}</span>
 		<span
-			class="site-nav-link-layers"
-			data-rollover-layers
+			class="site-nav-link-label site-nav-link-label-copy"
+			data-nav-label-copy
 			aria-hidden="true"
 		>
-			<span
-				class="site-nav-link-layer surface-pink"
-				data-rollover-layer
-			/>
-			<span
-				class="site-nav-link-layer surface-orange"
-				data-rollover-layer
-			/>
-			<span
-				class="site-nav-link-layer surface-dark"
-				data-rollover-layer
-			/>
+			{{ label }}
 		</span>
-		<span class="site-nav-link-texts" data-rollover-texts>
-			<span class="site-nav-link-label" data-rollover-label>{{
-				label
-			}}</span>
-			<span
-				class="site-nav-link-label site-nav-link-label-copy text-primary-foreground"
-				data-rollover-label-copy
-				aria-hidden="true"
-			>
-				{{ label }}
-			</span>
-		</span>
+		<span class="site-nav-link-line" data-nav-line aria-hidden="true" />
 	</NuxtLink>
 </template>
 
@@ -52,47 +30,23 @@ useHoverRollover(link, { speed: 1.4 })
 @reference '../../assets/css/tailwind.css';
 
 .site-nav-link {
-	--site-nav-link-radius: calc(var(--radius) * 0.8);
-	@apply relative inline-flex items-center justify-center overflow-hidden px-3 py-2.5 text-base font-medium text-foreground xl:px-4;
-	border-radius: var(--site-nav-link-radius);
-	clip-path: inset(0 round var(--site-nav-link-radius));
-}
-
-.site-nav-link:focus-visible {
-	clip-path: none;
-}
-
-.site-nav-link-layers {
-	@apply pointer-events-none absolute inset-0;
-	border-radius: inherit;
-}
-
-.site-nav-link-layer {
-	@apply absolute -inset-px;
-	border-radius: inherit;
-	transform: translateY(100%);
-}
-
-.site-nav-link-texts {
-	@apply relative grid items-center;
+	@apply relative inline-grid rounded-xs text-lg font-medium uppercase text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
 }
 
 .site-nav-link-label {
-	--rollover-text-angle: 0deg;
-	--rollover-text-y: 0em;
-	display: block;
+	@apply block whitespace-nowrap;
 	grid-area: 1 / 1;
-	rotate: 1 1 0.45 var(--rollover-text-angle);
-	transform-origin: 0 0;
-	translate: 0 var(--rollover-text-y) 0;
-	will-change: translate, rotate, opacity, color;
+	transform-origin: 50% 0%;
 }
 
 .site-nav-link-label-copy {
-	--rollover-text-angle: -30deg;
-	--rollover-text-y: 2em;
-	opacity: 0;
-	rotate: 1 1 0.5 var(--rollover-text-angle);
-	transform-origin: top right;
+	transform: scale(0);
+	transform-origin: 50% 100%;
+}
+
+.site-nav-link-line {
+	@apply pointer-events-none absolute top-full left-0 h-px w-full bg-current;
+	transform: scaleX(0);
+	transform-origin: 50% 50%;
 }
 </style>
