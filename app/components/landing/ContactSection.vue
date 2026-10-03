@@ -32,7 +32,7 @@ const {
 						>
 							{{ primary }}
 							<template #icon>
-								<ButtonIcon tone="dark" />
+								<ButtonIcon />
 							</template>
 						</Button>
 					</div>

@@ -49,7 +49,7 @@ const articles = [
 			<Button as="a" href="#blog" variant="outline" size="cta-lg">
 				All articles
 				<template #icon>
-					<ButtonIcon tone="dark" />
+					<ButtonIcon />
 				</template>
 			</Button>
 		</SectionHeading>

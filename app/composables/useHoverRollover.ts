@@ -102,6 +102,7 @@ export function useHoverRollover(
 
 			if (!label || !labelCopy || layers.length === 0) return
 
+			const icon = element.querySelector(':scope > [data-rollover-icon]')
 			const glyph = element.querySelector(
 				':scope > [data-rollover-icon] [data-rollover-glyph]',
 			)
@@ -115,6 +116,7 @@ export function useHoverRollover(
 				(layers.length - 1) * layerStagger + layerDuration
 			const restingColor = getComputedStyle(label).color
 			const coveredColor = getComputedStyle(labelCopy).color
+			const coloredText = [label, icon].filter(Boolean)
 
 			gsap.set(label, { opacity: 1 })
 			gsap.set(labelCopy, { opacity: 0 })
@@ -172,9 +174,9 @@ export function useHoverRollover(
 					gsap.set(label, {
 						[textAngleProperty]: labelAngle,
 						[textYProperty]: labelY,
-						color: labelColor,
 						opacity: labelOpacity,
 					})
+					gsap.set(coloredText, { color: labelColor })
 					gsap.set(labelCopy, {
 						[textAngleProperty]: labelCopyAngle,
 						[textYProperty]: labelCopyY,
@@ -236,7 +238,7 @@ export function useHoverRollover(
 					0,
 				)
 				timeline.to(
-					label,
+					coloredText,
 					{
 						color: labelColor,
 						duration: textColorDuration,
@@ -357,6 +359,7 @@ export function useHoverRollover(
 				gsap.set([label, labelCopy], {
 					clearProps: `${textAngleProperty},${textYProperty},color,opacity`,
 				})
+				gsap.set(coloredText, { clearProps: 'color' })
 				gsap.set(
 					[...layers, glyph, glyphCopy].filter(Boolean),
 					{ clearProps: 'transform,transformOrigin,visibility' },

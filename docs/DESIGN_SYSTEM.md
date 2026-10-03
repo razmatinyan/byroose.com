@@ -258,6 +258,15 @@ tile sits against the action edge. The icon tile radius is derived from the
 button radius minus that shared inset, keeping both curves visually concentric
 at every supported button size.
 
+The default `tint` tone fills the tile with the action's own text color at 20
+percent over the button surface. A dark or orange action with light text gets a
+lighter shade of its own background. A cream or outline action with dark text
+gets a deeper shade, because a lighter cream would disappear. The glyph uses the
+same text color. Because the tile is translucent, it also takes on the color of
+each rollover layer that passes beneath it. CTA buttons use `tint`. The `light`,
+`dark`, and `soft` tones remain for icon tiles outside a button, such as the
+course card link.
+
 Icon names that express a repeated meaning belong in `app/lib/icons.ts`. A
 one-time decorative icon may use a direct Lucide collection name when a semantic
 alias would not improve clarity.
@@ -1142,6 +1151,10 @@ zero, rotates to zero, and fades in. Translation uses the approved elastic
 `CustomEase` over `0.75s`, rotation uses the smooth curve over `0.5s`, and
 opacity and color settle over `0.2s`. The elastic curve overshoots in both
 directions, so the outgoing and returning original label both have a visible pop.
+
+The rollover tweens the icon slot's text color together with the original
+label, from the resting color to the copied label's color, so a `tint` tile and
+its glyph follow the final layer's foreground.
 
 The icon tile stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above

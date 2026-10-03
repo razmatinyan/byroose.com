@@ -8,12 +8,12 @@ const {
 	class: className,
 	icon = appIcons.arrowUpRight,
 	size = 'default',
-	tone = 'light',
+	tone = 'tint',
 } = defineProps<{
 	class?: HTMLAttributes['class']
 	icon?: string
 	size?: 'default' | 'sm'
-	tone?: 'light' | 'dark' | 'soft'
+	tone?: 'tint' | 'light' | 'dark' | 'soft'
 }>()
 
 const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
@@ -26,6 +26,7 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 			cn(
 				'button-icon',
 				size === 'sm' && 'button-icon-sm',
+				tone === 'tint' && 'button-icon-tint',
 				tone === 'dark' && 'button-icon-dark',
 				tone === 'soft' && 'button-icon-soft',
 				className,
@@ -60,6 +61,10 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 
 .button-icon-sm {
 	@apply size-9;
+}
+
+.button-icon-tint {
+	@apply bg-current/20 text-current;
 }
 
 .button-icon-dark {
