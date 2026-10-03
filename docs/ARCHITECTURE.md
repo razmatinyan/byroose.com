@@ -170,15 +170,15 @@ same TrailingTooltip the case cards use.
 
 useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the slowed travel of
-the children of its `data-service-content` block, the title word rise and the description
-line rise together in one timeline, and the scrubbed bottom origin image entry
+the children of its `data-service-content` block, the description line rise
+anchored to the static service title, and the scrubbed bottom origin image entry
 and top origin image exit. It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved,
 lifting exit as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. ServicesSection owns the copy, the image links, and
 the tooltip handlers. The composable waits until the intro
-lines, every service title, and every description have reported their splits.
+lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the

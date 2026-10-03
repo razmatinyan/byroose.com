@@ -11,13 +11,11 @@ type SplitListSource = MaybeRefOrGetter<
 interface ServicesMotionTargets {
    descriptionSplits: SplitListSource;
    introSplits: SplitListSource;
-   titleSplits: SplitListSource;
 }
 
 interface ServicePanelParts {
    descriptionLines: HTMLElement[];
    panel: HTMLElement;
-   titleWords: HTMLElement[];
 }
 
 const selectors = {
@@ -45,7 +43,6 @@ const introWordFrom = {
    scale: 0.6,
 };
 const textRevealAt = 0.6;
-const titleStagger = 0.08;
 const descriptionStagger = 0.1;
 const descriptionDuration = 1.5;
 const descriptionEase = "power3";
@@ -79,7 +76,7 @@ function offsetWithin(element: HTMLElement, ancestor: HTMLElement) {
 
 export function useServicesMotion(
    scope: MotionScope,
-   { descriptionSplits, introSplits, titleSplits }: ServicesMotionTargets,
+   { descriptionSplits, introSplits }: ServicesMotionTargets,
 ) {
    const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
@@ -183,11 +180,11 @@ export function useServicesMotion(
    }
 
    function revealText(
-      { descriptionLines, panel, titleWords }: ServicePanelParts,
+      { descriptionLines, panel }: ServicePanelParts,
       content: HTMLElement,
    ) {
       const title = panel.querySelector<HTMLElement>(selectors.title);
-      if (!title || (!titleWords.length && !descriptionLines.length)) return;
+      if (!title || !descriptionLines.length) return;
 
       const timeline = gsap.timeline({
          onStart: () => revealedPanels.add(panel),
@@ -199,11 +196,9 @@ export function useServicesMotion(
          },
       });
 
-      addWordReveal(timeline, titleWords, { stagger: titleStagger });
       addWordReveal(timeline, descriptionLines, {
          duration: descriptionDuration,
          ease: descriptionEase,
-         position: 0,
          stagger: descriptionStagger,
       });
       textTimelines.set(panel, timeline);
@@ -390,7 +385,6 @@ export function useServicesMotion(
 
    async function initialize(
       introWords: HTMLElement[],
-      titleParts: readonly SplitTextResult[],
       descriptionParts: readonly SplitTextResult[],
    ) {
       if (initialized || disposed) return;
@@ -408,7 +402,6 @@ export function useServicesMotion(
          (panel, index) => ({
             descriptionLines: descriptionParts[index]?.lines ?? [],
             panel,
-            titleWords: splitWords(titleParts[index]),
          }),
       );
 
@@ -424,10 +417,7 @@ export function useServicesMotion(
             if (reducedMotion) {
                showAll([
                   ...introWords,
-                  ...panels.flatMap(({ descriptionLines, titleWords }) => [
-                     ...titleWords,
-                     ...descriptionLines,
-                  ]),
+                  ...panels.flatMap(({ descriptionLines }) => descriptionLines),
                ]);
                return;
             }
@@ -444,18 +434,13 @@ export function useServicesMotion(
 
    watch(
       () =>
-         [
-            toValue(introSplits),
-            toValue(titleSplits),
-            toValue(descriptionSplits),
-         ] as const,
-      ([intro, titles, descriptions]) => {
-         const splits = [...intro, ...titles, ...descriptions];
+         [toValue(introSplits), toValue(descriptionSplits)] as const,
+      ([intro, descriptions]) => {
+         const splits = [...intro, ...descriptions];
          if (splits.includes(undefined)) return;
 
          return initialize(
             intro.flatMap(splitWords),
-            titles.filter((parts) => parts !== undefined),
             descriptions.filter((parts) => parts !== undefined),
          );
       },

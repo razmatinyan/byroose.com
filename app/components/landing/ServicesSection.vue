@@ -40,9 +40,6 @@ const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
 const introSplits = shallowRef<(SplitTextResult | undefined)[]>(
    introLines.map(() => undefined),
 );
-const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
-   servicesData.map(() => undefined),
-);
 const descriptionSplits = shallowRef<(SplitTextResult | undefined)[]>(
    servicesData.map(() => undefined),
 );
@@ -59,7 +56,6 @@ const {
 useServicesMotion(servicesRoot, {
    descriptionSplits,
    introSplits,
-   titleSplits,
 });
 
 function withSplit(
@@ -74,10 +70,6 @@ function withSplit(
 
 function setIntroSplit(index: number, parts: SplitTextResult) {
    introSplits.value = withSplit(introSplits.value, index, parts);
-}
-
-function setTitleSplit(index: number, parts: SplitTextResult) {
-   titleSplits.value = withSplit(titleSplits.value, index, parts);
 }
 
 function setDescriptionSplit(index: number, parts: SplitTextResult) {
@@ -123,14 +115,9 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
             <div class="service-backdrop-curve" data-service-backdrop-curve />
          </div>
          <div class="service-content" data-service-content>
-            <SplitText
-               class="service-title"
-               as="h3"
-               data-service-title
-               mask="words"
-               :text="service.title"
-               @split="setTitleSplit(index, $event)"
-            />
+            <h3 class="service-title" data-service-title>
+               {{ service.title }}
+            </h3>
 
             <SplitText
                class="service-description"
@@ -244,11 +231,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
    @apply m-0 mt-4 w-full text-left md:mt-8 md:w-2/3 md:self-end xl:mt-12 text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty text-foreground md:text-4xl xl:text-6xl;
 }
 
-.service-title :deep(.split-text-word),
-.service-title :deep(.split-text-word-mask) {
-   display: inline-block;
-}
-
 .service-description :deep(.split-text-line),
 .service-description :deep(.split-text-line-mask) {
    display: block;
@@ -267,7 +249,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
    display: inline-block;
 }
 
-.service-title :deep(.split-text-word),
 .service-description :deep(.split-text-line) {
    visibility: hidden;
 }

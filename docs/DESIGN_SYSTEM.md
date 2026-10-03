@@ -93,8 +93,8 @@ or component-level font imports.
 - `text-service` sets the service panel titles at
   `clamp(3.25rem, 8.5vw, 10rem)`, about 122px at 1440 wide, where the longest
   name still holds one line. Its leading of `1.08` leaves room for the
-  descender of "Development" inside its word mask, so the rise never clips the
-  glyph.
+  descender of "Development". The titles are plain headings without a reveal
+  or a mask.
 - `text-journey` and `text-step` support the oversized process composition.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
@@ -905,19 +905,17 @@ panel and a viewport line, and returns the scroll position at which that
 element reaches that line once the slowed travel is accounted for. The panel
 itself is never transformed, so it stays a reliable reference.
 
-The title and the description reveal together from one trigger. When the
-title reaches 60 percent of the viewport, it rises word by word from
-`SplitText` word masks with a `0.08s` stagger set through `titleStagger`,
-and the description starts at the same moment in the same timeline, rising
-line by line from `SplitText` line masks with a `0.1s` stagger set through
-`descriptionStagger`, both in `useServicesMotion`. Each description line
-takes `1.5s` to rise with `power3` easing, which GSAP reads as
-`power3.out`, set through `descriptionDuration` and `descriptionEase`, so the
-description settles after the title. Each mask rise uses the
-recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest over
-`0.8s` with `power3.out` easing. The title keeps its `-0.045em` tracking,
-because a word split preserves kerning inside each word. Sharing one trigger keeps the two
-in sync, even though the description sits below the title. The lines and their
+The service titles do not animate. Each is a plain `h3` that is visible in
+the server output and at rest from the start, so the panel always names its
+service. The title still anchors the description reveal: when the title
+reaches 60 percent of the viewport, the description rises line by line from
+`SplitText` line masks with a `0.1s` stagger set through
+`descriptionStagger` in `useServicesMotion`. Each description line takes
+`1.5s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
+through `descriptionDuration` and `descriptionEase`. Each mask rise uses the
+recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest.
+Anchoring to the title keeps the reveal and the dark backdrop rise on the same
+trigger, even though the description sits below the title. The lines and their
 masks are block elements, because the split emits them as inline spans and a
 transform has no effect on an inline element. The description uses
 `SplitText`'s `autoSplit`, so its lines are split again whenever the fonts
@@ -1002,8 +1000,8 @@ scale down, so the curve and the image exit begin together. It ends when the
 panel's bottom edge reaches the viewport top.
 
 Reduced motion drops the intro pin, every reveal, the image scale, and the
-backdrop rise, curve, and lift. It displays the title words, the service
-titles, the descriptions, and the images at rest, and the dark panel keeps a
+backdrop rise, curve, and lift. It displays the intro title words, the
+descriptions, and the images at rest, and the dark panel keeps a
 flat backdrop without the lead.
 
 ### Header motion
