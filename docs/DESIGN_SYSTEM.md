@@ -1473,6 +1473,14 @@ are ordinary spans rather than the raw SVG, which keeps their transforms
 predictable. The independent text grid keeps both labels aligned, so
 the copied label does not need an icon-width reserve.
 
+An arrow right glyph swaps horizontally instead. `ButtonIcon` marks its box
+with `data-rollover-glyph-axis="x"` and the `button-icon-slide` class, which
+clips the box to the glyph. The original slides out through the right edge of
+that box while the copy, parked one box width to the left, slides in to rest.
+The travel is the box's `clientWidth`, read when each swap starts. Because the
+icon box itself clips, the copy never crosses the label on its way in. Every
+other glyph keeps the diagonal swap.
+
 Render the swap in the template rather than cloning a node at runtime. The icon
 lives inside a Vue-managed subtree, so an injected copy is not guaranteed to
 survive a re-render of the icon.

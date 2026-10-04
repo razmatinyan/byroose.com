@@ -42,8 +42,14 @@ const layerDuration = 0.38
 const layerRestScale = 0.94
 const layerStagger = 0.06
 const rolloverEase = 'power3.out'
-const glyphExit = { x: 1, y: -1 }
-const glyphEntry = { x: -1, y: 1 }
+const diagonalGlyphPath = {
+	entry: { x: -1, y: 1 },
+	exit: { x: 1, y: -1 },
+}
+const horizontalGlyphPath = {
+	entry: { x: -1, y: 0 },
+	exit: { x: 1, y: 0 },
+}
 const glyphRest = { x: 0, y: 0 }
 
 type CustomEasePlugin = typeof import('gsap/CustomEase').CustomEase
@@ -118,6 +124,14 @@ export function useHoverRollover(
 			const glyphCopy = element.querySelector(
 				':scope > [data-rollover-icon] [data-rollover-glyph-copy]',
 			)
+			const horizontalGlyphBox = element.querySelector(
+				':scope > [data-rollover-icon] [data-rollover-glyph-axis="x"]',
+			)
+			const glyphPath = horizontalGlyphBox
+				? horizontalGlyphPath
+				: diagonalGlyphPath
+			const glyphTravel = () =>
+				horizontalGlyphBox?.clientWidth ?? element.clientHeight
 			const reduceMotion = Boolean(context.conditions?.reduceMotion)
 			const descending = [...layers].reverse()
 			const occludedLayers = layers.slice(0, -1)
@@ -139,8 +153,8 @@ export function useHoverRollover(
 
 			if (glyph && glyphCopy) {
 				gsap.set([glyph, glyphCopy], { xPercent: 0, yPercent: 0 })
-				gsap.set(glyph, glyphOffset(glyphRest, element.clientHeight))
-				gsap.set(glyphCopy, glyphOffset(glyphEntry, element.clientHeight))
+				gsap.set(glyph, glyphOffset(glyphRest, glyphTravel()))
+				gsap.set(glyphCopy, glyphOffset(glyphPath.entry, glyphTravel()))
 			}
 
 			let rollover: gsap.core.Timeline | null = null
@@ -166,13 +180,14 @@ export function useHoverRollover(
 				const hostBackground = cover
 					? { backgroundClip: 'content-box' }
 					: { clearProps: 'backgroundClip' }
+				const travel = glyphTravel()
 				const glyphPosition = glyphOffset(
-					cover ? glyphExit : glyphRest,
-					element.clientHeight,
+					cover ? glyphPath.exit : glyphRest,
+					travel,
 				)
 				const glyphCopyPosition = glyphOffset(
-					cover ? glyphRest : glyphEntry,
-					element.clientHeight,
+					cover ? glyphRest : glyphPath.entry,
+					travel,
 				)
 
 				if (reduceMotion) {

@@ -17,17 +17,20 @@ const {
 }>()
 
 const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
+const slidesHorizontally = computed(() => icon === appIcons.arrowRight)
 </script>
 
 <template>
 	<span
 		aria-hidden="true"
+		:data-rollover-glyph-axis="slidesHorizontally ? 'x' : undefined"
 		:class="
 			cn(
 				'button-icon',
 				tone !== 'plain' && 'button-icon-tile',
 				tone !== 'plain' && size === 'sm' && 'button-icon-sm',
 				tone === 'plain' && 'button-icon-plain',
+				slidesHorizontally && 'button-icon-slide',
 				tone === 'dark' && 'button-icon-dark',
 				tone === 'soft' && 'button-icon-soft',
 				className,
@@ -62,6 +65,14 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 
 .button-icon-glyph[data-rollover-glyph-copy] {
 	transform: translate(-300%, 300%);
+}
+
+.button-icon-slide {
+	@apply overflow-hidden;
+}
+
+.button-icon-slide .button-icon-glyph[data-rollover-glyph-copy] {
+	transform: translate(-100%, 0);
 }
 
 .button-icon-sm {
