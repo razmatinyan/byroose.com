@@ -14,15 +14,15 @@ const selectors = {
 } as const;
 
 const refreshPriority = -2;
-const titleRevealStart = "top bottom";
-const titleRevealEnd = "bottom 55%";
+const titleRevealStart = "top 85%";
 const titleCharFrom = {
    rotation: -24,
    scale: 0,
    transformOrigin: "50% 0%",
    yPercent: -110,
 };
-const titleCharStagger = 0.08;
+const titleCharDuration = 1.4;
+const titleCharStagger = 0.06;
 const titleCharEase = "power3.out";
 
 export function useJourneyMotion(
@@ -40,9 +40,8 @@ export function useJourneyMotion(
       gsap
          .timeline({
             scrollTrigger: {
-               end: titleRevealEnd,
+               once: true,
                refreshPriority,
-               scrub: true,
                start: titleRevealStart,
                trigger,
             },
@@ -52,6 +51,7 @@ export function useJourneyMotion(
             chars,
             titleCharFrom,
             {
+               duration: titleCharDuration,
                ease: titleCharEase,
                rotation: 0,
                scale: 1,

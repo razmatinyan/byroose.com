@@ -80,7 +80,7 @@ const backdropLead = 1;
 const backdropRevealDelay = 0.7;
 const backdropRiseLength = 0.8;
 const backdropRadius = 32;
-const backdropExitLift = 0.15;
+const backdropExitReach = 1;
 
 function splitWords(parts: SplitTextResult | undefined) {
    return parts?.words ?? [];
@@ -459,7 +459,12 @@ export function useServicesMotion(
       const { panel } = layout;
       const backdrop = panel.querySelector<HTMLElement>(selectors.backdrop);
       const curve = panel.querySelector<HTMLElement>(selectors.backdropCurve);
-      if (!backdrop || !curve) return;
+      const section = panel.parentElement;
+      if (!backdrop || !curve || !section) return;
+
+      const closingSpace = () =>
+         section.getBoundingClientRect().bottom -
+         panel.getBoundingClientRect().bottom;
 
       gsap
          .timeline({
@@ -479,7 +484,7 @@ export function useServicesMotion(
             { y: 0 },
             {
                y: () =>
-                  -(curve.offsetHeight + window.innerHeight * backdropExitLift),
+                  closingSpace() * backdropExitReach - curve.offsetHeight,
             },
             0,
          );

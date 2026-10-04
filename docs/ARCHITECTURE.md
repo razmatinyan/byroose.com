@@ -178,15 +178,15 @@ the children of its `data-service-content` block, the description line rise
 anchored to the static service title, and the scrubbed bottom origin image entry
 and top origin image exit with the scroll hold between them that keeps the image
 near the viewport center. It also owns the scrubbed rise of a dark panel's
-`data-service-backdrop` from the viewport bottom center, and its curved,
-lifting exit as the panel leaves. Because the content block moves, those triggers are
+`data-service-backdrop` from the viewport bottom center, and its curved
+exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. ServicesSection owns the copy, the image links, and
 the tooltip handlers. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
-useJourneyMotion owns the journey section's motion: the scrubbed character
+useJourneyMotion owns the journey section's motion: the one-time character
 spawn of the `data-journey-title` heading beneath the services section's
 exiting dark curve. It waits for the title's character split and shows the
 title at rest under reduced motion.

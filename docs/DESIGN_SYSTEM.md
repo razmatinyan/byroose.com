@@ -1079,18 +1079,21 @@ and resting at `scaleY(0)` from its top edge. The rest state is a plain CSS
 separate `scale` property, which would stack with the transform GSAP writes.
 
 As the reader leaves the panel, one scrubbed timeline grows the curve
-to full height and lifts the whole wrapper by the curve's height plus `0.15`
-of the viewport, set through `backdropExitLift`. The dark bottom edge bows
-downward into an arc while the dark area slowly retreats upward. The curve's
-tip therefore ends `0.15` of a viewport above the panel's bottom edge and never
-reaches the journey section. The landing wrapper's horizontal clip hides the
+to full height and moves the whole wrapper so the curve's tip travels down
+through the section's closing `spacing-section`. The wrapper's offset is the
+closing space times `backdropExitReach` minus the curve's height, so the tip
+reaches that share of the closing space by the end. At `1` the tip ends at the
+services section's bottom edge, just the journey section's top padding above
+the journey title, which keeps the dark panel close to the title it spawns.
+Lower the reach to leave more canvas between them. The tip never passes the
+section's bottom edge, so it never covers the journey section. The landing wrapper's horizontal clip hides the
 curve where it runs past the viewport. The timeline starts at the end of the
 image hold, the shared `holdPoint` position where the image begins its quick
 exit, so the curve and the quick exit begin together. It ends when the panel's
 bottom edge reaches the viewport top.
 
 Reduced motion drops the intro pin, every reveal, the image scale, and the
-backdrop rise, curve, and lift. It displays the intro title words, the
+backdrop rise and curve. It displays the intro title words, the
 descriptions, and the images at rest, and the dark panel keeps a
 flat backdrop without the lead.
 
@@ -1111,16 +1114,17 @@ tracking. If the title copy changes, measure the new phrase and update
 `--journey-title-size` so the first paint stays close to the fitted size.
 
 The title is spawned by the services section's dark curve. As the dark panel
-above bows into its arc and lifts away, the title's characters appear beneath
-it one after another in reading order. Each character drops from `-110`
+above bows into its arc and reaches toward it, the title's characters appear
+beneath it one after another in reading order. Each character drops from `-110`
 percent of its height above its resting place, grows from `0` scale from its
-top edge, and turns from `-24` degrees to upright with a `power3.out` ease and a
-`0.08` stagger. The reveal is scrubbed from the moment the title's top enters
-the viewport bottom until its bottom reaches 55 percent of the viewport, which
-keeps it inside the curve's exit, since the title follows the arc's tip at a
-roughly constant distance. The arc never crosses the title, so the characters
-always settle on the canvas. The triggers use a `refreshPriority` of `-2`, so
-they measure after the services section's pin and triggers above them.
+top edge, and turns from `-24` degrees to upright over `1.4` seconds with a
+`power3.out` ease and a `0.06` stagger. The reveal is not scrubbed. It plays
+once when the title's top reaches 85 percent of the viewport, which falls
+inside the curve's exit, and then runs on its own timing so the characters
+settle smoothly whatever the scroll speed. The arc's tip stops at the services
+section's bottom edge, so the characters always settle on the canvas. The
+trigger uses a `refreshPriority` of `-2`, so it measures after the services
+section's pin and triggers above it.
 
 Reduced motion shows the title at rest without the reveal.
 
