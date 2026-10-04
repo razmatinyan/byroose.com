@@ -31,8 +31,8 @@ const {
 const servicesRoute = '/services'
 
 const actionVariants: Record<Theme, ButtonVariant> = {
-	blue: 'cream',
-	orange: 'cream',
+	blue: 'light',
+	orange: 'light',
 	white: 'dark',
 }
 

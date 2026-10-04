@@ -22,6 +22,7 @@ export const buttonVariants = cva(
             ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
             link: "text-primary underline-offset-4 hover:underline",
             cream: "bg-brand-cream text-brand-cream-foreground hover:bg-card hover:text-foreground",
+            light: "bg-card text-card-foreground hover:bg-brand-cream hover:text-brand-cream-foreground",
             inverse:
                "bg-transparent text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground",
          },
@@ -54,6 +55,7 @@ export const variantRolloverTones: Partial<
    Record<ButtonVariant, RolloverTones>
 > = {
    cream: ["primary", "green", "dark"],
+   light: ["primary", "green", "dark"],
    dark: ["green", "pink", "primary"],
    default: ["blue", "green", "dark"],
    outline: ["primary", "green", "dark"],
