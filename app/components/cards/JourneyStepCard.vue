@@ -45,7 +45,7 @@ const surfaceClasses: Record<Theme, string> = {
 			:class="
 				cn(
 					'journey-step-number',
-					theme === 'white' ? 'text-foreground/25' : 'text-foreground',
+					theme === 'white' ? 'text-current/25' : 'text-current/40',
 				)
 			"
 		>
@@ -94,21 +94,24 @@ const surfaceClasses: Record<Theme, string> = {
 @reference '../../assets/css/tailwind.css';
 
 .journey-step {
-	@apply grid size-full grid-rows-[auto_auto_auto_minmax(0,1fr)] content-start gap-x-12 gap-y-8 overflow-hidden rounded-2xl p-6 md:grid-cols-2 md:grid-rows-[auto_auto] md:gap-y-12 md:p-10 xl:gap-y-16 xl:p-14;
+	--journey-step-display: min(var(--text-step), 20cqi);
+	--journey-step-label: calc(var(--journey-step-display) * 0.75);
+	--journey-step-row-gap: 2rem;
+	@apply grid size-full grid-rows-[auto_auto_auto_minmax(0,1fr)] content-start gap-x-12 gap-y-(--journey-step-row-gap) overflow-hidden rounded-2xl p-6 md:grid-cols-2 md:grid-rows-[auto_auto] md:p-10 md:[--journey-step-display:min(var(--text-step),9.5cqi)] md:[--journey-step-row-gap:3rem] xl:p-14 xl:[--journey-step-row-gap:4rem];
 	container-type: inline-size;
 }
 
 .journey-step-title,
 .journey-step-number {
-	@apply m-0 min-w-0 text-[length:min(var(--text-step),20cqi)] leading-[0.85] font-bold tracking-[-0.05em] wrap-break-word md:text-[length:min(var(--text-step),9.5cqi)];
+	@apply m-0 min-w-0 leading-[0.85] font-bold tracking-[-0.05em] wrap-break-word;
 }
 
 .journey-step-title {
-	@apply row-start-1 md:col-start-1;
+	@apply row-start-1 text-(length:--journey-step-display) md:col-start-1;
 }
 
 .journey-step-number {
-	@apply row-start-3 overflow-clip md:col-start-2 md:row-start-1;
+	@apply row-start-3 overflow-clip text-right text-(length:--journey-step-label) uppercase md:col-start-2 md:row-start-1 md:self-end;
 	margin-block: -0.12em -0.2em;
 	margin-inline-end: -0.15em;
 	padding-block: 0.12em 0.2em;
@@ -125,7 +128,10 @@ const surfaceClasses: Record<Theme, string> = {
 }
 
 .journey-step-media {
-	@apply row-start-4 min-h-0 overflow-hidden rounded-2xl md:col-start-2 md:row-start-2 md:aspect-16/11;
+	@apply relative row-start-4 min-h-0 overflow-hidden rounded-2xl md:col-start-2 md:row-start-2 md:aspect-16/11;
+	margin-top: calc(
+		-1 * (var(--journey-step-row-gap) + var(--journey-step-label) * 0.3)
+	);
 }
 
 .journey-step-image {

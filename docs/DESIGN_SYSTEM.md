@@ -1136,32 +1136,38 @@ panel inset the services section uses, and `perspective-distant`, which is
 `1200px`. The JourneyStepCard fills the frame with a `rounded-2xl` corner and
 its theme surface, and carries no actions. From `md` it is a two-column grid
 with two rows, packed to the top. The first row pairs the title on the left
-with a large "Step" label and the step number on the right, set at the same
-size, weight, and tracking as the title, so the two read as one line across the
-card. The label is `foreground` on the blue and orange cards and `foreground`
-at 25 percent on the white card, where full `foreground` would match the title.
-The second row pairs the description on the left with the image on the right,
-so the image sits under the step label. The rows are `gap-y-12` apart, and
-`gap-y-16` from `xl`, which keeps the description clearly apart from the title.
-Below `md` the card stacks the title, the description, the step label, and the
-image, which fills the remaining height, with `gap-y-8` between them.
+with an uppercase "STEP" label and the step number on the right, aligned to the
+column's right edge and to the bottom of the row. The label shares the title's
+weight and tracking at `0.75` of its size, through the card's
+`--journey-step-display` and `--journey-step-label` variables. It is a dimmed
+copy of the card's own text color, `text-current/25` on the white card and
+`text-current/40` on the blue and orange cards, so it reads as a quieter
+companion to the title rather than a second black heading. The second row pairs
+the description on the left with the image on the right. The rows sit
+`--journey-step-row-gap` apart: `2rem` below `md`, `3rem` from `md`, and `4rem`
+from `xl`, which keeps the description clearly apart from the title. The image
+pulls up by that gap plus `0.3` of the label size, so it overlaps the bottom of
+the step label, and it is `relative`, so it paints over the label. Below `md`
+the card stacks the title, the description, the step label, and the image,
+which fills the remaining height, with the same overlap.
 
 The description is set at `text-xl`, `text-2xl` from `sm`, and `text-3xl` from
 `xl`, with a `1.05` leading, `-0.045em` tracking, `font-medium`, and a `32ch`
 measure. It inherits the surface's text color, so it matches the title. The
 image takes the right column at a `16/11` ratio from `md`. The images are
 `object-cover` NuxtImg crops of the 1456 by 816 hero placeholders in
-`public/images/hero`, lazy loaded with the services panel's
-`sm:1024px md:1280px lg:1536px` sizes, which cover a roughly square crop on
+`public/images/hero`, `1.png`, `5.png`, and `2.png` in step order, lazy
+loaded with the services panel's `sm:1024px md:1280px lg:1536px` sizes, which cover a roughly square crop on
 phones and the `16/11` crop of a half-width column up to a 2560px viewport.
 Replace them with real process imagery when it exists.
 
 The title and the step label must never clip at their column's right edge. The
-card is an inline-size container, and both set `min(var(--text-step), 20cqi)`
-below `md` and `min(var(--text-step), 9.5cqi)` from `md`, where a column is
-just under half the card. They hold `text-step` until the column gets too
-narrow and then shrink with it, which keeps a word of about nine letters on one
-line. Longer titles wrap between words, and a single word that is still too
+card is an inline-size container, and `--journey-step-display` is
+`min(var(--text-step), 20cqi)` below `md` and `min(var(--text-step), 9.5cqi)`
+from `md`, where a column is just under half the card. The title uses it
+directly and the label uses `0.75` of it. They hold `text-step` until the
+column gets too narrow and then shrink with it, which keeps a word of about
+nine letters on one line. Longer titles wrap between words, and a single word that is still too
 wide breaks through `overflow-wrap: break-word` instead of overflowing. The
 title's line masks span its full column rather than the text, and every mask,
 including the step label's, extends `0.15em` past its end with a matching
