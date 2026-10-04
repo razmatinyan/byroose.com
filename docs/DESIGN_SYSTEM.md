@@ -107,8 +107,9 @@ changes.
   name still holds one line. Its leading of `1.08` leaves room for the
   descender of "Development". The titles are plain headings without a reveal
   or a mask.
-- `text-step` supports the oversized process composition. The journey title
-  has no size token, because it fits its container. See Journey section.
+- `text-step` sets the journey step card titles at
+  `clamp(4rem, 9vw, 9rem)` with a leading of `0.85`. The journey section
+  title has no size token, because it fits its container. See Journey section.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
 Use sentence case for small interface text and card metadata. Do not use expanded
@@ -992,9 +993,10 @@ the server output and at rest from the start, so the panel always names its
 service. The title still anchors the description reveal: when the title
 reaches 60 percent of the viewport, the description rises line by line from
 `SplitText` line masks with a `0.1s` stagger set through
-`descriptionStagger` in `useServicesMotion`. Each description line takes
+`lineRevealStagger` in `app/lib/word-reveal.ts`. Each description line takes
 `1.5s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
-through `descriptionDuration` and `descriptionEase`. Each mask rise uses the
+through `lineRevealDuration` and `lineRevealEase`. The journey step cards share
+the same three values. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest.
 Anchoring to the title keeps the reveal and the dark backdrop rise on the same
 trigger, even though the description sits below the title. The lines and their
@@ -1126,7 +1128,46 @@ section's bottom edge, so the characters always settle on the canvas. The
 trigger uses a `refreshPriority` of `-2`, so it measures after the services
 section's pin and triggers above it.
 
-Reduced motion shows the title at rest without the reveal.
+The steps follow the title as a stack of full-height cards. Each step is a
+`data-journey-slide` exactly one `100svh` tall, holding a
+`data-journey-slide-frame` with `clamp(1rem, 2vw, 1.5rem)` of padding, the
+panel inset the services section uses, and `perspective-distant`, which is
+`1200px`. The JourneyStepCard fills the frame with a `rounded-2xl` corner and
+its theme surface. Its head sits at the top left: the step number in a small
+`rounded-md` pill, `bg-background` on the white card and `bg-card` on the blue
+and orange cards, always in `foreground`, and the title below it at
+`text-step`. The description sits at the bottom left at `text-xl`, `text-2xl`
+from `sm`, and `text-3xl` from `xl`, with a `1.05` leading, `font-medium`, and
+a `32ch` measure. It inherits the surface's text color, so it matches the
+title. From `md` the image keeps the right column at its `16/11` ratio,
+vertically centered across both rows. Below `md` the card stacks the head, the
+image filling the remaining height, and the description. Cards carry no
+actions.
+
+Every card but the last pins its frame for one viewport of scroll once the
+slide's top reaches the viewport top, with `pinSpacing` off, so the next slide,
+which is `relative` and later in the document, scrolls up over the pinned card.
+While it is covered, one scrubbed timeline scales the card to `0.7`, tilts it
+back `40` degrees around its horizontal axis, and turns it a random amount up
+to `5` degrees either way with `power1.in`, then fades it out with
+`power1.inOut` over the last quarter of the pin. The last card does not pin, so
+the section ends on it.
+
+Each card's text reveals as it arrives. When the head reaches 82 percent of the
+viewport, the number pill rises from one pill height below and fades in, and
+`0.1s` later the title rises from its `SplitText` line mask. When the
+description reaches the same point, it rises line by line from its own line
+masks. Both use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
+stagger. The description re-splits its lines on resize, and a re-split before
+its reveal rebuilds the reveal with the new lines while a later one shows them
+at rest. The line masks carry `0.12em` above and `0.2em` below with matching
+negative margins, so the tight leading never clips a descender. The image
+wrapper reveals at the same 82 percent point with the Studio portrait's clip:
+an inset that opens from the bottom over `1.2s` with `power3.inOut`, cleared at
+the end.
+
+Reduced motion shows the title and every card at rest, without the reveals and
+without the pin, so the cards simply follow one another.
 
 ### Header motion
 

@@ -5,6 +5,9 @@ export const wordRevealStart = "top 82%";
 export const wordRevealStagger = 0.03;
 export const wordRevealDenseStagger = 0.01;
 export const navRevealStagger = 0.08;
+export const lineRevealDuration = 1.5;
+export const lineRevealEase = "power3";
+export const lineRevealStagger = 0.1;
 
 export interface WordRevealOptions {
 	duration?: number;

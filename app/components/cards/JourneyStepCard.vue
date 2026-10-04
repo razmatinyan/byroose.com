@@ -3,6 +3,8 @@ import type { HTMLAttributes } from 'vue'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import MediaPlaceholder from '@/components/shared/MediaPlaceholder.vue'
+import SplitText from '@/components/shared/SplitText.vue'
+import type { SplitTextResult } from '@/lib/split-text'
 
 type Theme = 'blue' | 'orange' | 'white'
 
@@ -22,6 +24,11 @@ const {
 	visual: string
 }>()
 
+const emit = defineEmits<{
+	bodySplit: [parts: SplitTextResult]
+	titleSplit: [parts: SplitTextResult]
+}>()
+
 const surfaceClasses: Record<Theme, string> = {
 	blue: 'surface-blue',
 	orange: 'surface-orange',
@@ -35,43 +42,51 @@ const surfaceClasses: Record<Theme, string> = {
 		variant="plain"
 		:class="cn('journey-step', surfaceClasses[theme], className)"
 	>
-		<div>
+		<div class="journey-step-head" data-journey-step-head>
 			<span
 				:class="
 					cn(
 						'journey-step-number',
-						theme === 'white' && 'text-foreground',
-						theme === 'blue' && 'text-brand-cream',
-						theme === 'orange' && 'text-white',
+						theme === 'white' ? 'bg-background' : 'bg-card',
 					)
 				"
+				data-journey-step-number
 			>
 				{{ number }}
 			</span>
-			<h3 class="journey-step-title">{{ title }}</h3>
-			<p
+			<SplitText
+				class="journey-step-title"
+				as="h3"
+				mask="lines"
+				:text="title"
+				type="lines"
+				@split="emit('titleSplit', $event)"
+			/>
+		</div>
+
+		<div class="journey-step-media" data-journey-step-media>
+			<MediaPlaceholder
+				:label="visual"
 				:class="
 					cn(
-						'journey-step-copy',
-						theme === 'white'
-							? 'text-muted-foreground'
-							: 'text-current opacity-90',
+						'journey-step-visual',
+						theme === 'blue' && 'pattern-blue',
+						theme === 'orange' && 'pattern-orange',
 					)
 				"
-			>
-				{{ body }}
-			</p>
+				:label-class="theme === 'white' ? undefined : 'text-current opacity-90'"
+			/>
 		</div>
-		<MediaPlaceholder
-			:label="visual"
-			:class="
-				cn(
-					'journey-step-visual',
-					theme === 'blue' && 'pattern-blue',
-					theme === 'orange' && 'pattern-orange',
-				)
-			"
-			:label-class="theme === 'white' ? undefined : 'text-current opacity-90'"
+
+		<SplitText
+			class="journey-step-copy"
+			as="p"
+			auto-split
+			mask="lines"
+			:text="body"
+			type="lines,words"
+			data-journey-step-copy
+			@split="emit('bodySplit', $event)"
 		/>
 	</Card>
 </template>
@@ -80,26 +95,49 @@ const surfaceClasses: Record<Theme, string> = {
 @reference '../../assets/css/tailwind.css';
 
 .journey-step {
-	@apply grid w-full grid-cols-1 items-center gap-8 px-page py-10 md:grid-cols-2 md:gap-12 md:py-14 xl:gap-16 xl:py-18;
+	@apply grid size-full grid-rows-[auto_minmax(0,1fr)_auto] gap-6 overflow-hidden rounded-2xl p-6 md:grid-cols-2 md:grid-rows-[1fr_auto] md:gap-x-12 md:p-10 xl:p-14;
 }
 
-.journey-step-first {
-	@apply mt-8 md:mt-14;
+.journey-step-head {
+	@apply flex flex-col items-start gap-4 md:col-start-1 md:row-start-1 md:gap-6;
 }
 
 .journey-step-number {
-	@apply block text-step font-bold tracking-[-0.06em];
+	@apply rounded-md px-2.5 py-1 text-base font-medium text-foreground tabular-nums;
 }
 
 .journey-step-title {
-	@apply mt-4 mb-0 text-3xl leading-none font-bold tracking-[-0.035em] lg:text-4xl xl:text-5xl;
+	@apply m-0 text-step font-bold tracking-[-0.05em];
 }
 
-.journey-step-copy {
-	@apply mt-4 mb-0 max-w-[46ch] text-base leading-relaxed sm:text-lg;
+.journey-step-media {
+	@apply min-h-0 md:col-start-2 md:row-span-2 md:row-start-1 md:self-center;
 }
 
 .journey-step-visual {
-	@apply aspect-16/11 rounded-2xl;
+	@apply size-full rounded-2xl md:aspect-16/11 md:h-auto;
+}
+
+.journey-step-copy {
+	@apply m-0 max-w-[32ch] text-xl leading-[1.05] font-medium tracking-[-0.025em] sm:text-2xl md:col-start-1 md:row-start-2 xl:text-3xl;
+}
+
+.journey-step-title :deep(.split-text-line),
+.journey-step-title :deep(.split-text-line-mask),
+.journey-step-copy :deep(.split-text-line),
+.journey-step-copy :deep(.split-text-line-mask) {
+	display: block;
+}
+
+.journey-step-title :deep(.split-text-line),
+.journey-step-copy :deep(.split-text-line) {
+	visibility: hidden;
+	white-space: nowrap;
+}
+
+.journey-step-title :deep(.split-text-line-mask),
+.journey-step-copy :deep(.split-text-line-mask) {
+	margin-block: -0.12em -0.2em;
+	padding-block: 0.12em 0.2em;
 }
 </style>

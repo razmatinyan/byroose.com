@@ -35,14 +35,28 @@ const journeySteps = [
 
 const journeyRoot = useTemplateRef<HTMLElement>('journeyRoot')
 const titleSplit = shallowRef<SplitTextResult>()
+const stepTitleSplits = shallowRef<(SplitTextResult | undefined)[]>(
+	journeySteps.map(() => undefined),
+)
+const stepBodySplits = shallowRef<(SplitTextResult | undefined)[]>(
+	journeySteps.map(() => undefined),
+)
 
 useFitText(() =>
 	journeyRoot.value?.querySelector<HTMLElement>('[data-journey-title]'),
 )
-useJourneyMotion(journeyRoot, { titleSplit })
+useJourneyMotion(journeyRoot, { stepBodySplits, stepTitleSplits, titleSplit })
 
 function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts
+}
+
+function setStepTitleSplit(index: number, parts: SplitTextResult) {
+	stepTitleSplits.value = stepTitleSplits.value.with(index, parts)
+}
+
+function setStepBodySplit(index: number, parts: SplitTextResult) {
+	stepBodySplits.value = stepBodySplits.value.with(index, parts)
 }
 </script>
 
@@ -59,12 +73,23 @@ function setTitleSplit(parts: SplitTextResult) {
 			/>
 		</div>
 
-		<JourneyStepCard
-			v-for="(step, index) in journeySteps"
-			:key="step.number"
-			v-bind="step"
-			:class="index === 0 && 'journey-step-first'"
-		/>
+		<div class="journey-steps">
+			<div
+				v-for="(step, index) in journeySteps"
+				:key="step.number"
+				class="journey-slide"
+				data-journey-slide
+			>
+				<div class="journey-slide-frame" data-journey-slide-frame>
+					<JourneyStepCard
+						v-bind="step"
+						data-journey-slide-card
+						@title-split="setStepTitleSplit(index, $event)"
+						@body-split="setStepBodySplit(index, $event)"
+					/>
+				</div>
+			</div>
+		</div>
 	</section>
 </template>
 
@@ -92,5 +117,17 @@ function setTitleSplit(parts: SplitTextResult) {
 
 .journey-title :deep(.split-text-char) {
 	visibility: hidden;
+}
+
+.journey-steps {
+	@apply mt-8 md:mt-14;
+}
+
+.journey-slide {
+	@apply relative h-svh;
+}
+
+.journey-slide-frame {
+	@apply size-full p-[clamp(1rem,2vw,1.5rem)] perspective-distant;
 }
 </style>

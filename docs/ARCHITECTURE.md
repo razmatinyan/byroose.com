@@ -188,8 +188,15 @@ Reduced motion resolves every reveal to visible content without the pin.
 
 useJourneyMotion owns the journey section's motion: the one-time character
 spawn of the `data-journey-title` heading beneath the services section's
-exiting dark curve. It waits for the title's character split and shows the
-title at rest under reduced motion.
+exiting dark curve, the stacking pin that scales, tilts, and fades each
+`data-journey-slide` card except the last while the next one covers it, and
+each card's number, title line, description line, and image reveals. It waits
+for the title's character split and every card's title and description splits,
+rebuilds a description reveal when its lines re-split before it plays, and
+shows everything at rest without the pin under reduced motion.
+JourneySection owns the step content and the slide wrappers, and
+JourneyStepCard owns the card layout and emits its title and description
+splits.
 
 useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
@@ -293,7 +300,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   the ease. The Studio section and the services panels both append it to their
   own timelines, so their word reveals share one recipe. It also exports
   `navRevealStagger`, which the home intro and the site header share for the
-  navigation link rise.
+  navigation link rise, and the line reveal timing, `lineRevealDuration`,
+  `lineRevealEase`, and `lineRevealStagger`, which the services descriptions
+  and the journey step cards share.
 - utils.ts contains pure class and value helpers.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.
