@@ -114,6 +114,10 @@ export function useJourneyMotion(
          );
    }
 
+   function textTrigger(slide: HTMLElement) {
+      return slide.querySelector<HTMLElement>(selectors.stepTitle) ?? slide;
+   }
+
    function revealNumber({ slide }: StepParts) {
       const number = slide.querySelector<HTMLElement>(selectors.number);
       if (!number) return;
@@ -123,7 +127,7 @@ export function useJourneyMotion(
             once: true,
             refreshPriority,
             start: wordRevealStart,
-            trigger: number,
+            trigger: textTrigger(slide),
          },
       });
 
@@ -165,7 +169,7 @@ export function useJourneyMotion(
             once: true,
             refreshPriority,
             start: wordRevealStart,
-            trigger: copy,
+            trigger: textTrigger(slide),
          },
       });
 
@@ -189,7 +193,7 @@ export function useJourneyMotion(
                   ease: lineRevealEase,
                   yPercent: 0,
                },
-               bodyLines.length * lineRevealStagger,
+               0,
             )
             .set(ctaMask, { clearProps: "clipPath" });
       }

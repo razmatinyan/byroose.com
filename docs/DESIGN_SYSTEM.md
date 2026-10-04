@@ -1194,17 +1194,18 @@ to `5` degrees either way with `power1.in`, then fades it out with
 `power1.inOut` over the last quarter of the pin. The last card does not pin, so
 the section ends on it.
 
-Each card's text reveals as it arrives. When the title, the step label, and
-the description each reach 82 percent of the viewport, they rise from their
-own masks: the title and the description line by line from their `SplitText`
-line masks, and the step label as one line from its clipping paragraph. All
-three use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
-stagger. The call to action belongs to the description's reveal and rises the
-way the hero action does, without any fade. Its `data-journey-step-cta-mask`
+Each card's text reveals as it arrives, all at once. When the card title
+reaches 82 percent of the viewport, the title, the step label, the description,
+and the call to action start rising together from their own masks: the title
+and the description line by line from their `SplitText` line masks, and the
+step label as one line from its clipping paragraph. All of them share that one
+trigger and use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
+stagger between lines. The call to action belongs to the description's reveal
+and rises the way the hero action does, without any fade. Its `data-journey-step-cta-mask`
 wrapper is clipped to `inset(0)` and the inner `data-journey-step-cta` block
 starts `115` percent below it, the shared `wordRevealOffset`, then rises to rest
-with the same duration and ease, one stagger step after the last description
-line. The transform and the clip are cleared at the end, so the button's focus
+with the same duration and ease, starting with the first description line
+rather than after the last one. The transform and the clip are cleared at the end, so the button's focus
 ring and hover rollover are never cut by the mask. The title and the description re-split their lines on resize. A
 re-split before its reveal rebuilds that reveal with the new lines, and a later
 one shows them at rest. The line masks carry `0.12em` above and `0.2em` below with matching
