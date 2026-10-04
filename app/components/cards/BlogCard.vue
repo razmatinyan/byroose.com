@@ -1,80 +1,61 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { HTMLAttributes } from 'vue'
-import { cn } from '@/lib/utils'
+import { NuxtLink } from '#components'
 import { Card } from '@/components/ui/card'
+import { surfaceTones } from '@/lib/surfaces'
+import { cn, formatPublishDate } from '@/lib/utils'
 
-type Variant = 'blue' | 'orange' | 'photo' | 'pink' | 'white'
+type BlogCardTone = 'green' | 'pink' | 'yellow'
 
 const {
 	category,
 	class: className,
-	description,
-	duration,
-	featured = false,
-	href = '#blog',
+	href,
+	image,
+	publishedAt,
 	title,
-	variant = 'white',
-	wide = false,
+	tone = 'pink',
 } = defineProps<{
-	category?: string
+	category: string
 	class?: HTMLAttributes['class']
-	description?: string
-	duration?: string
-	featured?: boolean
-	href?: string
+	href: string
+	image: string
+	publishedAt: string
 	title: string
-	variant?: Variant
-	wide?: boolean
+	tone?: BlogCardTone
 }>()
 
-const surfaceClasses: Record<Variant, string> = {
-	blue: 'surface-blue',
-	orange: 'surface-orange',
-	photo: 'media-placeholder',
-	pink: 'surface-pink',
-	white: 'surface-card',
-}
+const publishedLabel = computed(() => formatPublishDate(publishedAt))
 </script>
 
 <template>
 	<Card
-		as="a"
+		:as="NuxtLink"
+		:to="href"
 		variant="plain"
-		:href="href"
-		:class="cn(
-			'blog-card tilt-card hover:text-current',
-			surfaceClasses[variant],
-			featured && 'blog-card-featured',
-			wide && 'blog-card-wide',
-			variant === 'photo' && 'blog-card-photo',
-			className,
-		)"
+		:class="cn('blog-card', surfaceTones[tone], className)"
 	>
-		<div v-if="featured" class="blog-card-meta">
-			<span class="text-brand-cream">{{ category ?? 'Featured' }}</span>
-			<span class="text-white/90">{{ duration }}</span>
+		<div class="blog-card-media">
+			<NuxtImg
+				class="blog-card-image"
+				:src="image"
+				alt=""
+				width="1456"
+				height="816"
+				sizes="sm:768px md:1024px lg:640px xl:768px 2xl:1024px"
+				densities="x1"
+				loading="lazy"
+				draggable="false"
+			/>
 		</div>
-		<span
-			v-else-if="category"
-			:class="cn(
-				'blog-card-category',
-				variant === 'white' && 'text-brand-soft',
-			)"
-		>
-			{{ category }}
-		</span>
 
-		<div>
-			<h3
-				:class="cn(
-					'blog-card-title',
-					featured && 'blog-card-title-featured',
-					!featured && !wide && 'blog-card-title-small',
-				)"
-			>
-				{{ title }}
-			</h3>
-			<p v-if="description" class="blog-card-description">{{ description }}</p>
+		<div class="blog-card-body">
+			<h3 class="blog-card-title">{{ title }}</h3>
+			<div class="blog-card-meta">
+				<span class="blog-card-category">{{ category }}</span>
+				<time class="blog-card-date" :datetime="publishedAt">{{ publishedLabel }}</time>
+			</div>
 		</div>
 	</Card>
 </template>
@@ -83,42 +64,34 @@ const surfaceClasses: Record<Variant, string> = {
 @reference '../../assets/css/tailwind.css';
 
 .blog-card {
-	@apply flex flex-col justify-between gap-4 rounded-3xl p-6 text-foreground;
+	@apply flex h-full flex-col gap-5 rounded-2xl p-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:gap-6;
 }
 
-.blog-card-featured {
-	@apply gap-6 bg-brand-blue p-7 text-brand-blue-foreground sm:col-span-2 sm:row-span-2;
+.blog-card-media {
+	@apply aspect-4/3 overflow-hidden rounded-xl;
 }
 
-.blog-card-wide {
-	@apply sm:col-span-2;
+.blog-card-image {
+	@apply size-full object-cover select-none;
 }
 
-.blog-card-photo {
-	@apply min-h-60 justify-end p-7;
-}
-
-.blog-card-meta {
-	@apply flex justify-between text-sm font-semibold;
-}
-
-.blog-card-category {
-	@apply text-sm font-semibold;
+.blog-card-body {
+	@apply flex flex-1 flex-col gap-6 px-1.5 pb-1.5 md:gap-8;
 }
 
 .blog-card-title {
-	@apply m-0 max-w-[26ch] text-xl leading-tight font-semibold tracking-[-0.025em] sm:text-2xl;
+	@apply m-0 text-xl leading-tight font-semibold tracking-[-0.03em] text-pretty md:text-lg lg:text-2xl;
 }
 
-.blog-card-title-featured {
-	@apply max-w-[24ch] text-2xl leading-tight font-bold tracking-[-0.03em] md:text-3xl xl:text-4xl;
+.blog-card-meta {
+	@apply mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm md:text-xs xl:text-sm;
 }
 
-.blog-card-title-small {
-	@apply text-lg tracking-[-0.02em] sm:text-xl;
+.blog-card-category {
+	@apply rounded-full bg-current/10 px-3 py-1.5 font-medium xl:px-3.5;
 }
 
-.blog-card-description {
-	@apply mt-3.5 mb-0 max-w-[44ch] text-base leading-normal text-white/90;
+.blog-card-date {
+	@apply font-medium whitespace-nowrap;
 }
 </style>

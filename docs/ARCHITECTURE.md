@@ -304,7 +304,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   navigation link rise, and the line reveal timing, `lineRevealDuration`,
   `lineRevealEase`, and `lineRevealStagger`, which the services descriptions
   and the journey step cards share.
-- utils.ts contains pure class and value helpers.
+- utils.ts contains pure class and value helpers. `formatPublishDate` formats
+  an ISO date in fixed `en-US` long style at UTC, so the server and the client
+  render the same blog card date.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.
 

@@ -1216,6 +1216,36 @@ the end.
 Reduced motion shows the title and every card at rest, without the reveals and
 without the pin, so the cards simply follow one another.
 
+### Blog section
+
+The blog section is a white panel on the canvas. The section takes the
+journey slide inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
+`spacing-section` below it before the FAQ. Inside, a `bg-card` panel with
+`rounded-2xl` corners holds the `section-gutter` and `py-16`, `py-20` from
+`md`, and `py-24` from `xl`. The heading row pairs the "More Than a Blog" title,
+set in title case at the user's request, with a circular `NuxtLink` to `/blog`
+named "Read the blog". The circle is `size-12`, `size-14` from `md`, in `muted`
+with an arrow right glyph.
+
+Three `BlogCard`s follow in one column below `md` and three columns from `md`.
+Each card is a `NuxtLink` painted with a `surface-*` utility through its
+`tone` prop, which accepts `pink`, `yellow`, and `green`, used in that order.
+The card is `rounded-2xl` with `p-3`, so its `rounded-xl` image sits inset in
+the tint. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
+placeholder with an empty alt, because the title names the link. Below it come
+the title and a meta row that pairs the category pill on the left with the
+publishing date on the right. The pill uses `bg-current/10`, so it tints itself
+from the card's foreground on every surface. The date is a `time` element
+whose label comes from `formatPublishDate`. The meta row sits at the bottom of
+the card through `mt-auto`, so the rows align across cards with titles of
+different lengths. It is `text-xs` from `md` until `xl`, which keeps the date
+beside the pill from 1024 wide. On narrower three-column cards the date wraps
+below the pill.
+
+The articles, dates, and images are placeholders until real posts exist, and
+every card links to `/blog`. The hover effect is not decided yet, so the cards
+and the circle only show the standard focus ring.
+
 ### Header motion
 
 The site header has full and compact sticky states. The full state, with the
