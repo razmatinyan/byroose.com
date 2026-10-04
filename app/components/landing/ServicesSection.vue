@@ -111,8 +111,13 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
             <div
                class="service-backdrop-surface"
                data-service-backdrop-surface
+               data-header-surface="dark"
             />
-            <div class="service-backdrop-curve" data-service-backdrop-curve />
+            <div
+               class="service-backdrop-curve"
+               data-service-backdrop-curve
+               data-header-surface="dark"
+            />
          </div>
          <div class="service-content" data-service-content>
             <h3 class="service-title" data-service-title>

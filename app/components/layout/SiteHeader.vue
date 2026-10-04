@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, shallowRef, watch } from 'vue'
+import { computed, shallowRef, useTemplateRef, watch } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import SiteMenu from '@/components/layout/SiteMenu.vue'
 import SiteNavLink from '@/components/layout/SiteNavLink.vue'
@@ -36,7 +36,9 @@ const headerCtaVariant = computed(() => (menuOpen.value ? 'default' : 'dark'))
 const isDesktop = useMediaQuery('(min-width: 64rem)')
 const route = useRoute()
 const { scrollTo } = useSmoothScroll()
-const { headerMode, navRevealed } = useSiteHeaderMotion()
+const { headerMode, headerRoot, navRevealed } = useSiteHeaderMotion()
+const headerActions = useTemplateRef<HTMLElement>('headerActions')
+const { onDarkSurface } = useHeaderSurface(headerRoot, headerActions)
 
 function setMenuOpen(open: boolean) {
 	menuOpen.value = open
@@ -102,7 +104,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 				</span>
 			</nav>
 
-			<div class="site-header-actions">
+			<div ref="headerActions" class="site-header-actions">
 				<span ref="headerCta" class="site-header-cta-wrap">
 					<Button
 						class="site-header-cta"
@@ -110,6 +112,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 						:href="ctaHref"
 						size="cta-sm"
 						:variant="headerCtaVariant"
+						:data-bordered="onDarkSurface || undefined"
 					>
 						{{ ctaLabel }}
 						<template #icon>
@@ -122,6 +125,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 					<SiteMenu
 						:nav-items="resolvedNavItems"
 						:open="menuOpen"
+						:bordered="onDarkSurface"
 						@update:open="setMenuOpen"
 					/>
 				</span>
@@ -184,12 +188,23 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.site-header-cta::after {
+	@apply pointer-events-none absolute inset-0 border border-background/20 opacity-0 transition-opacity duration-300;
+	content: '';
+	border-radius: inherit;
+}
+
+.site-header-cta[data-bordered]::after {
+	@apply opacity-100;
+}
+
 .site-menu-button-wrap {
 	@apply relative z-20 lg:pointer-events-none lg:invisible;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.site-header-cta {
+	.site-header-cta,
+	.site-header-cta::after {
 		transition-duration: 0ms;
 	}
 

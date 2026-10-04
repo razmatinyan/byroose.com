@@ -51,7 +51,7 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 </script>
 
 <template>
-	<footer class="site-footer">
+	<footer class="site-footer" data-header-surface="dark">
 		<div class="site-footer-grid section-gutter">
 			<div v-for="group in resolvedGroups" :key="group.heading">
 				<div class="site-footer-heading">{{ group.heading }}</div>

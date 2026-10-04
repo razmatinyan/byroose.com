@@ -1108,6 +1108,18 @@ The control has no hover motion, only the shared press feedback. Activating it
 opens its own menu and never restores the primary navigation. There is no
 separate mobile dropdown.
 
+Both header actions share the dark action surface, so over a dark block they
+gain a one-pixel `background/20` border that keeps their outline readable. The
+dark blocks are the More works panel, the services backdrop surface and curve,
+and the site footer, each marked with `data-header-surface="dark"`.
+`useHeaderSurface` sets the state from what is actually behind the header
+actions. The menu control receives it through its `bordered` prop and fades its
+own border color, the same color it uses while expanded. The Start a project
+action receives `data-bordered` and fades in an `::after` ring with inherited
+radius above its rollover layers rather than a real border, because a filled
+rollover host must stay borderless. Both fades take `0.3s` and are instant under
+reduced motion. Mark any new dark block on the element that paints it.
+
 The primary navigation is plain text: no surface, padding, or shadow on the
 `nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.
 Each `SiteNavLink` sets its label in uppercase at `text-lg` and stacks a hidden

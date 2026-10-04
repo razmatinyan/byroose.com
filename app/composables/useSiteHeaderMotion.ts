@@ -212,6 +212,7 @@ export function useSiteHeaderMotion() {
 
 	return {
 		headerMode: readonly(headerMode),
+		headerRoot,
 		navRevealed: readonly(navRevealed),
 	}
 }

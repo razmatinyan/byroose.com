@@ -32,6 +32,7 @@ app/
     useHomeHeroScrollMotion.ts
     useHomeIntroMotion.ts
     useGsap.ts
+    useHeaderSurface.ts
     useHoverBounce.ts
     useHoverRollover.ts
     useMenuLinkMotion.ts
@@ -194,7 +195,20 @@ owns the navigation link reveal on routes other than home and the
 `navRevealed` flag that lifts the links' hidden CSS rest state once a reveal has
 finished, whether it ran there or in the home intro. It composes
 useGsap and useSmoothScroll so the layout component remains focused on header
-structure and navigation content.
+structure and navigation content. It also returns the header root ref, so the
+header can hand it to useHeaderSurface without registering a second template
+ref with the same key.
+
+useHeaderSurface reports whether a dark block sits behind the header actions.
+Blocks opt in by carrying `data-header-surface="dark"` on the element that
+actually paints the dark surface. On mount, on every shared Lenis scroll
+callback, on resize, and on `page:finish`, it hit tests the center of a probe
+element with `document.elementsFromPoint`, skips everything inside the header,
+and resolves the first element that is or sits inside a marked surface. Hit
+testing respects `clip-path`, so a surface that is still clipping its way in,
+such as the services backdrop, only counts once it actually reaches the probe.
+Mark the painted surface rather than a transparent wrapper, because a wrapper's
+box is hit even where nothing dark is painted.
 
 useSiteMenuMotion owns the compact navigation panel's trigger-relative fixed
 geometry, translated two-stage scale reveal, staggered content entrance,

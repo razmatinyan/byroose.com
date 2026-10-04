@@ -107,6 +107,7 @@ function openWorks(event: MouseEvent) {
 			ref="panel"
 			class="more-works"
 			data-work-more-panel
+			data-header-surface="dark"
 			@click="openWorks"
 			@pointerenter="showPreview"
 			@pointerleave="hidePreview"
