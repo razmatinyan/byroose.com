@@ -108,7 +108,8 @@ changes.
   descender of "Development". The titles are plain headings without a reveal
   or a mask.
 - `text-step` sets the journey step card titles at
-  `clamp(4rem, 9vw, 9rem)` with a leading of `0.85`. The journey section
+  `clamp(4rem, 9vw, 9rem)` with a leading of `0.85`, capped by the card
+  column's width. The journey section
   title has no size token, because it fits its container. See Journey section.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
@@ -1119,8 +1120,8 @@ The title is spawned by the services section's dark curve. As the dark panel
 above bows into its arc and reaches toward it, the title's characters appear
 beneath it one after another in reading order. Each character drops from `-110`
 percent of its height above its resting place, grows from `0` scale from its
-top edge, and turns from `-24` degrees to upright over `1.4` seconds with a
-`power3.out` ease and a `0.06` stagger. The reveal is not scrubbed. It plays
+top edge, and turns from `-24` degrees to upright over `1.1` seconds with a
+`power3.out` ease and a `0.045` stagger. The reveal is not scrubbed. It plays
 once when the title's top reaches 85 percent of the viewport, which falls
 inside the curve's exit, and then runs on its own timing so the characters
 settle smoothly whatever the scroll speed. The arc's tip stops at the services
@@ -1133,16 +1134,39 @@ The steps follow the title as a stack of full-height cards. Each step is a
 `data-journey-slide-frame` with `clamp(1rem, 2vw, 1.5rem)` of padding, the
 panel inset the services section uses, and `perspective-distant`, which is
 `1200px`. The JourneyStepCard fills the frame with a `rounded-2xl` corner and
-its theme surface. Its head sits at the top left: the step number in a small
-`rounded-md` pill, `bg-background` on the white card and `bg-card` on the blue
-and orange cards, always in `foreground`, and the title below it at
-`text-step`. The description sits at the bottom left at `text-xl`, `text-2xl`
-from `sm`, and `text-3xl` from `xl`, with a `1.05` leading, `font-medium`, and
-a `32ch` measure. It inherits the surface's text color, so it matches the
-title. From `md` the image keeps the right column at its `16/11` ratio,
-vertically centered across both rows. Below `md` the card stacks the head, the
-image filling the remaining height, and the description. Cards carry no
-actions.
+its theme surface, and carries no actions. From `md` it is a two-column grid
+with two rows, packed to the top. The first row pairs the title on the left
+with a large "Step" label and the step number on the right, set at the same
+size, weight, and tracking as the title, so the two read as one line across the
+card. The label is `foreground` on the blue and orange cards and `foreground`
+at 25 percent on the white card, where full `foreground` would match the title.
+The second row pairs the description on the left with the image on the right,
+so the image sits under the step label. The rows are `gap-y-12` apart, and
+`gap-y-16` from `xl`, which keeps the description clearly apart from the title.
+Below `md` the card stacks the title, the description, the step label, and the
+image, which fills the remaining height, with `gap-y-8` between them.
+
+The description is set at `text-xl`, `text-2xl` from `sm`, and `text-3xl` from
+`xl`, with a `1.05` leading, `-0.045em` tracking, `font-medium`, and a `32ch`
+measure. It inherits the surface's text color, so it matches the title. The
+image takes the right column at a `16/11` ratio from `md`. The images are
+`object-cover` NuxtImg crops of the 1456 by 816 hero placeholders in
+`public/images/hero`, lazy loaded with the services panel's
+`sm:1024px md:1280px lg:1536px` sizes, which cover a roughly square crop on
+phones and the `16/11` crop of a half-width column up to a 2560px viewport.
+Replace them with real process imagery when it exists.
+
+The title and the step label must never clip at their column's right edge. The
+card is an inline-size container, and both set `min(var(--text-step), 20cqi)`
+below `md` and `min(var(--text-step), 9.5cqi)` from `md`, where a column is
+just under half the card. They hold `text-step` until the column gets too
+narrow and then shrink with it, which keeps a word of about nine letters on one
+line. Longer titles wrap between words, and a single word that is still too
+wide breaks through `overflow-wrap: break-word` instead of overflowing. The
+title's line masks span its full column rather than the text, and every mask,
+including the step label's, extends `0.15em` past its end with a matching
+negative margin, so the last letter's ink, which overhangs the line box under
+negative tracking, is never cut.
 
 Every card but the last pins its frame for one viewport of scroll once the
 slide's top reaches the viewport top, with `pinSpacing` off, so the next slide,
@@ -1153,14 +1177,14 @@ to `5` degrees either way with `power1.in`, then fades it out with
 `power1.inOut` over the last quarter of the pin. The last card does not pin, so
 the section ends on it.
 
-Each card's text reveals as it arrives. When the head reaches 82 percent of the
-viewport, the number pill rises from one pill height below and fades in, and
-`0.1s` later the title rises from its `SplitText` line mask. When the
-description reaches the same point, it rises line by line from its own line
-masks. Both use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
-stagger. The description re-splits its lines on resize, and a re-split before
-its reveal rebuilds the reveal with the new lines while a later one shows them
-at rest. The line masks carry `0.12em` above and `0.2em` below with matching
+Each card's text reveals as it arrives. When the title, the step label, and
+the description each reach 82 percent of the viewport, they rise from their
+own masks: the title and the description line by line from their `SplitText`
+line masks, and the step label as one line from its clipping paragraph. All
+three use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
+stagger. The title and the description re-split their lines on resize. A
+re-split before its reveal rebuilds that reveal with the new lines, and a later
+one shows them at rest. The line masks carry `0.12em` above and `0.2em` below with matching
 negative margins, so the tight leading never clips a descender. The image
 wrapper reveals at the same 82 percent point with the Studio portrait's clip:
 an inset that opens from the bottom over `1.2s` with `power3.inOut`, cleared at

@@ -27,14 +27,16 @@ interface StepParts {
    titleLines: HTMLElement[];
 }
 
+type StepText = "body" | "title";
+
 const selectors = {
    card: "[data-journey-slide-card]",
    copy: "[data-journey-step-copy]",
    frame: "[data-journey-slide-frame]",
-   head: "[data-journey-step-head]",
    media: "[data-journey-step-media]",
    number: "[data-journey-step-number]",
    slide: "[data-journey-slide]",
+   stepTitle: "[data-journey-step-title]",
    title: "[data-journey-title]",
 } as const;
 
@@ -46,11 +48,9 @@ const titleCharFrom = {
    transformOrigin: "50% 0%",
    yPercent: -110,
 };
-const titleCharDuration = 1.4;
-const titleCharStagger = 0.06;
+const titleCharDuration = 1.1;
+const titleCharStagger = 0.045;
 const titleCharEase = "power3.out";
-const numberRiseOffset = 100;
-const stepTitleDelay = 0.1;
 const mediaRevealDuration = 1.2;
 const mediaRevealEase = "power3.inOut";
 const hiddenMediaClip = "inset(100% 0% 0% 0%)";
@@ -74,8 +74,14 @@ export function useJourneyMotion(
    let reducedMotion = false;
    let motionContext: gsap.Context | null = null;
    let steps: StepParts[] = [];
-   const bodyTimelines = new Map<HTMLElement, gsap.core.Timeline>();
-   const revealedBodies = new WeakSet<HTMLElement>();
+   const textTimelines: Record<
+      StepText,
+      Map<HTMLElement, gsap.core.Timeline>
+   > = { body: new Map(), title: new Map() };
+   const revealedTexts: Record<StepText, WeakSet<HTMLElement>> = {
+      body: new WeakSet(),
+      title: new WeakSet(),
+   };
 
    function spawnTitleChars(chars: HTMLElement[], trigger: HTMLElement) {
       if (!chars.length) return;
@@ -105,38 +111,45 @@ export function useJourneyMotion(
          );
    }
 
-   function revealHead({ slide, titleLines }: StepParts) {
-      const head = slide.querySelector<HTMLElement>(selectors.head);
+   function revealNumber({ slide }: StepParts) {
       const number = slide.querySelector<HTMLElement>(selectors.number);
-      if (!head || !number) return;
+      if (!number) return;
 
-      const timeline = gsap
-         .timeline({
-            scrollTrigger: {
-               once: true,
-               refreshPriority,
-               start: wordRevealStart,
-               trigger: head,
-            },
-         })
-         .fromTo(
-            number,
-            { autoAlpha: 0, yPercent: numberRiseOffset },
-            {
-               autoAlpha: 1,
-               duration: lineRevealDuration,
-               ease: lineRevealEase,
-               yPercent: 0,
-            },
-            0,
-         );
+      const timeline = gsap.timeline({
+         scrollTrigger: {
+            once: true,
+            refreshPriority,
+            start: wordRevealStart,
+            trigger: number,
+         },
+      });
+
+      addWordReveal(timeline, [number], {
+         duration: lineRevealDuration,
+         ease: lineRevealEase,
+      });
+   }
+
+   function revealTitle({ slide, titleLines }: StepParts) {
+      const title = slide.querySelector<HTMLElement>(selectors.stepTitle);
+      if (!title || !titleLines.length) return;
+
+      const timeline = gsap.timeline({
+         onStart: () => revealedTexts.title.add(slide),
+         scrollTrigger: {
+            once: true,
+            refreshPriority,
+            start: wordRevealStart,
+            trigger: title,
+         },
+      });
 
       addWordReveal(timeline, titleLines, {
          duration: lineRevealDuration,
          ease: lineRevealEase,
-         position: stepTitleDelay,
          stagger: lineRevealStagger,
       });
+      textTimelines.title.set(slide, timeline);
    }
 
    function revealBody({ bodyLines, slide }: StepParts) {
@@ -144,7 +157,7 @@ export function useJourneyMotion(
       if (!copy || !bodyLines.length) return;
 
       const timeline = gsap.timeline({
-         onStart: () => revealedBodies.add(slide),
+         onStart: () => revealedTexts.body.add(slide),
          scrollTrigger: {
             once: true,
             refreshPriority,
@@ -158,7 +171,7 @@ export function useJourneyMotion(
          ease: lineRevealEase,
          stagger: lineRevealStagger,
       });
-      bodyTimelines.set(slide, timeline);
+      textTimelines.body.set(slide, timeline);
    }
 
    function revealMedia({ slide }: StepParts) {
@@ -231,22 +244,46 @@ export function useJourneyMotion(
       });
    }
 
-   function replaceBodyLines(index: number, lines: HTMLElement[]) {
+   function replaceLines(
+      text: StepText,
+      index: number,
+      lines: HTMLElement[],
+   ) {
       const parts = steps[index];
       if (!parts) return;
 
-      parts.bodyLines = lines;
+      if (text === "title") parts.titleLines = lines;
+      else parts.bodyLines = lines;
+
       const context = motionContext;
 
-      if (reducedMotion || !context || revealedBodies.has(parts.slide)) {
+      if (reducedMotion || !context || revealedTexts[text].has(parts.slide)) {
          showAll(lines);
          return;
       }
 
-      const previous = bodyTimelines.get(parts.slide);
+      const previous = textTimelines[text].get(parts.slide);
       previous?.scrollTrigger?.kill();
       previous?.kill();
-      context.add(() => revealBody(parts));
+      context.add(() =>
+         text === "title" ? revealTitle(parts) : revealBody(parts),
+      );
+   }
+
+   function watchResplits(text: StepText, source: SplitListSource) {
+      watch(
+         () => toValue(source),
+         (next, previous) => {
+            if (!ready) return;
+
+            next.forEach((parts, index) => {
+               if (parts && parts !== previous?.[index]) {
+                  replaceLines(text, index, parts.lines);
+               }
+            });
+         },
+         { flush: "post" },
+      );
    }
 
    async function initialize(
@@ -285,7 +322,8 @@ export function useJourneyMotion(
             if (reducedMotion) {
                showAll([
                   ...titleChars,
-                  ...steps.flatMap(({ bodyLines, titleLines }) => [
+                  ...steps.flatMap(({ bodyLines, slide, titleLines }) => [
+                     ...slide.querySelectorAll<HTMLElement>(selectors.number),
                      ...titleLines,
                      ...bodyLines,
                   ]),
@@ -296,7 +334,8 @@ export function useJourneyMotion(
             spawnTitleChars(titleChars, title);
             steps.forEach((step, index) => {
                if (index < steps.length - 1) stackSlide(step);
-               revealHead(step);
+               revealNumber(step);
+               revealTitle(step);
                revealMedia(step);
                revealBody(step);
             });
@@ -333,19 +372,8 @@ export function useJourneyMotion(
       { flush: "post", immediate: true },
    );
 
-   watch(
-      () => toValue(stepBodySplits),
-      (next, previous) => {
-         if (!ready) return;
-
-         next.forEach((parts, index) => {
-            if (parts && parts !== previous?.[index]) {
-               replaceBodyLines(index, parts.lines);
-            }
-         });
-      },
-      { flush: "post" },
-   );
+   watchResplits("title", stepTitleSplits);
+   watchResplits("body", stepBodySplits);
 
    onScopeDispose(() => {
       disposed = true;

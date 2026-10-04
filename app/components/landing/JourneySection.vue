@@ -12,7 +12,7 @@ const journeySteps = [
 		title: 'Diagnose',
 		body:
 			'Two weeks of interviews, analytics and a teardown of your current site and content. You get a written diagnosis: what your audience actually responds to, where the site loses them, and the three things worth fixing first.',
-		visual: 'workshop board',
+		image: '/images/hero/2.png',
 		theme: 'white' as const,
 	},
 	{
@@ -20,7 +20,7 @@ const journeySteps = [
 		title: 'Build',
 		body:
 			'Design, copy, site and content assets produced in one sprint cadence. Weekly demos, no dark period. Everything ships behind measurement so we know what moved.',
-		visual: 'sprint board',
+		image: '/images/hero/3.png',
 		theme: 'blue' as const,
 	},
 	{
@@ -28,7 +28,7 @@ const journeySteps = [
 		title: 'Scale',
 		body:
 			'The formats that earn attention get made again, the rest get dropped, monthly. Content volume goes up through the AI pipeline while a human editor holds the line on quality.',
-		visual: 'growth chart',
+		image: '/images/hero/4.png',
 		theme: 'orange' as const,
 	},
 ]
