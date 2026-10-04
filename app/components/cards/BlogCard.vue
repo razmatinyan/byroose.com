@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import type { HTMLAttributes } from 'vue'
 import { NuxtLink } from '#components'
 import { Card } from '@/components/ui/card'
+import SplitText from '@/components/shared/SplitText.vue'
+import type { SplitTextResult } from '@/lib/split-text'
 import { surfaceTones } from '@/lib/surfaces'
 import { cn, formatPublishDate } from '@/lib/utils'
 
@@ -26,6 +28,10 @@ const {
 	tone?: BlogCardTone
 }>()
 
+const emit = defineEmits<{
+	titleSplit: [parts: SplitTextResult]
+}>()
+
 const publishedLabel = computed(() => formatPublishDate(publishedAt))
 </script>
 
@@ -34,6 +40,7 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 		:as="NuxtLink"
 		:to="href"
 		variant="plain"
+		data-blog-card
 		:class="cn('blog-card', surfaceTones[tone], className)"
 	>
 		<div class="blog-card-media">
@@ -51,10 +58,20 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 		</div>
 
 		<div class="blog-card-body">
-			<h3 class="blog-card-title">{{ title }}</h3>
-			<div class="blog-card-meta">
-				<span class="blog-card-category">{{ category }}</span>
-				<time class="blog-card-date" :datetime="publishedAt">{{ publishedLabel }}</time>
+			<SplitText
+				class="blog-card-title"
+				as="h3"
+				auto-split
+				mask="lines"
+				:text="title"
+				type="lines,words"
+				@split="emit('titleSplit', $event)"
+			/>
+			<div class="blog-card-meta-mask">
+				<div class="blog-card-meta" data-blog-card-meta>
+					<span class="blog-card-category">{{ category }}</span>
+					<time class="blog-card-date" :datetime="publishedAt">{{ publishedLabel }}</time>
+				</div>
 			</div>
 		</div>
 	</Card>
@@ -80,11 +97,36 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 }
 
 .blog-card-title {
-	@apply m-0 text-xl leading-tight font-semibold tracking-[-0.03em] text-pretty md:text-lg lg:text-2xl;
+	@apply m-0 text-2xl leading-[1.05] font-semibold tracking-[-0.045em] md:text-xl lg:text-3xl xl:text-4xl;
+}
+
+.blog-card-title :deep(.split-text-line),
+.blog-card-title :deep(.split-text-line-mask) {
+	display: block;
+}
+
+.blog-card-title :deep(.split-text-word) {
+	display: inline-block;
+}
+
+.blog-card-title :deep(.split-text-line) {
+	visibility: hidden;
+	white-space: nowrap;
+}
+
+.blog-card-title :deep(.split-text-line-mask) {
+	margin-block: -0.12em -0.2em;
+	margin-inline-end: -0.15em;
+	padding-block: 0.12em 0.2em;
+	padding-inline-end: 0.15em;
+}
+
+.blog-card-meta-mask {
+	@apply mt-auto overflow-clip;
 }
 
 .blog-card-meta {
-	@apply mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm md:text-xs xl:text-sm;
+	@apply flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm tracking-[-0.02em] md:text-xs xl:text-sm;
 }
 
 .blog-card-category {

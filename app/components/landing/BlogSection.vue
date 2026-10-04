@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { shallowRef, useTemplateRef } from 'vue'
+import { NuxtLink } from '#components'
 import BlogCard from '@/components/cards/BlogCard.vue'
-import SectionHeading from '@/components/shared/SectionHeading.vue'
-import { appIcons } from '@/lib/icons'
+import SplitText from '@/components/shared/SplitText.vue'
+import { Button, ButtonIcon } from '@/components/ui/button'
+import type { SplitTextResult } from '@/lib/split-text'
 
 const blogRoute = '/blog'
+const blogTitle = 'More Than a Blog'
 
 const articles = [
 	{
@@ -28,23 +32,55 @@ const articles = [
 		tone: 'green' as const,
 	},
 ]
+
+const blogRoot = useTemplateRef<HTMLElement>('blogRoot')
+const titleSplit = shallowRef<SplitTextResult>()
+const cardTitleSplits = shallowRef<(SplitTextResult | undefined)[]>(
+	articles.map(() => undefined),
+)
+
+useBlogMotion(blogRoot, { cardTitleSplits, titleSplit })
+
+function setTitleSplit(parts: SplitTextResult) {
+	titleSplit.value = parts
+}
+
+function setCardTitleSplit(index: number, parts: SplitTextResult) {
+	cardTitleSplits.value = cardTitleSplits.value.with(index, parts)
+}
 </script>
 
 <template>
-	<section id="blog" class="blog">
+	<section id="blog" ref="blogRoot" class="blog">
 		<div class="blog-panel section-gutter">
-			<SectionHeading class="items-center" title="More Than a Blog">
-				<NuxtLink class="blog-link" :to="blogRoute" aria-label="Read the blog">
-					<Icon :name="appIcons.arrowRight" class="size-5" aria-hidden="true" />
-				</NuxtLink>
-			</SectionHeading>
+			<div class="blog-heading" data-blog-heading>
+				<SplitText
+					class="section-title blog-title"
+					as="h2"
+					mask="words"
+					:text="blogTitle"
+					type="words"
+					@split="setTitleSplit"
+				/>
+				<div data-blog-cta-mask>
+					<span class="blog-action" data-blog-cta>
+						<Button :as="NuxtLink" :to="blogRoute" variant="dark" size="cta-lg">
+							All articles
+							<template #icon>
+								<ButtonIcon />
+							</template>
+						</Button>
+					</span>
+				</div>
+			</div>
 
 			<div class="blog-grid">
 				<BlogCard
-					v-for="article in articles"
+					v-for="(article, index) in articles"
 					:key="article.title"
 					v-bind="article"
 					:href="blogRoute"
+					@title-split="setCardTitleSplit(index, $event)"
 				/>
 			</div>
 		</div>
@@ -62,11 +98,33 @@ const articles = [
 	@apply rounded-2xl bg-card py-16 text-card-foreground md:py-20 xl:py-24;
 }
 
-.blog-link {
-	@apply inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:size-14;
+.blog-heading {
+	@apply flex flex-wrap items-end justify-between gap-6;
+}
+
+.blog-title {
+	@apply text-[clamp(2.75rem,9vw,9rem)] leading-[0.92];
+}
+
+.blog-title :deep(.split-text-word),
+.blog-title :deep(.split-text-word-mask) {
+	display: inline-block;
+}
+
+.blog-title :deep(.split-text-word) {
+	visibility: hidden;
+}
+
+.blog-title :deep(.split-text-word-mask) {
+	margin-block: -0.15em;
+	padding-block: 0.15em;
+}
+
+.blog-action {
+	@apply block;
 }
 
 .blog-grid {
-	@apply mt-8 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-3 xl:mt-14 xl:gap-5;
+	@apply mt-10 grid grid-cols-1 gap-4 md:mt-14 md:grid-cols-3 xl:mt-16 xl:gap-5;
 }
 </style>

@@ -1223,9 +1223,12 @@ journey slide inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
 `spacing-section` below it before the FAQ. Inside, a `bg-card` panel with
 `rounded-2xl` corners holds the `section-gutter` and `py-16`, `py-20` from
 `md`, and `py-24` from `xl`. The heading row pairs the "More Than a Blog" title,
-set in title case at the user's request, with a circular `NuxtLink` to `/blog`
-named "Read the blog". The circle is `size-12`, `size-14` from `md`, in `muted`
-with an arrow right glyph.
+set in title case at the user's request, with a `dark` `cta-lg` "All articles"
+action that routes to `/blog`, aligned to the row's bottom edge. The row wraps,
+so on phones the action sits below the title. The title keeps `section-title`
+for its weight and tracking but sets its own size,
+`clamp(2.75rem, 9vw, 9rem)`, about 130px at 1440 wide, larger than
+`text-section`, at `0.92` leading.
 
 Three `BlogCard`s follow in one column below `md` and three columns from `md`.
 Each card is a `NuxtLink` painted with a `surface-*` utility through its
@@ -1234,17 +1237,46 @@ The card is `rounded-2xl` with `p-3`, so its `rounded-xl` image sits inset in
 the tint. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
 placeholder with an empty alt, because the title names the link. Below it come
 the title and a meta row that pairs the category pill on the left with the
-publishing date on the right. The pill uses `bg-current/10`, so it tints itself
-from the card's foreground on every surface. The date is a `time` element
-whose label comes from `formatPublishDate`. The meta row sits at the bottom of
-the card through `mt-auto`, so the rows align across cards with titles of
-different lengths. It is `text-xs` from `md` until `xl`, which keeps the date
-beside the pill from 1024 wide. On narrower three-column cards the date wraps
-below the pill.
+publishing date on the right. The title is semibold at `text-2xl`, `text-xl`
+from `md`, `text-3xl` from `lg`, and `text-4xl` from `xl`, with `1.05` leading
+and `-0.045em` tracking. The meta row tracks at `-0.02em`. The pill uses
+`bg-current/10`, so it tints itself from the card's foreground on every
+surface. The date is a `time` element whose label comes from
+`formatPublishDate`. The meta row sits at the bottom of the card through
+`mt-auto`, so the rows align across cards with titles of different lengths. It
+is `text-xs` from `md` until `xl`, which keeps the date beside the pill from
+1024 wide. On narrower three-column cards the date wraps below the pill.
+
+`useBlogMotion` reveals the section. When the heading row reaches 82 percent of
+the viewport, the title words rise from their `SplitText` word masks with the
+shared word reveal, `0.8s` on `power3.out` with a `0.03s` stagger. The word
+masks carry `0.15em` of block padding cancelled by an equal negative margin for
+the tight leading. The action follows one stagger step after the last word,
+rising the same way as the journey call to action: its `data-blog-cta-mask`
+wrapper is clipped to `inset(0)` while the inner `data-blog-cta` block rises
+from `115` percent, and both the clip and the transform are cleared at the end
+so the focus ring and the rollover are never cut.
+
+Each card reveals from its own trigger at the same 82 percent line. The card
+opens with a `clip-path` inset from the bottom over `1.2s` on `power3.inOut`,
+the journey image reveal. Cards that share a layout row, measured by their
+`offsetTop` when they enter, start `0.15s` apart, so the desktop row reads as a
+stagger while stacked phone cards each reveal as they arrive without waiting.
+Halfway through the card reveal, the title rises line by line from its
+`SplitText` line masks with the journey card timing, `1.5s`, `power3`, and a
+`0.1s` stagger, and the meta row rises as one line from its clipping wrapper
+one stagger step after the last title line. The title splits into lines and
+words with every word an inline block, so the browser never breaks inside a
+hyphenated word such as "AI-generated". Each line is `white-space: nowrap`,
+and its mask extends `0.12em` above, `0.2em` below, and `0.15em` past its end
+with matching negative margins. The title uses `autoSplit`. A re-split before
+the card reveals rebuilds that card's reveal with the new lines, and a later
+one shows them at rest. Reduced motion shows the title, the action, and every
+card at rest without any reveal.
 
 The articles, dates, and images are placeholders until real posts exist, and
 every card links to `/blog`. The hover effect is not decided yet, so the cards
-and the circle only show the standard focus ring.
+only show the standard focus ring.
 
 ### Header motion
 
