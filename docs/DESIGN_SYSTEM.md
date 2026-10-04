@@ -139,9 +139,9 @@ The base radius is `1rem`. Cards may use larger radius tokens to create editoria
 softness. Controls use `radius-action`, which maps to `radius-sm` so every CTA
 shares the compact control radius.
 
-Action icon wrappers use `radius-action-icon`, calculated from the outer action
+Filled action icon tiles use `radius-action-icon`, calculated from the action
 radius minus the shared inset. This keeps the outer and inner curves concentric.
-Do not tune the icon wrapper radius independently inside a button size.
+Do not tune the icon tile radius independently.
 
 Use borders before shadows for most containment. Add a shadow only when elevation
 communicates layering, such as an open mobile menu or floating overlay.
@@ -264,20 +264,16 @@ Unicode glyphs or package-specific icon components in templates. The collection
 is installed locally and the known icons are client-bundled, so rendering never
 depends on the public Iconify API.
 
-`ButtonIcon` owns the icon tile, tone, and icon-size contract. The `cta-sm` and
-`cta-lg` button variants keep a compact 4px top, right, and bottom inset so the
-tile sits against the action edge. The icon tile radius is derived from the
-button radius minus that shared inset, keeping both curves visually concentric
-at every supported button size.
+`ButtonIcon` owns the icon tone and icon-size contract. The default `plain` tone
+renders the bare glyph directly after the label, with no background and no tile
+padding. Its box is exactly the glyph size, `size-5` by default and `size-4` at
+`sm`, and it still clips its own overflow for the rollover glyph swap. The glyph
+uses the action's own text color. CTA buttons use `plain`, so the `cta-sm` and
+`cta-lg` sizes use symmetric horizontal padding, `px-4` and `px-5`, with the
+shared 4px vertical inset and their minimum heights.
 
-The default `tint` tone fills the tile with the action's own text color at 20
-percent over the button surface. A dark or orange action with light text gets a
-lighter shade of its own background. A cream or outline action with dark text
-gets a deeper shade, because a lighter cream would disappear. The glyph uses the
-same text color. Because the tile is translucent, it also takes on the color of
-each rollover layer that passes beneath it. CTA buttons use `tint`. The `light`,
-`dark`, and `soft` tones remain for icon tiles outside a button, such as the
-course card link.
+The `light`, `dark`, and `soft` tones render a filled tile, `size-11` or
+`size-9` at `sm`, for icons outside a button, such as the course card link.
 
 Icon names that express a repeated meaning belong in `app/lib/icons.ts`. A
 one-time decorative icon may use a direct Lucide collection name when a semantic
@@ -1239,20 +1235,20 @@ opacity and color settle over `0.2s`. The elastic curve overshoots in both
 directions, so the outgoing and returning original label both have a visible pop.
 
 The rollover tweens the icon slot's text color together with the original
-label, from the resting color to the copied label's color, so a `tint` tile and
-its glyph follow the final layer's foreground.
+label, from the resting color to the copied label's color, so a `plain` glyph
+follows the final layer's foreground.
 
-The icon tile stays put. CTA buttons pass their `ButtonIcon` through the named
+The icon box stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above
 them. Only the glyph animates. `ButtonIcon` renders its glyph twice into the same
-grid cell and parks the second copy below and to the left, and the tile clips its
+grid cell and parks the second copy below and to the left, and the box clips its
 own overflow, so the pair is invisible until the rollover swaps them diagonally:
 the original leaves toward the upper right while the copy arrives at rest. Both
 glyphs are ordinary spans rather than the raw SVG, which keeps percentage
 transforms predictable. The independent text grid keeps both labels aligned, so
 the copied label does not need an icon-width reserve.
 
-Render the swap in the template rather than cloning a node at runtime. The tile
+Render the swap in the template rather than cloning a node at runtime. The icon
 lives inside a Vue-managed subtree, so an injected copy is not guaranteed to
 survive a re-render of the icon.
 

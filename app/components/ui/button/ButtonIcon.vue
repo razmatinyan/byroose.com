@@ -8,12 +8,12 @@ const {
 	class: className,
 	icon = appIcons.arrowUpRight,
 	size = 'default',
-	tone = 'tint',
+	tone = 'plain',
 } = defineProps<{
 	class?: HTMLAttributes['class']
 	icon?: string
 	size?: 'default' | 'sm'
-	tone?: 'tint' | 'light' | 'dark' | 'soft'
+	tone?: 'plain' | 'light' | 'dark' | 'soft'
 }>()
 
 const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
@@ -25,8 +25,9 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 		:class="
 			cn(
 				'button-icon',
-				size === 'sm' && 'button-icon-sm',
-				tone === 'tint' && 'button-icon-tint',
+				tone !== 'plain' && 'button-icon-tile',
+				tone !== 'plain' && size === 'sm' && 'button-icon-sm',
+				tone === 'plain' && 'button-icon-plain',
 				tone === 'dark' && 'button-icon-dark',
 				tone === 'soft' && 'button-icon-soft',
 				className,
@@ -48,7 +49,11 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 @reference '../../../assets/css/tailwind.css';
 
 .button-icon {
-	@apply grid size-11 shrink-0 place-items-center overflow-hidden rounded-action-icon bg-card text-foreground;
+	@apply grid shrink-0 place-items-center overflow-hidden;
+}
+
+.button-icon-tile {
+	@apply size-11 rounded-action-icon bg-card text-foreground;
 }
 
 .button-icon-glyph {
@@ -63,8 +68,8 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 	@apply size-9;
 }
 
-.button-icon-tint {
-	@apply bg-current/20 text-current;
+.button-icon-plain {
+	@apply text-current;
 }
 
 .button-icon-dark {
