@@ -29,12 +29,14 @@ app/
   composables/
     useArrowSwapHover.ts
     useCookieBannerMotion.ts
+    useFitText.ts
     useHomeHeroScrollMotion.ts
     useHomeIntroMotion.ts
     useGsap.ts
     useHeaderSurface.ts
     useHoverBounce.ts
     useHoverRollover.ts
+    useJourneyMotion.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
     useNavLinkMotion.ts
@@ -183,6 +185,16 @@ elements. ServicesSection owns the copy, the image links, and
 the tooltip handlers. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
+
+useJourneyMotion owns the journey section's motion: the scrubbed character
+spawn of the `data-journey-title` heading beneath the services section's
+exiting dark curve. It waits for the title's character split and shows the
+title at rest under reduced motion.
+
+useFitText fits a single line of text to the full content width of its parent.
+It watches the text's box and writes a `--fit-text-scale` multiplier on the
+element, which the component's own font size must multiply. JourneySection
+uses it for its title.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the
 image, label, and size, the 200ms close delay, and whether the fine-pointer tooltip

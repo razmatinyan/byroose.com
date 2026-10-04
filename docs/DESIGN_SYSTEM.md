@@ -107,7 +107,8 @@ changes.
   name still holds one line. Its leading of `1.08` leaves room for the
   descender of "Development". The titles are plain headings without a reveal
   or a mask.
-- `text-journey` and `text-step` support the oversized process composition.
+- `text-step` supports the oversized process composition. The journey title
+  has no size token, because it fits its container. See Journey section.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
 Use sentence case for small interface text and card metadata. Do not use expanded
@@ -681,7 +682,7 @@ The work section centers its heading, currently "What we've done", and gives
 each case study its own full-width row. The heading keeps `section-title` for
 its weight but overrides the font size and tracking in the component's own
 scoped block. This heading is deliberately oversized: its clamp runs past
-`text-hero` and sits just below `text-journey`, so the section opens at display
+`text-hero`, so the section opens at display
 scale. The phrase always sets on one line through `white-space: nowrap`. The
 line is about `7.4em` wide, so the clamp's floor is `2rem`, which lets `12vw`
 set the size on phones and keeps the line inside the column instead of
@@ -1092,6 +1093,36 @@ Reduced motion drops the intro pin, every reveal, the image scale, and the
 backdrop rise, curve, and lift. It displays the intro title words, the
 descriptions, and the images at rest, and the dark panel keeps a
 flat backdrop without the lead.
+
+### Journey section
+
+The journey section opens with its title, currently "Working process", set in
+uppercase on one line that always spans the full width of the section gutter.
+The gutter is an inline-size container, and the title sets
+`calc(var(--journey-title-size) * var(--fit-text-scale, 1))`. The
+`--journey-title-size` of `11.2cqi` is measured from Switzer bold at `-0.05em`
+tracking, so the server render and the first paint already sit within about a
+percent of the edge. `useFitText` then compares the title's rendered width with
+its parent's content width and writes the correcting `--fit-text-scale` on the
+title whenever its box resizes, which covers font loading, the character split,
+and viewport changes. The title is `w-max` with `0.05em` of end padding, so its
+box includes the last letter's ink instead of ending at the trailing negative
+tracking. If the title copy changes, measure the new phrase and update
+`--journey-title-size` so the first paint stays close to the fitted size.
+
+The title is spawned by the services section's dark curve. As the dark panel
+above bows into its arc and lifts away, the title's characters appear beneath
+it one after another in reading order. Each character drops from `-110`
+percent of its height above its resting place, grows from `0` scale from its
+top edge, and turns from `-24` degrees to upright with a `power3.out` ease and a
+`0.08` stagger. The reveal is scrubbed from the moment the title's top enters
+the viewport bottom until its bottom reaches 55 percent of the viewport, which
+keeps it inside the curve's exit, since the title follows the arc's tip at a
+roughly constant distance. The arc never crosses the title, so the characters
+always settle on the canvas. The triggers use a `refreshPriority` of `-2`, so
+they measure after the services section's pin and triggers above them.
+
+Reduced motion shows the title at rest without the reveal.
 
 ### Header motion
 
