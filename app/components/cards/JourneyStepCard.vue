@@ -91,19 +91,22 @@ const surfaceClasses: Record<Theme, string> = {
 				data-journey-step-copy
 				@split="emit('bodySplit', $event)"
 			/>
-			<Button
-				:as="NuxtLink"
-				:to="servicesRoute"
-				:variant="actionVariants[theme]"
-				:rollover-tones="actionRolloverTones[theme]"
-				size="cta-lg"
-				data-journey-step-cta
-			>
-				{{ action }}
-				<template #icon>
-					<ButtonIcon />
-				</template>
-			</Button>
+			<div data-journey-step-cta-mask>
+				<span class="journey-step-action" data-journey-step-cta>
+					<Button
+						:as="NuxtLink"
+						:to="servicesRoute"
+						:variant="actionVariants[theme]"
+						:rollover-tones="actionRolloverTones[theme]"
+						size="cta-lg"
+					>
+						{{ action }}
+						<template #icon>
+							<ButtonIcon />
+						</template>
+					</Button>
+				</span>
+			</div>
 		</div>
 
 		<div class="journey-step-media" data-journey-step-media>
@@ -157,6 +160,10 @@ const surfaceClasses: Record<Theme, string> = {
 
 .journey-step-body {
 	@apply row-start-2 flex flex-col items-start gap-8 md:col-start-1 md:row-start-2 md:gap-10 xl:gap-14;
+}
+
+.journey-step-action {
+	@apply block;
 }
 
 .journey-step-copy {

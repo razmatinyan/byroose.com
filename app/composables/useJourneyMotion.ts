@@ -6,6 +6,7 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   wordRevealOffset,
    wordRevealStart,
 } from "@/lib/word-reveal";
 
@@ -33,6 +34,7 @@ const selectors = {
    card: "[data-journey-slide-card]",
    copy: "[data-journey-step-copy]",
    cta: "[data-journey-step-cta]",
+   ctaMask: "[data-journey-step-cta-mask]",
    frame: "[data-journey-slide-frame]",
    media: "[data-journey-step-media]",
    number: "[data-journey-step-number]",
@@ -52,7 +54,6 @@ const titleCharFrom = {
 const titleCharDuration = 1.1;
 const titleCharStagger = 0.045;
 const titleCharEase = "power3.out";
-const ctaRiseOffset = 40;
 const mediaRevealDuration = 1.2;
 const mediaRevealEase = "power3.inOut";
 const hiddenMediaClip = "inset(100% 0% 0% 0%)";
@@ -174,20 +175,23 @@ export function useJourneyMotion(
          stagger: lineRevealStagger,
       });
 
+      const ctaMask = slide.querySelector<HTMLElement>(selectors.ctaMask);
       const cta = slide.querySelector<HTMLElement>(selectors.cta);
-      if (cta) {
-         timeline.fromTo(
-            cta,
-            { autoAlpha: 0, yPercent: ctaRiseOffset },
-            {
-               autoAlpha: 1,
-               clearProps: "opacity,transform,visibility",
-               duration: lineRevealDuration,
-               ease: lineRevealEase,
-               yPercent: 0,
-            },
-            bodyLines.length * lineRevealStagger,
-         );
+      if (ctaMask && cta) {
+         gsap.set(ctaMask, { clipPath: "inset(0)" });
+         gsap.set(cta, { yPercent: wordRevealOffset });
+         timeline
+            .to(
+               cta,
+               {
+                  clearProps: "transform",
+                  duration: lineRevealDuration,
+                  ease: lineRevealEase,
+                  yPercent: 0,
+               },
+               bodyLines.length * lineRevealStagger,
+            )
+            .set(ctaMask, { clearProps: "clipPath" });
       }
 
       textTimelines.body.set(slide, timeline);
