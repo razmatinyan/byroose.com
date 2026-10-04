@@ -96,12 +96,12 @@ const surfaceClasses: Record<Theme, string> = {
 				:to="servicesRoute"
 				:variant="actionVariants[theme]"
 				:rollover-tones="actionRolloverTones[theme]"
-				size="cta-sm"
+				size="cta-lg"
 				data-journey-step-cta
 			>
 				{{ action }}
 				<template #icon>
-					<ButtonIcon size="sm" />
+					<ButtonIcon />
 				</template>
 			</Button>
 		</div>
@@ -156,7 +156,7 @@ const surfaceClasses: Record<Theme, string> = {
 }
 
 .journey-step-body {
-	@apply row-start-2 flex flex-col items-start gap-6 md:col-start-1 md:row-start-2 xl:gap-8;
+	@apply row-start-2 flex flex-col items-start gap-8 md:col-start-1 md:row-start-2 md:gap-10 xl:gap-14;
 }
 
 .journey-step-copy {

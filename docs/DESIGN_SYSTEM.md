@@ -1151,9 +1151,9 @@ the step label, and it is `relative`, so it paints over the label. Below `md`
 the card stacks the title, the description, the step label, and the image,
 which fills the remaining height, with the same overlap.
 
-Each card ends its text column with a `cta-sm` call to action directly under
-the description, `gap-6` below it and `gap-8` from `xl`, that routes to
-`/services`. Every step has its own label, set through the step's `action`
+Each card ends its text column with a `cta-lg` call to action under the
+description, `gap-8` below it, `gap-10` from `md`, and `gap-14` from `xl`, that
+routes to `/services`. Every step has its own label, set through the step's `action`
 field: "Explore the diagnosis", "See what we build", and "See how we scale".
 The white card uses the `dark` variant, and the blue and orange cards use
 `cream`, the light pill of the reference layout. The orange card's cream
