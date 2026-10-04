@@ -49,11 +49,11 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 @reference '../../../assets/css/tailwind.css';
 
 .button-icon {
-	@apply grid shrink-0 place-items-center overflow-hidden;
+	@apply grid shrink-0 place-items-center;
 }
 
 .button-icon-tile {
-	@apply size-11 rounded-action-icon bg-card text-foreground;
+	@apply size-11 overflow-hidden rounded-action-icon bg-card text-foreground;
 }
 
 .button-icon-glyph {
@@ -61,7 +61,7 @@ const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 }
 
 .button-icon-glyph[data-rollover-glyph-copy] {
-	transform: translate(-200%, 100%);
+	transform: translate(-300%, 300%);
 }
 
 .button-icon-sm {

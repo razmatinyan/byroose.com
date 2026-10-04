@@ -267,13 +267,15 @@ depends on the public Iconify API.
 `ButtonIcon` owns the icon tone and icon-size contract. The default `plain` tone
 renders the bare glyph directly after the label, with no background and no tile
 padding. Its box is exactly the glyph size, `size-5` by default and `size-4` at
-`sm`, and it still clips its own overflow for the rollover glyph swap. The glyph
-uses the action's own text color. CTA buttons use `plain`, so the `cta-sm` and
+`sm`, and it does not clip its overflow, so the rollover glyph swap is clipped
+by the button edge rather than by the icon box. The glyph uses the action's own
+text color. CTA buttons use `plain`, so the `cta-sm` and
 `cta-lg` sizes use symmetric horizontal padding, `px-4` and `px-5`, with the
 shared 4px vertical inset and their minimum heights.
 
 The `light`, `dark`, and `soft` tones render a filled tile, `size-11` or
-`size-9` at `sm`, for icons outside a button, such as the course card link.
+`size-9` at `sm`, that clips its own overflow, for icons outside a button, such
+as the course card link.
 
 Icon names that express a repeated meaning belong in `app/lib/icons.ts`. A
 one-time decorative icon may use a direct Lucide collection name when a semantic
@@ -1241,11 +1243,16 @@ follows the final layer's foreground.
 The icon box stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above
 them. Only the glyph animates. `ButtonIcon` renders its glyph twice into the same
-grid cell and parks the second copy below and to the left, and the box clips its
-own overflow, so the pair is invisible until the rollover swaps them diagonally:
-the original leaves toward the upper right while the copy arrives at rest. Both
-glyphs are ordinary spans rather than the raw SVG, which keeps percentage
-transforms predictable. The independent text grid keeps both labels aligned, so
+grid cell and parks the second copy below and to the left of the button. The
+rollover host clips both glyphs, so the swap travels across the whole button
+instead of being cut out around the icon: the original leaves along the arrow's
+45 degree diagonal through the upper right edge while the copy arrives at rest
+from the lower left. The travel on each axis equals the host's `clientHeight`,
+read when each swap starts, so the parked copy always sits fully outside the
+host whatever its size. Before the composable mounts, CSS parks the copy at
+`translate(-300%, 300%)`, which is already outside every CTA size. Both glyphs
+are ordinary spans rather than the raw SVG, which keeps their transforms
+predictable. The independent text grid keeps both labels aligned, so
 the copied label does not need an icon-width reserve.
 
 Render the swap in the template rather than cloning a node at runtime. The icon

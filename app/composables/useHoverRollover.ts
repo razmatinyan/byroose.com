@@ -42,14 +42,23 @@ const layerDuration = 0.38
 const layerRestScale = 0.94
 const layerStagger = 0.06
 const rolloverEase = 'power3.out'
-const glyphExit = { x: 200, y: -100 }
-const glyphEntry = { x: -200, y: 100 }
+const glyphExit = { x: 1, y: -1 }
+const glyphEntry = { x: -1, y: 1 }
 const glyphRest = { x: 0, y: 0 }
 
 type CustomEasePlugin = typeof import('gsap/CustomEase').CustomEase
 
 interface HoverRolloverOptions {
 	speed?: number
+}
+
+interface GlyphDirection {
+	x: number
+	y: number
+}
+
+function glyphOffset(direction: GlyphDirection, travel: number) {
+	return { x: direction.x * travel, y: direction.y * travel }
 }
 
 function createRolloverEases(CustomEase: CustomEasePlugin) {
@@ -129,18 +138,9 @@ export function useHoverRollover(
 			})
 
 			if (glyph && glyphCopy) {
-				gsap.set(glyph, {
-					x: 0,
-					xPercent: glyphRest.x,
-					y: 0,
-					yPercent: glyphRest.y,
-				})
-				gsap.set(glyphCopy, {
-					x: 0,
-					xPercent: glyphEntry.x,
-					y: 0,
-					yPercent: glyphEntry.y,
-				})
+				gsap.set([glyph, glyphCopy], { xPercent: 0, yPercent: 0 })
+				gsap.set(glyph, glyphOffset(glyphRest, element.clientHeight))
+				gsap.set(glyphCopy, glyphOffset(glyphEntry, element.clientHeight))
 			}
 
 			let rollover: gsap.core.Timeline | null = null
@@ -166,8 +166,14 @@ export function useHoverRollover(
 				const hostBackground = cover
 					? { backgroundClip: 'content-box' }
 					: { clearProps: 'backgroundClip' }
-				const glyphPosition = cover ? glyphExit : glyphRest
-				const glyphCopyPosition = cover ? glyphRest : glyphEntry
+				const glyphPosition = glyphOffset(
+					cover ? glyphExit : glyphRest,
+					element.clientHeight,
+				)
+				const glyphCopyPosition = glyphOffset(
+					cover ? glyphRest : glyphEntry,
+					element.clientHeight,
+				)
 
 				if (reduceMotion) {
 					rollover = null
@@ -192,14 +198,8 @@ export function useHoverRollover(
 					})
 					gsap.set(element, hostBackground)
 					if (glyph && glyphCopy) {
-						gsap.set(glyph, {
-							xPercent: glyphPosition.x,
-							yPercent: glyphPosition.y,
-						})
-						gsap.set(glyphCopy, {
-							xPercent: glyphCopyPosition.x,
-							yPercent: glyphCopyPosition.y,
-						})
+						gsap.set(glyph, glyphPosition)
+						gsap.set(glyphCopy, glyphCopyPosition)
 					}
 					return
 				}
@@ -301,19 +301,8 @@ export function useHoverRollover(
 				)
 
 				if (glyph && glyphCopy) {
-					timeline.to(
-						glyph,
-						{ xPercent: glyphPosition.x, yPercent: glyphPosition.y },
-						0,
-					)
-					timeline.to(
-						glyphCopy,
-						{
-							xPercent: glyphCopyPosition.x,
-							yPercent: glyphCopyPosition.y,
-						},
-						0,
-					)
+					timeline.to(glyph, glyphPosition, 0)
+					timeline.to(glyphCopy, glyphCopyPosition, 0)
 				}
 
 				rollover = timeline
