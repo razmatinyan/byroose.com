@@ -32,6 +32,7 @@ type StepText = "body" | "title";
 const selectors = {
    card: "[data-journey-slide-card]",
    copy: "[data-journey-step-copy]",
+   cta: "[data-journey-step-cta]",
    frame: "[data-journey-slide-frame]",
    media: "[data-journey-step-media]",
    number: "[data-journey-step-number]",
@@ -51,6 +52,7 @@ const titleCharFrom = {
 const titleCharDuration = 1.1;
 const titleCharStagger = 0.045;
 const titleCharEase = "power3.out";
+const ctaRiseOffset = 40;
 const mediaRevealDuration = 1.2;
 const mediaRevealEase = "power3.inOut";
 const hiddenMediaClip = "inset(100% 0% 0% 0%)";
@@ -171,6 +173,23 @@ export function useJourneyMotion(
          ease: lineRevealEase,
          stagger: lineRevealStagger,
       });
+
+      const cta = slide.querySelector<HTMLElement>(selectors.cta);
+      if (cta) {
+         timeline.fromTo(
+            cta,
+            { autoAlpha: 0, yPercent: ctaRiseOffset },
+            {
+               autoAlpha: 1,
+               clearProps: "opacity,transform,visibility",
+               duration: lineRevealDuration,
+               ease: lineRevealEase,
+               yPercent: 0,
+            },
+            bodyLines.length * lineRevealStagger,
+         );
+      }
+
       textTimelines.body.set(slide, timeline);
    }
 

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
+import { NuxtLink } from '#components'
 import { cn } from '@/lib/utils'
+import { Button, ButtonIcon } from '@/components/ui/button'
+import type { ButtonVariant, RolloverTones } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SplitText from '@/components/shared/SplitText.vue'
 import type { SplitTextResult } from '@/lib/split-text'
@@ -8,6 +11,7 @@ import type { SplitTextResult } from '@/lib/split-text'
 type Theme = 'blue' | 'orange' | 'white'
 
 const {
+	action,
 	body,
 	class: className,
 	image,
@@ -15,6 +19,7 @@ const {
 	theme = 'white',
 	title,
 } = defineProps<{
+	action: string
 	body: string
 	class?: HTMLAttributes['class']
 	image: string
@@ -22,6 +27,18 @@ const {
 	theme?: Theme
 	title: string
 }>()
+
+const servicesRoute = '/services'
+
+const actionVariants: Record<Theme, ButtonVariant> = {
+	blue: 'cream',
+	orange: 'cream',
+	white: 'dark',
+}
+
+const actionRolloverTones: Partial<Record<Theme, RolloverTones>> = {
+	orange: ['blue', 'green', 'dark'],
+}
 
 const emit = defineEmits<{
 	bodySplit: [parts: SplitTextResult]
@@ -63,16 +80,31 @@ const surfaceClasses: Record<Theme, string> = {
 			data-journey-step-title
 			@split="emit('titleSplit', $event)"
 		/>
-		<SplitText
-			class="journey-step-copy"
-			as="p"
-			auto-split
-			mask="lines"
-			:text="body"
-			type="lines,words"
-			data-journey-step-copy
-			@split="emit('bodySplit', $event)"
-		/>
+		<div class="journey-step-body">
+			<SplitText
+				class="journey-step-copy"
+				as="p"
+				auto-split
+				mask="lines"
+				:text="body"
+				type="lines,words"
+				data-journey-step-copy
+				@split="emit('bodySplit', $event)"
+			/>
+			<Button
+				:as="NuxtLink"
+				:to="servicesRoute"
+				:variant="actionVariants[theme]"
+				:rollover-tones="actionRolloverTones[theme]"
+				size="cta-sm"
+				data-journey-step-cta
+			>
+				{{ action }}
+				<template #icon>
+					<ButtonIcon size="sm" />
+				</template>
+			</Button>
+		</div>
 
 		<div class="journey-step-media" data-journey-step-media>
 			<NuxtImg
@@ -123,8 +155,12 @@ const surfaceClasses: Record<Theme, string> = {
 	visibility: hidden;
 }
 
+.journey-step-body {
+	@apply row-start-2 flex flex-col items-start gap-6 md:col-start-1 md:row-start-2 xl:gap-8;
+}
+
 .journey-step-copy {
-	@apply row-start-2 m-0 max-w-[32ch] text-xl leading-[1.05] font-medium tracking-[-0.045em] sm:text-2xl md:col-start-1 md:row-start-2 xl:text-3xl;
+	@apply m-0 max-w-[32ch] self-stretch text-xl leading-[1.05] font-medium tracking-[-0.045em] sm:text-2xl xl:text-3xl;
 }
 
 .journey-step-media {

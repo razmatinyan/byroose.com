@@ -190,11 +190,11 @@ useJourneyMotion owns the journey section's motion: the one-time character
 spawn of the `data-journey-title` heading beneath the services section's
 exiting dark curve, the stacking pin that scales, tilts, and fades each
 `data-journey-slide` card except the last while the next one covers it, and
-each card's number, title line, description line, and image reveals. It waits
-for the title's character split and every card's title and description splits,
-rebuilds a card title or description reveal when its lines re-split before it
-plays, and
-shows everything at rest without the pin under reduced motion.
+each card's number, title line, description line, call to action, and image
+reveals. It waits for the title's character split and every card's title and
+description splits, rebuilds a card title or description reveal when its lines
+re-split before it plays, and shows everything at rest without the pin under
+reduced motion.
 JourneySection owns the step content and the slide wrappers, and
 JourneyStepCard owns the card layout and emits its title and description
 splits.

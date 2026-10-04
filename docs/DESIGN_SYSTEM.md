@@ -1134,7 +1134,7 @@ The steps follow the title as a stack of full-height cards. Each step is a
 `data-journey-slide-frame` with `clamp(1rem, 2vw, 1.5rem)` of padding, the
 panel inset the services section uses, and `perspective-distant`, which is
 `1200px`. The JourneyStepCard fills the frame with a `rounded-2xl` corner and
-its theme surface, and carries no actions. From `md` it is a two-column grid
+its theme surface. From `md` it is a two-column grid
 with two rows, packed to the top. The first row pairs the title on the left
 with an uppercase "STEP" label and the step number on the right, aligned to the
 column's right edge and to the bottom of the row. The label shares the title's
@@ -1150,6 +1150,15 @@ pulls up by that gap plus `0.3` of the label size, so it overlaps the bottom of
 the step label, and it is `relative`, so it paints over the label. Below `md`
 the card stacks the title, the description, the step label, and the image,
 which fills the remaining height, with the same overlap.
+
+Each card ends its text column with a `cta-sm` call to action directly under
+the description, `gap-6` below it and `gap-8` from `xl`, that routes to
+`/services`. Every step has its own label, set through the step's `action`
+field: "Explore the diagnosis", "See what we build", and "See how we scale".
+The white card uses the `dark` variant, and the blue and orange cards use
+`cream`, the light pill of the reference layout. The orange card's cream
+action overrides its rollover tones to `blue`, `green`, and `dark`, because the
+cream variant's default `primary` entry tone would match the orange card.
 
 The description is set at `text-xl`, `text-2xl` from `sm`, and `text-3xl` from
 `xl`, with a `1.05` leading, `-0.045em` tracking, `font-medium`, and a `32ch`
@@ -1188,7 +1197,11 @@ the description each reach 82 percent of the viewport, they rise from their
 own masks: the title and the description line by line from their `SplitText`
 line masks, and the step label as one line from its clipping paragraph. All
 three use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
-stagger. The title and the description re-split their lines on resize. A
+stagger. The call to action belongs to the description's reveal. It rises from
+`40` percent of its height below and fades in with the same duration and ease,
+starting one stagger step after the last description line, and its inline
+styles are
+cleared at the end so the hover rollover owns the button again. The title and the description re-split their lines on resize. A
 re-split before its reveal rebuilds that reveal with the new lines, and a later
 one shows them at rest. The line masks carry `0.12em` above and `0.2em` below with matching
 negative margins, so the tight leading never clips a descender. The image
