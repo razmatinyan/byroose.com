@@ -2,9 +2,11 @@
 import { computed } from 'vue'
 import type { HTMLAttributes } from 'vue'
 import { NuxtLink } from '#components'
+import { Button, ButtonIcon } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SplitText from '@/components/shared/SplitText.vue'
 import type { SplitTextResult } from '@/lib/split-text'
+import { appIcons } from '@/lib/icons'
 import { surfaceTones } from '@/lib/surfaces'
 import { cn, formatPublishDate } from '@/lib/utils'
 
@@ -55,6 +57,16 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 				loading="lazy"
 				draggable="false"
 			/>
+			<span class="blog-card-overlay" aria-hidden="true">
+				<span class="blog-card-action">
+					<Button as="span" variant="dark" size="cta-lg">
+						Read Article
+						<template #icon>
+							<ButtonIcon :icon="appIcons.arrowRight" />
+						</template>
+					</Button>
+				</span>
+			</span>
 		</div>
 
 		<div class="blog-card-body">
@@ -81,15 +93,45 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 @reference '../../assets/css/tailwind.css';
 
 .blog-card {
+	--blog-card-hover-ease: cubic-bezier(0.19, 1, 0.22, 1);
 	@apply flex h-full flex-col gap-5 rounded-2xl p-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:gap-6;
 }
 
 .blog-card-media {
-	@apply aspect-4/3 overflow-hidden rounded-xl;
+	@apply relative aspect-4/3 overflow-hidden rounded-xl;
 }
 
 .blog-card-image {
-	@apply size-full object-cover select-none;
+	@apply size-full object-cover transition-[filter,scale] duration-500 ease-(--blog-card-hover-ease) select-none motion-reduce:transition-none;
+	filter: blur(0);
+}
+
+.blog-card-overlay {
+	@apply pointer-events-none absolute inset-0 grid place-items-center;
+}
+
+.blog-card-action {
+	@apply inline-flex rounded-action shadow-xl shadow-foreground/25 translate-y-4 scale-90 opacity-0 transition-[opacity,translate,scale] duration-500 ease-(--blog-card-hover-ease) motion-reduce:transition-none;
+}
+
+.blog-card:focus-visible .blog-card-image {
+	@apply scale-110;
+	filter: blur(12px);
+}
+
+.blog-card:focus-visible .blog-card-action {
+	@apply translate-y-0 scale-100 opacity-100;
+}
+
+@media (hover: hover) {
+	.blog-card:hover .blog-card-image {
+		@apply scale-110;
+		filter: blur(12px);
+	}
+
+	.blog-card:hover .blog-card-action {
+		@apply pointer-events-auto translate-y-0 scale-100 opacity-100;
+	}
 }
 
 .blog-card-body {
@@ -97,7 +139,7 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 }
 
 .blog-card-title {
-	@apply m-0 text-2xl leading-[1.05] font-semibold tracking-[-0.045em] md:text-xl lg:text-3xl xl:text-4xl;
+	@apply m-0 text-2xl leading-[0.95] font-semibold tracking-[-0.045em] md:text-xl lg:text-3xl xl:text-4xl;
 }
 
 .blog-card-title :deep(.split-text-line),

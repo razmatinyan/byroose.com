@@ -1238,7 +1238,7 @@ the tint. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
 placeholder with an empty alt, because the title names the link. Below it come
 the title and a meta row that pairs the category pill on the left with the
 publishing date on the right. The title is semibold at `text-2xl`, `text-xl`
-from `md`, `text-3xl` from `lg`, and `text-4xl` from `xl`, with `1.05` leading
+from `md`, `text-3xl` from `lg`, and `text-4xl` from `xl`, with `0.95` leading
 and `-0.045em` tracking. The meta row tracks at `-0.02em`. The pill uses
 `bg-current/10`, so it tints itself from the card's foreground on every
 surface. The date is a `time` element whose label comes from
@@ -1249,7 +1249,9 @@ is `text-xs` from `md` until `xl`, which keeps the date beside the pill from
 
 `useBlogMotion` reveals the section. When the heading row reaches 82 percent of
 the viewport, the title words rise from their `SplitText` word masks with the
-shared word reveal, `0.8s` on `power3.out` with a `0.03s` stagger. The word
+shared word reveal, `0.8s` on `power3.out`, but with a wider `0.12s` stagger
+than the shared `0.03s`, because a four word title would otherwise read as one
+movement. The word
 masks carry `0.15em` of block padding cancelled by an equal negative margin for
 the tight leading. The action follows one stagger step after the last word,
 rising the same way as the journey call to action: its `data-blog-cta-mask`
@@ -1257,15 +1259,15 @@ wrapper is clipped to `inset(0)` while the inner `data-blog-cta` block rises
 from `115` percent, and both the clip and the transform are cleared at the end
 so the focus ring and the rollover are never cut.
 
-Each card reveals from its own trigger at the same 82 percent line. The card
-opens with a `clip-path` inset from the bottom over `1.2s` on `power3.inOut`,
-the journey image reveal. Cards that share a layout row, measured by their
-`offsetTop` when they enter, start `0.15s` apart, so the desktop row reads as a
-stagger while stacked phone cards each reveal as they arrive without waiting.
-Halfway through the card reveal, the title rises line by line from its
-`SplitText` line masks with the journey card timing, `1.5s`, `power3`, and a
-`0.1s` stagger, and the meta row rises as one line from its clipping wrapper
-one stagger step after the last title line. The title splits into lines and
+The cards themselves do not animate, so the tinted surfaces and the images are
+always at rest. Only their text reveals, from each card's own trigger at the
+same 82 percent line. The title rises line by line from its `SplitText` line
+masks with the journey card timing, `1.5s`, `power3`, and a `0.1s` stagger, and
+the meta row rises as one line from its clipping wrapper one stagger step after
+the last title line. Cards that share a layout row, measured by their
+`offsetTop` when they enter, start their text `0.15s` apart, so the desktop row
+reads as a stagger while stacked phone cards each reveal as they arrive
+without waiting. The title splits into lines and
 words with every word an inline block, so the browser never breaks inside a
 hyphenated word such as "AI-generated". Each line is `white-space: nowrap`,
 and its mask extends `0.12em` above, `0.2em` below, and `0.15em` past its end
@@ -1274,9 +1276,28 @@ the card reveals rebuilds that card's reveal with the new lines, and a later
 one shows them at rest. Reduced motion shows the title, the action, and every
 card at rest without any reveal.
 
+Hovering a card blurs only its image, to `12px`, and brings a "Read Article"
+action into the center of the image. The title, the meta row, and the tinted
+surface stay sharp. The image also scales to `1.1` while it blurs, so the
+blur never softens the edges of its rounded frame, which clips it. The action
+is the shared `dark` `cta-lg` button rendered as a `span` with an arrow right
+glyph, inside an overlay on the image frame that is hidden from assistive
+technology, because the whole card is already the link and a link cannot
+contain another control. Its wrapper carries a soft `shadow-xl` in
+`foreground` at 25 percent with the action's `radius-action` corners, because
+the button's own rounded clip would cut a shadow placed on it. The shadow lifts
+the action off the blurred image, which is the floating layer exception to the
+borders before shadows rule. It rests at zero opacity, `0.9` scale, and `1rem`
+below center, and the blur, the image scale, and the action all settle over
+`0.5s` on the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve. The action only
+accepts the pointer while it is visible, so its rollover runs once the reader
+moves onto it. The hover state applies only to `(hover: hover)` pointers, so a
+tap on a touch screen opens the article without blurring first. Visible
+keyboard focus shows the same state, and reduced motion switches between the
+two states without the transition.
+
 The articles, dates, and images are placeholders until real posts exist, and
-every card links to `/blog`. The hover effect is not decided yet, so the cards
-only show the standard focus ring.
+every card links to `/blog`.
 
 ### Header motion
 

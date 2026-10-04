@@ -10,7 +10,6 @@ import {
    wordRevealDuration,
    wordRevealEase,
    wordRevealOffset,
-   wordRevealStagger,
    wordRevealStart,
 } from "@/lib/word-reveal";
 
@@ -45,12 +44,8 @@ const selectors = {
 } as const;
 
 const refreshPriority = -3;
-const cardRevealDuration = 1.2;
-const cardRevealEase = "power3.inOut";
 const cardRevealStagger = 0.15;
-const cardTextLead = 0.5;
-const hiddenCardClip = "inset(100% 0% 0% 0%)";
-const visibleCardClip = "inset(0% 0% 0% 0%)";
+const titleWordStagger = 0.12;
 
 export function useBlogMotion(
    scope: MotionScope,
@@ -81,7 +76,7 @@ export function useBlogMotion(
          },
       });
 
-      addWordReveal(timeline, titleWords);
+      addWordReveal(timeline, titleWords, { stagger: titleWordStagger });
 
       const ctaMask = heading.querySelector<HTMLElement>(selectors.ctaMask);
       const cta = heading.querySelector<HTMLElement>(selectors.cta);
@@ -98,7 +93,7 @@ export function useBlogMotion(
                ease: wordRevealEase,
                yPercent: 0,
             },
-            titleWords.length * wordRevealStagger,
+            titleWords.length * titleWordStagger,
          )
          .set(ctaMask, { clearProps: "clipPath" });
    }
@@ -116,29 +111,14 @@ export function useBlogMotion(
 
       const { card, titleLines } = parts;
       const meta = card.querySelector<HTMLElement>(selectors.cardMeta);
-      const textStart = cardRevealDuration * cardTextLead;
-
-      const timeline = gsap
-         .timeline({
-            onStart: () => revealedCards.add(card),
-            paused: true,
-         })
-         .fromTo(
-            card,
-            { clipPath: hiddenCardClip },
-            {
-               clearProps: "clipPath",
-               clipPath: visibleCardClip,
-               duration: cardRevealDuration,
-               ease: cardRevealEase,
-            },
-            0,
-         );
+      const timeline = gsap.timeline({
+         onStart: () => revealedCards.add(card),
+         paused: true,
+      });
 
       addWordReveal(timeline, titleLines, {
          duration: lineRevealDuration,
          ease: lineRevealEase,
-         position: textStart,
          stagger: lineRevealStagger,
       });
 
@@ -152,7 +132,7 @@ export function useBlogMotion(
                ease: lineRevealEase,
                yPercent: 0,
             },
-            textStart + titleLines.length * lineRevealStagger,
+            titleLines.length * lineRevealStagger,
          );
       }
 

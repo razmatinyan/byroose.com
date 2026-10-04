@@ -202,8 +202,8 @@ splits.
 
 useBlogMotion owns the blog section's reveal: the heading's title words and
 the `data-blog-cta` action rising from its `data-blog-cta-mask`, and for each
-`data-blog-card` the bottom clip reveal, the title line rise, and the
-`data-blog-card-meta` rise. Cards that share a layout row are staggered from
+`data-blog-card` the title line rise and the `data-blog-card-meta` rise. The
+cards themselves stay at rest. Cards that share a layout row are staggered from
 their measured `offsetTop` when they enter. It waits for the title's word split
 and every card title's line split, rebuilds a card's reveal when its title
 re-splits before it plays, and shows everything at rest under reduced motion.
