@@ -17,85 +17,85 @@ const landingRoot = useTemplateRef<HTMLElement>("landingRoot");
 const titleSplit = shallowRef<SplitTextResult>();
 const descriptionSplit = shallowRef<SplitTextResult>();
 const { introState } = useHomeIntroMotion(
-	landingRoot,
-	titleSplit,
-	descriptionSplit,
+   landingRoot,
+   titleSplit,
+   descriptionSplit,
 );
 useHomeHeroScrollMotion(landingRoot, introState);
 
 function setTitleSplit(parts: SplitTextResult) {
-	titleSplit.value = parts;
+   titleSplit.value = parts;
 }
 
 function setDescriptionSplit(parts: SplitTextResult) {
-	descriptionSplit.value = parts;
+   descriptionSplit.value = parts;
 }
 </script>
 
 <template>
-	<div
-		ref="landingRoot"
-		class="landing-page"
-		:data-home-intro-state="introState"
-	>
-		<HeroSection
-			@title-split="setTitleSplit"
-			@description-split="setDescriptionSplit"
-		/>
-		<div
-			data-home-hero-scroll-space
-			class="home-hero-scroll-space"
-			aria-hidden="true"
-		/>
-		<StudioSection />
-		<!-- <BrandGrid /> -->
-		<WorkSection />
-		<ServicesSection />
-		<JourneySection />
-		<!-- <ReviewsSection /> -->
-		<CoursesSection />
-		<BlogSection />
-		<FaqSection />
-		<ContactSection />
-	</div>
+   <div
+      ref="landingRoot"
+      class="landing-page"
+      :data-home-intro-state="introState"
+   >
+      <HeroSection
+         @title-split="setTitleSplit"
+         @description-split="setDescriptionSplit"
+      />
+      <div
+         data-home-hero-scroll-space
+         class="home-hero-scroll-space"
+         aria-hidden="true"
+      />
+      <StudioSection />
+      <!-- <BrandGrid /> -->
+      <WorkSection />
+      <ServicesSection />
+      <JourneySection />
+      <!-- <ReviewsSection /> -->
+      <!-- <CoursesSection /> -->
+      <BlogSection />
+      <FaqSection />
+      <ContactSection />
+   </div>
 </template>
 
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
 .landing-page {
-	@apply overflow-x-clip;
+   @apply overflow-x-clip;
 }
 
 .home-hero-scroll-space {
-	height: 100svh;
+   height: 100svh;
 }
 
 .landing-page:not([data-home-intro-state="complete"])
-	:deep([data-home-intro-title]),
+   :deep([data-home-intro-title]),
 .landing-page:not([data-home-intro-state="complete"])
-	:deep([data-home-intro-copy]),
+   :deep([data-home-intro-copy]),
 .landing-page:not([data-home-intro-state="complete"])
-	:deep([data-home-intro-card]) {
-	visibility: hidden;
+   :deep([data-home-intro-card]) {
+   visibility: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.home-hero-scroll-space {
-		height: 0;
-	}
+   .home-hero-scroll-space {
+      height: 0;
+   }
 
-	.landing-page :deep([data-home-intro-card-remove]) {
-		display: none;
-	}
+   .landing-page :deep([data-home-intro-card-remove]) {
+      display: none;
+   }
 
-	.landing-page:not([data-home-intro-state="complete"])
-		:deep([data-home-intro-title]),
-	.landing-page:not([data-home-intro-state="complete"])
-		:deep([data-home-intro-copy]),
-	.landing-page:not([data-home-intro-state="complete"])
-		:deep([data-home-intro-card]) {
-		visibility: inherit;
-	}
+   .landing-page:not([data-home-intro-state="complete"])
+      :deep([data-home-intro-title]),
+   .landing-page:not([data-home-intro-state="complete"])
+      :deep([data-home-intro-copy]),
+   .landing-page:not([data-home-intro-state="complete"])
+      :deep([data-home-intro-card]) {
+      visibility: inherit;
+   }
 }
 </style>
