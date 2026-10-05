@@ -8,6 +8,8 @@ type HeaderMode = 'compact' | 'full'
 const fullModeScrollLimit = 24
 const compactModeScrollStart = 96
 const navItemSelector = '[data-home-intro-nav-item]'
+const riseSelector = '[data-header-rise]'
+const riseMaskSelector = '[data-header-rise-mask]'
 
 interface HeaderMotionOptions {
 	immediate?: boolean
@@ -18,11 +20,27 @@ function resolveElement(target: MaybeComputedElementRef): HTMLElement | null {
 	return element instanceof HTMLElement ? element : null
 }
 
+function queryAll(roots: readonly Element[], selector: string) {
+	return roots.flatMap(root =>
+		Array.from(root.querySelectorAll<HTMLElement>(selector)),
+	)
+}
+
+export function getHeaderRevealParts(roots: readonly Element[]) {
+	const items = queryAll(roots, `${navItemSelector}, ${riseSelector}`)
+		.map(element => ({ element, left: element.getBoundingClientRect().left }))
+		.sort((first, second) => first.left - second.left)
+		.map(({ element }) => element)
+
+	return { items, masks: queryAll(roots, riseMaskSelector) }
+}
+
 export function useSiteHeaderMotion() {
 	const headerMode = shallowRef<HeaderMode>('full')
 	const navRevealed = shallowRef(false)
 	const headerRoot = useTemplateRef<HTMLElement>('headerRoot')
 	const primaryNavigation = useTemplateRef<HTMLElement>('primaryNavigation')
+	const logoLayer = useTemplateRef<HTMLElement>('logoLayer')
 	const headerCta = useTemplateRef<HTMLElement>('headerCta')
 	const menuButton = useTemplateRef<HTMLElement>('menuButton')
 	const { createContext, createMatchMedia, gsap } = useGsap()
@@ -35,10 +53,9 @@ export function useSiteHeaderMotion() {
 	})
 
 	function revealNavigation() {
-		const navigation = resolveElement(primaryNavigation)
-		const items = Array.from(
-			navigation?.querySelectorAll<HTMLElement>(navItemSelector) ?? [],
-		)
+		const roots = [resolveElement(headerRoot), resolveElement(logoLayer)]
+			.filter(root => root !== null)
+		const { items, masks } = getHeaderRevealParts(roots)
 		const reduceMotion = window.matchMedia(
 			'(prefers-reduced-motion: reduce)',
 		).matches
@@ -49,10 +66,11 @@ export function useSiteHeaderMotion() {
 		}
 
 		createContext(() => {
+			gsap.set(masks, { clipPath: 'inset(0)' })
 			const timeline = gsap.timeline({
 				onComplete: () => {
 					navRevealed.value = true
-					gsap.set(items, { clearProps: 'all' })
+					gsap.set([...items, ...masks], { clearProps: 'all' })
 				},
 			})
 			addWordReveal(timeline, items, { stagger: navRevealStagger })

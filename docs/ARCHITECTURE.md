@@ -136,7 +136,7 @@ Use a composable when logic:
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
-useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It reveals every `data-home-intro-header` element together, which covers the header and its separate logo layer, and it rises the header's `data-home-intro-nav-item` links with that reveal. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It shows every `data-home-intro-header` element, which covers the header and its separate logo layer, and rises their pieces from `getHeaderRevealParts` in visual order without fading the header. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
@@ -233,9 +233,13 @@ TrailingTooltip instance.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 the top-of-page scroll thresholds, and responsive animation states. It also
-owns the navigation link reveal on routes other than home and the
-`navRevealed` flag that lifts the links' hidden CSS rest state once a reveal has
-finished, whether it ran there or in the home intro. It composes
+owns the header reveal on routes other than home and the `navRevealed` flag
+that lifts the hidden CSS rest state of the links, the logo, and the actions
+once a reveal has finished, whether it ran there or in the home intro. It
+exports `getHeaderRevealParts`, which collects the `data-home-intro-nav-item`
+links and `data-header-rise` targets from the header and logo layer in visual
+order along with their `data-header-rise-mask` wrappers, so both reveals rise
+the same pieces. It composes
 useGsap and useSmoothScroll so the layout component remains focused on header
 structure and navigation content. It also returns the header root ref, so the
 header can hand it to useHeaderSurface without registering a second template

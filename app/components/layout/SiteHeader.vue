@@ -72,6 +72,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 		class="site-header"
 		v-bind="$attrs"
 		:data-header-mode="headerMode"
+		:data-header-revealed="navRevealed || undefined"
 	>
 		<div class="site-header-inner">
 			<nav
@@ -96,42 +97,58 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 
 			<div ref="headerActions" class="site-header-actions">
 				<span ref="headerCta" class="site-header-cta-wrap">
-					<Button
-						class="site-header-cta"
-						as="a"
-						:href="ctaHref"
-						size="cta-sm"
-						:variant="headerCtaVariant"
-						:data-bordered="onDarkSurface || undefined"
-					>
-						{{ ctaLabel }}
-						<template #icon>
-							<ButtonIcon size="sm" />
-						</template>
-					</Button>
+					<span class="site-header-rise-mask" data-header-rise-mask>
+						<span class="site-header-rise" data-header-rise>
+							<Button
+								class="site-header-cta"
+								as="a"
+								:href="ctaHref"
+								size="cta-sm"
+								:variant="headerCtaVariant"
+								:data-bordered="onDarkSurface || undefined"
+							>
+								{{ ctaLabel }}
+								<template #icon>
+									<ButtonIcon size="sm" />
+								</template>
+							</Button>
+						</span>
+					</span>
 				</span>
 
 				<span ref="menuButton" class="site-menu-button-wrap">
-					<SiteMenu
-						:nav-items="resolvedNavItems"
-						:open="menuOpen"
-						:bordered="onDarkSurface"
-						@update:open="setMenuOpen"
-					/>
+					<span class="site-header-rise-mask" data-header-rise-mask>
+						<span class="site-header-rise" data-header-rise>
+							<SiteMenu
+								:nav-items="resolvedNavItems"
+								:open="menuOpen"
+								:bordered="onDarkSurface"
+								@update:open="setMenuOpen"
+							/>
+						</span>
+					</span>
 				</span>
 			</div>
 		</div>
 	</header>
 
-	<div class="site-logo-layer" v-bind="$attrs">
-		<NuxtLink
-			class="site-logo-link"
-			to="/"
-			aria-label="byroose home"
-			@click="handleLogoClick"
-		>
-			<span class="site-logo" aria-hidden="true" />
-		</NuxtLink>
+	<div
+		ref="logoLayer"
+		class="site-logo-layer"
+		v-bind="$attrs"
+		:data-header-revealed="navRevealed || undefined"
+	>
+		<span class="site-header-rise-mask" data-header-rise-mask>
+			<NuxtLink
+				class="site-logo-link"
+				to="/"
+				aria-label="byroose home"
+				data-header-rise
+				@click="handleLogoClick"
+			>
+				<span class="site-logo" aria-hidden="true" />
+			</NuxtLink>
+		</span>
 	</div>
 </template>
 
@@ -155,7 +172,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-logo {
-	@apply block aspect-[572.99/143.69] h-7 bg-background sm:h-8.5;
+	@apply block aspect-[680/192] h-7 bg-background sm:h-8.5;
 	mask: url('/logo.svg') center / contain no-repeat;
 }
 
@@ -171,6 +188,16 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-nav:not([data-nav-revealed]) [data-home-intro-nav-item] {
+	visibility: hidden;
+}
+
+.site-header-rise-mask,
+.site-header-rise {
+	@apply inline-flex;
+}
+
+.site-header:not([data-header-revealed]) [data-header-rise],
+.site-logo-layer:not([data-header-revealed]) [data-header-rise] {
 	visibility: hidden;
 }
 
@@ -214,7 +241,9 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 		transition-duration: 0ms;
 	}
 
-	.site-nav:not([data-nav-revealed]) [data-home-intro-nav-item] {
+	.site-nav:not([data-nav-revealed]) [data-home-intro-nav-item],
+	.site-header:not([data-header-revealed]) [data-header-rise],
+	.site-logo-layer:not([data-header-revealed]) [data-header-rise] {
 		visibility: inherit;
 	}
 }

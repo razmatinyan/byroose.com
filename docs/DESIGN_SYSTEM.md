@@ -575,8 +575,8 @@ all be anchored to that same label so the stage reads as one movement.
 
 Reset the native and Lenis scroll positions to the document top before the home
 intro begins. Keep both scrolling systems stopped until the expansion finishes.
-The expansion reveals the site header `0.1s` after the label, and the header's
-navigation links rise one by one from their masks at the same moment. The hero title
+The header does not fade or slide in. `0.1s` after the label, the logo, the
+navigation links, and the header actions rise one by one from their masks. The hero title
 lines, the description lines, and the call to action start rising at that same
 moment. Reduced motion must resolve directly to this complete state with
 scrolling available.
@@ -1382,17 +1382,26 @@ center. All three share the More works action's `0.7s` `power4.inOut` timing,
 and leaving reverses them. The copy and the underline rest at zero scale in CSS
 so they never flash before hydration. Reduced motion switches states instantly.
 
-The navigation links rise into place one by one when a page loads. Each link sits
-in its own `site-nav-item` mask, which carries `0.25em` of padding cancelled by
-an equal negative margin so the hover underline and the focus ring stay inside
-the clip. Every link rises from 115 percent below its mask with the shared
+The header rises into place piece by piece when a page loads, with no opacity
+change. The logo, every navigation link, the Start a project action, and the
+compact menu control rise from 115 percent below their masks with the shared
 `addWordReveal` recipe, `0.8s` on `power3.out`, with the `navRevealStagger` of
-`0.08s` from `app/lib/word-reveal.ts`. On the home route the intro timeline runs
-this reveal at the same `expand+=0.1` position as the header reveal. On every
-other route `useSiteHeaderMotion` runs it after mount. Until the reveal finishes
-the `nav` has no `data-nav-revealed` attribute and its links stay hidden in CSS,
-so a server-rendered link never flashes before it rises. Reduced motion shows
-the links at rest without the rise.
+`0.08s` from `app/lib/word-reveal.ts`. They play in visual order from left to
+right, read from their measured positions by `getHeaderRevealParts`, which
+both the intro and `useSiteHeaderMotion` use. Each link sits in its own
+`site-nav-item` mask, which carries `0.25em` of padding cancelled by an equal
+negative margin so the hover underline and the focus ring stay inside the clip.
+The logo and the two actions instead rise inside a `data-header-rise-mask`
+wrapper that is clipped to `inset(0)` only during the reveal, as the hero
+action's is, so the hover bounce and the focus ring are never cut afterwards.
+The action's `data-header-rise` target is a span around the button rather than
+the button itself, because `useHoverBounce` owns the button's transform. On the
+home route the intro timeline runs this reveal at `expand+=0.1`. On every other
+route `useSiteHeaderMotion` runs it after mount. Until the reveal finishes the
+`nav` has no `data-nav-revealed` attribute, and the header and the logo layer
+have no `data-header-revealed` attribute, so their pieces stay hidden in CSS
+and a server-rendered piece never flashes before it rises. Reduced motion shows
+everything at rest without the rise.
 
 The header logo always renders a real link to the home route so it stays
 crawlable and opens in a new tab on a modified click. On the home route a plain
@@ -1410,10 +1419,12 @@ a fixed `site-logo-layer` that sits in the page's root stacking context at the
 header's `z-60` and repeats the header's `py-4` padding around a `44px` row, so
 it stays level with the actions. The layer must stay free of any ancestor that
 isolates it. The logo is a `span` masked with `public/logo.svg` and filled with
-`bg-background`, because an image cannot take a theme color. The link's
+`bg-background`, because an image cannot take a theme color. The span's aspect
+ratio repeats the SVG's `680 / 192` viewBox, so update both together when the
+logo artwork changes, or the masked mark is letterboxed inside its box. The link's
 `aria-label` names it. `SiteHeader` disables attribute inheritance and binds
 `$attrs` to both roots, so `data-home-intro-header` reaches the header and the
-logo layer, and the home intro hides and reveals both together.
+logo layer, and the home intro hides both until it reveals them.
 
 Drive header state from the shared Lenis scroll subscription and animate it with
 the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and

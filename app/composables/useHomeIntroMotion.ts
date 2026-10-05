@@ -38,7 +38,6 @@ const selectors = {
    removedCard: "[data-home-intro-card-remove]",
    header: "[data-home-intro-header]",
    mediaGrid: "[data-home-intro-media-grid]",
-   navItem: "[data-home-intro-nav-item]",
    title: "[data-home-intro-title]",
 } as const;
 
@@ -224,11 +223,8 @@ export function useHomeIntroMotion(
             const mediaGrid = root.querySelector<HTMLElement>(
                selectors.mediaGrid,
             );
-            const navItems = headers.flatMap((header) =>
-               Array.from(
-                  header.querySelectorAll<HTMLElement>(selectors.navItem),
-               ),
-            );
+            const { items: headerItems, masks: headerMasks } =
+               getHeaderRevealParts(headers);
             const title = root.querySelector<HTMLElement>(selectors.title);
             const titleLines = titleSplit?.lines ?? [];
             const descriptionLines = descriptionSplit?.lines ?? [];
@@ -241,7 +237,8 @@ export function useHomeIntroMotion(
             const action = root.querySelector<HTMLElement>(selectors.action);
             const animatedElements = [
                ...headers,
-               ...navItems,
+               ...headerItems,
+               ...headerMasks,
                ...(title ? [title] : []),
                ...titleLines,
                ...copyElements,
@@ -283,11 +280,8 @@ export function useHomeIntroMotion(
             preloaderAvailable = false;
             for (const card of removedCards) card.hidden = false;
 
-            gsap.set(headers, {
-               autoAlpha: 0,
-               pointerEvents: "none",
-               y: -24,
-            });
+            gsap.set(headers, { pointerEvents: "none", visibility: "inherit" });
+            gsap.set(headerMasks, { clipPath: "inset(0)" });
             gsap.set(titleLines, { yPercent: 150 });
             gsap.set([...descriptionLines, action], { yPercent: 115 });
             gsap.set(actionMask, { clipPath: "inset(0)" });
@@ -341,18 +335,8 @@ export function useHomeIntroMotion(
                },
                "expand-=0.35",
             );
-            tl.to(
-               headers,
-               {
-                  autoAlpha: 1,
-                  duration: 0.72,
-                  ease: "power3.out",
-                  pointerEvents: "auto",
-                  y: 0,
-               },
-               "expand+=0.1",
-            );
-            addWordReveal(tl, navItems, {
+            tl.set(headers, { pointerEvents: "auto" }, "expand+=0.1");
+            addWordReveal(tl, headerItems, {
                position: "expand+=0.1",
                stagger: navRevealStagger,
             });
