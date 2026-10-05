@@ -30,7 +30,7 @@ useNavLinkMotion(link)
 @reference '../../assets/css/tailwind.css';
 
 .site-nav-link {
-	@apply relative inline-grid rounded-xs text-lg font-bold uppercase text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
+	@apply relative inline-grid rounded-xs text-lg font-semibold uppercase text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
 }
 
 .site-nav-link-label {
