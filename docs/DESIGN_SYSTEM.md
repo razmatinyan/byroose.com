@@ -37,7 +37,8 @@ visual and accessibility review.
 | `background` and `brand-cream` | Warm cream, `#F5EBDD` | Main page canvas and cream brand surfaces |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
-| `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section and the full-width site footer |
+| `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section |
+| `paper` | Warm white, near `#FEFCF6` | The site footer and the first working-process card |
 | `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
 | `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
@@ -176,11 +177,6 @@ motion is transform only and the layer carries `will-change: transform`, so the
 compositor moves it without repainting the page. Reduced motion stops the
 animation and leaves a still grain.
 
-The animation is temporarily paused through `animation-play-state: paused` on
-`body::before`, so the grain currently holds still at its first offset for
-everyone. The keyframes and the rest of the setup stay in place. Remove that one
-declaration to turn the movement back on.
-
 The tile must stay lossless. A lossy codec cannot encode random noise, so it
 substitutes a field with the right per-pixel statistics but roughly double the
 variance at the four to eight pixel scale, which reads as mottling across a large
@@ -191,11 +187,10 @@ looks.
 
 The texture, its opacity, and its light blend live in the `canvas-grain` utility.
 The body layer is its only consumer, and one opacity value tunes the whole
-effect, currently `opacity-30`. The dark override sits next to the `body::before` selector, because
+effect, currently `opacity-50`. The dark override sits next to the `body::before` selector, because
 Tailwind cannot attach a `.dark` ancestor to an applied pseudo-element. The
 light theme multiplies the light tile into everything beneath it, which keeps
-warm hues. At the earlier 35 percent it cost roughly three percent lightness,
-so at 90 percent expect roughly eight. The dark theme inverts the same asset
+warm hues. The dark theme inverts the same asset
 and screens it, so a near-black surface gains a matching amount instead of
 losing it. Keep both blend modes paired when the opacity
 changes.
@@ -334,50 +329,58 @@ flashes during hydration.
 
 ## Site footer
 
-`SiteFooter` spans the full width in the `panel` color with
-`panel-foreground` text, the same light cream as the blog panel, inside the
-`section-gutter`. The footer is not a dark surface, so it carries no
+`SiteFooter` spans the full width in the warm white `paper` color with
+`paper-foreground` text inside the `section-gutter`. The footer is not a dark
+surface, so it carries no
 `data-header-surface` marker. The landing page no longer ends with an orange
 call to action section, and the footer follows the FAQ directly.
 
 From `lg` the top row is a two-column grid. The left column stacks the slogan
-title above the email block. The right column holds three link columns,
-Navigation, Socials, and Headquarters, in a three-column grid, which drops to
-two columns below `sm` so Headquarters wraps under Navigation. Below `lg` the
-link columns stack under the left column.
+title above the email block. The right column holds Navigation, Socials, and
+Located in as a three-column grid, then aligns the three credit lines with the
+email block at the bottom of the row. Below `lg` the right side stacks under the
+left column. Its link grid drops to two columns below `sm`.
 
-The title uses `section-title` on three block lines, "From seen", "to chosen",
-and "byroose", set as text rather than the logo. Only "seen" in `brand-blue` and
-"chosen" in `primary` carry color. Every other word stays in the ink
-foreground. Each word is its own `SplitText` segment, so the color is already
-right in the server render. A `dark` `cta-lg` "Book a Call" action to
-`/contact` follows "byroose" on the same line. Its wrapper is
-`max(2.75rem, 0.7em)` tall and the button fills it, so on desktop the action
-matches the height of the title text, while on phones it never drops below a
-comfortable touch target. The wrapper resets the title's negative tracking so
-the button label keeps its own.
+The title uses `section-title` on two block lines, "From seen" and "to chosen".
+Each word is its own `SplitText` segment. A transparent right-arrow glyph and a
+`cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
+width of "From seen", with `0.2em` of space above it. The glyph is as tall as
+the action, and the action uses the page `background` color. Its wrapper is
+`max(2.75rem, 0.7em)` tall, so on desktop the action matches the title scale,
+while on phones it never drops below a comfortable touch target. The left
+column is an inline-size container, and the title sets `min(18cqi, 6.5rem)`,
+about 104px at 1440 wide. The action sets `0.78em` of that. Its label font is
+`0.25em` of the action, with a `0.875rem` floor, and its padding, gap, and glyph
+are all in `em`, so the button scales with the title.
 
-Below the title, a `muted-foreground` "If you prefer email" label with a Lucide
-arrow down glyph sits above the `info@byroose.com` mail link.
+Below the title, a semibold `muted-foreground` "Or write directly to" label at
+`text-base`, `text-lg` from `md`, with `-0.03em` tracking sits tightly above the
+`info@byroose.com` mail link.
+The lead column uses the larger `gap-16`, `gap-20` from `md`, rhythm.
 
-Column titles are plain `h2` labels in `muted-foreground` at `text-sm`, with no
-uppercase and no border. Every footer link, including the email, the column
-links, and the credit, is a `SiteNavLink`, so it shares the header navigation's
-hover: the label scales away while its orange copy scales up and the underline
-draws from the center. Navigation lists Home, About, Works, Services, Blog,
-Contact, Terms & Conditions, and Privacy Policy. Socials lists LinkedIn,
-Instagram, and X, which point to `#` until the real profile URLs exist.
-Headquarters reads "Yerevan, Armenia" in the link weight, with no clock.
+Column titles are bold `h2` labels in the ink `paper-foreground` at `text-xl`,
+`text-2xl` from `md`, with no uppercase and no border. Every footer link, including the email, the
+column links, and the credit, is a `SiteNavLink`, so it shares the header
+navigation's hover: the label scales away while its orange copy scales up and
+the underline draws from the center. The email, the column links, and the
+location share `site-footer-item-text`: semibold at `text-xl`, `text-2xl` from
+`md`, with `leading-tight` and `-0.03em` tracking. The links use the `inherit`
+size so they take it, and list items sit only `0.125rem` apart. Navigation lists
+Home, About, Works, Services, Blog, and Contact. Socials lists X, LinkedIn, and
+Instagram, which point to `#` until the real profile URLs exist. Located in
+shows "Yerevan, Armenia", a live local time with "GMT +4", then Terms &
+Conditions and Privacy Policy after a larger gap.
 
-The large wordmark below keeps the logo's own black. The legal row under it
-pairs "© 2026 All Rights Reserved, byroose inc." on the left with "Website by
-Razo Codes" on the right, in `muted-foreground` at `text-sm`. "Razo Codes" is a
-`SiteNavLink` at its `inherit` size, so it takes the row's size and weight and
-keeps the foreground ink and the hover. It opens the author's LinkedIn profile
-in a new tab. On phones the row wraps onto two lines.
+The right column ends with "Website by Razo Codes", "© 2026 All Rights
+Reserved", and "byroose inc." as three separate lines that share the email
+address typography. "Razo Codes" is a `SiteNavLink` at its `inherit` size and
+opens the author's LinkedIn profile in a new tab. The large wordmark below keeps
+the logo's own black and has no legal row beneath it. Its wrapper uses the
+wordmark's `680` unit width with a `128` unit visible height and clips the rest
+at the footer edge, so the oversized letterforms finish partially below the
+page like a cropped print mark.
 
-`useFooterMotion` reveals the footer in two groups, the top row and the
-wordmark with the legal row, each when it reaches 82 percent of the viewport.
+`useFooterMotion` reveals the footer top row when it reaches 82 percent of the viewport.
 Every text rises from `115` percent below its own mask on the shared
 `0.8s` `power3.out` word reveal. The slogan rises word by word from `SplitText`
 word masks with the blog title's `0.12s` stagger, each word mask carrying
@@ -385,9 +388,9 @@ word masks with the blog title's `0.12s` stagger, each word mask carrying
 action rises together with the last slogan word. Everything else starts two
 word steps into the slogan, so it overlaps the slogan's rise, and follows
 from left to right in document order with a `0.05s` stagger: the email label
-and address, then the Navigation, Socials, and Headquarters columns, each
-heading before its items. The second group rises only the two legal items.
-The wordmark has no reveal and is always at rest.
+and address, then the Navigation, Socials, and Located in columns, each
+heading before its items, then the three credit lines. The wordmark has no
+reveal and is always at rest.
 
 Each target is a `data-footer-rise` element inside a `data-footer-rise-mask`
 wrapper. Until its group carries `data-footer-revealed`, CSS clips every mask
@@ -1214,7 +1217,7 @@ with an uppercase "STEP" label and the step number on the right, aligned to the
 column's right edge and to the bottom of the row. The label shares the title's
 weight and tracking at `0.75` of its size, through the card's
 `--journey-step-display` and `--journey-step-label` variables. It is a dimmed
-copy of the card's own text color, `text-current/25` on the white card and
+copy of the card's own text color, `text-current/25` on the paper card and
 `text-current/40` on the blue and orange cards, so it reads as a quieter
 companion to the title rather than a second black heading. The second row pairs
 the description on the left with the image on the right. The rows sit
@@ -1229,7 +1232,7 @@ Each card ends its text column with a `cta-lg` call to action under the
 description, `gap-8` below it, `gap-10` from `md`, and `gap-14` from `xl`, that
 routes to `/services`. Every step has its own label, set through the step's `action`
 field: "Explore the diagnosis", "See what we build", and "See how we scale".
-The white card uses the `dark` variant, and the blue and orange cards use
+The warm white `paper` card uses the `dark` variant, and the blue and orange cards use
 `light`, a white `bg-card` button with `card-foreground` text, so the action
 reads as a clean white pill on the saturated surface rather than the beige
 `cream`. The orange card's light action overrides its rollover tones to

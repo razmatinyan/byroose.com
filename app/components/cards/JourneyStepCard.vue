@@ -48,7 +48,7 @@ const emit = defineEmits<{
 const surfaceClasses: Record<Theme, string> = {
 	blue: 'surface-blue',
 	orange: 'surface-orange',
-	white: 'surface-card',
+	white: 'surface-paper',
 }
 </script>
 
