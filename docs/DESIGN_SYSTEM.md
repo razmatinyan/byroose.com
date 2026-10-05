@@ -506,6 +506,11 @@ async function openContact() {
 </script>
 ```
 
+`scrollTo` and Lenis anchor links use the swap scroll timing, `1.5s` on
+`power4.inOut`, unless the caller passes its own options. The scrollbar drag
+passes `immediate`. Under reduced motion Lenis makes every programmatic scroll
+immediate.
+
 The composable also exposes `instance`, `isReady`, `onScroll`, `ready`, `refresh`,
 and `resize`. Subscriptions created with `onScroll` are removed automatically
 when the current Vue scope is disposed.
@@ -606,6 +611,9 @@ component.
 | Name | Timing | Source and current users |
 | --- | --- | --- |
 | Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle |
+| Swap scroll timing | `1.5s` on the same `power4.inOut` curve | Every programmatic scroll and section anchor, such as Back to Top and the home logo |
+
+Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
 
 ### Home hero layout
 

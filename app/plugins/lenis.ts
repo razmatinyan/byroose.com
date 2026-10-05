@@ -1,6 +1,7 @@
 import { computed, nextTick, readonly, shallowRef } from 'vue'
 import type Lenis from 'lenis'
 import type { ScrollCallback, ScrollToOptions } from 'lenis'
+import { swapEase, swapScrollDuration } from '@/lib/swap-timing'
 
 type ScrollTarget = Parameters<Lenis['scrollTo']>[0]
 type GsapInstance = (typeof import('gsap'))['gsap']
@@ -15,6 +16,7 @@ export default defineNuxtPlugin({
 		const scrollCallbacks = new Set<ScrollCallback>()
 		let gsapInstance: GsapInstance | null = null
 		let scrollTriggerInstance: ScrollTriggerInstance | null = null
+		let swapScrollOptions: ScrollToOptions = {}
 		let tickerCallback: ((time: number) => void) | null = null
 		let unsubscribeScroll: (() => void) | null = null
 		let removeNavigationGuard: (() => void) | null = null
@@ -43,8 +45,12 @@ export default defineNuxtPlugin({
 				const nextGsapInstance = gsapModule.gsap
 				const nextScrollTriggerInstance =
 					scrollTriggerModule.ScrollTrigger
+				const nextSwapScrollOptions = {
+					duration: swapScrollDuration,
+					easing: nextGsapInstance.parseEase(swapEase),
+				}
 				const nextInstance = new lenisModule.default({
-					anchors: true,
+					anchors: nextSwapScrollOptions,
 					autoRaf: false,
 					autoResize: true,
 					lerp: 0.2,
@@ -62,6 +68,7 @@ export default defineNuxtPlugin({
 
 				gsapInstance = nextGsapInstance
 				scrollTriggerInstance = nextScrollTriggerInstance
+				swapScrollOptions = nextSwapScrollOptions
 				tickerCallback = nextTickerCallback
 				unsubscribeScroll = nextInstance.on('scroll', handleScroll)
 				instance.value = nextInstance
@@ -81,7 +88,7 @@ export default defineNuxtPlugin({
 			options?: ScrollToOptions,
 		) {
 			await initialize()
-			instance.value?.scrollTo(target, options)
+			instance.value?.scrollTo(target, { ...swapScrollOptions, ...options })
 		}
 
 		function resetScrollPosition() {

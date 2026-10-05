@@ -1,12 +1,11 @@
 import { onMounted } from 'vue'
 import { unrefElement } from '@vueuse/core'
 import type { MaybeComputedElementRef } from '@vueuse/core'
+import { swapDuration, swapEase } from '@/lib/swap-timing'
 
 const labelSelector = '[data-nav-label]'
 const labelCopySelector = '[data-nav-label-copy]'
 const lineSelector = '[data-nav-line]'
-const hoverDuration = 0.7
-const hoverEase = 'power4.inOut'
 
 export function useNavLinkMotion(target: MaybeComputedElementRef) {
 	const { createMatchMedia, gsap } = useGsap()
@@ -28,8 +27,8 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 				if (!label || !labelCopy || !line) return
 
 				const tween = {
-					duration: context.conditions?.motion ? hoverDuration : 0,
-					ease: hoverEase,
+					duration: context.conditions?.motion ? swapDuration : 0,
+					ease: swapEase,
 					force3D: false,
 					overwrite: 'auto' as const,
 				}

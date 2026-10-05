@@ -2,6 +2,7 @@ import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { usePreferredReducedMotion } from "@vueuse/core";
 import type { SplitTextResult } from "@/lib/split-text";
+import { swapDuration, swapEase } from "@/lib/swap-timing";
 import {
    addWordReveal,
    lineRevealDuration,
@@ -41,8 +42,6 @@ const selectors = {
 
 const refreshPriority = -4;
 const itemRevealStagger = 0.08;
-const toggleDuration = 0.7;
-const toggleEase = "power4.inOut";
 const crossClosedRotation = 90;
 
 export function useFaqMotion(
@@ -244,7 +243,7 @@ export function useFaqMotion(
             {
                clearProps: "height,visibility",
                duration,
-               ease: toggleEase,
+               ease: swapEase,
                height: expanded ? fullHeight : 0,
             },
          );
@@ -253,7 +252,7 @@ export function useFaqMotion(
       if (cross) {
          gsap.to(cross, {
             duration,
-            ease: toggleEase,
+            ease: swapEase,
             overwrite: "auto",
             rotation: expanded ? 0 : crossClosedRotation,
          });
@@ -263,7 +262,7 @@ export function useFaqMotion(
    function toggle(next: number) {
       const items = getItems();
       const animate = preferredMotion.value !== "reduce";
-      const duration = animate ? toggleDuration : 0;
+      const duration = animate ? swapDuration : 0;
       const collapsing = items[expandedIndex];
       const expanding = items[next];
 

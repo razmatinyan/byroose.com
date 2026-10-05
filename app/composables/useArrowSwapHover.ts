@@ -1,12 +1,11 @@
 import { onMounted } from "vue";
 import { unrefElement } from "@vueuse/core";
 import type { MaybeComputedElementRef } from "@vueuse/core";
+import { swapDuration, swapEase } from "@/lib/swap-timing";
 
 const glyphSelector = "[data-arrow-swap-glyph]";
 const glyphCopySelector = "[data-arrow-swap-glyph-copy]";
 const hoverScale = 1.08;
-const swapDuration = 0.7;
-const swapEase = "power4.inOut";
 const glyphRest = { xPercent: 0, yPercent: 0 };
 const glyphOffsets = {
    diagonal: {
