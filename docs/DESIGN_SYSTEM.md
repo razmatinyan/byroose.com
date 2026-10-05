@@ -34,9 +34,10 @@ visual and accessibility review.
 
 | Token | Visual role | Intended use |
 | --- | --- | --- |
-| `background` and `brand-cream` | Warm cream, `#F5EBDD` | Main page canvas and cream brand surfaces |
+| `background` | Pure white, `oklch(1 0 0)` | Main page canvas |
+| `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces, such as the footer action |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
-| `card` | White | Elevated and contained content |
+| `card` | White, the same value as the canvas | Elevated and contained content |
 | `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section |
 | `paper` | Warm white, near `#FEFCF6` | The site footer and the first working-process card |
 | `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
@@ -51,9 +52,10 @@ visual and accessibility review.
 | `destructive` | Alert red | Destructive and error actions only |
 | `border`, `input`, and `ring` | Semantic controls | Boundaries, fields, and focus indicators |
 
-`brand-blue`, `brand-pink`, and `brand-cream` are explicit brand aliases. Generic
-components should prefer `secondary`, `accent`, and `background`. Brand aliases
-are appropriate when the color itself is part of a byroose composition.
+`brand-blue` and `brand-pink` are explicit brand aliases. Generic components
+should prefer `secondary` and `accent`. Brand aliases are appropriate when the
+color itself is part of a byroose composition. `brand-cream` no longer matches
+the canvas, so use it only when a surface must read as cream.
 
 Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
 surfaces use dark ink foregrounds. Copied labels over dark rollover surfaces use
@@ -62,18 +64,21 @@ color behavior remains consistent in both themes. Text selection uses the same
 pair, white `primary-foreground` on the orange `primary`, through the global
 `::selection` rule.
 
-The cream is a family, not a single token. `muted` sits a step darker and
-slightly toward yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay
-visible on the canvas. `panel` sits a step lighter at
+The light canvas is pure white, and the warm whites and creams sit on it as
+distinct surfaces. The footer's `paper` is a warm white, so the page and the
+footer never read as the same white. Keep `background` and `paper` different
+whenever either changes. `brand-cream` is a step darker than `paper` at
+`oklch(0.9441 0.0215 76.53)`. `muted` sits darker still and slightly toward
+yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay visible on the
+canvas. `panel` sits between `paper` and `brand-cream` at
 `oklch(0.9712 0.0118 78.5)`, with a little less chroma and the same warm hue,
-so a large panel lifts off the canvas without the cold contrast of white
-`card`. It pairs with the ink `panel-foreground`, and in the dark theme both
-match the dark `card` pair. The dark theme uses the same cream,
-`oklch(0.9441 0.0215 76.53)`, for its foreground, card, popover, accent, and
-cream foreground tokens. Change the canvas, `brand-cream`, `muted`, and those
-dark foregrounds together, then recheck `muted-foreground`, `brand-soft`, and
-`brand-subtle` against both the canvas and `muted`. Against the current cream,
-`brand-soft` on `muted` is the tightest pair at about 4.75:1.
+so a large panel reads as a warm surface set into the white canvas. It pairs
+with the ink `panel-foreground`, and in the dark theme both match the dark
+`card` pair. The dark theme uses the cream, `oklch(0.9441 0.0215 76.53)`, for
+its foreground, card, popover, accent, and cream foreground tokens. Change
+`brand-cream`, `muted`, and those dark foregrounds together, then recheck
+`muted-foreground`, `brand-soft`, and `brand-subtle` against the canvas and
+`muted`. `brand-soft` on `muted` is the tightest pair at about 4.75:1.
 
 ### Adding colors
 
@@ -345,7 +350,8 @@ The title uses `section-title` on two block lines, "From seen" and "to chosen",
 as plain text. A transparent right-arrow glyph and a
 `cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
 width of "From seen", with `0.2em` of space above it. The glyph is as tall as
-the action, and the action uses the page `background` color. Its wrapper is
+the action, and the action uses the `brand-cream` color, so it stands out from
+the warm white footer. Its wrapper is
 `max(2.75rem, 0.7em)` tall, so on desktop the action matches the title scale,
 while on phones it never drops below a comfortable touch target. The left
 column is an inline-size container, and the title sets `min(18cqi, 6.5rem)`,
@@ -538,7 +544,7 @@ frame loop. The app plugin is the only owner of initialization and teardown.
 ### Scrollbar
 
 The page shows a thumb with no track. A classic scrollbar always reserves its own
-gutter, and that gutter paints the root canvas color, so it would show as a cream
+gutter, and that gutter paints the root canvas color, so it would show as a white
 strip beside dark sections. The base layer therefore hides the root scrollbar
 with `scrollbar-width: none` and `html::-webkit-scrollbar { display: none }`.
 Nested scroll regions keep the global `::-webkit-scrollbar` styling.
@@ -1151,7 +1157,7 @@ media.
 Each service declares a `surface`. The Website Development panel uses `dark`,
 so it renders a `foreground` backdrop behind its content. Its title and
 description are set in `background` with `mix-blend-mode: difference`, so they
-read dark over the canvas and cream over the backdrop, including the moment the
+read dark over the canvas and white over the backdrop, including the moment the
 rising edge crosses a line. The backdrop covers the panel's full width and
 height, including its runway, and ends at the panel's bottom edge, so the
 section's closing `spacing-section` stays on the canvas before the journey
@@ -1531,7 +1537,7 @@ repeating the current navigation. Every other route follows the link.
 
 The header logo reads on every surface through `mix-blend-mode: difference`.
 It is painted in the `background` token, so it shows as black on the canvas and
-as cream over dark blocks, the way the dark services panel text does. Saturated
+as white over dark blocks, the way the dark services panel text does. Saturated
 surfaces invert it to their complement, so it reads cyan over orange. A sticky header always forms its own stacking context, and a blended
 element only mixes with what is painted inside that context, so the logo cannot
 live inside the `header`. `SiteHeader` therefore renders it as a second root,

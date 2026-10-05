@@ -305,7 +305,7 @@ function scrollToTop() {
 }
 
 .site-footer-cta {
-	@apply h-full min-h-0 w-full bg-background text-foreground;
+	@apply h-full min-h-0 w-full bg-brand-cream text-brand-cream-foreground;
 	gap: 0.6em;
 	padding-inline: 1em;
 	font-size: max(0.25em, 0.875rem);
