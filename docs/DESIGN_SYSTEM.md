@@ -395,7 +395,8 @@ to zero opacity over the same distance. The tint has no texture, ignores the
 pointer, and is hidden from assistive technology. Its resting CSS opacity is
 zero, so server-rendered and reduced-motion footers show no tint. All text,
 links, and the action are always visible and focusable. Reduced motion shows
-the footer at rest without the travel or the tint.
+the footer at rest without the travel or the tint. The same progress fades the
+header actions, as described under the site header.
 
 ## Responsive rules
 
@@ -1443,6 +1444,15 @@ action receives `data-bordered` and fades in an `::after` ring with inherited
 radius above its rollover layers rather than a real border, because a filled
 rollover host must stay borderless. Both fades take `0.3s` and are instant under
 reduced motion. Mark any new dark block on the element that paints it.
+
+While the site footer is revealed by scrolling, the header actions fade out
+with it. Their container's opacity follows the footer reveal progress from one
+to zero, and it becomes hidden once the footer is fully at rest, so the
+invisible controls cannot be clicked or focused. The logo and the primary
+navigation do not fade. The actions stay fully visible while the menu is open,
+and on a route so short that the footer already starts inside the first screen,
+because then the reveal is not driven by scrolling. Reduced motion has no
+footer reveal, so the actions never fade.
 
 The primary navigation is plain text: no surface, padding, or shadow on the
 `nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.

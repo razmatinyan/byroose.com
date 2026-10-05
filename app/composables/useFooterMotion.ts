@@ -12,9 +12,14 @@ interface FooterMotionTargets {
 const refreshPriority = -4
 const contentLag = 0.5
 
+export function useFooterRevealProgress() {
+	return useState<number>('footer-reveal-progress', () => 0)
+}
+
 export function useFooterMotion({ content, root, shade }: FooterMotionTargets) {
 	const { createMatchMedia, gsap, loadPlugin } = useGsap()
 	const { refresh } = useSmoothScroll()
+	const revealProgress = useFooterRevealProgress()
 	let disposed = false
 
 	function getRevealDistance(footer: HTMLElement) {
@@ -32,6 +37,9 @@ export function useFooterMotion({ content, root, shade }: FooterMotionTargets) {
 				scrollTrigger: {
 					end: () => `+=${getRevealDistance(footer)}`,
 					invalidateOnRefresh: true,
+					onUpdate: ({ progress, start }) => {
+						revealProgress.value = start > 0 ? progress : 0
+					},
 					refreshPriority,
 					scrub: true,
 					start: 'top bottom',
@@ -58,7 +66,13 @@ export function useFooterMotion({ content, root, shade }: FooterMotionTargets) {
 
 		createMatchMedia(
 			'(prefers-reduced-motion: no-preference)',
-			() => createReveal(footer, footerContent, footerShade),
+			() => {
+				createReveal(footer, footerContent, footerShade)
+
+				return () => {
+					revealProgress.value = 0
+				}
+			},
 			root,
 		)
 

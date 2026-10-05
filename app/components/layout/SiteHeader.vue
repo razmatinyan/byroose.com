@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef, watch } from 'vue'
+import type { CSSProperties } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import SiteMenu from '@/components/layout/SiteMenu.vue'
 import SiteNavLink from '@/components/layout/SiteNavLink.vue'
@@ -41,6 +42,16 @@ const { scrollTo } = useSmoothScroll()
 const { headerMode, headerRoot, navRevealed } = useSiteHeaderMotion()
 const headerActions = useTemplateRef<HTMLElement>('headerActions')
 const { onDarkSurface } = useHeaderSurface(headerRoot, headerActions)
+const footerRevealProgress = useFooterRevealProgress()
+const headerActionsStyle = computed<CSSProperties | undefined>(() => {
+	const progress = footerRevealProgress.value
+	if (!progress || menuOpen.value) return undefined
+
+	return {
+		opacity: 1 - progress,
+		visibility: progress >= 1 ? 'hidden' : undefined,
+	}
+})
 
 function setMenuOpen(open: boolean) {
 	menuOpen.value = open
@@ -95,7 +106,11 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 				</span>
 			</nav>
 
-			<div ref="headerActions" class="site-header-actions">
+			<div
+				ref="headerActions"
+				class="site-header-actions"
+				:style="headerActionsStyle"
+			>
 				<span ref="headerCta" class="site-header-cta-wrap">
 					<span class="site-header-rise-mask" data-header-rise-mask>
 						<span class="site-header-rise" data-header-rise>

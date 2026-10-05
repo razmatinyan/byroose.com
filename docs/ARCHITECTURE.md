@@ -230,7 +230,11 @@ one scrubbed timeline that moves the content from a trailing offset to rest
 and fades the shade out while the footer enters. It recomputes the distance on
 every refresh and refreshes after earlier pinned sections, so it follows each
 route's layout. SiteFooter owns the markup, the clipping, and the CSS rest
-state, so reduced motion needs no extra branch.
+state, so reduced motion needs no extra branch. The same file exports
+useFooterRevealProgress, the `footer-reveal-progress` shared state. The reveal
+writes its scroll progress there only when its start lies below the first
+screen and resets it to zero when the reveal is reverted. SiteHeader reads it
+to fade its actions, so the header never queries footer markup.
 
 useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
