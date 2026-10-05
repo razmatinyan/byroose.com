@@ -1266,8 +1266,8 @@ The warm white `paper` card uses the `dark` variant, and the blue and orange car
 `light`, a white `bg-card` button with `card-foreground` text, so the action
 reads as a clean white pill on the saturated surface rather than the beige
 `cream`. The orange card's light action overrides its rollover tones to
-`blue`, `green`, and `dark`, because the variant's default `primary` entry
-tone would match the orange card.
+`blue`, `green`, and `dark`, because the variant's final `primary` tone would
+match the orange card.
 
 The description is set at `text-xl`, `text-2xl` from `sm`, and `text-3xl` from
 `xl`, with a `1.05` leading, `-0.045em` tracking, `font-medium`, and a `32ch`
@@ -1699,7 +1699,7 @@ surface names:
 | `dark` | green, pink, primary |
 | `outline` | primary, green, dark |
 | `cream` | primary, green, dark |
-| `light` | primary, green, dark |
+| `light` | blue, pink, primary |
 
 `destructive`, `secondary`, `ghost`, `link`, and `inverse` are absent from that
 map on purpose. They keep their plain color hover at every size and render no
