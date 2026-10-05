@@ -790,10 +790,10 @@ its weight but overrides the font size and tracking in the component's own
 scoped block. This heading is deliberately oversized: its clamp runs past
 `text-hero`, so the section opens at display
 scale. The phrase always sets on one line through `white-space: nowrap`. The
-title adds `0.1em` of word spacing, because the tight title tracking otherwise
-pulls the words together. With it the line is about `7.42em` wide, so the
+title adds `0.15em` of word spacing, because the tight title tracking otherwise
+pulls the words together. With it the line is about `7.53em` wide, so the
 clamp's floor is `2rem`, which lets `11.6vw` set the size on phones and keeps
-the line inside the column, down to about `290px` wide, instead of
+the line inside the column, down to about `315px` wide, instead of
 overflowing it. Promote that clamp to a token
 if a second section ever wants the same step. From `md` the row is a `3fr 2fr` grid, so the media takes
 sixty percent of the width and the copy takes forty, and both columns align to

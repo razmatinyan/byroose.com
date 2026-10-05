@@ -149,7 +149,7 @@ function activatePanelTooltip(image: string, label: string) {
 .work-title {
 	@apply text-center whitespace-nowrap;
 	font-size: clamp(2rem, 11.6vw, 13rem);
-	word-spacing: 0.1em;
+	word-spacing: 0.15em;
 }
 
 .case-list {
