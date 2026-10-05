@@ -181,7 +181,7 @@ onScopeDispose(() => {
 
 .trailing-tooltip {
 	--tooltip-resize: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-	@apply pointer-events-none fixed top-0 left-0 z-50 flex items-center gap-5 overflow-hidden bg-card p-2 pr-8 text-card-foreground shadow-xl;
+	@apply pointer-events-none fixed top-0 left-0 z-50 flex items-center gap-5 overflow-hidden border border-border bg-card p-2 pr-8 text-card-foreground shadow-xl;
 	border-radius: 0.5rem;
 	clip-path: inset(50% 100% 50% 0 round 0.5rem);
 	transition: clip-path 0.75s cubic-bezier(0.19, 1, 0.22, 1);

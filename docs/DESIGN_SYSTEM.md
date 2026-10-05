@@ -887,7 +887,9 @@ destination exists. Its pointer cursor communicates the intended future link
 surface without introducing a no-op control or fake URL.
 
 The tooltip uses the hovered card image in a large 104-pixel thumbnail, the
-label "See Full Project" at `text-3xl`, and a fixed card surface. Its `size`
+label "See Full Project" at `text-3xl`, and a fixed card surface outlined by a
+one-pixel light grey `border-border` hairline, which keeps its edge visible on
+the light canvas. Its `size`
 prop also accepts `compact`, a 64-pixel thumbnail with a `text-xl` label and
 tighter padding, which the more works panel and the services images use. When
 the size changes while the tooltip is already open, such as moving from the
