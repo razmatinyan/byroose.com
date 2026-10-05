@@ -216,7 +216,6 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-header-cta {
-	@apply uppercase;
 	transition-duration: 440ms;
 	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }

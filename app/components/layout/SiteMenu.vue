@@ -160,7 +160,7 @@ onKeyStroke(
 }
 
 .site-menu-button {
-	@apply relative z-20 inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2.5 rounded-action border transition-[border-color] duration-300 motion-reduce:transition-none aria-expanded:border-background/20 data-bordered:border-background/20 bg-foreground text-sm font-semibold uppercase text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-26 sm:text-base;
+	@apply relative z-20 inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2.5 rounded-action border transition-[border-color] duration-300 motion-reduce:transition-none aria-expanded:border-background/20 data-bordered:border-background/20 bg-foreground text-sm font-semibold text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-26 sm:text-base;
 }
 
 .site-menu-button-label {

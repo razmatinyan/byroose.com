@@ -1371,7 +1371,7 @@ primary navigation, exists only at the top of the page. The header compacts once
 the reader has scrolled `96px` down and stays compact while they scroll back up,
 returning to full only within `24px` of the top. The logo stays visible in both
 states. The compact state keeps the Start a project action visible and pairs it
-with a single responsive SiteMenu control labelled "Menu" in uppercase. The
+with a single responsive SiteMenu control labelled "Menu" in normal case. The
 control uses the same dark action surface, `radius-action` corners, and `44px`
 height as the CTA, with a fixed `w-26` width. Its glyph is two horizontal
 one-pixel lines with no tile behind them that morph into an X when expanded.
@@ -1397,8 +1397,8 @@ Each `SiteNavLink` sets its label in semibold at `text-lg`, in the title case
 of the nav labels rather than uppercase, and stacks a hidden copy in the same
 grid cell. The copy and the underline are brand orange, `primary`, so hovering
 swaps the ink label for an orange one. The header's Start a project action
-stays uppercase. On hover or visible keyboard focus, `useNavLinkMotion` scales the
-label to zero toward its top center while the copy scales up from zero at its
+and the menu control drop uppercase too. On hover or visible keyboard focus,
+`useNavLinkMotion` scales the label to zero toward its top center while the copy scales up from zero at its
 bottom center, and a one-pixel underline below the label draws outward from its
 center. All three share the More works action's `0.7s` `power4.inOut` timing,
 and leaving reverses them. The copy and the underline rest at zero scale in CSS
