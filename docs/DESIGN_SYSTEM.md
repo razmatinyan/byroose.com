@@ -341,8 +341,8 @@ Located in as a three-column grid, then aligns the three credit lines with the
 email block at the bottom of the row. Below `lg` the right side stacks under the
 left column. Its link grid drops to two columns below `sm`.
 
-The title uses `section-title` on two block lines, "From seen" and "to chosen".
-Each word is its own `SplitText` segment. A transparent right-arrow glyph and a
+The title uses `section-title` on two block lines, "From seen" and "to chosen",
+as plain text. A transparent right-arrow glyph and a
 `cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
 width of "From seen", with `0.2em` of space above it. The glyph is as tall as
 the action, and the action uses the page `background` color. Its wrapper is
@@ -380,27 +380,22 @@ wordmark's `680` unit width with a `128` unit visible height and clips the rest
 at the footer edge, so the oversized letterforms finish partially below the
 page like a cropped print mark.
 
-`useFooterMotion` reveals the footer top row when it reaches 82 percent of the viewport.
-Every text rises from `115` percent below its own mask on the shared
-`0.8s` `power3.out` word reveal. The slogan rises word by word from `SplitText`
-word masks with the blog title's `0.12s` stagger, each word mask carrying
-`0.15em` of block padding cancelled by an equal negative margin. The Book a Call
-action rises together with the last slogan word. Everything else starts two
-word steps into the slogan, so it overlaps the slogan's rise, and follows
-from left to right in document order with a `0.05s` stagger: the email label
-and address, then the Navigation, Socials, and Located in columns, each
-heading before its items, then the three credit lines. The wordmark has no
-reveal and is always at rest.
-
-Each target is a `data-footer-rise` element inside a `data-footer-rise-mask`
-wrapper. Until its group carries `data-footer-revealed`, CSS clips every mask
-to `inset(0)` and parks every target at `translateY(115%)`, and a slogan
-segment stays hidden until it has split into words, so server-rendered text never
-flashes before it rises. Targets stay focusable while parked. The revealed
-attribute lifts the clip once the rise finishes, so the hover underline, the
-focus ring, and the action's rollover are never cut afterwards. The action's
-target is a span around the button, because the button owns its own motion.
-Reduced motion shows everything at rest without the rise.
+`useFooterMotion` reveals the whole footer as one surface instead of animating
+its text. The footer comes up from under the last section of every route.
+The footer element clips its content, and the `site-footer-content` wrapper
+inside it carries the gutter and padding. A scrubbed trigger starts when the
+footer top meets the viewport bottom and runs for the smaller of the footer
+height and the viewport height, so it ends when the footer bottom reaches the
+viewport bottom or, on a footer taller than the screen, when its top reaches
+the viewport top. Over that distance the content travels from half the
+distance above its rest position to rest, so it trails the scroll and
+the middle of the footer shows first. A plain `paper-foreground` tint at
+`40` percent, `site-footer-shade`, covers the footer and fades from full
+to zero opacity over the same distance. The tint has no texture, ignores the
+pointer, and is hidden from assistive technology. Its resting CSS opacity is
+zero, so server-rendered and reduced-motion footers show no tint. All text,
+links, and the action are always visible and focusable. Reduced motion shows
+the footer at rest without the travel or the tint.
 
 ## Responsive rules
 
