@@ -890,11 +890,12 @@ radius, and label size transition over `0.5s` on the tooltip's
 jumping. The component only sets `data-resize="smooth"` when the tooltip was
 already active before the change, so opening from a closed state still takes
 the new size in one step, and reduced motion keeps every change instant. It opens from
-`inset(50% 100% 50% 0 round 1.2rem)` to
-`inset(0 0 0 0 round 1.2rem)` over `0.75s` with the
+`inset(50% 100% 50% 0 round 0.5rem)` to
+`inset(0 0 0 0 round 0.5rem)` over `0.75s` with the
 `cubic-bezier(0.19, 1, 0.22, 1)` curve. GSAP `quickTo` owns only its `x` and `y`
 position with `power3.out` easing, keeping repeated pointer updates inside one
-reused tween per axis. The follower keeps its pointer offset and may travel
+reused tween per axis. The follower trails `16px` below and right of the
+pointer, keeps that offset, and may travel
 beyond a viewport edge. It never flips or clamps its position. The card image
 is non-selectable and non-draggable, so pointer travel cannot highlight or drag
 it.

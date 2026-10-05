@@ -1,31 +1,31 @@
 <script setup lang="ts">
 import { useMediaQuery } from "@vueuse/core";
 import {
-   nextTick,
-   onMounted,
-   onScopeDispose,
-   ref,
-   useTemplateRef,
-   watch,
+	nextTick,
+	onMounted,
+	onScopeDispose,
+	ref,
+	useTemplateRef,
+	watch,
 } from "vue";
 import type { TrailingTooltipSize } from "@/composables/useTrailingTooltip";
 import { stackRevealEase } from "@/lib/stack-reveal";
 
 interface TooltipLayer {
-   id: number;
-   src: string;
+	id: number;
+	src: string;
 }
 
 const {
-   active = false,
-   image,
-   label = "See Full Project",
-   size = "default",
+	active = false,
+	image,
+	label = "See Full Project",
+	size = "default",
 } = defineProps<{
-   active?: boolean;
-   image: string;
-   label?: string;
-   size?: TrailingTooltipSize;
+	active?: boolean;
+	image: string;
+	label?: string;
+	size?: TrailingTooltipSize;
 }>();
 
 const swapDuration = 0.6;
@@ -39,208 +39,208 @@ const { createMatchMedia, gsap } = useGsap();
 let nextLayerId = 0;
 
 function keepLayersFrom(id: number) {
-   layers.value = layers.value.filter((layer) => layer.id >= id);
+	layers.value = layers.value.filter((layer) => layer.id >= id);
 }
 
 async function revealLayer(id: number) {
-   await nextTick();
-   const element = media.value?.querySelector<HTMLElement>(
-      `[data-tooltip-layer="${id}"]`,
-   );
-   if (!element) {
-      keepLayersFrom(id);
-      return;
-   }
+	await nextTick();
+	const element = media.value?.querySelector<HTMLElement>(
+		`[data-tooltip-layer="${id}"]`,
+	);
+	if (!element) {
+		keepLayersFrom(id);
+		return;
+	}
 
-   gsap.fromTo(
-      element,
-      { scale: 0 },
-      {
-         duration: swapDuration,
-         ease: stackRevealEase,
-         onComplete: () => keepLayersFrom(id),
-         scale: 1,
-      },
-   );
+	gsap.fromTo(
+		element,
+		{ scale: 0 },
+		{
+			duration: swapDuration,
+			ease: stackRevealEase,
+			onComplete: () => keepLayersFrom(id),
+			scale: 1,
+		},
+	);
 }
 
 watch(
-   () => [active, image] as const,
-   ([isActive, nextImage], previous) => {
-      if (!nextImage || nextImage === layers.value.at(-1)?.src) return;
+	() => [active, image] as const,
+	([isActive, nextImage], previous) => {
+		if (!nextImage || nextImage === layers.value.at(-1)?.src) return;
 
-      const id = nextLayerId++;
-      const revealsOverPrevious =
-         Boolean(previous?.[0]) && isActive && layers.value.length > 0;
+		const id = nextLayerId++;
+		const revealsOverPrevious =
+			Boolean(previous?.[0]) && isActive && layers.value.length > 0;
 
-      if (!revealsOverPrevious || prefersReducedMotion.value) {
-         layers.value = [{ id, src: nextImage }];
-         return;
-      }
+		if (!revealsOverPrevious || prefersReducedMotion.value) {
+			layers.value = [{ id, src: nextImage }];
+			return;
+		}
 
-      layers.value = [...layers.value, { id, src: nextImage }];
-      return revealLayer(id);
-   },
-   { flush: "post", immediate: true },
+		layers.value = [...layers.value, { id, src: nextImage }];
+		return revealLayer(id);
+	},
+	{ flush: "post", immediate: true },
 );
 
 watch(
-   () => [active, size] as const,
-   ([isActive], previous) => {
-      resizesSmoothly.value = Boolean(previous?.[0]) && isActive;
-   },
+	() => [active, size] as const,
+	([isActive], previous) => {
+		resizesSmoothly.value = Boolean(previous?.[0]) && isActive;
+	},
 );
 
 onMounted(() => {
-   createMatchMedia(
-      {
-         finePointer: "(hover: hover) and (pointer: fine)",
-         motion: "(prefers-reduced-motion: no-preference)",
-      },
-      (context) => {
-         const element = tooltip.value;
-         if (!element || !context.conditions?.finePointer) return;
+	createMatchMedia(
+		{
+			finePointer: "(hover: hover) and (pointer: fine)",
+			motion: "(prefers-reduced-motion: no-preference)",
+		},
+		(context) => {
+			const element = tooltip.value;
+			if (!element || !context.conditions?.finePointer) return;
 
-         const gap = 2;
-         const moveX = context.conditions.motion
-            ? gsap.quickTo(element, "x", {
-                 duration: 0.65,
-                 ease: "power3.out",
-                 force3D: false,
-              })
-            : (value: number) => {
-                 gsap.set(element, { force3D: false, x: value });
-              };
-         const moveY = context.conditions.motion
-            ? gsap.quickTo(element, "y", {
-                 duration: 0.65,
-                 ease: "power3.out",
-                 force3D: false,
-              })
-            : (value: number) => {
-                 gsap.set(element, { force3D: false, y: value });
-              };
+			const gap = 16;
+			const moveX = context.conditions.motion
+				? gsap.quickTo(element, "x", {
+						duration: 0.65,
+						ease: "power3.out",
+						force3D: false,
+					})
+				: (value: number) => {
+						gsap.set(element, { force3D: false, x: value });
+					};
+			const moveY = context.conditions.motion
+				? gsap.quickTo(element, "y", {
+						duration: 0.65,
+						ease: "power3.out",
+						force3D: false,
+					})
+				: (value: number) => {
+						gsap.set(element, { force3D: false, y: value });
+					};
 
-         const handlePointerMove = (event: PointerEvent) => {
-            moveX(event.clientX + gap);
-            moveY(event.clientY + gap);
-         };
+			const handlePointerMove = (event: PointerEvent) => {
+				moveX(event.clientX + gap);
+				moveY(event.clientY + gap);
+			};
 
-         window.addEventListener("pointermove", handlePointerMove, {
-            passive: true,
-         });
+			window.addEventListener("pointermove", handlePointerMove, {
+				passive: true,
+			});
 
-         return () => {
-            window.removeEventListener("pointermove", handlePointerMove);
-            gsap.killTweensOf(element);
-            gsap.set(element, { clearProps: "transform" });
-         };
-      },
-      tooltip,
-   );
+			return () => {
+				window.removeEventListener("pointermove", handlePointerMove);
+				gsap.killTweensOf(element);
+				gsap.set(element, { clearProps: "transform" });
+			};
+		},
+		tooltip,
+	);
 });
 
 onScopeDispose(() => {
-   const element = media.value;
-   if (element) gsap.killTweensOf(element.children);
+	const element = media.value;
+	if (element) gsap.killTweensOf(element.children);
 });
 </script>
 
 <template>
-   <Teleport to="#teleports">
-      <div
-         ref="tooltip"
-         class="trailing-tooltip"
-         :data-active="active"
-         :data-size="size"
-         :data-resize="resizesSmoothly ? 'smooth' : undefined"
-         aria-hidden="true"
-      >
-         <span v-if="layers.length" ref="media" class="trailing-tooltip-media">
-            <NuxtImg
-               v-for="layer in layers"
-               :key="layer.id"
-               :data-tooltip-layer="layer.id"
-               class="trailing-tooltip-image"
-               :src="layer.src"
-               alt=""
-               width="96"
-               height="96"
-               sizes="sm:448px"
-               loading="eager"
-               draggable="false"
-            />
-         </span>
-         <span class="trailing-tooltip-label">{{ label }}</span>
-      </div>
-   </Teleport>
+	<Teleport to="#teleports">
+		<div
+			ref="tooltip"
+			class="trailing-tooltip"
+			:data-active="active"
+			:data-size="size"
+			:data-resize="resizesSmoothly ? 'smooth' : undefined"
+			aria-hidden="true"
+		>
+			<span v-if="layers.length" ref="media" class="trailing-tooltip-media">
+				<NuxtImg
+					v-for="layer in layers"
+					:key="layer.id"
+					:data-tooltip-layer="layer.id"
+					class="trailing-tooltip-image"
+					:src="layer.src"
+					alt=""
+					width="96"
+					height="96"
+					sizes="sm:448px"
+					loading="eager"
+					draggable="false"
+				/>
+			</span>
+			<span class="trailing-tooltip-label">{{ label }}</span>
+		</div>
+	</Teleport>
 </template>
 
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
 .trailing-tooltip {
-   --tooltip-resize: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-   @apply pointer-events-none fixed top-0 left-0 z-50 flex items-center gap-5 overflow-hidden bg-card p-2 pr-8 text-card-foreground shadow-xl;
-   border-radius: 1.2rem;
-   clip-path: inset(50% 100% 50% 0 round 1.2rem);
-   transition: clip-path 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+	--tooltip-resize: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+	@apply pointer-events-none fixed top-0 left-0 z-50 flex items-center gap-5 overflow-hidden bg-card p-2 pr-8 text-card-foreground shadow-xl;
+	border-radius: 0.5rem;
+	clip-path: inset(50% 100% 50% 0 round 0.5rem);
+	transition: clip-path 0.75s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .trailing-tooltip[data-active="true"] {
-   clip-path: inset(0 0 0 0 round 1.2rem);
+	clip-path: inset(0 0 0 0 round 0.5rem);
 }
 
 .trailing-tooltip-media {
-   @apply relative block size-26 shrink-0 overflow-hidden;
-   border-radius: calc(1.2rem - 0.5rem);
+	@apply relative block size-26 shrink-0 overflow-hidden;
+	border-radius: calc(0.75rem - 0.5rem);
 }
 
 .trailing-tooltip-image {
-   @apply absolute inset-0 size-full object-cover;
-   border-radius: inherit;
+	@apply absolute inset-0 size-full object-cover;
+	border-radius: inherit;
 }
 
 .trailing-tooltip-label {
-   @apply whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
+	@apply whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
 }
 
 .trailing-tooltip[data-size="compact"] {
-   @apply gap-3 p-1.5 pr-5;
+	@apply gap-3 p-1.5 pr-5;
 }
 
 .trailing-tooltip[data-size="compact"] .trailing-tooltip-media {
-   @apply size-16;
-   border-radius: calc(1.2rem - 0.375rem);
+	@apply size-16;
+	border-radius: calc(0.75rem - 0.375rem);
 }
 
 .trailing-tooltip[data-size="compact"] .trailing-tooltip-label {
-   @apply text-xl;
+	@apply text-xl;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-   .trailing-tooltip[data-resize="smooth"] {
-      transition:
-         clip-path 0.75s cubic-bezier(0.19, 1, 0.22, 1),
-         padding var(--tooltip-resize),
-         gap var(--tooltip-resize);
-   }
+	.trailing-tooltip[data-resize="smooth"] {
+		transition:
+			clip-path 0.75s cubic-bezier(0.19, 1, 0.22, 1),
+			padding var(--tooltip-resize),
+			gap var(--tooltip-resize);
+	}
 
-   .trailing-tooltip[data-resize="smooth"] .trailing-tooltip-media {
-      transition:
-         width var(--tooltip-resize),
-         height var(--tooltip-resize),
-         border-radius var(--tooltip-resize);
-   }
+	.trailing-tooltip[data-resize="smooth"] .trailing-tooltip-media {
+		transition:
+			width var(--tooltip-resize),
+			height var(--tooltip-resize),
+			border-radius var(--tooltip-resize);
+	}
 
-   .trailing-tooltip[data-resize="smooth"] .trailing-tooltip-label {
-      transition: font-size var(--tooltip-resize);
-   }
+	.trailing-tooltip[data-resize="smooth"] .trailing-tooltip-label {
+		transition: font-size var(--tooltip-resize);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-   .trailing-tooltip {
-      transition: none;
-   }
+	.trailing-tooltip {
+		transition: none;
+	}
 }
 </style>
