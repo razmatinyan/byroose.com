@@ -95,7 +95,7 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .blog-panel {
-	@apply rounded-2xl bg-card py-16 text-card-foreground md:py-20 xl:py-24;
+	@apply rounded-2xl bg-panel py-16 text-panel-foreground md:py-20 xl:py-24;
 }
 
 .blog-heading {

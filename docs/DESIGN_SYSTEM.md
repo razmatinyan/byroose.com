@@ -37,6 +37,7 @@ visual and accessibility review.
 | `background` and `brand-cream` | Warm cream, `#F5EBDD` | Main page canvas and cream brand surfaces |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
+| `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large contained panels that sit on the canvas, such as the blog section |
 | `primary` | Orange-red | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
 | `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
@@ -60,7 +61,11 @@ color behavior remains consistent in both themes.
 
 The cream is a family, not a single token. `muted` sits a step darker and
 slightly toward yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay
-visible on the canvas. The dark theme uses the same cream,
+visible on the canvas. `panel` sits a step lighter at
+`oklch(0.9712 0.0118 78.5)`, with a little less chroma and the same warm hue,
+so a large panel lifts off the canvas without the cold contrast of white
+`card`. It pairs with the ink `panel-foreground`, and in the dark theme both
+match the dark `card` pair. The dark theme uses the same cream,
 `oklch(0.9441 0.0215 76.53)`, for its foreground, card, popover, accent, and
 cream foreground tokens. Change the canvas, `brand-cream`, `muted`, and those
 dark foregrounds together, then recheck `muted-foreground`, `brand-soft`, and
@@ -1219,9 +1224,10 @@ without the pin, so the cards simply follow one another.
 
 ### Blog section
 
-The blog section is a white panel on the canvas. The section takes the
+The blog section is a light cream panel on the canvas. The section takes the
 journey slide inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
-`spacing-section` below it before the FAQ. Inside, a `bg-card` panel with
+`spacing-section` below it before the FAQ. Inside, a `bg-panel` panel with
+`text-panel-foreground` and
 `rounded-2xl` corners holds the `section-gutter` and `py-16`, `py-20` from
 `md`, and `py-24` from `xl`. The heading row pairs the "More Than a Blog" title,
 set in title case at the user's request, with a `dark` `cta-lg` "All articles"
