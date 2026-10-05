@@ -23,6 +23,7 @@ const revealedAttribute = 'data-footer-revealed'
 const refreshPriority = -4
 const titleWordStagger = 0.12
 const riseStagger = 0.05
+const itemsOverlapStart = titleWordStagger * 2
 
 export function useFooterMotion(
 	scope: MotionScope,
@@ -35,9 +36,18 @@ export function useFooterMotion(
 
 	function revealGroup(group: HTMLElement, words: HTMLElement[]) {
 		const titleWords = words.filter(word => group.contains(word))
-		const items = [...group.querySelectorAll<HTMLElement>(selectors.rise)]
+		const targets = [...group.querySelectorAll<HTMLElement>(selectors.rise)]
+		const titleItems = targets.filter(isTitleItem)
+		const items = targets.filter(target => !isTitleItem(target))
+		const lastWordStart = Math.max(titleWords.length - 1, 0) * titleWordStagger
+		const itemsStart = titleWords.length ? itemsOverlapStart : 0
+		const riseTween = {
+			duration: wordRevealDuration,
+			ease: wordRevealEase,
+			yPercent: 0,
+		}
 
-		gsap.set(items, { y: 0, yPercent: wordRevealOffset })
+		gsap.set(targets, { y: 0, yPercent: wordRevealOffset })
 
 		const timeline = gsap.timeline({
 			scrollTrigger: {
@@ -50,19 +60,18 @@ export function useFooterMotion(
 
 		addWordReveal(timeline, titleWords, { stagger: titleWordStagger })
 
+		if (titleItems.length) timeline.to(titleItems, riseTween, lastWordStart)
+		if (items.length) {
+			timeline.to(items, { ...riseTween, stagger: riseStagger }, itemsStart)
+		}
+
 		timeline
-			.to(
-				items,
-				{
-					duration: wordRevealDuration,
-					ease: wordRevealEase,
-					stagger: riseStagger,
-					yPercent: 0,
-				},
-				titleWords.length * titleWordStagger,
-			)
 			.call(() => markRevealed(group))
-			.set(items, { clearProps: 'transform' })
+			.set(targets, { clearProps: 'transform' })
+	}
+
+	function isTitleItem(target: HTMLElement) {
+		return target.dataset.footerRise === 'title'
 	}
 
 	function markRevealed(group: HTMLElement) {

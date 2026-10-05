@@ -27,8 +27,9 @@ writing. The slogan is the public line that sums up the promise.
 - Write it exactly as "From seen to chosen", in sentence case.
 - Do not add a period, an exclamation mark, or other trailing punctuation.
 - Do not reword, translate, or split it across two lines of different emphasis.
-  The site footer title is the one approved exception: it sets "From seen" in
-  blue and "to chosen" in orange on two lines, followed by "byroose".
+  The site footer title is the one approved exception: it sets "From seen" and
+  "to chosen" on two lines, followed by "byroose", and colors only "seen" in
+  blue and "chosen" in orange.
 - Use it where a single brand line belongs, such as the site footer, social
   profiles, metadata, and pitch materials. Do not repeat it in every section.
 

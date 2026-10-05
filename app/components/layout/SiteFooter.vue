@@ -17,11 +17,17 @@ const email = 'info@byroose.com'
 const headquarters = 'Yerevan, Armenia'
 const creditHref = 'https://www.linkedin.com/in/razmatinyan/'
 
-const sloganLines = [
-	{ text: 'From seen', tone: 'text-brand-blue' },
-	{ text: 'to chosen', tone: 'text-primary' },
+interface SloganSegment {
+	text: string
+	tone?: string
+}
+
+const sloganLines: SloganSegment[][] = [
+	[{ text: 'From' }, { text: 'seen', tone: 'text-brand-blue' }],
+	[{ text: 'to' }, { text: 'chosen', tone: 'text-primary' }],
 ]
 const brandName = 'byroose'
+const brandSplitIndex = sloganLines.flat().length
 
 const navigationLinks: FooterLink[] = [
 	{ href: '/', label: 'Home' },
@@ -42,10 +48,14 @@ const socialLinks: FooterLink[] = [
 
 const footerRoot = useTemplateRef<HTMLElement>('footerRoot')
 const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
-	[...sloganLines, brandName].map(() => undefined),
+	Array.from({ length: brandSplitIndex + 1 }, () => undefined),
 )
 
 useFooterMotion(footerRoot, titleSplits)
+
+function getSplitIndex(lineIndex: number, segmentIndex: number) {
+	return sloganLines.slice(0, lineIndex).flat().length + segmentIndex
+}
 
 function setTitleSplit(index: number, parts: SplitTextResult) {
 	titleSplits.value = titleSplits.value.with(index, parts)
@@ -57,25 +67,32 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 		<div class="site-footer-top" data-footer-reveal>
 			<div class="site-footer-lead">
 				<p class="section-title site-footer-title">
-					<SplitText
-						v-for="(line, index) in sloganLines"
-						:key="line.text"
+					<span
+						v-for="(line, lineIndex) in sloganLines"
+						:key="lineIndex"
 						class="site-footer-title-line"
-						:class="line.tone"
-						aria="none"
-						mask="words"
-						:text="line.text"
-						@split="setTitleSplit(index, $event)"
-					/>
+					>
+						<template v-for="(segment, segmentIndex) in line" :key="segment.text">
+							{{ segmentIndex ? ' ' : '' }}<SplitText
+								class="site-footer-title-segment"
+								:class="segment.tone"
+								aria="none"
+								mask="words"
+								:text="segment.text"
+								@split="setTitleSplit(getSplitIndex(lineIndex, segmentIndex), $event)"
+							/>
+						</template>
+					</span>
 					<span class="site-footer-title-line site-footer-title-brand">
 						<SplitText
+							class="site-footer-title-segment"
 							aria="none"
 							mask="words"
 							:text="brandName"
-							@split="setTitleSplit(sloganLines.length, $event)"
+							@split="setTitleSplit(brandSplitIndex, $event)"
 						/>
 						<span class="site-footer-title-action" data-footer-rise-mask>
-							<span class="site-footer-title-action-rise" data-footer-rise>
+							<span class="site-footer-title-action-rise" data-footer-rise="title">
 								<Button
 									class="site-footer-cta"
 									:as="NuxtLink"
@@ -145,19 +162,16 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 		</div>
 
 		<div class="site-footer-brand" data-footer-reveal>
-			<div data-footer-rise-mask>
-				<NuxtImg
-					class="site-footer-logo"
-					src="/logo.svg"
-					alt="byroose"
-					width="651"
-					height="187"
-					format="svg"
-					provider="none"
-					loading="lazy"
-					data-footer-rise
-				/>
-			</div>
+			<NuxtImg
+				class="site-footer-logo"
+				src="/logo.svg"
+				alt="byroose"
+				width="651"
+				height="187"
+				format="svg"
+				provider="none"
+				loading="lazy"
+			/>
 			<div class="site-footer-legal">
 				<div data-footer-rise-mask>
 					<span class="block" data-footer-rise>
@@ -270,7 +284,7 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 	@apply mt-5 flex flex-wrap justify-between gap-3 text-sm text-muted-foreground;
 }
 
-.site-footer-title-line:not(:has(.split-text-word)) {
+.site-footer-title-segment:not(:has(.split-text-word)) {
 	visibility: hidden;
 }
 
@@ -284,7 +298,7 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 
 @media (prefers-reduced-motion: reduce) {
 	.site-footer-title :deep(.split-text-word),
-	.site-footer-title-line:not(:has(.split-text-word)) {
+	.site-footer-title-segment:not(:has(.split-text-word)) {
 		visibility: inherit;
 	}
 

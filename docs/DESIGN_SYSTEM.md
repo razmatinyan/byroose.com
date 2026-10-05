@@ -346,9 +346,11 @@ Navigation, Socials, and Headquarters, in a three-column grid, which drops to
 two columns below `sm` so Headquarters wraps under Navigation. Below `lg` the
 link columns stack under the left column.
 
-The title uses `section-title` on three block lines: "From seen" in
-`brand-blue`, "to chosen" in `primary`, and "byroose" in the ink foreground,
-set as text rather than the logo. A `dark` `cta-lg` "Book a Call" action to
+The title uses `section-title` on three block lines, "From seen", "to chosen",
+and "byroose", set as text rather than the logo. Only "seen" in `brand-blue` and
+"chosen" in `primary` carry color. Every other word stays in the ink
+foreground. Each word is its own `SplitText` segment, so the color is already
+right in the server render. A `dark` `cta-lg` "Book a Call" action to
 `/contact` follows "byroose" on the same line. Its wrapper is
 `max(2.75rem, 0.7em)` tall and the button fills it, so on desktop the action
 matches the height of the title text, while on phones it never drops below a
@@ -379,17 +381,18 @@ wordmark with the legal row, each when it reaches 82 percent of the viewport.
 Every text rises from `115` percent below its own mask on the shared
 `0.8s` `power3.out` word reveal. The slogan rises word by word from `SplitText`
 word masks with the blog title's `0.12s` stagger, each word mask carrying
-`0.15em` of block padding cancelled by an equal negative margin. Everything
-else follows from left to right in document order with a `0.05s` stagger,
-starting one stagger step after the last slogan word: the Book a Call action,
-the email label and address, then the Navigation, Socials, and Headquarters
-columns, each heading before its items. The second group rises the wordmark
-and then the two legal items.
+`0.15em` of block padding cancelled by an equal negative margin. The Book a Call
+action rises together with the last slogan word. Everything else starts two
+word steps into the slogan, so it overlaps the slogan's rise, and follows
+from left to right in document order with a `0.05s` stagger: the email label
+and address, then the Navigation, Socials, and Headquarters columns, each
+heading before its items. The second group rises only the two legal items.
+The wordmark has no reveal and is always at rest.
 
 Each target is a `data-footer-rise` element inside a `data-footer-rise-mask`
 wrapper. Until its group carries `data-footer-revealed`, CSS clips every mask
-to `inset(0)` and parks every target at `translateY(115%)`, and a slogan line
-stays hidden until it has split into words, so server-rendered text never
+to `inset(0)` and parks every target at `translateY(115%)`, and a slogan
+segment stays hidden until it has split into words, so server-rendered text never
 flashes before it rises. Targets stay focusable while parked. The revealed
 attribute lifts the clip once the rise finishes, so the hover underline, the
 focus ring, and the action's rollover are never cut afterwards. The action's

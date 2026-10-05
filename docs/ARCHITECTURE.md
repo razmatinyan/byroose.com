@@ -225,10 +225,11 @@ instantly under reduced motion. FaqSection owns the copy, the controlled
 accordion value, and the title and answer splits.
 
 useFooterMotion owns the site footer's reveal. Each `data-footer-reveal` group
-gets one trigger that rises the slogan words it contains, then every
-`data-footer-rise` target inside it in document order, and finally marks the
-group `data-footer-revealed`. It waits until every slogan line has reported its
-word split. SiteFooter owns the markup, the slogan splits, and the CSS rest
+gets one trigger that rises the slogan words it contains, the
+`data-footer-rise="title"` action with the last word, and every other
+`data-footer-rise` target in document order, overlapping the slogan, and
+finally marks the group `data-footer-revealed`. It waits until every slogan
+segment has reported its word split. SiteFooter owns the markup, the slogan splits, and the CSS rest
 state that the revealed attribute lifts.
 
 useFitText fits a single line of text to the full content width of its parent.
