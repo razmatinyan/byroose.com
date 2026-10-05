@@ -67,7 +67,9 @@ app/
     courses.vue
     index.vue
     journey.vue
+    privacy.vue
     services.vue
+    terms.vue
     works.vue
   plugins/
     lenis.ts
@@ -83,7 +85,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage. app/layouts/default.vue owns the persistent site header, main landmark, footer, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, and Contact routes as focused route-level views. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage. app/layouts/default.vue owns the persistent site header, main landmark, footer, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 

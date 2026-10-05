@@ -2,9 +2,14 @@
 import { useTemplateRef } from 'vue'
 import type { ComponentPublicInstance } from 'vue'
 
-const { href, label } = defineProps<{
+const {
+	href,
+	label,
+	size = 'lg',
+} = defineProps<{
 	href: string
 	label: string
+	size?: 'lg' | 'inherit'
 }>()
 
 const link = useTemplateRef<ComponentPublicInstance>('link')
@@ -13,7 +18,12 @@ useNavLinkMotion(link)
 </script>
 
 <template>
-	<NuxtLink ref="link" class="site-nav-link" :to="href">
+	<NuxtLink
+		ref="link"
+		class="site-nav-link"
+		:class="size === 'lg' && 'site-nav-link-lg'"
+		:to="href"
+	>
 		<span class="site-nav-link-label" data-nav-label>{{ label }}</span>
 		<span
 			class="site-nav-link-label site-nav-link-label-copy"
@@ -30,7 +40,11 @@ useNavLinkMotion(link)
 @reference '../../assets/css/tailwind.css';
 
 .site-nav-link {
-	@apply relative inline-grid rounded-xs text-lg font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
+	@apply relative inline-grid rounded-xs text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
+}
+
+.site-nav-link-lg {
+	@apply text-lg font-semibold;
 }
 
 .site-nav-link-label {

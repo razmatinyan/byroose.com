@@ -335,14 +335,44 @@ flashes during hydration.
 ## Site footer
 
 `SiteFooter` spans the full width in the `panel` color with
-`panel-foreground` text, the same light cream as the blog panel. Group headings
-use the ink foreground, because the orange `primary` falls below AA contrast
-at `text-sm` on the light panel. Body lines, links, and the legal row use
-`muted-foreground`, and links turn `primary` on hover. The large wordmark keeps
-the logo's own black. The footer is not a dark surface, so it carries no
+`panel-foreground` text, the same light cream as the blog panel, inside the
+`section-gutter`. The footer is not a dark surface, so it carries no
 `data-header-surface` marker. The landing page no longer ends with an orange
-call to action section, and the footer follows the FAQ directly. The footer
-content is temporary until the planned footer redesign.
+call to action section, and the footer follows the FAQ directly.
+
+From `lg` the top row is a two-column grid. The left column stacks the slogan
+title above the email block. The right column holds three link columns,
+Navigation, Socials, and Headquarters, in a three-column grid, which drops to
+two columns below `sm` so Headquarters wraps under Navigation. Below `lg` the
+link columns stack under the left column.
+
+The title uses `section-title` on three block lines: "From seen" in
+`brand-blue`, "to chosen" in `primary`, and "byroose" in the ink foreground,
+set as text rather than the logo. A `dark` `cta-lg` "Book a Call" action to
+`/contact` follows "byroose" on the same line. Its wrapper is
+`max(2.75rem, 0.7em)` tall and the button fills it, so on desktop the action
+matches the height of the title text, while on phones it never drops below a
+comfortable touch target. The wrapper resets the title's negative tracking so
+the button label keeps its own.
+
+Below the title, a `muted-foreground` "If you prefer email" label with a Lucide
+arrow down glyph sits above the `info@byroose.com` mail link.
+
+Column titles are plain `h2` labels in `muted-foreground` at `text-sm`, with no
+uppercase and no border. Every footer link, including the email, the column
+links, and the credit, is a `SiteNavLink`, so it shares the header navigation's
+hover: the label scales away while its orange copy scales up and the underline
+draws from the center. Navigation lists Home, About, Works, Services, Blog,
+Contact, Terms & Conditions, and Privacy Policy. Socials lists LinkedIn,
+Instagram, and X, which point to `#` until the real profile URLs exist.
+Headquarters reads "Yerevan, Armenia" in the link weight, with no clock.
+
+The large wordmark below keeps the logo's own black. The legal row under it
+pairs "© 2026 All Rights Reserved, byroose inc." on the left with "Website by
+Razo Codes" on the right, in `muted-foreground` at `text-sm`. "Razo Codes" is a
+`SiteNavLink` at its `inherit` size, so it takes the row's size and weight and
+keeps the foreground ink and the hover. It opens the author's LinkedIn profile
+in a new tab. On phones the row wraps onto two lines.
 
 ## Responsive rules
 
@@ -1395,7 +1425,9 @@ The primary navigation is plain text: no surface, padding, or shadow on the
 `nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.
 Each `SiteNavLink` sets its label in semibold at `text-lg`, in the title case
 of the nav labels rather than uppercase, and stacks a hidden copy in the same
-grid cell. The copy and the underline are brand orange, `primary`, so hovering
+grid cell. Its `size` prop defaults to `lg`. The `inherit` size drops the
+size and weight so the link takes them from its surrounding text, as the
+footer credit does. The copy and the underline are brand orange, `primary`, so hovering
 swaps the ink label for an orange one. The header's Start a project action
 and the menu control drop uppercase too. On hover or visible keyboard focus,
 `useNavLinkMotion` scales the label to zero toward its top center while the copy scales up from zero at its
