@@ -34,7 +34,7 @@ visual and accessibility review.
 
 | Token | Visual role | Intended use |
 | --- | --- | --- |
-| `background` | Neutral off-white, `#F1F1F1` | Main page canvas |
+| `background` | Warm off-white, `#FDFAF1` | Main page canvas |
 | `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces, such as the footer action |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
@@ -64,11 +64,11 @@ color behavior remains consistent in both themes. Text selection uses the same
 pair, white `primary-foreground` on the orange `primary`, through the global
 `::selection` rule.
 
-The light canvas is a neutral off-white, `#F1F1F1` or `oklch(0.9582 0 0)`, and
-the warm whites and creams sit on it as distinct surfaces. Do not set the canvas
-to pure white. The footer's `paper` is a lighter warm white, so the page and
-the footer never read as the same white. Keep `background` and `paper`
-different whenever either changes. `brand-cream` is a step darker than `paper` at
+The light canvas is a warm off-white, `#FDFAF1` or
+`oklch(0.985 0.0123 91.52)`, and the creams sit on it as distinct surfaces. Do
+not set the canvas to pure white. The footer's `paper`, `#FEFCF6`, is a step
+lighter with the same hue, so the page and the footer never read as the same
+white. Keep `background` and `paper` different whenever either changes. `brand-cream` is a step darker than `paper` at
 `oklch(0.9441 0.0215 76.53)`. `muted` sits darker still and slightly toward
 yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay visible on the
 canvas. `panel` sits between `paper` and `brand-cream` at

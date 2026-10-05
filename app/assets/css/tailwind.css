@@ -87,7 +87,7 @@
 
 :root {
 	--radius: 1rem;
-	--background: oklch(0.9582 0 0);
+	--background: oklch(0.985 0.0123 91.52);
 	--foreground: oklch(0.1796 0.0039 48.5);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.1796 0.0039 48.5);
@@ -332,7 +332,7 @@
 }
 
 @utility canvas-grain {
-	@apply opacity-50;
+	@apply opacity-90;
 	background-image: url("/images/noise.webp");
 	mix-blend-mode: multiply;
 }
