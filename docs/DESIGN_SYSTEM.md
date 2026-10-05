@@ -374,6 +374,28 @@ Razo Codes" on the right, in `muted-foreground` at `text-sm`. "Razo Codes" is a
 keeps the foreground ink and the hover. It opens the author's LinkedIn profile
 in a new tab. On phones the row wraps onto two lines.
 
+`useFooterMotion` reveals the footer in two groups, the top row and the
+wordmark with the legal row, each when it reaches 82 percent of the viewport.
+Every text rises from `115` percent below its own mask on the shared
+`0.8s` `power3.out` word reveal. The slogan rises word by word from `SplitText`
+word masks with the blog title's `0.12s` stagger, each word mask carrying
+`0.15em` of block padding cancelled by an equal negative margin. Everything
+else follows from left to right in document order with a `0.05s` stagger,
+starting one stagger step after the last slogan word: the Book a Call action,
+the email label and address, then the Navigation, Socials, and Headquarters
+columns, each heading before its items. The second group rises the wordmark
+and then the two legal items.
+
+Each target is a `data-footer-rise` element inside a `data-footer-rise-mask`
+wrapper. Until its group carries `data-footer-revealed`, CSS clips every mask
+to `inset(0)` and parks every target at `translateY(115%)`, and a slogan line
+stays hidden until it has split into words, so server-rendered text never
+flashes before it rises. Targets stay focusable while parked. The revealed
+attribute lifts the clip once the rise finishes, so the hover underline, the
+focus ring, and the action's rollover are never cut afterwards. The action's
+target is a span around the button, because the button owns its own motion.
+Reduced motion shows everything at rest without the rise.
+
 ## Responsive rules
 
 Build mobile-first with Tailwind's standard `sm`, `md`, `lg`, and `xl`

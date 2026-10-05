@@ -32,6 +32,7 @@ app/
     useCookieBannerMotion.ts
     useFaqMotion.ts
     useFitText.ts
+    useFooterMotion.ts
     useHomeHeroScrollMotion.ts
     useHomeIntroMotion.ts
     useGsap.ts
@@ -222,6 +223,13 @@ answer lines. It waits for the title's line split, rebuilds the title reveal
 when the lines re-split before it plays, and resolves every reveal and toggle
 instantly under reduced motion. FaqSection owns the copy, the controlled
 accordion value, and the title and answer splits.
+
+useFooterMotion owns the site footer's reveal. Each `data-footer-reveal` group
+gets one trigger that rises the slogan words it contains, then every
+`data-footer-rise` target inside it in document order, and finally marks the
+group `data-footer-revealed`. It waits until every slogan line has reported its
+word split. SiteFooter owns the markup, the slogan splits, and the CSS rest
+state that the revealed attribute lifts.
 
 useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
