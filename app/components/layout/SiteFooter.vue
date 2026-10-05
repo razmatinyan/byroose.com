@@ -118,7 +118,10 @@ function scrollToTop() {
 							class="site-footer-column"
 							aria-labelledby="site-footer-navigation"
 						>
-							<h2 id="site-footer-navigation" class="site-footer-heading">
+							<h2
+								id="site-footer-navigation"
+								class="site-footer-heading"
+							>
 								Navigation
 							</h2>
 							<ul class="site-footer-list site-footer-item-text">
@@ -134,7 +137,7 @@ function scrollToTop() {
 
 						<div class="site-footer-column">
 							<h2 id="site-footer-socials" class="site-footer-heading">
-								Socials
+								Social Media
 							</h2>
 							<ul
 								class="site-footer-list site-footer-item-text"
@@ -206,7 +209,10 @@ function scrollToTop() {
 							@click="scrollToTop"
 						>
 							Back to Top
-							<span class="site-footer-back-to-top-icon" aria-hidden="true">
+							<span
+								class="site-footer-back-to-top-icon"
+								aria-hidden="true"
+							>
 								<span
 									class="site-footer-back-to-top-glyph"
 									data-arrow-swap-glyph

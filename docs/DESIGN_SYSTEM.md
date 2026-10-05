@@ -336,7 +336,7 @@ surface, so it carries no
 call to action section, and the footer follows the FAQ directly.
 
 From `lg` the top row is a two-column grid. The left column stacks the slogan
-title above the email block. The right column holds Navigation, Socials, and
+title above the email block. The right column holds Navigation, Social Media, and
 Located in as a three-column grid, then aligns the three credit lines with the
 email block at the bottom of the row. Below `lg` the right side stacks under the
 left column. Its link grid drops to two columns below `sm`.
@@ -366,7 +366,7 @@ the underline draws from the center. The email, the column links, and the
 location share `site-footer-item-text`: semibold at `text-xl`, `text-2xl` from
 `md`, with `leading-tight` and `-0.03em` tracking. The links use the `inherit`
 size so they take it, and list items sit only `0.125rem` apart. Navigation lists
-Home, About, Works, Services, Blog, and Contact. Socials lists X, LinkedIn, and
+Home, About, Works, Services, Blog, and Contact. Social Media lists X, LinkedIn, and
 Instagram, which point to `#` until the real profile URLs exist. Located in
 shows "Yerevan, Armenia", a live local time with "GMT +4", then Terms &
 Conditions and Privacy Policy after a larger gap.
