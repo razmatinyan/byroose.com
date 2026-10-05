@@ -30,6 +30,7 @@ app/
     useArrowSwapHover.ts
     useBlogMotion.ts
     useCookieBannerMotion.ts
+    useFaqMotion.ts
     useFitText.ts
     useHomeHeroScrollMotion.ts
     useHomeIntroMotion.ts
@@ -209,6 +210,16 @@ and every card title's line split, rebuilds a card's reveal when its title
 re-splits before it plays, and shows everything at rest under reduced motion.
 BlogSection owns the article content and collects the card title splits, and
 BlogCard owns the card layout and emits its title split.
+
+useFaqMotion owns the FAQ section's motion: the `data-faq-title` line reveal,
+the staggered rise of each `data-faq-item`'s `data-faq-rise` question and icon
+with its `data-faq-divider` draw, and the accordion toggle. It watches the
+open item index and tweens the force-mounted `data-faq-content` region's
+height and the `data-faq-icon-cross` bar's rotation, then reveals that item's
+answer lines. It waits for the title's line split, rebuilds the title reveal
+when the lines re-split before it plays, and resolves every reveal and toggle
+instantly under reduced motion. FaqSection owns the copy, the controlled
+accordion value, and the title and answer splits.
 
 useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the

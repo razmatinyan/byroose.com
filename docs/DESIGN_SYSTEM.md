@@ -1300,6 +1300,45 @@ two states without the transition.
 The articles, dates, and images are placeholders until real posts exist, and
 every card links to `/blog`.
 
+### FAQ section
+
+The FAQ section pairs the "Frequently Asked Questions" title, set in title case
+at the user's request, with a single collapsible accordion. From `lg` it is a
+`5fr 7fr` grid, so the accordion takes the wider right column. Below `lg` the
+title stacks above the accordion. The title keeps `section-title` for its
+weight and tracking but sets `clamp(2.75rem, 7vw, 6.5rem)` at `0.92` leading,
+larger than `text-section`, which sets it on three lines from `lg`.
+
+Each item is a question row and a collapsible answer. The question is
+`font-medium` at `text-xl`, `text-2xl` from `md`, and `text-3xl` from `xl`,
+with `-0.03em` tracking, and the row's block padding grows from `py-7` to
+`py-9` at `md` and `py-11` at `xl`. The answer is muted copy at `text-lg`,
+`text-xl` from `md`, and `text-2xl` from `xl`, with `1.2` leading and a `44ch`
+measure. A one-pixel `border` divider sits between items, never after the
+last one. The icon is a bare glyph with no tile: two Lucide `minus` bars in
+one grid cell, one of them rotated `90` degrees to form a plus. Opening an item
+turns that bar back to the left, so the plus becomes a minus.
+
+The title rises line by line from `SplitText` line masks with the services
+description timing, `1.5s`, `power3`, and a `0.1s` stagger, when it reaches 82
+percent of the viewport. When the accordion reaches the same line, each item's
+question and icon rise together from their own masks, and its divider draws
+from the left, with items `0.08s` apart. The title uses `autoSplit`. A re-split
+before the reveal rebuilds it, and a later one shows the lines at rest.
+
+Opening and closing are driven by `useFaqMotion` rather than the accordion's
+CSS keyframes. The answer region is force-mounted, so it is always laid out
+and its lines are split before it opens, and it rests at zero height with
+hidden visibility while closed. A toggle tweens the region's height and the
+icon bar's rotation over `0.7s` on `power4.inOut`, the More works action's
+timing. As an item opens, its answer lines rise from their masks with the same
+line reveal timing as the title, starting with the expansion. Opening another
+item closes the previous one on the same timing. Reduced motion shows every
+reveal at rest and switches items instantly.
+
+The questions and answers are placeholder copy until the real policies are
+confirmed.
+
 ### Header motion
 
 The site header has full and compact sticky states. The full state, with the
