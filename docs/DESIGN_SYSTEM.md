@@ -1399,6 +1399,22 @@ crawlable and opens in a new tab on a modified click. On the home route a plain
 click scrolls smoothly to the top through the shared Lenis contract instead of
 repeating the current navigation. Every other route follows the link.
 
+The header logo reads on every surface through `mix-blend-mode: difference`.
+It is painted in the `background` token, so it shows as black on the canvas and
+as cream over dark blocks, the way the dark services panel text does. Saturated
+surfaces invert it to their complement, so it reads cyan over the orange
+footer. A sticky header always forms its own stacking context, and a blended
+element only mixes with what is painted inside that context, so the logo cannot
+live inside the `header`. `SiteHeader` therefore renders it as a second root,
+a fixed `site-logo-layer` that sits in the page's root stacking context at the
+header's `z-60` and repeats the header's `py-4` padding around a `44px` row, so
+it stays level with the actions. The layer must stay free of any ancestor that
+isolates it. The logo is a `span` masked with `public/logo.svg` and filled with
+`bg-background`, because an image cannot take a theme color. The link's
+`aria-label` names it. `SiteHeader` disables attribute inheritance and binds
+`$attrs` to both roots, so `data-home-intro-header` reaches the header and the
+logo layer, and the home intro hides and reveals both together.
+
 Drive header state from the shared Lenis scroll subscription and animate it with
 the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
 limited to transforms and opacity. Reduced motion must switch between complete

@@ -5,6 +5,8 @@ import SiteMenu from '@/components/layout/SiteMenu.vue'
 import SiteNavLink from '@/components/layout/SiteNavLink.vue'
 import { Button, ButtonIcon } from '@/components/ui/button'
 
+defineOptions({ inheritAttrs: false })
+
 interface NavItem {
 	href: string
 	label: string
@@ -65,25 +67,13 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 </script>
 
 <template>
-	<header ref="headerRoot" class="site-header" :data-header-mode="headerMode">
+	<header
+		ref="headerRoot"
+		class="site-header"
+		v-bind="$attrs"
+		:data-header-mode="headerMode"
+	>
 		<div class="site-header-inner">
-			<NuxtLink
-				class="site-logo-link"
-				to="/"
-				aria-label="byroose home"
-				@click="handleLogoClick"
-			>
-				<NuxtImg
-					class="site-logo"
-					src="/logo.svg"
-					alt="byroose"
-					width="651"
-					height="187"
-					format="svg"
-					provider="none"
-				/>
-			</NuxtLink>
-
 			<nav
 				id="primary-navigation"
 				ref="primaryNavigation"
@@ -132,6 +122,17 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 			</div>
 		</div>
 	</header>
+
+	<div class="site-logo-layer" v-bind="$attrs">
+		<NuxtLink
+			class="site-logo-link"
+			to="/"
+			aria-label="byroose home"
+			@click="handleLogoClick"
+		>
+			<span class="site-logo" aria-hidden="true" />
+		</NuxtLink>
+	</div>
 </template>
 
 <style scoped>
@@ -145,12 +146,17 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 	@apply relative z-10 grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-page py-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-6;
 }
 
+.site-logo-layer {
+	@apply fixed top-0 left-0 z-60 flex h-11 box-content items-center px-page py-4 mix-blend-difference;
+}
+
 .site-logo-link {
-	@apply col-start-1 row-start-1 flex shrink-0 items-center justify-self-start text-foreground hover:text-foreground;
+	@apply flex shrink-0 items-center;
 }
 
 .site-logo {
-	@apply block h-7 w-auto sm:h-8.5;
+	@apply block aspect-[572.99/143.69] h-7 bg-background sm:h-8.5;
+	mask: url('/logo.svg') center / contain no-repeat;
 }
 
 .site-nav {

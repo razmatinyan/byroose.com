@@ -218,14 +218,16 @@ export function useHomeIntroMotion(
             reduceMotion: "(prefers-reduced-motion: reduce)",
          },
          (context) => {
-            const header = document.querySelector<HTMLElement>(
-               selectors.header,
+            const headers = Array.from(
+               document.querySelectorAll<HTMLElement>(selectors.header),
             );
             const mediaGrid = root.querySelector<HTMLElement>(
                selectors.mediaGrid,
             );
-            const navItems = Array.from(
-               header?.querySelectorAll<HTMLElement>(selectors.navItem) ?? [],
+            const navItems = headers.flatMap((header) =>
+               Array.from(
+                  header.querySelectorAll<HTMLElement>(selectors.navItem),
+               ),
             );
             const title = root.querySelector<HTMLElement>(selectors.title);
             const titleLines = titleSplit?.lines ?? [];
@@ -238,7 +240,7 @@ export function useHomeIntroMotion(
             );
             const action = root.querySelector<HTMLElement>(selectors.action);
             const animatedElements = [
-               ...(header ? [header] : []),
+               ...headers,
                ...navItems,
                ...(title ? [title] : []),
                ...titleLines,
@@ -256,7 +258,7 @@ export function useHomeIntroMotion(
             }
 
             if (
-               !header ||
+               !headers.length ||
                !mediaGrid ||
                !title ||
                !firstImage ||
@@ -281,7 +283,7 @@ export function useHomeIntroMotion(
             preloaderAvailable = false;
             for (const card of removedCards) card.hidden = false;
 
-            gsap.set(header, {
+            gsap.set(headers, {
                autoAlpha: 0,
                pointerEvents: "none",
                y: -24,
@@ -340,7 +342,7 @@ export function useHomeIntroMotion(
                "expand-=0.35",
             );
             tl.to(
-               header,
+               headers,
                {
                   autoAlpha: 1,
                   duration: 0.72,
