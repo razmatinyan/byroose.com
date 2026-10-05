@@ -253,7 +253,7 @@ function scrollToTop() {
 @reference '../../assets/css/tailwind.css';
 
 .site-footer {
-	@apply relative overflow-hidden bg-paper text-paper-foreground;
+	@apply relative overflow-hidden bg-linear-to-b from-paper from-20% to-background text-paper-foreground;
 }
 
 .site-footer-content {
@@ -305,7 +305,7 @@ function scrollToTop() {
 }
 
 .site-footer-cta {
-	@apply h-full min-h-0 w-full bg-brand-cream text-brand-cream-foreground;
+	@apply h-full min-h-0 w-full;
 	gap: 0.6em;
 	padding-inline: 1em;
 	font-size: max(0.25em, 0.875rem);
@@ -360,7 +360,7 @@ function scrollToTop() {
 }
 
 .site-footer-bottom {
-	@apply flex flex-wrap items-end justify-between gap-x-8 gap-y-6;
+	@apply flex flex-wrap items-start justify-between gap-x-8 gap-y-6;
 }
 
 .site-footer-credits {

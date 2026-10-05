@@ -35,11 +35,11 @@ visual and accessibility review.
 | Token | Visual role | Intended use |
 | --- | --- | --- |
 | `background` | Warm off-white, `#FDFAF1` | Main page canvas |
-| `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces, such as the footer action |
+| `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
-| `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section |
-| `paper` | Warm white, near `#FEFCF6` | The site footer and the first working-process card |
+| `panel` | Soft sand, `#F5E8D4` | Large panels that sit on the canvas, such as the blog section |
+| `paper` | Light cream, `#F5EEDE` | The site footer and the first working-process card |
 | `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
 | `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
@@ -66,20 +66,23 @@ pair, white `primary-foreground` on the orange `primary`, through the global
 
 The light canvas is a warm off-white, `#FDFAF1` or
 `oklch(0.985 0.0123 91.52)`, and the creams sit on it as distinct surfaces. Do
-not set the canvas to pure white. The footer's `paper`, `#FEFCF6`, is a step
-lighter with the same hue, so the page and the footer never read as the same
-white. Keep `background` and `paper` different whenever either changes. `brand-cream` is a step darker than `paper` at
-`oklch(0.9441 0.0215 76.53)`. `muted` sits darker still and slightly toward
-yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay visible on the
-canvas. `panel` sits between `paper` and `brand-cream` at
-`oklch(0.9712 0.0118 78.5)`, with a little less chroma and the same warm hue,
-so a large panel lifts off the off-white canvas as a warm surface. It pairs
-with the ink `panel-foreground`, and in the dark theme both match the dark
-`card` pair. The dark theme uses the cream, `oklch(0.9441 0.0215 76.53)`, for
+not set the canvas to pure white. Every warm surface steps clearly below the
+canvas, so none of them reads as the page itself. `paper`, at
+`oklch(0.95 0.022 84)`, is a light cream for the footer and the first
+working-process card. Keep `background` and `paper` visibly different whenever
+either changes. `brand-cream` sits at nearly the same value,
+`oklch(0.9441 0.0215 76.53)`, so do not place a `brand-cream` surface on
+`paper`. `muted` sits a step darker and slightly toward yellow at
+`oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay visible on the canvas.
+`panel` is a soft sand between `brand-cream` and `muted` at
+`oklch(0.935 0.03 79)`, so the blog panel reads as a deliberate block of
+color. It pairs with the ink `panel-foreground`, and in the dark theme both
+match the dark `card` pair. The dark theme uses the cream, `oklch(0.9441 0.0215 76.53)`, for
 its foreground, card, popover, accent, and cream foreground tokens. Change
 `brand-cream`, `muted`, and those dark foregrounds together, then recheck
 `muted-foreground`, `brand-soft`, and `brand-subtle` against the canvas and
-`muted`. `brand-soft` on `muted` is the tightest pair at about 4.75:1.
+`muted`, and recheck them against `panel` and `paper` when those change.
+`brand-soft` on `muted` is the tightest pair at about 4.75:1.
 
 ### Adding colors
 
@@ -335,8 +338,13 @@ flashes during hydration.
 
 ## Site footer
 
-`SiteFooter` spans the full width in the warm white `paper` color with
-`paper-foreground` text inside the `section-gutter`. The footer is not a dark
+`SiteFooter` spans the full width with `paper-foreground` text inside the
+`section-gutter`. Its surface is a vertical `bg-linear-to-b` gradient: solid
+light cream `paper` through the top 30 percent of its height, then a smooth fade to the page
+`background` at its bottom edge, so the cropped wordmark settles onto the
+canvas color. The gradient lives on the footer root rather than the moving
+content wrapper, so it stays fixed while the content travels during the
+reveal. The footer is not a dark
 surface, so it carries no
 `data-header-surface` marker. The landing page no longer ends with an orange
 call to action section, and the footer follows the FAQ directly.
@@ -351,8 +359,8 @@ The title uses `section-title` on two block lines, "From seen" and "to chosen",
 as plain text. A transparent right-arrow glyph and a
 `cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
 width of "From seen", with `0.2em` of space above it. The glyph is as tall as
-the action, and the action uses the `brand-cream` color, so it stands out from
-the warm white footer. Its wrapper is
+the action, and the action keeps the `light` variant's own white `bg-card`
+surface, so it reads as the lightest shape on the cream footer. Its wrapper is
 `max(2.75rem, 0.7em)` tall, so on desktop the action matches the title scale,
 while on phones it never drops below a comfortable touch target. The left
 column is an inline-size container, and the title sets `min(18cqi, 6.5rem)`,
@@ -1271,7 +1279,7 @@ Each card ends its text column with a `cta-lg` call to action under the
 description, `gap-8` below it, `gap-10` from `md`, and `gap-14` from `xl`, that
 routes to `/services`. Every step has its own label, set through the step's `action`
 field: "Explore the diagnosis", "See what we build", and "See how we scale".
-The warm white `paper` card uses the `dark` variant, and the blue and orange cards use
+The light cream `paper` card uses the `dark` variant, and the blue and orange cards use
 `light`, a white `bg-card` button with `card-foreground` text, so the action
 reads as a clean white pill on the saturated surface rather than the beige
 `cream`. The orange card's light action overrides its rollover tones to
@@ -1335,7 +1343,7 @@ without the pin, so the cards simply follow one another.
 
 ### Blog section
 
-The blog section is a light cream panel on the canvas. The section takes the
+The blog section is a warm sand panel on the canvas. The section takes the
 journey slide inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
 `spacing-section` below it before the FAQ. Inside, a `bg-panel` panel with
 `text-panel-foreground` and
@@ -1352,7 +1360,9 @@ Three `BlogCard`s follow in one column below `md` and three columns from `md`.
 Each card is a `NuxtLink` painted with a `surface-*` utility through its
 `tone` prop, which accepts `pink`, `yellow`, and `green`, used in that order.
 The card is `rounded-2xl` with `p-3`, so its `rounded-xl` image sits inset in
-the tint. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
+the tint. It carries a soft `shadow-xl` in `foreground` at 10 percent, at the
+user's request, so the tinted cards lift off the sand panel. This is a
+deliberate exception to the borders before shadows rule. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
 placeholder with an empty alt, because the title names the link. Below it come
 the title and a meta row that pairs the category pill on the left with the
 publishing date on the right. The title is semibold at `text-2xl`, `text-xl`

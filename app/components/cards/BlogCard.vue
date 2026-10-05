@@ -94,7 +94,7 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 
 .blog-card {
 	--blog-card-hover-ease: cubic-bezier(0.19, 1, 0.22, 1);
-	@apply flex h-full flex-col gap-5 rounded-2xl p-3 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:gap-6;
+	@apply flex h-full flex-col gap-5 rounded-2xl p-3 shadow-xl shadow-foreground/10 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:gap-6;
 }
 
 .blog-card-media {
