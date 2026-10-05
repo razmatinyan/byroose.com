@@ -14,6 +14,22 @@ The core expression is:
 
 Use this idea as a filter, not as a phrase that must appear everywhere.
 
+## Slogan
+
+The byroose slogan is:
+
+> From seen to chosen
+
+It names the journey byroose takes a brand on: from being noticed to being the
+one the audience picks. The core expression above is the internal filter for
+writing. The slogan is the public line that sums up the promise.
+
+- Write it exactly as "From seen to chosen", in sentence case.
+- Do not add a period, an exclamation mark, or other trailing punctuation.
+- Do not reword, translate, or split it across two lines of different emphasis.
+- Use it where a single brand line belongs, such as the site footer, social
+  profiles, metadata, and pitch materials. Do not repeat it in every section.
+
 ## Audience
 
 Write primarily for founders, marketing leaders, and growing teams that need stronger creative output and a website that earns its keep.
