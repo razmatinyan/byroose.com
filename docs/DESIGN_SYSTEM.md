@@ -57,7 +57,9 @@ are appropriate when the color itself is part of a byroose composition.
 Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
 surfaces use dark ink foregrounds. Copied labels over dark rollover surfaces use
 `primary-foreground`. Keep each brand color paired with its foreground token so
-color behavior remains consistent in both themes.
+color behavior remains consistent in both themes. Text selection uses the same
+pair, white `primary-foreground` on the orange `primary`, through the global
+`::selection` rule.
 
 The cream is a family, not a single token. `muted` sits a step darker and
 slightly toward yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay

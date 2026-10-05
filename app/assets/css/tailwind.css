@@ -179,7 +179,7 @@
    }
 
    ::selection {
-      @apply bg-foreground text-white;
+      @apply bg-primary text-primary-foreground;
    }
 
    html {
