@@ -141,7 +141,7 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 }
 
 .faq-title {
-	@apply text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.92];
+	@apply -mt-[0.16em] text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.86];
 }
 
 .faq-title :deep(.split-text-line),
@@ -156,7 +156,11 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 	white-space: nowrap;
 }
 
-.faq-title :deep(.split-text-line-mask),
+.faq-title :deep(.split-text-line-mask) {
+	margin-block: 0 -0.36em;
+	padding-block: 0.16em 0.2em;
+}
+
 .faq-answer :deep(.split-text-line-mask) {
 	margin-block: -0.12em -0.2em;
 	padding-block: 0.12em 0.2em;

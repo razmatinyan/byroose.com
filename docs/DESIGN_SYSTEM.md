@@ -1306,8 +1306,13 @@ The FAQ section pairs the "Frequently Asked Questions" title, set in title case
 at the user's request, with a single collapsible accordion. From `lg` it is a
 `5fr 7fr` grid, so the accordion takes the wider right column. Below `lg` the
 title stacks above the accordion. The title keeps `section-title` for its
-weight and tracking but sets `clamp(2.75rem, 7vw, 6.5rem)` at `0.92` leading,
-larger than `text-section`, which sets it on three lines from `lg`.
+weight and tracking but sets `clamp(2.75rem, 7vw, 6.5rem)` at `0.86` leading,
+larger than `text-section`, which sets it on three lines from `lg`. Each line
+mask carries `0.16em` of top and `0.2em` of bottom padding so ascenders and
+descenders stay inside the clip. Adjacent negative block margins collapse into
+the larger one, which would add `0.16em` to every line pitch, so only the
+bottom margin is negative and cancels both paddings, and the title shifts up by
+`0.16em`. The line pitch therefore matches the declared leading.
 
 Each item is a question row and a collapsible answer. The question is
 `font-medium` at `text-xl`, `text-2xl` from `md`, and `text-3xl` from `xl`,
