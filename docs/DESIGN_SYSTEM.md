@@ -1391,8 +1391,9 @@ reduced motion. Mark any new dark block on the element that paints it.
 
 The primary navigation is plain text: no surface, padding, or shadow on the
 `nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.
-Each `SiteNavLink` sets its label in uppercase at `text-lg` and stacks a hidden
-copy in the same grid cell. The header's Start a project action is uppercase
+Each `SiteNavLink` sets its label in bold uppercase at `text-lg` and stacks a
+hidden copy in the same grid cell. The copy and the underline are brand orange,
+`primary`, so hovering swaps the ink label for an orange one. The header's Start a project action is uppercase
 too. On hover or visible keyboard focus, `useNavLinkMotion` scales the
 label to zero toward its top center while the copy scales up from zero at its
 bottom center, and a one-pixel underline below the label draws outward from its

@@ -30,7 +30,7 @@ useNavLinkMotion(link)
 @reference '../../assets/css/tailwind.css';
 
 .site-nav-link {
-	@apply relative inline-grid rounded-xs text-lg font-medium uppercase text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
+	@apply relative inline-grid rounded-xs text-lg font-bold uppercase text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
 }
 
 .site-nav-link-label {
@@ -40,12 +40,13 @@ useNavLinkMotion(link)
 }
 
 .site-nav-link-label-copy {
+	@apply text-primary;
 	transform: scale(0);
 	transform-origin: 50% 100%;
 }
 
 .site-nav-link-line {
-	@apply pointer-events-none absolute top-full left-0 h-px w-full bg-current;
+	@apply pointer-events-none absolute top-full left-0 h-px w-full bg-primary;
 	transform: scaleX(0);
 	transform-origin: 50% 50%;
 }
