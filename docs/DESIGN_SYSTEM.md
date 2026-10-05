@@ -38,7 +38,7 @@ visual and accessibility review.
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
 | `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section and the full-width site footer |
-| `primary` | Orange-red | Primary actions, emphasis, and high-energy sections |
+| `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
 | `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
 | `brand-yellow` | Butter yellow, `#F8E5AA` | Warm editorial surfaces and selective highlights |
