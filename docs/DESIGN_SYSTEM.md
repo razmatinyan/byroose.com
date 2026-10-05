@@ -34,10 +34,10 @@ visual and accessibility review.
 
 | Token | Visual role | Intended use |
 | --- | --- | --- |
-| `background` | Pure white, `oklch(1 0 0)` | Main page canvas |
+| `background` | Neutral off-white, `#F1F1F1` | Main page canvas |
 | `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces, such as the footer action |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
-| `card` | White, the same value as the canvas | Elevated and contained content |
+| `card` | White | Elevated and contained content |
 | `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section |
 | `paper` | Warm white, near `#FEFCF6` | The site footer and the first working-process card |
 | `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
@@ -64,15 +64,16 @@ color behavior remains consistent in both themes. Text selection uses the same
 pair, white `primary-foreground` on the orange `primary`, through the global
 `::selection` rule.
 
-The light canvas is pure white, and the warm whites and creams sit on it as
-distinct surfaces. The footer's `paper` is a warm white, so the page and the
-footer never read as the same white. Keep `background` and `paper` different
-whenever either changes. `brand-cream` is a step darker than `paper` at
+The light canvas is a neutral off-white, `#F1F1F1` or `oklch(0.9582 0 0)`, and
+the warm whites and creams sit on it as distinct surfaces. Do not set the canvas
+to pure white. The footer's `paper` is a lighter warm white, so the page and
+the footer never read as the same white. Keep `background` and `paper`
+different whenever either changes. `brand-cream` is a step darker than `paper` at
 `oklch(0.9441 0.0215 76.53)`. `muted` sits darker still and slightly toward
 yellow at `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay visible on the
 canvas. `panel` sits between `paper` and `brand-cream` at
 `oklch(0.9712 0.0118 78.5)`, with a little less chroma and the same warm hue,
-so a large panel reads as a warm surface set into the white canvas. It pairs
+so a large panel lifts off the off-white canvas as a warm surface. It pairs
 with the ink `panel-foreground`, and in the dark theme both match the dark
 `card` pair. The dark theme uses the cream, `oklch(0.9441 0.0215 76.53)`, for
 its foreground, card, popover, accent, and cream foreground tokens. Change
@@ -544,7 +545,7 @@ frame loop. The app plugin is the only owner of initialization and teardown.
 ### Scrollbar
 
 The page shows a thumb with no track. A classic scrollbar always reserves its own
-gutter, and that gutter paints the root canvas color, so it would show as a white
+gutter, and that gutter paints the root canvas color, so it would show as a light
 strip beside dark sections. The base layer therefore hides the root scrollbar
 with `scrollbar-width: none` and `html::-webkit-scrollbar { display: none }`.
 Nested scroll regions keep the global `::-webkit-scrollbar` styling.
@@ -1157,7 +1158,7 @@ media.
 Each service declares a `surface`. The Website Development panel uses `dark`,
 so it renders a `foreground` backdrop behind its content. Its title and
 description are set in `background` with `mix-blend-mode: difference`, so they
-read dark over the canvas and white over the backdrop, including the moment the
+read dark over the canvas and off-white over the backdrop, including the moment the
 rising edge crosses a line. The backdrop covers the panel's full width and
 height, including its runway, and ends at the panel's bottom edge, so the
 section's closing `spacing-section` stays on the canvas before the journey
@@ -1537,7 +1538,7 @@ repeating the current navigation. Every other route follows the link.
 
 The header logo reads on every surface through `mix-blend-mode: difference`.
 It is painted in the `background` token, so it shows as black on the canvas and
-as white over dark blocks, the way the dark services panel text does. Saturated
+as off-white over dark blocks, the way the dark services panel text does. Saturated
 surfaces invert it to their complement, so it reads cyan over orange. A sticky header always forms its own stacking context, and a blended
 element only mixes with what is painted inside that context, so the logo cannot
 live inside the `header`. `SiteHeader` therefore renders it as a second root,
