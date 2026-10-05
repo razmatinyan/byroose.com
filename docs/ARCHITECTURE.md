@@ -341,9 +341,11 @@ app/lib contains pure helpers, shared constants, and stable names.
   lifecycle ownership with the calling composable.
 - surfaces.ts is the canonical map for semantic surface and foreground tone names.
 - swap-timing.ts owns the named swap timing: `swapDuration` and `swapEase` for
-  hovers and toggles, and the longer `swapScrollDuration` for programmatic
-  scrolls. useArrowSwapHover, useNavLinkMotion, useFaqMotion, and the Lenis
-  plugin import it instead of repeating the values.
+  hovers and toggles, and the programmatic scroll bounds `swapScrollDuration`
+  and `swapScrollMaxDuration` with `getSwapScrollDuration`, a pure function
+  that turns a scroll distance and viewport height into a duration.
+  useArrowSwapHover, useNavLinkMotion, useFaqMotion, and the Lenis plugin
+  import it instead of repeating the values.
 - word-reveal.ts owns the shared masked word rise recipe, its `top 82%` start,
   and its two staggers. Callers may override the stagger, the duration, and
   the ease. The Studio section and the services panels both append it to their
@@ -381,7 +383,7 @@ to the global component layer or a component variant.
 
 app/plugins contains Nuxt runtime integrations that must run as part of application setup. Keep plugins small. A plugin should configure an integration, not become a general utility collection.
 
-lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It disables browser scroll restoration and synchronizes the native and Lenis positions to the document top during client startup and after every successful page route navigation. Hash-only navigation remains available for Lenis section anchors. Its `scrollTo` and the Lenis anchor handling default to the swap scroll timing, and a caller option such as `immediate` still overrides it. The plugin initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after navigation and font loading, and tears everything down with the Vue application.
+lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It disables browser scroll restoration and synchronizes the native and Lenis positions to the document top during client startup and after every successful page route navigation. Hash-only navigation remains available for Lenis section anchors. Its `scrollTo` and the Lenis anchor handling default to the swap scroll timing. `scrollTo` resolves the distance to a numeric, keyword, selector, or element target and passes it to `getSwapScrollDuration`, and a caller option such as `duration` or `immediate` still overrides the result. The plugin initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after navigation and font loading, and tears everything down with the Vue application.
 
 The default scroller is the browser window. This keeps native scrolling, sticky positioning, anchors, and accessibility behavior. Do not add ScrollTrigger.scrollerProxy for this configuration. Reevaluate the integration only if the application adopts a custom scroll wrapper.
 

@@ -506,9 +506,16 @@ async function openContact() {
 </script>
 ```
 
-`scrollTo` and Lenis anchor links use the swap scroll timing, `1.5s` on
-`power4.inOut`, unless the caller passes its own options. The scrollbar drag
-passes `immediate`. Under reduced motion Lenis makes every programmatic scroll
+`scrollTo` and Lenis anchor links use the swap scroll timing, the
+`power4.inOut` curve, unless the caller passes its own options. A fixed
+duration makes a long scroll look like it stops dead: across the full home
+page the last viewport would get under half a second right after content
+flies past. So `scrollTo` measures the distance to its target and sets the
+duration to the fourth root of that distance in viewports, in seconds, kept
+between `1.5s` and `2.5s`. Short scrolls take `1.5s`, the whole home page takes
+about `2.25s`, and the last viewport of a long scroll always gets about `0.6s`
+to settle. Lenis anchor links keep the `1.5s` floor. The scrollbar drag passes
+`immediate`. Under reduced motion Lenis makes every programmatic scroll
 immediate.
 
 The composable also exposes `instance`, `isReady`, `onScroll`, `ready`, `refresh`,
@@ -611,7 +618,7 @@ component.
 | Name | Timing | Source and current users |
 | --- | --- | --- |
 | Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle |
-| Swap scroll timing | `1.5s` on the same `power4.inOut` curve | Every programmatic scroll and section anchor, such as Back to Top and the home logo |
+| Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top and the home logo |
 
 Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
 

@@ -1,9 +1,16 @@
 import { computed, nextTick, readonly, shallowRef } from 'vue'
 import type Lenis from 'lenis'
 import type { ScrollCallback, ScrollToOptions } from 'lenis'
-import { swapEase, swapScrollDuration } from '@/lib/swap-timing'
+import {
+	getSwapScrollDuration,
+	swapEase,
+	swapScrollDuration,
+} from '@/lib/swap-timing'
 
 type ScrollTarget = Parameters<Lenis['scrollTo']>[0]
+
+const pageStartTargets = new Set(['top', 'left', 'start', '#'])
+const pageEndTargets = new Set(['bottom', 'right', 'end'])
 type GsapInstance = (typeof import('gsap'))['gsap']
 type ScrollTriggerInstance =
 	(typeof import('gsap/ScrollTrigger'))['ScrollTrigger']
@@ -83,12 +90,47 @@ export default defineNuxtPlugin({
 			scrollTriggerInstance?.refresh()
 		}
 
+		function findScrollTargetElement(target: string) {
+			if (target.startsWith('#')) {
+				return document.getElementById(target.slice(1))
+			}
+
+			return document.querySelector<HTMLElement>(target)
+		}
+
+		function getScrollDistance(lenis: Lenis, target: ScrollTarget) {
+			if (typeof target === 'number') {
+				return Math.abs(target - lenis.animatedScroll)
+			}
+
+			if (typeof target === 'string') {
+				if (pageStartTargets.has(target)) return lenis.animatedScroll
+				if (pageEndTargets.has(target)) {
+					return lenis.limit - lenis.animatedScroll
+				}
+			}
+
+			const element =
+				typeof target === 'string' ? findScrollTargetElement(target) : target
+
+			return element ? Math.abs(element.getBoundingClientRect().top) : 0
+		}
+
 		async function scrollTo(
 			target: ScrollTarget,
 			options?: ScrollToOptions,
 		) {
 			await initialize()
-			instance.value?.scrollTo(target, { ...swapScrollOptions, ...options })
+
+			const lenis = instance.value
+			if (!lenis) return
+
+			const duration = getSwapScrollDuration(
+				getScrollDistance(lenis, target),
+				window.innerHeight,
+			)
+
+			lenis.scrollTo(target, { ...swapScrollOptions, duration, ...options })
 		}
 
 		function resetScrollPosition() {
