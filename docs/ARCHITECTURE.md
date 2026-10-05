@@ -302,9 +302,11 @@ the consuming components render. Those components own the markup, the semantic
 layer and copied-text colors, the paired glyphs, and the clipped positioning
 host.
 
-useArrowSwapHover owns the More works circle's hover: a slow-fast-slow scale and
-a diagonal swap between the glyphs marked `data-arrow-swap-glyph` and
-`data-arrow-swap-glyph-copy`. Both run on one shared `power4.inOut` timing. It
+useArrowSwapHover owns the arrow swap hover: a slow-fast-slow scale and a swap
+between the glyphs marked `data-arrow-swap-glyph` and
+`data-arrow-swap-glyph-copy`. Both run on one shared `power4.inOut` timing. Its
+options choose a `diagonal` swap, the default used by the More works circle, or
+an `up` swap, and can turn the scale off, as the footer Back to Top button does. It
 tracks pointer and focus state together, scales only for hover-capable
 pointers with motion allowed, and resolves the swap instantly under reduced
 motion. It stays separate from useHoverBounce and useHoverRollover so the

@@ -374,7 +374,14 @@ Conditions and Privacy Policy after a larger gap.
 The right column ends with "Website by Razo Codes", "© 2026 All Rights
 Reserved", and "byroose inc." as three separate lines that share the email
 address typography. "Razo Codes" is a `SiteNavLink` at its `inherit` size and
-opens the author's LinkedIn profile in a new tab. The large wordmark below keeps
+opens the author's LinkedIn profile in a new tab. A "Back to Top" button sits on
+the right of the credits, aligned with their last line, in the same item
+typography with a Lucide up arrow at `0.9em`. Below the credits' width it wraps
+under them. It smooth scrolls to the top through `useSmoothScroll`. On hover or
+visible keyboard focus, `useArrowSwapHover` in its `up` direction without the
+scale moves the arrow up out of its clipped box while a copy rises in from
+below, on the swap timing, and leaving reverses it. The copy rests one box
+below in CSS so it never flashes before hydration. The large wordmark below keeps
 the logo's own black and has no legal row beneath it. Its wrapper uses the
 wordmark's `680` unit width with a `128` unit visible height and clips the rest
 at the footer edge, so the oversized letterforms finish partially below the
@@ -590,6 +597,15 @@ plain objects, which tween silently and move nothing on screen. Resolve every
 motion target through VueUse's `unrefElement` and confirm the result is an
 `HTMLElement` before animating it, so a plain element can become a component
 later without breaking the animation.
+
+### Named timings
+
+Requests and reviews may use these short names instead of pointing at a
+component.
+
+| Name | Timing | Source and current users |
+| --- | --- | --- |
+| Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle |
 
 ### Home hero layout
 

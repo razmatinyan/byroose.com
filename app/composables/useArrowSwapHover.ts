@@ -8,10 +8,29 @@ const hoverScale = 1.08;
 const swapDuration = 0.7;
 const swapEase = "power4.inOut";
 const glyphRest = { xPercent: 0, yPercent: 0 };
-const glyphExit = { xPercent: 200, yPercent: -150 };
-const glyphEntry = { xPercent: -200, yPercent: 150 };
+const glyphOffsets = {
+   diagonal: {
+      entry: { xPercent: -200, yPercent: 150 },
+      exit: { xPercent: 200, yPercent: -150 },
+   },
+   up: {
+      entry: { xPercent: 0, yPercent: 100 },
+      exit: { xPercent: 0, yPercent: -100 },
+   },
+} as const;
 
-export function useArrowSwapHover(target: MaybeComputedElementRef) {
+type ArrowSwapDirection = keyof typeof glyphOffsets;
+
+interface ArrowSwapOptions {
+   direction?: ArrowSwapDirection;
+   scale?: boolean;
+}
+
+export function useArrowSwapHover(
+   target: MaybeComputedElementRef,
+   { direction = "diagonal", scale = true }: ArrowSwapOptions = {},
+) {
+   const { entry: glyphEntry, exit: glyphExit } = glyphOffsets[direction];
    const { createMatchMedia, gsap } = useGsap();
 
    onMounted(() => {
@@ -28,7 +47,8 @@ export function useArrowSwapHover(target: MaybeComputedElementRef) {
             const glyphCopy =
                element.querySelector<HTMLElement>(glyphCopySelector);
             const motion = Boolean(context.conditions?.motion);
-            const scales = motion && Boolean(context.conditions?.hover);
+            const scales =
+               scale && motion && Boolean(context.conditions?.hover);
             const tween = {
                duration: motion ? swapDuration : 0,
                ease: swapEase,

@@ -52,12 +52,19 @@ const socialLinks: FooterLink[] = [
 const footerRoot = useTemplateRef<HTMLElement>("footerRoot");
 const footerContent = useTemplateRef<HTMLElement>("footerContent");
 const footerShade = useTemplateRef<HTMLElement>("footerShade");
+const backToTop = useTemplateRef<HTMLElement>("backToTop");
+const { scrollTo } = useSmoothScroll();
 
 useFooterMotion({
 	content: footerContent,
 	root: footerRoot,
 	shade: footerShade,
 });
+useArrowSwapHover(backToTop, { direction: "up", scale: false });
+
+function scrollToTop() {
+	scrollTo(0);
+}
 </script>
 
 <template>
@@ -177,18 +184,43 @@ useFooterMotion({
 						</div>
 					</div>
 
-					<div class="site-footer-credits site-footer-item-text">
-						<p>
-							Website by
-							<SiteNavLink
-								:href="creditHref"
-								label="Razo Codes"
-								size="inherit"
-								target="_blank"
-							/>
-						</p>
-						<p>© 2026 All Rights Reserved</p>
-						<p>byroose inc.</p>
+					<div class="site-footer-bottom site-footer-item-text">
+						<div class="site-footer-credits">
+							<p>
+								Website by
+								<SiteNavLink
+									:href="creditHref"
+									label="Razo Codes"
+									size="inherit"
+									target="_blank"
+								/>
+							</p>
+							<p>© 2026 All Rights Reserved</p>
+							<p>byroose inc.</p>
+						</div>
+
+						<button
+							ref="backToTop"
+							class="site-footer-back-to-top"
+							type="button"
+							@click="scrollToTop"
+						>
+							Back to Top
+							<span class="site-footer-back-to-top-icon" aria-hidden="true">
+								<span
+									class="site-footer-back-to-top-glyph"
+									data-arrow-swap-glyph
+								>
+									<Icon :name="appIcons.arrowUp" />
+								</span>
+								<span
+									class="site-footer-back-to-top-glyph"
+									data-arrow-swap-glyph-copy
+								>
+									<Icon :name="appIcons.arrowUp" />
+								</span>
+							</span>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -321,8 +353,32 @@ useFooterMotion({
 	@apply mt-8;
 }
 
+.site-footer-bottom {
+	@apply flex flex-wrap items-end justify-between gap-x-8 gap-y-6;
+}
+
 .site-footer-credits {
 	@apply flex flex-col items-start gap-0.5;
+}
+
+.site-footer-back-to-top {
+	@apply inline-flex cursor-pointer items-center gap-[0.25em] rounded-xs bg-transparent p-0 text-paper-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
+}
+
+.site-footer-back-to-top-icon {
+	@apply grid size-[0.9em] overflow-hidden;
+}
+
+.site-footer-back-to-top-glyph {
+	@apply col-start-1 row-start-1 grid place-items-center;
+}
+
+.site-footer-back-to-top-glyph :deep(svg) {
+	@apply size-full;
+}
+
+.site-footer-back-to-top-glyph[data-arrow-swap-glyph-copy] {
+	transform: translateY(100%);
 }
 
 .site-footer-credits p {
