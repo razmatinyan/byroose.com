@@ -51,7 +51,7 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 </script>
 
 <template>
-	<footer class="site-footer" data-header-surface="dark">
+	<footer class="site-footer">
 		<div class="site-footer-grid section-gutter">
 			<div v-for="group in resolvedGroups" :key="group.heading">
 				<div class="site-footer-heading">{{ group.heading }}</div>
@@ -92,7 +92,7 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 @reference '../../assets/css/tailwind.css';
 
 .site-footer {
-	@apply bg-foreground pt-10 pb-7 text-background md:pt-14 xl:pt-18;
+	@apply bg-panel pt-10 pb-7 text-panel-foreground md:pt-14 xl:pt-18;
 }
 
 .site-footer-grid {
@@ -100,11 +100,11 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 }
 
 .site-footer-heading {
-	@apply text-sm font-semibold text-primary;
+	@apply text-sm font-semibold;
 }
 
 .site-footer-copy {
-	@apply mt-3 mb-0 text-sm leading-relaxed text-white/80 sm:text-base;
+	@apply mt-3 mb-0 text-sm leading-relaxed text-muted-foreground sm:text-base;
 }
 
 .site-footer-links {
@@ -112,7 +112,7 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 }
 
 .site-footer-link {
-	@apply text-white/80 transition-colors hover:text-primary;
+	@apply text-muted-foreground transition-colors hover:text-primary;
 }
 
 .site-footer-brand {
@@ -120,10 +120,10 @@ const resolvedGroups = computed(() => groups ?? defaultGroups)
 }
 
 .site-footer-logo {
-	@apply block h-auto w-full invert;
+	@apply block h-auto w-full;
 }
 
 .site-footer-legal {
-	@apply mt-5 flex flex-wrap justify-between gap-3 text-xs tracking-[0.04em] text-white/65;
+	@apply mt-5 flex flex-wrap justify-between gap-3 text-xs tracking-[0.04em] text-muted-foreground;
 }
 </style>

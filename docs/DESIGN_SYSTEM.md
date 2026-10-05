@@ -37,7 +37,7 @@ visual and accessibility review.
 | `background` and `brand-cream` | Warm cream, `#F5EBDD` | Main page canvas and cream brand surfaces |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
-| `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large contained panels that sit on the canvas, such as the blog section |
+| `panel` | Light cream, `oklch(0.9712 0.0118 78.5)` | Large panels that sit on the canvas, such as the blog section and the full-width site footer |
 | `primary` | Orange-red | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
 | `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
@@ -329,6 +329,18 @@ Accepting writes `accepted` and declining writes `declined` to the
 `accepted` before it runs. Because the value is read through `useCookie`, the
 server already knows whether to render the notice, so an answered banner never
 flashes during hydration.
+
+## Site footer
+
+`SiteFooter` spans the full width in the `panel` color with
+`panel-foreground` text, the same light cream as the blog panel. Group headings
+use the ink foreground, because the orange `primary` falls below AA contrast
+at `text-sm` on the light panel. Body lines, links, and the legal row use
+`muted-foreground`, and links turn `primary` on hover. The large wordmark keeps
+the logo's own black. The footer is not a dark surface, so it carries no
+`data-header-surface` marker. The landing page no longer ends with an orange
+call to action section, and the footer follows the FAQ directly. The footer
+content is temporary until the planned footer redesign.
 
 ## Responsive rules
 
@@ -1367,8 +1379,8 @@ separate mobile dropdown.
 
 Both header actions share the dark action surface, so over a dark block they
 gain a one-pixel `background/20` border that keeps their outline readable. The
-dark blocks are the More works panel, the services backdrop surface and curve,
-and the site footer, each marked with `data-header-surface="dark"`.
+dark blocks are the More works panel and the services backdrop surface and
+curve, each marked with `data-header-surface="dark"`.
 `useHeaderSurface` sets the state from what is actually behind the header
 actions. The menu control receives it through its `bordered` prop and fades its
 own border color, the same color it uses while expanded. The Start a project
@@ -1417,8 +1429,7 @@ repeating the current navigation. Every other route follows the link.
 The header logo reads on every surface through `mix-blend-mode: difference`.
 It is painted in the `background` token, so it shows as black on the canvas and
 as cream over dark blocks, the way the dark services panel text does. Saturated
-surfaces invert it to their complement, so it reads cyan over the orange
-footer. A sticky header always forms its own stacking context, and a blended
+surfaces invert it to their complement, so it reads cyan over orange. A sticky header always forms its own stacking context, and a blended
 element only mixes with what is painted inside that context, so the logo cannot
 live inside the `header`. `SiteHeader` therefore renders it as a second root,
 a fixed `site-logo-layer` that sits in the page's root stacking context at the

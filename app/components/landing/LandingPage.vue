@@ -3,7 +3,6 @@ import { computed, shallowRef, useTemplateRef } from "vue";
 import type { SplitTextResult } from "@/lib/split-text";
 import BlogSection from "./BlogSection.vue";
 import BrandGrid from "./BrandGrid.vue";
-import ContactSection from "./ContactSection.vue";
 import CoursesSection from "./CoursesSection.vue";
 import FaqSection from "./FaqSection.vue";
 import HeroSection from "./HeroSection.vue";
@@ -56,7 +55,6 @@ function setDescriptionSplit(parts: SplitTextResult) {
       <!-- <CoursesSection /> -->
       <BlogSection />
       <FaqSection />
-      <ContactSection />
    </div>
 </template>
 
