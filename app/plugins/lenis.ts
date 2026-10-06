@@ -71,7 +71,6 @@ export default defineNuxtPlugin({
 
 				nextGsapInstance.registerPlugin(nextScrollTriggerInstance)
 				nextGsapInstance.ticker.add(nextTickerCallback)
-				nextGsapInstance.ticker.lagSmoothing(0)
 
 				gsapInstance = nextGsapInstance
 				scrollTriggerInstance = nextScrollTriggerInstance

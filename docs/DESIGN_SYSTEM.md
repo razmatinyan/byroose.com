@@ -579,6 +579,12 @@ scroll.
 
 The implementation follows the official [Lenis GSAP integration](https://github.com/darkroomengineering/lenis#gsap-scrolltrigger)
 and [GSAP ScrollTrigger guidance](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).
+It deliberately keeps GSAP's default ticker lag smoothing instead of the
+`gsap.ticker.lagSmoothing(0)` call in the Lenis example. Browsers stop animation
+frames in a hidden tab, and without lag smoothing GSAP adds the whole hidden
+time on return, so time-based animations such as the home preloader would jump
+to their end. With the default, a gap over `500ms` counts as one `33ms` frame,
+so every animation resumes where it paused.
 
 ## GSAP
 
