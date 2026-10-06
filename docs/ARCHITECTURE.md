@@ -187,9 +187,9 @@ near the viewport center. It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved
 exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
-elements. On touch devices its media context drops the slowed travel and the
-hold, so the content stays in place and each image scales in once from a
-trigger on its frame. ServicesSection owns the copy, the image links, and
+elements. On touch devices its media context drops the slowed travel, the
+hold, and the backdrop rise, so the content stays in place, the dark backdrop
+is shown at rest, and each image scales in once from a trigger on its frame. ServicesSection owns the copy, the image links, and
 the tooltip handlers. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.

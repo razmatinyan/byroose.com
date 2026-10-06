@@ -528,7 +528,7 @@ export function useServicesMotion(
       const layout = layoutOf(parts.panel);
       if (!layout) return;
 
-      riseBackdrop(layout);
+      if (!touchMotion) riseBackdrop(layout);
       curveBackdrop(layout);
       if (!touchMotion) slowContent(layout);
       revealText(parts, layout);
