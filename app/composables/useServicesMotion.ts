@@ -83,6 +83,10 @@ const backdropRevealDelay = 0.7;
 const backdropRiseLength = 0.8;
 const backdropRadius = 32;
 const backdropExitReach = 1;
+const touchQuery = "(hover: none) and (pointer: coarse)";
+const touchMediaStart = "top 85%";
+const touchMediaDuration = 1.2;
+const touchMediaEase = "power3.out";
 
 function splitWords(parts: SplitTextResult | undefined) {
    return parts?.words ?? [];
@@ -170,6 +174,7 @@ export function useServicesMotion(
    let initialized = false;
    let ready = false;
    let reducedMotion = false;
+   let touchMotion = false;
    let motionContext: gsap.Context | null = null;
    let panels: ServicePanelParts[] = [];
    const textTimelines = new Map<HTMLElement, gsap.core.Timeline>();
@@ -297,6 +302,13 @@ export function useServicesMotion(
    }
 
    function textRevealStart(layout: PanelLayout, title: HTMLElement) {
+      if (touchMotion) {
+         return () =>
+            title.getBoundingClientRect().top +
+            window.scrollY -
+            window.innerHeight * textRevealAt;
+      }
+
       return scrollWhen(
          layout,
          () => offsetWithin(title, layout.panel),
@@ -408,6 +420,26 @@ export function useServicesMotion(
       );
    }
 
+   function revealMedia({ frame, panel }: PanelLayout) {
+      const media = panel.querySelector<HTMLElement>(selectors.media);
+      const image = panel.querySelector<HTMLElement>(selectors.image);
+      if (!media) return;
+
+      const timeline = gsap
+         .timeline({
+            defaults: { duration: touchMediaDuration, ease: touchMediaEase },
+            scrollTrigger: {
+               once: true,
+               refreshPriority,
+               start: touchMediaStart,
+               trigger: frame,
+            },
+         })
+         .fromTo(media, { scale: 0 }, { scale: 1 }, 0);
+
+      if (image) timeline.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
+   }
+
    function riseBackdrop(layout: PanelLayout) {
       const { panel } = layout;
       const backdrop = panel.querySelector<HTMLElement>(selectors.backdrop);
@@ -476,7 +508,7 @@ export function useServicesMotion(
                invalidateOnRefresh: true,
                refreshPriority,
                scrub: true,
-               start: holdPoint(layout, 1),
+               start: touchMotion ? "bottom bottom" : holdPoint(layout, 1),
                trigger: panel,
             },
          })
@@ -498,9 +530,10 @@ export function useServicesMotion(
 
       riseBackdrop(layout);
       curveBackdrop(layout);
-      slowContent(layout);
+      if (!touchMotion) slowContent(layout);
       revealText(parts, layout);
-      scaleMedia(layout);
+      if (touchMotion) revealMedia(layout);
+      else scaleMedia(layout);
    }
 
    function showAll(elements: HTMLElement[]) {
@@ -538,10 +571,12 @@ export function useServicesMotion(
          {
             motion: "(prefers-reduced-motion: no-preference)",
             reduceMotion: "(prefers-reduced-motion: reduce)",
+            touch: touchQuery,
          },
          (context) => {
             motionContext = context;
             reducedMotion = Boolean(context.conditions?.reduceMotion);
+            touchMotion = Boolean(context.conditions?.touch);
 
             if (reducedMotion) {
                showAll([

@@ -1227,6 +1227,17 @@ image hold, the shared `holdPoint` position where the image begins its quick
 exit, so the curve and the quick exit begin together. It ends when the panel's
 bottom edge reaches the viewport top.
 
+Touch devices, matched by `(hover: none) and (pointer: coarse)`, keep the
+intro pin, the description reveal, and the backdrop rise and curve, but drop
+the slowed travel, the runway, and the image hold. The content scrolls at page
+speed like normal content. Each image scales up once from zero around its bottom
+center, with the picture inside settling from `1.3` to rest, over `1.2s` on
+`power3.out` when its frame top reaches 85 percent of the viewport. It then
+stays at full size in place. The text reveal and the backdrop rise start when
+the title reaches 60 percent of the viewport, measured from the title itself
+because nothing moves it, and the curve starts when the panel bottom reaches the
+viewport bottom.
+
 Reduced motion drops the intro pin, every reveal, the image scale, and the
 backdrop rise and curve. It displays the intro title words, the
 descriptions, and the images at rest, and the dark panel keeps a
