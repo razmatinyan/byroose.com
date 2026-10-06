@@ -64,7 +64,7 @@ export default defineNuxtPlugin({
 					respectReducedMotion: true,
 					smoothWheel: true,
 					stopInertiaOnNavigate: true,
-					syncTouch: false,
+					syncTouch: true,
 				})
 				const nextTickerCallback = (time: number) =>
 					nextInstance.raf(time * 1000)

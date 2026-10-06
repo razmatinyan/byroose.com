@@ -543,8 +543,13 @@ for the current configuration because Lenis retains native document scrolling.
 If a custom wrapper is introduced later, treat that as an architecture change and
 review the proxy, pin type, dimensions, routing, and accessibility behavior.
 
-Wheel input is smoothed. Touch input remains native. Lenis respects the user's
-reduced-motion preference. Use `data-lenis-prevent`,
+Wheel input is smoothed. Touch input runs through Lenis with `syncTouch`, so a
+drag follows the finger directly and Lenis adds the release inertia. Native
+touch scrolling runs on the compositor ahead of the GSAP ticker, so every
+scrubbed transform that moves against the scroll, such as the hero card, the
+case list handoff, and the footer reveal, trailed it by a frame and visibly
+lagged. With `syncTouch` the scroll position and the scrubbed transforms update
+in the same frame. Lenis respects the user's reduced-motion preference. Use `data-lenis-prevent`,
 `data-lenis-prevent-wheel`, or `data-lenis-prevent-touch` on nested regions that
 must manage their own scroll input.
 
@@ -568,8 +573,8 @@ painted in `background` at half opacity with `mix-blend-mode: difference`, so it
 reads dark on the canvas and light on dark surfaces without a separate color
 per section. Dragging the thumb scrolls through `useSmoothScroll` with
 `immediate`, so Lenis stays the single owner of the scroll position. The overlay
-is hidden from assistive technology. Wheel, keyboard, and touch scrolling stay
-native, and the overlay renders nothing until mount or when the page does not
+is hidden from assistive technology. It never intercepts wheel, keyboard, or
+touch scrolling, and the overlay renders nothing until mount or when the page does not
 scroll.
 
 The implementation follows the official [Lenis GSAP integration](https://github.com/darkroomengineering/lenis#gsap-scrolltrigger)
