@@ -198,7 +198,7 @@ function openWorks(event: MouseEvent) {
 }
 
 .more-works {
-	@apply pointer-events-auto flex min-h-svh cursor-pointer flex-col overflow-clip bg-foreground px-page text-background;
+	@apply pointer-events-auto flex min-h-dvh cursor-pointer flex-col overflow-clip bg-foreground px-page text-background;
 	--more-works-image: clamp(5rem, 17vw, 18rem);
 	--more-works-action: clamp(9rem, 15vw, 15rem);
 }

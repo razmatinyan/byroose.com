@@ -949,8 +949,10 @@ touch-first devices never request or mount the tooltip chunk.
 
 The work section ends with four case studies and a full-width dark panel,
 `MoreWorksPanel`, that leads to the `/works` route. The panel uses the
-`foreground` surface with `background` text, fills at least one small viewport
-height, and stacks a centered title stage above one large circular action.
+`foreground` surface with `background` text, fills at least one dynamic viewport
+height, `min-h-dvh`, and stacks a centered title stage above one large circular
+action. The dynamic unit follows the mobile browser bars, so the pinned panel
+still fills the screen when the address bar collapses or returns.
 
 The action is a `NuxtLink` named "Explore Projects" through `aria-label`. It is a
 circle of `clamp(9rem, 15vw, 15rem)` in the canvas `background` color. The
