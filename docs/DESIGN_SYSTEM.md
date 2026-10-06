@@ -338,8 +338,9 @@ flashes during hydration.
 
 ## Site footer
 
-`SiteFooter` spans the full width with `paper-foreground` text inside the
-`section-gutter`. Its surface is a vertical `bg-linear-to-b` gradient: solid
+`SiteFooter` spans the full width with `paper-foreground` text. Like the
+service panels, it uses the narrower `clamp(1rem, 2vw, 1.5rem)` gutter instead
+of `section-gutter`, so its content runs nearly edge to edge. Its surface is a vertical `bg-linear-to-b` gradient: solid
 light cream `paper` through the top 30 percent of its height, then a smooth fade to the page
 `background` at its bottom edge, so the cropped wordmark settles onto the
 canvas color. The gradient lives on the footer root rather than the moving

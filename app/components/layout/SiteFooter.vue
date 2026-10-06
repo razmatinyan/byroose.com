@@ -69,7 +69,7 @@ function scrollToTop() {
 
 <template>
 	<footer ref="footerRoot" class="site-footer">
-		<div ref="footerContent" class="site-footer-content section-gutter">
+		<div ref="footerContent" class="site-footer-content">
 			<div class="site-footer-top">
 				<div class="site-footer-lead">
 					<p class="section-title site-footer-title">
@@ -257,7 +257,7 @@ function scrollToTop() {
 }
 
 .site-footer-content {
-	@apply pt-16 pb-0 md:pt-20 xl:pt-24;
+	@apply px-[clamp(1rem,2vw,1.5rem)] pt-16 pb-0 md:pt-20 xl:pt-24;
 }
 
 .site-footer-shade {
