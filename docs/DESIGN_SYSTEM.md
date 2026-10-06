@@ -1499,14 +1499,15 @@ radius above its rollover layers rather than a real border, because a filled
 rollover host must stay borderless. Both fades take `0.3s` and are instant under
 reduced motion. Mark any new dark block on the element that paints it.
 
-While the site footer is revealed by scrolling, the header actions fade out
-with it. Their container's opacity follows the footer reveal progress from one
-to zero, and it becomes hidden once the footer is fully at rest, so the
-invisible controls cannot be clicked or focused. The logo and the primary
-navigation do not fade. The actions stay fully visible while the menu is open,
+While the site footer is revealed by scrolling, the header actions and the
+logo fade out with it. The opacity of the actions container and the logo layer
+follows the footer reveal progress from one to zero, and both become hidden
+once the footer is fully at rest, so the invisible controls cannot be clicked
+or focused. The primary navigation does not fade. The actions and the logo stay
+fully visible while the menu is open,
 and on a route so short that the footer already starts inside the first screen,
 because then the reveal is not driven by scrolling. Reduced motion has no
-footer reveal, so the actions never fade.
+footer reveal, so the actions and the logo never fade.
 
 The primary navigation is plain text: no surface, padding, or shadow on the
 `nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.

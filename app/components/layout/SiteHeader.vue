@@ -43,7 +43,7 @@ const { headerMode, headerRoot, navRevealed } = useSiteHeaderMotion()
 const headerActions = useTemplateRef<HTMLElement>('headerActions')
 const { onDarkSurface } = useHeaderSurface(headerRoot, headerActions)
 const footerRevealProgress = useFooterRevealProgress()
-const headerActionsStyle = computed<CSSProperties | undefined>(() => {
+const footerFadeStyle = computed<CSSProperties | undefined>(() => {
 	const progress = footerRevealProgress.value
 	if (!progress || menuOpen.value) return undefined
 
@@ -109,7 +109,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 			<div
 				ref="headerActions"
 				class="site-header-actions"
-				:style="headerActionsStyle"
+				:style="footerFadeStyle"
 			>
 				<span ref="headerCta" class="site-header-cta-wrap">
 					<span class="site-header-rise-mask" data-header-rise-mask>
@@ -151,6 +151,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 		ref="logoLayer"
 		class="site-logo-layer"
 		v-bind="$attrs"
+		:style="footerFadeStyle"
 		:data-header-revealed="navRevealed || undefined"
 	>
 		<span class="site-header-rise-mask" data-header-rise-mask>
