@@ -508,13 +508,13 @@ images that are verified as critical to the initial viewport.
 Lenis owns global scroll smoothing through `app/plugins/lenis.ts`. The plugin
 creates one application instance after mount, uses GSAP's ticker as the only
 animation frame source, sends Lenis scroll updates to ScrollTrigger, and refreshes
-measurements after route completion and font loading.
+measurements after mount, font loading, and every page transition.
 
 Use `useSmoothScroll()` in components:
 
 ```vue
 <script setup lang="ts">
-const { scrollTo, stop, start } = useSmoothScroll()
+const { scrollTo } = useSmoothScroll()
 
 async function openContact() {
 	await scrollTo('#contact', { offset: -24 })
@@ -535,8 +535,12 @@ to settle. Lenis anchor links keep the `1.5s` floor. The scrollbar drag passes
 immediate.
 
 The composable also exposes `instance`, `isReady`, `onScroll`, `ready`, `refresh`,
-and `resize`. Subscriptions created with `onScroll` are removed automatically
-when the current Vue scope is disposed.
+`resize`, `lock`, `reset`, and `holdRefresh`. Subscriptions created with `onScroll` are removed automatically
+when the current Vue scope is disposed. Hold the scroll with `lock`, which
+returns its own release function. Lenis only runs while no lock is held, so
+several owners can hold the scroll at once and none of them restarts it early.
+Call `refresh` rather than `ScrollTrigger.refresh`, because a page transition
+holds every refresh until the incoming page has its final layout.
 
 The browser window remains the scroller. Do not add `ScrollTrigger.scrollerProxy()`
 for the current configuration because Lenis retains native document scrolling.
@@ -649,6 +653,48 @@ component.
 
 Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
 
+### Page transitions
+
+Every page change runs an overlap transition from `usePageTransitionMotion`,
+passed to NuxtPage in `app/app.vue`. The first page load never runs it, so a
+direct home request still opens with the preloader.
+
+The leaving page stays in the document at its current scroll position and moves
+up a quarter of the viewport height while it scales to `0.97`. The site footer
+carries `data-page-transition-follow`, so it moves with the page as one rigid
+surface, and both scale around the viewport center. A `foreground` shade in the
+layout, `data-page-transition-shade`, fades over them to `0.8` opacity. The
+incoming page is fixed to the viewport with the canvas color, at least one
+`100svh` tall, and padded down to the main landmark's offset, so its content
+already sits where it will rest. It rises from the viewport bottom. All three
+movements share `1.1s` on the `page-transition` CustomEase,
+`0.73, 0.05, 0.112, 1`, which leaves slowly, moves fast through the middle, and
+lands softly. The shade sits at `z-10`, the incoming page at `20`, and the
+header stays above both at `z-60`.
+
+When the movement ends, one task removes the leaving page, returns the incoming
+page to normal flow, clears every transition style, reverts the leaving page's
+deferred GSAP work, resets the scroll to the top, and refreshes Lenis and
+ScrollTrigger against the final layout. The incoming page's scroll reveals are
+built during the transition but are measured again at that point, so above-fold
+reveals play as soon as the page lands and later ones wait for their scroll
+position.
+
+`0.4s` into the movement the transition reports its reveal point. Time-based
+entrances on the incoming page, such as the home intro, start there rather than
+on mount.
+
+A leaving page keeps its state on screen until it is covered. Its GSAP contexts,
+media queries, and SplitText splits revert only after it has been removed. A
+section that is pinned when the reader leaves is `position: fixed`, and the
+leave transform would make it relative to the page. The transition therefore
+offsets each active pin by the page's own position before it moves, so a pinned
+panel such as More works leaves exactly where it was.
+
+Further page navigations are ignored until a transition finishes, and the scroll
+stays locked throughout. Reduced motion swaps the pages instantly with the same
+cleanup, scroll reset, and refresh.
+
 ### Home hero layout
 
 The hero leads with the problem, the solution, and the action. From `lg` the
@@ -691,8 +737,10 @@ preloader is the first stage and nothing else. A direct request to the home page
 starts with ten fully opaque images scaling into a centered stack. The first
 image leads for one second with `power3.out`; the remaining images start
 one-third of a second later with a `0.12s` stagger. The preloader ends as soon
-as that stack is revealed. Client-side entries to the home page skip the
-preloader and begin from the same centered stack.
+as that stack is revealed. Client-side entries to the home page skip both stages
+of the media motion. They arrive through the page transition with the four
+retained cards already at rest in their grid, so the cards travel in with the
+incoming page instead of expanding from the center.
 
 The second stage begins at the shared `expand` timeline label. Hide the six back
 layers without an exit tween, then expand the four retained 4:3 images straight
@@ -711,6 +759,19 @@ navigation links, and the header actions rise one by one from their masks. The h
 lines, the description lines, and the call to action start rising at that same
 moment. Reduced motion must resolve directly to this complete state with
 scrolling available.
+
+A client-side entry plays only the text half of the second stage. While the
+page transition starts, the header pieces drop back into their masks over
+`0.22s` on `power2.in` with a `0.015s` stagger, which always finishes before the
+reveal point. The intro then waits for the page transition's reveal point and
+starts the header, title, description, and action rise at time zero of a fresh
+timeline, with the same durations, eases, and staggers as a direct request.
+Two rules keep that reveal from starting partway through. A timeline without
+the preloader must never hold a tween before its own time zero, because GSAP
+moves every child later and moves the timeline's start back by the same
+amount. And a time-based reveal must not be created during the incoming page's
+mount work, because GSAP counts that blocked time, up to its `500ms` lag
+threshold, as time the reveal has already played.
 
 The preloader has no curtain. Because both scrolling systems are pinned to the
 document top, the only thing behind the centered stack is the hero section with
@@ -1562,9 +1623,12 @@ The logo and the two actions instead rise inside a `data-header-rise-mask`
 wrapper that is clipped to `inset(0)` only during the reveal, as the hero
 action's is, so the hover bounce and the focus ring are never cut afterwards.
 The action's `data-header-rise` target is a span around the button rather than
-the button itself, because `useHoverBounce` owns the button's transform. On the
-home route the intro timeline runs this reveal at `expand+=0.1`. On every other
-route `useSiteHeaderMotion` runs it after mount. Until the reveal finishes the
+the button itself, because `useHoverBounce` owns the button's transform. On a
+direct home request the intro timeline runs this reveal at `expand+=0.1`. A page
+transition into home lowers the pieces and runs the reveal again at the
+transition's reveal point, as described in Home intro motion. On every other
+route `useSiteHeaderMotion` runs it after mount, and later page transitions keep
+the revealed header in place. Until the reveal finishes the
 `nav` has no `data-nav-revealed` attribute, and the header and the logo layer
 have no `data-header-revealed` attribute, so their pieces stay hidden in CSS
 and a server-rendered piece never flashes before it rises. Reduced motion shows

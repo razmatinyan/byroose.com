@@ -43,6 +43,8 @@ app/
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
     useNavLinkMotion.ts
+    usePageTransition.ts
+    usePageTransitionMotion.ts
     useServicesMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -75,7 +77,9 @@ app/
     works.vue
   plugins/
     lenis.ts
+    page-transition.ts
     ssr-width.ts
+  router.options.ts
 docs/
 public/
 nuxt.config.ts
@@ -87,7 +91,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage. app/layouts/default.vue owns the persistent site header, main landmark, footer, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -119,7 +123,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -140,7 +144,7 @@ Use a composable when logic:
 
 The existing useGsap composable is the integration boundary for component-owned GSAP animation. Components own their animation intent. The composable owns plugin loading, scoped contexts, media matching, and cleanup.
 
-useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It shows every `data-home-intro-header` element, which covers the header and its separate logo layer, and rises their pieces from `getHeaderRevealParts` in visual order without fading the header. It runs the center reveal only while Nuxt is hydrating a direct home request. Later client-side entries start at the shared expansion label, so page transitions can reuse that boundary without replaying the preloader.
+useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It shows every `data-home-intro-header` element, which covers the header and its separate logo layer, and rises their pieces from `getHeaderRevealParts` in visual order without fading the header. It runs the preloader and the center expansion only while Nuxt is hydrating a direct home request. A client-side entry arrives through a page transition: it shows the hero cards at rest in their grid immediately, lowers the header pieces into their masks, and builds its reveal timeline only when usePageTransition reports the reveal point, so the timeline starts at its own beginning instead of absorbing the incoming page's mount work. It holds the scroll through the shared Lenis lock rather than stopping Lenis directly, and marks the intro complete if the page is left before the intro finishes, so the header never stays hidden on the next route.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
@@ -266,7 +270,7 @@ ref with the same key.
 useHeaderSurface reports whether a dark block sits behind the header actions.
 Blocks opt in by carrying `data-header-surface="dark"` on the element that
 actually paints the dark surface. On mount, on every shared Lenis scroll
-callback, on resize, and on `page:finish`, it hit tests the center of a probe
+callback, on resize, and on `page:transition:finish`, it hit tests the center of a probe
 element with `document.elementsFromPoint`, skips everything inside the header,
 and resolves the first element that is or sits inside a marked surface. Hit
 testing respects `clip-path`, so a surface that is still clipping its way in,
@@ -321,7 +325,11 @@ its markup and consent intent while the composable owns the tweens, the
 reduced-motion outcome, and tween cleanup. Because the hooks resolve Vue's done
 callback, the notice stays mounted until its exit finishes.
 
-useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, start and stop controls, refresh behavior, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances.
+useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, the scroll lock, the scroll reset, refresh behavior, the refresh hold, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances. `lock` returns a release function, and Lenis only runs while no lock is held, so the page transition and the home intro can hold the scroll at the same time without either one restarting it early.
+
+usePageTransition is the component-facing contract for the page transition plugin. It exposes `isActive`, `deferCleanup`, which runs a cleanup immediately or, while a transition runs, after the leaving page has been covered and removed, and `waitForReveal`, which resolves at the transition's reveal point or immediately when no transition runs. useGsap routes its scope cleanup through `deferCleanup`, so a leaving page keeps every animation, pin, and inline style in place while it is visible.
+
+usePageTransitionMotion owns the overlap page transition choreography and returns the Vue transition hooks that app.vue passes to NuxtPage. It sets the incoming page up as a fixed surface before insertion, moves the leaving page and every `data-page-transition-follow` element together, fades the layout's `data-page-transition-shade` element, and restores normal flow in one task when the timeline ends.
 
 ### Library modules
 
@@ -385,7 +393,11 @@ to the global component layer or a component variant.
 
 app/plugins contains Nuxt runtime integrations that must run as part of application setup. Keep plugins small. A plugin should configure an integration, not become a general utility collection.
 
-lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It disables browser scroll restoration and synchronizes the native and Lenis positions to the document top during client startup and after every successful page route navigation. Hash-only navigation remains available for Lenis section anchors. Its `scrollTo` and the Lenis anchor handling default to the swap scroll timing. `scrollTo` resolves the distance to a numeric, keyword, selector, or element target and passes it to `getSwapScrollDuration`, and a caller option such as `duration` or `immediate` still overrides the result. Lenis also owns touch scrolling through `syncTouch`, so touch scroll positions and scrubbed ScrollTrigger transforms update in the same GSAP ticker frame. The plugin initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after navigation and font loading, and tears everything down with the Vue application.
+lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It disables browser scroll restoration and synchronizes the native and Lenis positions to the document top during client startup. After a page route navigation, the page transition plugin resets them through the exposed `reset` once the incoming page has replaced the outgoing one. Hash-only navigation remains available for Lenis section anchors. Its `scrollTo` and the Lenis anchor handling default to the swap scroll timing. `scrollTo` resolves the distance to a numeric, keyword, selector, or element target and passes it to `getSwapScrollDuration`, and a caller option such as `duration` or `immediate` still overrides the result. Lenis also owns touch scrolling through `syncTouch`, so touch scroll positions and scrubbed ScrollTrigger transforms update in the same GSAP ticker frame. The plugin initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after mount and font loading, and tears everything down with the Vue application. While a refresh hold is active, `refresh` calls wait and resolve after one shared measurement when the last hold is released.
+
+page-transition.ts owns the page transition lifecycle. A successful navigation to a different path begins a transition: it takes a Lenis lock and a refresh hold, so nothing scrolls or remeasures while two pages overlap, and it blocks further page navigations until the transition finishes. Finishing runs the deferred cleanups of the leaving page, resets the scroll to the top, releases the lock, and releases the hold, which refreshes Lenis and ScrollTrigger once against the final layout. If no transition hook claims a navigation by `page:finish`, or the app errors, it finishes immediately so the lock can never stick.
+
+app/router.options.ts disables the Nuxt router scroll behavior, because the router would otherwise scroll the window while the leaving page is still visible. The page transition owns the scroll position after every page change, so the browser back button also lands at the top of the page.
 
 The default scroller is the browser window. This keeps native scrolling, sticky positioning, anchors, and accessibility behavior. Do not add ScrollTrigger.scrollerProxy for this configuration. Reevaluate the integration only if the application adopts a custom scroll wrapper.
 

@@ -184,6 +184,9 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 - Animate transform and opacity properties where possible.
 - Register and load plugins only when needed.
 - Revert contexts and media queries when the Vue scope is disposed.
+- Route visual cleanup through useGsap or the deferCleanup of usePageTransition, so a leaving page keeps its state until the page transition has covered it.
+- Hold the scroll with the lock from useSmoothScroll and measure with its refresh. Do not call Lenis start or stop, or ScrollTrigger.refresh, directly.
+- Start a time-based entrance on a client-side route entry at the page transition's reveal point, not during mount.
 - Provide a reduced-motion outcome that preserves all information.
 - Do not add motion only to decorate an otherwise complete feature. Motion must support hierarchy, feedback, continuity, or brand character.
 

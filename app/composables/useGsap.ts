@@ -97,7 +97,10 @@ export function useGsap() {
       context.value = null;
    }
 
-   if (getCurrentScope()) onScopeDispose(cleanup);
+   if (getCurrentScope()) {
+      const { deferCleanup } = usePageTransition();
+      onScopeDispose(() => deferCleanup(cleanup));
+   }
 
    return {
       context,

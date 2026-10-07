@@ -33,6 +33,7 @@ const emit = defineEmits<{
 
 const root = useTemplateRef<HTMLElement>('root')
 const { loadPlugin } = useGsap()
+const { deferCleanup } = usePageTransition()
 let splitInstance: SplitTextInstance | null = null
 
 function getHtmlElements(elements: Element[]) {
@@ -82,8 +83,9 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-	splitInstance?.revert()
+	const instance = splitInstance
 	splitInstance = null
+	deferCleanup(() => instance?.revert())
 })
 </script>
 

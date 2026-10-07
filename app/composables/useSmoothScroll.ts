@@ -13,14 +13,15 @@ export function useSmoothScroll() {
 	}
 
 	return {
+		holdRefresh: $smoothScroll.holdRefresh,
 		instance: $smoothScroll.instance,
 		isReady: $smoothScroll.isReady,
+		lock: $smoothScroll.lock,
 		onScroll,
 		ready: $smoothScroll.ready,
 		refresh: $smoothScroll.refresh,
+		reset: $smoothScroll.reset,
 		resize: $smoothScroll.resize,
 		scrollTo: $smoothScroll.scrollTo,
-		start: $smoothScroll.start,
-		stop: $smoothScroll.stop,
 	}
 }

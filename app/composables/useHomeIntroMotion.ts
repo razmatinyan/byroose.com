@@ -8,7 +8,11 @@ import {
 } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { addStackReveal } from "@/lib/stack-reveal";
-import { addWordReveal, navRevealStagger } from "@/lib/word-reveal";
+import {
+   addWordReveal,
+   navRevealStagger,
+   wordRevealOffset,
+} from "@/lib/word-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 
 export type HomeIntroState = "complete" | "pending" | "playing";
@@ -29,6 +33,8 @@ interface NativeScrollStyles {
 }
 
 const DOCK_OFFSET_Y = 40;
+const HEADER_LOWER_DURATION = 0.22;
+const HEADER_LOWER_STAGGER = 0.015;
 
 const selectors = {
    action: "[data-home-intro-action]",
@@ -102,6 +108,10 @@ function getStackPlacements(
    };
 }
 
+function getIntroHeaders() {
+   return Array.from(document.querySelectorAll<HTMLElement>(selectors.header));
+}
+
 export function useHomeIntroMotion(
    scope: IntroScope,
    titleSplitSource: SplitSource,
@@ -110,15 +120,16 @@ export function useHomeIntroMotion(
    const introState = useHomeIntroState();
    introState.value = "pending";
    const startsWithPreloader = useNuxtApp().isHydrating;
-   const { createMatchMedia, gsap } = useGsap();
-   const { ready, refresh, start, stop } = useSmoothScroll();
+   const { createContext, createMatchMedia, gsap } = useGsap();
+   const { lock, refresh } = useSmoothScroll();
+   const { waitForReveal } = usePageTransition();
    let nativeScrollStyles: NativeScrollStyles | null = null;
-   let scrollLocked = false;
+   let releaseScroll: (() => void) | null = null;
    let disposed = false;
    let preloaderAvailable = startsWithPreloader;
 
    function lockScroll() {
-      if (scrollLocked) return;
+      if (releaseScroll) return;
 
       const html = document.documentElement;
       const body = document.body;
@@ -129,20 +140,16 @@ export function useHomeIntroMotion(
          htmlOverflow: html.style.overflow,
          htmlScrollbarGutter: html.style.scrollbarGutter,
       };
-      scrollLocked = true;
       html.style.overflow = "hidden";
       html.style.scrollbarGutter = "stable";
       body.style.overflow = "hidden";
       body.style.overscrollBehavior = "none";
       body.style.touchAction = "none";
-      stop();
-      ready().then(() => {
-         if (scrollLocked) stop();
-      });
+      releaseScroll = lock();
    }
 
    function unlockScroll() {
-      if (!scrollLocked || !nativeScrollStyles) return;
+      if (!releaseScroll || !nativeScrollStyles) return;
 
       const html = document.documentElement;
       const body = document.body;
@@ -152,9 +159,17 @@ export function useHomeIntroMotion(
       body.style.overscrollBehavior = nativeScrollStyles.bodyOverscrollBehavior;
       body.style.touchAction = nativeScrollStyles.bodyTouchAction;
       nativeScrollStyles = null;
-      scrollLocked = false;
-      start();
+      releaseScroll();
+      releaseScroll = null;
       refresh();
+   }
+
+   function settleMedia(
+      finalImages: HTMLElement[],
+      removedCards: HTMLElement[],
+   ) {
+      gsap.set(finalImages, { visibility: "inherit", y: DOCK_OFFSET_Y });
+      for (const card of removedCards) card.hidden = true;
    }
 
    function completeImmediately(
@@ -164,9 +179,30 @@ export function useHomeIntroMotion(
    ) {
       introState.value = "complete";
       gsap.set(elements, { clearProps: "all" });
-      gsap.set(finalImages, { y: DOCK_OFFSET_Y });
-      for (const card of removedCards) card.hidden = true;
+      settleMedia(finalImages, removedCards);
       unlockScroll();
+   }
+
+   function lowerHeader() {
+      const headers = getIntroHeaders();
+      const { items, masks } = getHeaderRevealParts(headers);
+      const context = createContext(() => {
+         gsap.set(headers, { pointerEvents: "none", visibility: "inherit" });
+         gsap.set(masks, { clipPath: "inset(0)" });
+      });
+
+      gsap.ticker.add(() => {
+         if (disposed) return;
+
+         context?.add(() => {
+            gsap.to(items, {
+               duration: HEADER_LOWER_DURATION,
+               ease: "power2.in",
+               stagger: HEADER_LOWER_STAGGER,
+               yPercent: wordRevealOffset,
+            });
+         });
+      }, true);
    }
 
    onMounted(async () => {
@@ -188,26 +224,33 @@ export function useHomeIntroMotion(
       );
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
          introState.value = "complete";
-         gsap.set(finalImages, { y: DOCK_OFFSET_Y });
-         for (const card of removedCards) card.hidden = true;
+         settleMedia(finalImages, removedCards);
          return;
       }
 
       lockScroll();
       introState.value = "playing";
 
-      const imageElements = images.flatMap((image) => {
-         const imageElement = image.querySelector<HTMLImageElement>("img");
-         return imageElement ? [imageElement] : [];
-      });
+      if (!startsWithPreloader) {
+         settleMedia(finalImages, removedCards);
+         lowerHeader();
+      }
+
+      const preloaderImages = startsWithPreloader
+         ? images.flatMap((image) => {
+              const imageElement = image.querySelector<HTMLImageElement>("img");
+              return imageElement ? [imageElement] : [];
+           })
+         : [];
 
       await nextTick();
       const [titleSplit, descriptionSplit] = await Promise.all([
          waitForSplit(titleSplitSource),
          waitForSplit(descriptionSplitSource),
          document.fonts.ready,
-         Promise.all(imageElements.map(waitForImage)),
+         Promise.all(preloaderImages.map(waitForImage)),
       ]);
+      if (!startsWithPreloader) await waitForReveal();
       if (disposed) return;
 
       createMatchMedia(
@@ -217,9 +260,7 @@ export function useHomeIntroMotion(
             reduceMotion: "(prefers-reduced-motion: reduce)",
          },
          (context) => {
-            const headers = Array.from(
-               document.querySelectorAll<HTMLElement>(selectors.header),
-            );
+            const headers = getIntroHeaders();
             const mediaGrid = root.querySelector<HTMLElement>(
                selectors.mediaGrid,
             );
@@ -269,16 +310,15 @@ export function useHomeIntroMotion(
                return;
             }
 
-            const placementData = getStackPlacements(images);
-            if (!placementData) {
+            const playPreloader = preloaderAvailable;
+            preloaderAvailable = false;
+            const placementData = playPreloader
+               ? getStackPlacements(images)
+               : null;
+            if (playPreloader && !placementData) {
                completeImmediately(animatedElements, removedCards, finalImages);
                return;
             }
-
-            const { placements, stackScale } = placementData;
-            const playPreloader = preloaderAvailable;
-            preloaderAvailable = false;
-            for (const card of removedCards) card.hidden = false;
 
             gsap.set(headers, { pointerEvents: "none", visibility: "inherit" });
             gsap.set(headerMasks, { clipPath: "inset(0)" });
@@ -286,58 +326,63 @@ export function useHomeIntroMotion(
             gsap.set([...descriptionLines, action], { yPercent: 115 });
             gsap.set(actionMask, { clipPath: "inset(0)" });
             gsap.set([title, ...copyElements], { visibility: "inherit" });
-            gsap.set(mediaGrid, { zIndex: 70 });
-            images.forEach((image, index) => {
-               const placement = placements[index];
-               if (!placement) return;
 
-               gsap.set(image, {
-                  scale: playPreloader ? 0 : stackScale,
-                  visibility: "inherit",
-                  willChange: "transform",
-                  x: placement.startX,
-                  y: placement.startY,
-                  zIndex: index + 1,
-                  rotation: 0,
-               });
-            });
-
-            const expandDuration = 1;
             const tl = gsap.timeline({
                onComplete: () => {
                   introState.value = "complete";
                   gsap.set(animatedElements, { clearProps: "all" });
-                  gsap.set(finalImages, { y: DOCK_OFFSET_Y });
-                  for (const card of removedCards) card.hidden = true;
+                  settleMedia(finalImages, removedCards);
                   unlockScroll();
                },
             });
 
-            if (playPreloader) {
+            if (placementData) {
+               const { placements, stackScale } = placementData;
+               for (const card of removedCards) card.hidden = false;
+               gsap.set(mediaGrid, { zIndex: 70 });
+               images.forEach((image, index) => {
+                  const placement = placements[index];
+                  if (!placement) return;
+
+                  gsap.set(image, {
+                     scale: 0,
+                     visibility: "inherit",
+                     willChange: "transform",
+                     x: placement.startX,
+                     y: placement.startY,
+                     zIndex: index + 1,
+                     rotation: 0,
+                  });
+               });
+
                addStackReveal(tl, images, { scale: stackScale });
+               tl.addLabel("expand");
+               tl.set(removedCards, { visibility: "hidden" }, "expand");
+               tl.to(
+                  finalImages,
+                  {
+                     duration: 1,
+                     ease: "power3.inOut",
+                     rotation: (index) =>
+                        Number(
+                           finalImages[index]?.dataset.homeIntroCardRotation ??
+                              0,
+                        ),
+                     scale: 1.08,
+                     stagger: { each: 0.06, from: "center" },
+                     x: 0,
+                     y: DOCK_OFFSET_Y,
+                  },
+                  "expand-=0.35",
+               );
+            } else {
+               settleMedia(finalImages, removedCards);
             }
 
-            tl.addLabel("expand");
-            tl.set(removedCards, { visibility: "hidden" }, "expand");
-            tl.to(
-               finalImages,
-               {
-                  duration: expandDuration,
-                  ease: "power3.inOut",
-                  rotation: (index) =>
-                     Number(
-                        finalImages[index]?.dataset.homeIntroCardRotation ?? 0,
-                     ),
-                  scale: 1.08,
-                  stagger: { each: 0.06, from: "center" },
-                  x: 0,
-                  y: DOCK_OFFSET_Y,
-               },
-               "expand-=0.35",
-            );
-            tl.set(headers, { pointerEvents: "auto" }, "expand+=0.1");
+            const revealStart = placementData ? "expand+=0.1" : 0;
+            tl.set(headers, { pointerEvents: "auto" }, revealStart);
             addWordReveal(tl, headerItems, {
-               position: "expand+=0.1",
+               position: revealStart,
                stagger: navRevealStagger,
             });
             tl.to(
@@ -348,7 +393,7 @@ export function useHomeIntroMotion(
                   stagger: 0.1,
                   yPercent: 0,
                },
-               "expand+=0.1",
+               revealStart,
             );
             tl.to(
                [...descriptionLines, action],
@@ -358,7 +403,7 @@ export function useHomeIntroMotion(
                   stagger: 0.06,
                   yPercent: 0,
                },
-               "expand+=0.1",
+               revealStart,
             );
          },
          scope,
@@ -368,6 +413,7 @@ export function useHomeIntroMotion(
    onScopeDispose(() => {
       disposed = true;
       unlockScroll();
+      introState.value = "complete";
    });
 
    return {

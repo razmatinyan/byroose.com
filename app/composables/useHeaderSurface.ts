@@ -41,7 +41,7 @@ export function useHeaderSurface(
 
 	onMounted(() => {
 		update()
-		cleanups.push(onScroll(update), nuxtApp.hook('page:finish', update))
+		cleanups.push(onScroll(update), nuxtApp.hook('page:transition:finish', update))
 	})
 
 	onScopeDispose(() => {

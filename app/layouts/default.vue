@@ -18,13 +18,24 @@ const layoutIntroState = computed(() =>
 		<main>
 			<slot />
 		</main>
-		<SiteFooter />
+		<SiteFooter data-page-transition-follow />
+		<div
+			data-page-transition-shade
+			class="page-transition-shade"
+			aria-hidden="true"
+		/>
 		<SiteCookieBanner v-if="layoutIntroState === 'complete'" />
 		<SiteScrollbar />
 	</div>
 </template>
 
 <style scoped>
+@reference '../assets/css/tailwind.css';
+
+.page-transition-shade {
+	@apply pointer-events-none invisible fixed inset-0 z-10 bg-foreground opacity-0;
+}
+
 .site-layout:not([data-home-intro-state='complete'])
 	:deep([data-home-intro-header]) {
 	visibility: hidden;

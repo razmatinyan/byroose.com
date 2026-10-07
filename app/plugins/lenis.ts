@@ -26,8 +26,10 @@ export default defineNuxtPlugin({
 		let swapScrollOptions: ScrollToOptions = {}
 		let tickerCallback: ((time: number) => void) | null = null
 		let unsubscribeScroll: (() => void) | null = null
-		let removeNavigationGuard: (() => void) | null = null
 		let initializationPromise: Promise<void> | null = null
+		const scrollLocks = new Set<symbol>()
+		const refreshHolds = new Set<symbol>()
+		const heldRefreshes: Array<() => void> = []
 		let isDestroyed = false
 
 		const handleScroll: ScrollCallback = lenis => {
@@ -77,16 +79,50 @@ export default defineNuxtPlugin({
 				swapScrollOptions = nextSwapScrollOptions
 				tickerCallback = nextTickerCallback
 				unsubscribeScroll = nextInstance.on('scroll', handleScroll)
+				if (scrollLocks.size) nextInstance.stop()
 				instance.value = nextInstance
 			})()
 
 			return initializationPromise
 		}
 
-		async function refresh() {
+		async function measure() {
 			await nextTick()
 			instance.value?.resize()
 			scrollTriggerInstance?.refresh()
+		}
+
+		function refresh() {
+			if (!refreshHolds.size) return measure()
+
+			return new Promise<void>(resolve => {
+				heldRefreshes.push(resolve)
+			})
+		}
+
+		function holdRefresh() {
+			const hold = Symbol('refresh-hold')
+			refreshHolds.add(hold)
+
+			return async () => {
+				if (!refreshHolds.delete(hold) || refreshHolds.size) return
+
+				const waiting = heldRefreshes.splice(0)
+				await measure()
+				for (const resolve of waiting) resolve()
+			}
+		}
+
+		function lock() {
+			const scrollLock = Symbol('scroll-lock')
+			scrollLocks.add(scrollLock)
+			instance.value?.stop()
+
+			return () => {
+				if (!scrollLocks.delete(scrollLock) || scrollLocks.size) return
+
+				instance.value?.start()
+			}
 		}
 
 		function findScrollTargetElement(target: string) {
@@ -152,7 +188,6 @@ export default defineNuxtPlugin({
 		function destroy() {
 			isDestroyed = true
 			unsubscribeScroll?.()
-			removeNavigationGuard?.()
 
 			if (gsapInstance && tickerCallback) {
 				gsapInstance.ticker.remove(tickerCallback)
@@ -161,7 +196,6 @@ export default defineNuxtPlugin({
 			instance.value?.destroy()
 			scrollCallbacks.clear()
 			unsubscribeScroll = null
-			removeNavigationGuard = null
 			tickerCallback = null
 			scrollTriggerInstance = null
 			gsapInstance = null
@@ -171,37 +205,28 @@ export default defineNuxtPlugin({
 		if (import.meta.client) {
 			history.scrollRestoration = 'manual'
 			resetScrollPosition()
-			removeNavigationGuard = nuxtApp.$router.afterEach(
-				(to, from, failure) => {
-					const destinationPage = to.fullPath.split('#')[0]
-					const currentPage = from.fullPath.split('#')[0]
-					if (!failure && destinationPage !== currentPage) {
-						resetScrollPosition()
-					}
-				},
-			)
 			nuxtApp.hook('app:mounted', async () => {
 				await initialize()
 				resetScrollPosition()
 				await refresh()
 				document.fonts.ready.then(refresh)
 			})
-			nuxtApp.hook('page:finish', refresh)
 			nuxtApp.vueApp.onUnmount(destroy)
 		}
 
 		return {
 			provide: {
 				smoothScroll: {
+					holdRefresh,
 					instance: readonly(instance),
 					isReady,
+					lock,
 					onScroll,
 					ready: initialize,
 					refresh,
+					reset: resetScrollPosition,
 					resize: () => instance.value?.resize(),
 					scrollTo,
-					start: () => instance.value?.start(),
-					stop: () => instance.value?.stop(),
 				},
 			},
 		}
