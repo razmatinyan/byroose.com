@@ -12,6 +12,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 import {
 	addWordReveal,
 	wordRevealDenseStagger,
+	wordRevealDuration,
 	wordRevealEase,
 	wordRevealStagger,
 	wordRevealStart,
@@ -29,8 +30,6 @@ interface StudioMotionTargets {
 }
 
 const badgeSelector = "[data-studio-badge]";
-const badgeRevealDuration = 1;
-const badgeRevealOverlap = 0.3;
 const portraitImageSelector = "[data-studio-portrait-image]";
 const hiddenPortraitClip = "inset(0% 0% 100% 0%)";
 const visiblePortraitClip = "inset(0% 0% 0% 0%)";
@@ -82,11 +81,11 @@ export function useStudioMotion(
 			{ scale: 0, visibility: "inherit" },
 			{
 				clearProps: "transform",
-				duration: badgeRevealDuration,
+				duration: Math.max(timeline.duration(), wordRevealDuration),
 				ease: wordRevealEase,
 				scale: 1,
 			},
-			words.length ? `-=${badgeRevealOverlap}` : 0,
+			0,
 		);
 	}
 

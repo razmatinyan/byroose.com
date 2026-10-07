@@ -845,10 +845,10 @@ lives in `app/lib/word-reveal.ts`, which the services panels share.
 
 The statement shares its row with a `RotatingBadge` on the right, `w-28`,
 `w-40` from `md`, and `w-52` from `xl`. On phones the row wraps and the badge
-sits below the statement at the right edge. The badge rises after the
-statement on the same timeline: `0.3s` before the last word lands, its
-`data-studio-badge` wrapper scales up from zero around its center to full size
-over `1s` on `power3.out`. The scale lives on the wrapper and the spin on the
+sits below the statement at the right edge. The badge reveals together with
+the statement on the same timeline: its `data-studio-badge` wrapper scales up
+from zero around its center on `power3.out`, starting with the first word and
+lasting as long as the whole word reveal, so both finish together. The scale lives on the wrapper and the spin on the
 badge inside it, so the two transforms never fight. The wrapper rests hidden in
 CSS, so the badge never flashes before the reveal.
 

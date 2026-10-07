@@ -161,7 +161,7 @@ velocity and take its sign, and a short idle delay eases it back to the resting
 forward speed. Reduced motion leaves the badge still.
 
 useStudioMotion owns the Studio section's entrance: the statement words, the
-scale-up of the `data-studio-badge` wrapper after them, the founder photo's frame clip reveal and image parallax, and the copy paragraph
+scale-up of the `data-studio-badge` wrapper alongside them, the founder photo's frame clip reveal and image parallax, and the copy paragraph
 words. It waits until the shared
 SplitText component has reported every statement and copy paragraph split, then
 creates the section-scoped ScrollTriggers in page order. It resolves reduced
