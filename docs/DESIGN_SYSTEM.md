@@ -965,9 +965,9 @@ the ribbon outside the viewport, past a side edge or above the top, costs only
 `0.03` pixels, so the reader never scrolls through a stretch where nothing
 visible draws. The scrub uses one second of smoothing, so a wheel step glides
 the tip forward instead of revealing a whole stretch at once. The geometry and
-the timeline are rebuilt whenever the section resizes. Below the `lg` breakpoint,
-the complete ribbon is shown without a scroll-linked drawing animation. Reduced
-motion uses the same static outcome at every breakpoint.
+the timeline are rebuilt whenever the section resizes. The ribbon is hidden below
+the `lg` breakpoint. Reduced motion shows the complete ribbon without drawing it
+on larger screens.
 
 ### Work section
 
