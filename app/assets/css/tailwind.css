@@ -43,6 +43,8 @@
 	--color-brand-cream-foreground: var(--brand-cream-foreground);
 	--color-brand-soft: var(--brand-soft);
 	--color-brand-subtle: var(--brand-subtle);
+	--color-ribbon: var(--ribbon);
+	--color-ribbon-shade: var(--ribbon-shade);
 	--color-chart-1: var(--chart-1);
 	--color-chart-2: var(--chart-2);
 	--color-chart-3: var(--chart-3);
@@ -123,6 +125,8 @@
 	--brand-cream-foreground: oklch(0.1796 0.0039 48.5);
 	--brand-soft: oklch(0.5 0.0184 70.39);
 	--brand-subtle: oklch(0.3876 0.015 67.36);
+	--ribbon: oklch(0.925 0 0);
+	--ribbon-shade: oklch(0.83 0 0);
 	--chart-1: var(--primary);
 	--chart-2: var(--brand-blue);
 	--chart-3: var(--brand-green);
@@ -169,6 +173,8 @@
 	--brand-cream-foreground: oklch(0.9441 0.0215 76.53);
 	--brand-soft: oklch(0.74 0.018 70.39);
 	--brand-subtle: oklch(0.82 0.015 70);
+	--ribbon: oklch(0.26 0.004 50);
+	--ribbon-shade: oklch(0.21 0.004 50);
 	--sidebar: var(--card);
 	--sidebar-foreground: var(--foreground);
 	--sidebar-primary: var(--primary);

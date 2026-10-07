@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
+import StudioRibbon from "./StudioRibbon.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const copyParagraphs = [
@@ -40,6 +41,8 @@ useStudioMotion(studioRoot, {
    statementSplit,
 });
 
+useStudioRibbonMotion(studioRoot);
+
 function setStatementSplit(parts: SplitTextResult) {
    statementSplit.value = parts;
 }
@@ -51,7 +54,10 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 
 <template>
    <section id="studio" ref="studioRoot" class="studio section-gutter">
+      <StudioRibbon />
+
       <SplitText
+         data-studio-ribbon-statement
          class="studio-statement"
          as="p"
          mask="words"
@@ -60,7 +66,7 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
          @split="setStatementSplit"
       />
 
-      <div class="studio-grid">
+      <div data-studio-ribbon-grid class="studio-grid">
          <div class="studio-column">
             <div ref="studioPortrait" class="studio-portrait">
                <NuxtImg
@@ -98,7 +104,7 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .studio {
-   @apply w-full py-section;
+   @apply relative w-full py-section;
 }
 
 .studio-statement {

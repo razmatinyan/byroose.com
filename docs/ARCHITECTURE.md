@@ -50,12 +50,14 @@ app/
     useSiteMenuMotion.ts
     useSmoothScroll.ts
     useStudioMotion.ts
+    useStudioRibbonMotion.ts
     useTrailingTooltip.ts
     useWorkMotion.ts
   lib/
     char-reveal.ts
     icons.ts
     image-parallax.ts
+    ribbon-path.ts
     split-text.ts
     stack-reveal.ts
     surfaces.ts
@@ -160,6 +162,16 @@ SplitText component has reported every statement and copy paragraph split, then
 creates the section-scoped ScrollTriggers in page order. It resolves reduced
 motion to visible content and removes animation state when the section scope is
 disposed.
+
+useStudioRibbonMotion owns the Studio section's decorative ribbon. StudioRibbon
+renders the empty SVG, its segment paths, and their shade gradients, and
+StudioSection marks the statement and the grid with `data-studio-ribbon-statement`
+and `data-studio-ribbon-grid`. After mount the composable measures those
+anchors, writes the path data and the shade lines, samples every segment's
+length, and scrubs one DrawSVG timeline through the segments in draw order. It
+rebuilds the geometry and the drawing inside the same GSAP media context when
+the section resizes. Reduced motion keeps the measured ribbon fully drawn
+through CSS.
 
 useWorkMotion owns the work section: the centered title characters, each
 case study's stacked media reveal, its scrubbed image parallax, and the
@@ -346,6 +358,11 @@ app/lib contains pure helpers, shared constants, and stable names.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images
   and the founder photo both read them.
+- ribbon-path.ts owns the Studio ribbon's route, its segment and paint order,
+  the anchor mapping that turns the route into section coordinates, the
+  Catmull-Rom path data, the shade line at each crossing, and the draw timing
+  that turns scroll progress into drawn length. It takes measured numbers and
+  never queries the DOM.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It

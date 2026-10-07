@@ -4,6 +4,7 @@ import { gsap as coreGsap } from "gsap";
 
 const pluginLoaders = {
    CustomEase: () => import("gsap/CustomEase"),
+   DrawSVGPlugin: () => import("gsap/DrawSVGPlugin"),
    Flip: () => import("gsap/Flip"),
    Observer: () => import("gsap/Observer"),
    ScrollToPlugin: () => import("gsap/ScrollToPlugin"),

@@ -49,6 +49,8 @@ visual and accessibility review.
 | `muted` | Pale warm neutral, `#EEE3D5` | Quiet backgrounds and placeholders |
 | `brand-soft` | Mid neutral | Secondary labels and low-emphasis copy |
 | `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
+| `ribbon` | Light neutral grey, `oklch(0.925 0 0)` | The decorative Studio ribbon stroke |
+| `ribbon-shade` | Mid neutral grey, `oklch(0.83 0 0)` | The ribbon's shading where it passes under itself |
 | `destructive` | Alert red | Destructive and error actions only |
 | `border`, `input`, and `ring` | Semantic controls | Boundaries, fields, and focus indicators |
 
@@ -629,7 +631,8 @@ onMounted(() => {
 
 Prefer `x`, `y`, `scale`, `rotation`, and `autoAlpha`; scope selector strings to
 a component root. Use `loadPlugin()` for optional capabilities such as
-`CustomEase`, `SplitText`, `Flip`, `Observer`, `ScrollToPlugin`, or `TextPlugin`.
+`CustomEase`, `DrawSVGPlugin`, `SplitText`, `Flip`, `Observer`, `ScrollToPlugin`,
+or `TextPlugin`.
 ScrollTrigger is registered by the Lenis bridge and remains available through
 the existing loader when a component needs its API. Contexts and media queries
 are reverted automatically when their Vue scope is disposed.
@@ -880,6 +883,50 @@ paragraphs hold many more words.
 
 Every reveal runs once. Reduced motion displays the photo and every word in
 their resting positions without a ScrollTrigger animation or parallax.
+
+### Studio ribbon
+
+A thick grey ribbon draws itself behind the Studio section as the reader
+scrolls. It comes out from under the featured hero card as the hero transition
+ends, bends down past the statement, loops back under itself, crosses the copy
+column, leaves past the right edge, and returns across the section to finish
+over the "What we've done" title before it leaves at the left edge.
+
+`StudioRibbon` is a decorative SVG, hidden from assistive technology, that
+fills the Studio section with `overflow: visible`, so the ribbon can reach
+above the section into the hero transition space and below it into the work
+title. It sits at `-z-10` inside the `relative` but non-isolated Studio
+section, so it paints in the page's root stacking context above the body
+canvas and below every in-flow block. The featured hero card, the statement,
+the photo, the copy, and the work title therefore all paint above it, and the
+landing wrapper's horizontal clip hides it past the viewport edges. Do not
+give the Studio section a `z-index`, `isolation`, or a background, because any
+of them would hide the ribbon or lift it above the content.
+
+The stroke uses the `ribbon` token at `clamp(3rem, 10vw, 10rem)` with round
+caps and joins. Its route lives in `app/lib/ribbon-path.ts` as horizontal
+fractions of the section width and vertical positions between measured anchor
+lines: a tuck under the hero card, the section top, the statement top and
+bottom, the grid top and bottom, the section bottom, and a reach into the work
+title. The ribbon therefore follows the content at every breakpoint. A
+Catmull-Rom spline through the route gives the path data.
+
+The route is split into four segments that draw one after another. The two
+segments that pass under an earlier strand paint first in the document, so the
+earlier strand covers them, and their stroke is a gradient that darkens to
+`ribbon-shade` around the crossing, `1.5` stroke widths either side. As those
+segments draw, the ribbon reads as if it is weaving under itself.
+
+`useStudioRibbonMotion` scrubs one DrawSVG timeline with the scroll. Each
+segment draws from `0% 0%` to `0% 100%` over a duration equal to its length,
+and it stays hidden until its turn so a waiting round cap never shows as a dot.
+The scroll starts when the tuck point reaches 60 percent of the viewport. The
+draw timing keeps the drawing tip near that line: the tip may run up to 30
+percent of the viewport ahead of it, and every pixel of ribbon costs at least
+`0.15` pixels of scroll, so loops and flat sweeps draw up to about seven times
+faster than the scroll without ever jumping. The geometry and the timeline are
+rebuilt whenever the section resizes. Reduced motion shows the complete ribbon
+without drawing it.
 
 ### Work section
 
