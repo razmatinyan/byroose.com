@@ -153,6 +153,6 @@ const emit = defineEmits<{
 }
 
 .case-result-label {
-	@apply m-0 max-w-[14ch] text-lg leading-tight font-semibold tracking-[-0.02em] md:text-xl;
+	@apply m-0 max-w-[14ch] pb-[0.1em] text-lg leading-[1.05] font-semibold tracking-[-0.02em] md:text-xl;
 }
 </style>

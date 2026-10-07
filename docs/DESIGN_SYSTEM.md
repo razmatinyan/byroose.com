@@ -919,9 +919,10 @@ with `mt-10`. Each value is an extrabold inline highlight at `text-5xl`,
 brand color from `app/lib/surfaces.ts` rather than defining one. The highlight
 keeps a surface behind the number because yellow and pink would not be
 readable as text on the canvas. The label below it is `font-semibold`
-`foreground` text at `text-lg`, `text-xl` from `md`, held to `14ch` so it wraps
-into a short stack under its number. The color belongs to the number and not to
-the sentence that explains it.
+`foreground` text at `text-lg`, `text-xl` from `md`, with `1.05` leading, held
+to `14ch` so it wraps into a short stack under its number. Its `0.1em` of
+bottom padding keeps the last line's descenders inside its reveal mask. The
+color belongs to the number and not to the sentence that explains it.
 
 Case images are currently reused from the hero set. They are content images with
 their own alternative text, and they will be replaced by real project media when
