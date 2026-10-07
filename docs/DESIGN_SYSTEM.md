@@ -274,6 +274,11 @@ state when reduced motion is enabled. The SVG is decorative and stays outside
 the accessibility tree. The services intro title is its first consumer and
 toggles `drawn` from its scrubbed word reveal.
 
+The `animated` prop defaults to `true`. Setting it to `false` makes the line a
+permanent mark: the path is visible in the server output and stays at its
+`drawn` state without any entrance, so it never waits for hydration or plays a
+draw. The footer slogan uses this mode.
+
 Only the `outline` and `secondary` variants may carry a border. Filled variants
 stay borderless so a stray one-pixel ring never survives on top of a rollover
 layer or an animated surface.
@@ -374,10 +379,14 @@ Located in as a three-column grid, then aligns the three credit lines with the
 email block at the bottom of the row. Below `lg` the right side stacks under the
 left column. Its link grid drops to two columns below `sm`.
 
-The title uses `section-title` on two block lines, "From seen" and "to chosen",
-as plain text. A transparent right-arrow glyph and a
+The title uses `section-title` on two block lines, "From seen" and "to chosen".
+"seen" and "chosen" each carry a static `WaveUnderline` just below the word, as
+wide as the word, with `animated` off so the lines are always present. The
+"seen" line is the `ribbon` green, and the "chosen" line is brand orange
+`primary`. A transparent right-arrow glyph and a
 `cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
-width of "From seen", with `0.2em` of space above it. The glyph is as tall as
+width of "From seen", with `0.45em` of space above it, which keeps the action
+clear of the wave under "chosen". The glyph is as tall as
 the action, and the action keeps the `light` variant's own white `bg-card`
 surface, so it reads as the lightest shape on the cream footer. Its wrapper is
 `max(2.75rem, 0.7em)` tall, so on desktop the action matches the title scale,

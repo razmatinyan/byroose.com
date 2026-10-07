@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from "vue";
 type WavePath = MaybeRefOrGetter<SVGPathElement | null | undefined>;
 
 interface WaveUnderlineMotionOptions {
+   animated: MaybeRefOrGetter<boolean>;
    delay: MaybeRefOrGetter<number>;
    drawn: MaybeRefOrGetter<boolean>;
    duration: MaybeRefOrGetter<number>;
@@ -29,10 +30,12 @@ export function useWaveUnderlineMotion(
             if (!path) return;
 
             let tween: gsap.core.Tween | null = null;
-            const motionAllowed = context.conditions?.motion === true;
+            const motionAllowed = () =>
+               context.conditions?.motion === true &&
+               toValue(options.animated);
 
             gsap.set(path, {
-               drawSVG: motionAllowed ? "0% 0%" : "0% 100%",
+               drawSVG: motionAllowed() ? "0% 0%" : "0% 100%",
                visibility: "visible",
             });
 
@@ -41,13 +44,15 @@ export function useWaveUnderlineMotion(
                   () => toValue(options.drawn),
                   () => toValue(options.duration),
                   () => toValue(options.delay),
+                  () => toValue(options.animated),
                ],
                ([drawn, duration, delay]) => {
+                  const animate = motionAllowed();
                   tween?.kill();
                   tween = gsap.to(path, {
-                     delay: drawn && motionAllowed ? Math.max(0, delay) : 0,
+                     delay: drawn && animate ? Math.max(0, delay) : 0,
                      drawSVG: drawn ? "0% 100%" : "0% 0%",
-                     duration: motionAllowed ? Math.max(0, duration) : 0,
+                     duration: animate ? Math.max(0, duration) : 0,
                      ease: "power3.inOut",
                      overwrite: "auto",
                   });

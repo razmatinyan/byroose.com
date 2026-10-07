@@ -3,12 +3,19 @@ import { computed, useTemplateRef } from "vue";
 import { useNow } from "@vueuse/core";
 import { NuxtLink } from "#components";
 import SiteNavLink from "@/components/layout/SiteNavLink.vue";
+import WaveUnderline from "@/components/shared/WaveUnderline.vue";
 import { Button } from "@/components/ui/button";
 import { appIcons } from "@/lib/icons";
 
 interface FooterLink {
    href: string;
    label: string;
+}
+
+interface SloganLine {
+   lead: string;
+   underlineColor: string;
+   underlined: string;
 }
 
 const contactRoute = "/contact";
@@ -27,7 +34,10 @@ const armeniaTime = computed(
 );
 const armeniaDateTime = computed(() => now.value.toISOString());
 
-const sloganLines = ["From seen", "to chosen"];
+const sloganLines: SloganLine[] = [
+   { lead: "From", underlineColor: "var(--color-ribbon)", underlined: "seen" },
+   { lead: "to", underlineColor: "var(--color-primary)", underlined: "chosen" },
+];
 
 const navigationLinks: FooterLink[] = [
    { href: "/", label: "Home" },
@@ -75,10 +85,18 @@ function scrollToTop() {
                <p class="section-title site-footer-title">
                   <span
                      v-for="line in sloganLines"
-                     :key="line"
+                     :key="line.underlined"
                      class="site-footer-title-line"
                   >
-                     {{ line }}
+                     {{ line.lead }}
+                     <span class="site-footer-title-underlined">
+                        {{ line.underlined }}
+                        <WaveUnderline
+                           class="site-footer-title-wave"
+                           :animated="false"
+                           :color="line.underlineColor"
+                        />
+                     </span>
                   </span>
                   <span
                      class="site-footer-title-line site-footer-title-action-row"
@@ -281,10 +299,18 @@ function scrollToTop() {
    @apply block;
 }
 
+.site-footer-title-underlined {
+   @apply relative inline-block;
+}
+
+.site-footer-title-wave {
+   @apply absolute top-full left-0 -mt-[0.04em];
+}
+
 .site-footer-title-action-row {
    @apply flex gap-[0.1em];
    width: 4.52em;
-   margin-top: 0.2em;
+   margin-top: 0.45em;
 }
 
 .site-footer-title-action-icon {
