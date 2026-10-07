@@ -9,7 +9,9 @@ import {
 	ribbonSegments,
 	ribbonShadeLine,
 	ribbonShadeReach,
-	ribbonTuckPoint,
+	ribbonLeadIn,
+	ribbonLeadOut,
+	ribbonTailReach,
 	ribbonTuckReach,
 } from "@/lib/ribbon-path";
 import type { RibbonSample } from "@/lib/ribbon-path";
@@ -89,7 +91,9 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			width,
 		});
 
-		const tuck = ribbonTuckPoint(pieces, width * ribbonTuckReach);
+		const leadIn = ribbonLeadIn(pieces, width * ribbonTuckReach);
+		const leadOut = ribbonLeadOut(pieces, width * ribbonTailReach);
+		const lastSegment = ribbonSegments.at(-1);
 
 		svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
@@ -109,7 +113,10 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 				ribbonSegmentPath(
 					pieces,
 					segment,
-					segment.from === 0 ? tuck : undefined,
+					{
+						leadIn: segment.from === 0 ? leadIn : undefined,
+						leadOut: segment === lastSegment ? leadOut : undefined,
+					},
 				),
 			);
 
@@ -150,7 +157,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		measuredSize = `${width}x${height}`;
 		return {
 			samples,
-			startY: tuck?.y ?? 0,
+			startY: leadIn?.y ?? 0,
 			strokeWidth,
 			strokes,
 			width,
@@ -164,8 +171,8 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		strokes,
 		width,
 	}: RibbonGeometry) {
-		const studio = toValue(scope);
-		if (!studio) return;
+		const svg = toValue(scope)?.querySelector<SVGSVGElement>(selectors.svg);
+		if (!svg) return;
 
 		const timeline = gsap.timeline({
 			defaults: { ease: "none" },
@@ -195,9 +202,10 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			ease: timing.ease,
 			scrollTrigger: {
 				end: `+=${timing.duration}`,
+				onLeaveBack: (self) => self.getTween()?.progress(1),
 				scrub: drawScrub,
 				start: startPosition(startY),
-				trigger: studio,
+				trigger: svg,
 			},
 			time: timeline.duration(),
 		});

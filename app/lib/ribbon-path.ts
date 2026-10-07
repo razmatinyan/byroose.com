@@ -51,6 +51,7 @@ export interface RibbonDrawTiming {
 }
 
 export const ribbonTuckReach = 0.05;
+export const ribbonTailReach = 0.1;
 export const ribbonHeadLine = 0.8;
 export const ribbonHeadLead = 0.8;
 export const ribbonLengthShare = 0.3;
@@ -66,13 +67,13 @@ export const ribbonArtwork = {
 		statementTop: 144,
 		width: 1440,
 	},
-	path: "M718 0.456299C893.569 79.089 1180.79 227.715 1273.13 419.294M1273.13 419.294C1347.61 573.804 1295.33 756.253 955.5 952.456C4 1501.81 -133.215 17.0092 898.5 293.456C1031.56 329.11 1158.95 371.643 1273.13 419.294ZM1273.13 419.294C1721.04 606.21 1965.87 871.873 1553.5 1109.96C681.389 1613.47 -62.1667 1221.46 -286.5 982.956",
+	path: "M499.61,3.85c131.81,43.46,241.18,107.4,324.05,221.35,155.13,206.75,175.14,599.02-154.93,625.69-164.28,9.92-216.61-111.4-151.56-249.29,57.79-121.46,186.59-191.41,314.2-217.39,99.65-20.47,204.44-17.77,300.97,14.76,141.45,46.45,263.38,165.44,288.54,315.15,25.66,147.87-41.1,277.1-164.85,357.68-169.65,108.15-372.31,150.41-569.14,178.02-340.65,42.55-685.52,46.19-1027.77,22.78",
 } as const satisfies { anchors: RibbonAnchors; path: string };
 
 export const ribbonSegments: readonly RibbonSegment[] = [
 	{ from: 0, id: "lead", layer: "over", to: 3 },
-	{ from: 3, id: "climb", layer: "under", to: 5 },
-	{ from: 5, id: "sweep", layer: "over", to: 6 },
+	{ from: 3, id: "climb", layer: "under", to: 6 },
+	{ from: 6, id: "sweep", layer: "over", to: 9 },
 ];
 
 export const ribbonPaintOrder: readonly RibbonSegment[] = [
@@ -259,37 +260,62 @@ function direction(from: RibbonPoint, to: RibbonPoint) {
 	return { x: (to.x - from.x) / span, y: (to.y - from.y) / span };
 }
 
-export function ribbonTuckPoint(
+function extend(from: RibbonPoint, toward: RibbonPoint, reach: number) {
+	const heading = direction(toward, from);
+
+	return {
+		x: from.x + heading.x * reach,
+		y: from.y + heading.y * reach,
+	};
+}
+
+export function ribbonLeadIn(
 	pieces: readonly RibbonPiece[],
 	reach: number,
 ): RibbonPoint | undefined {
 	const first = pieces[0];
 	if (!first) return undefined;
 
-	const heading = samePoint(first.start, first.startHandle)
-		? direction(first.start, first.end)
-		: direction(first.start, first.startHandle);
+	const toward = samePoint(first.start, first.startHandle)
+		? first.end
+		: first.startHandle;
 
-	return {
-		x: first.start.x - heading.x * reach,
-		y: first.start.y - heading.y * reach,
-	};
+	return extend(first.start, toward, reach);
+}
+
+export function ribbonLeadOut(
+	pieces: readonly RibbonPiece[],
+	reach: number,
+): RibbonPoint | undefined {
+	const last = pieces.at(-1);
+	if (!last) return undefined;
+
+	const toward = samePoint(last.end, last.endHandle)
+		? last.start
+		: last.endHandle;
+
+	return extend(last.end, toward, reach);
 }
 
 function formatPoint({ x, y }: RibbonPoint) {
 	return `${x.toFixed(1)} ${y.toFixed(1)}`;
 }
 
+interface RibbonSegmentEnds {
+	leadIn?: RibbonPoint;
+	leadOut?: RibbonPoint;
+}
+
 export function ribbonSegmentPath(
 	pieces: readonly RibbonPiece[],
 	{ from, to }: RibbonSegment,
-	tuck?: RibbonPoint,
+	{ leadIn, leadOut }: RibbonSegmentEnds = {},
 ) {
 	const first = pieces[from];
 	if (!first) return "";
 
-	const commands = tuck
-		? [`M ${formatPoint(tuck)}`, `L ${formatPoint(first.start)}`]
+	const commands = leadIn
+		? [`M ${formatPoint(leadIn)}`, `L ${formatPoint(first.start)}`]
 		: [`M ${formatPoint(first.start)}`];
 	let cursor = first.start;
 
@@ -303,6 +329,8 @@ export function ribbonSegmentPath(
 		);
 		cursor = piece.end;
 	}
+
+	if (leadOut) commands.push(`L ${formatPoint(leadOut)}`);
 
 	return commands.join(" ");
 }

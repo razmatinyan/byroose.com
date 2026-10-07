@@ -55,7 +55,10 @@ function segmentStroke(segment: RibbonSegment) {
 @reference '../../assets/css/tailwind.css';
 
 .studio-ribbon {
-   @apply pointer-events-none absolute inset-0 -z-10 size-full overflow-visible select-none;
+   --studio-ribbon-lift: 15vw;
+
+   @apply pointer-events-none absolute inset-x-0 -z-10 size-full overflow-visible select-none;
+   top: calc(var(--studio-ribbon-lift) * -1);
 }
 
 .studio-ribbon-segment {
