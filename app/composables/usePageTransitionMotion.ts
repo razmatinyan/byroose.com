@@ -8,6 +8,15 @@ interface TransitionPart {
    element: HTMLElement;
 }
 
+interface TransitionScene {
+   enter: TransitionPart | null;
+   followers: HTMLElement[];
+   headerClones: HTMLElement[];
+   headers: HTMLElement[];
+   leave: TransitionPart | null;
+   shade: HTMLElement | null;
+}
+
 const transitionDuration = 1.1;
 const transitionEaseData = "0.73, 0.05, 0.112, 1";
 const leaveScale = 0.97;
@@ -15,7 +24,10 @@ const leaveTravel = 0.25;
 const shadeOpacity = 0.8;
 const revealDelay = 0.4;
 const enteringLayer = 20;
+const headerCloneLayer = 5;
+const cloneAttribute = "data-page-transition-clone";
 const followSelector = "[data-page-transition-follow]";
+const headerSelector = "[data-page-transition-header]";
 const shadeSelector = "[data-page-transition-shade]";
 const enteringProps =
    "backgroundColor,left,minHeight,paddingTop,position,right,top,transform,zIndex";
@@ -73,16 +85,45 @@ export function usePageTransitionMotion(): TransitionProps {
       }
    }
 
-   function complete(
-      leave: TransitionPart | null,
-      enter: TransitionPart | null,
-      followers: HTMLElement[],
-      shade: HTMLElement | null,
-   ) {
+   function cloneHeader(header: HTMLElement) {
+      const clone = header.cloneNode(true);
+      if (!(clone instanceof HTMLElement)) return [];
+
+      const bounds = header.getBoundingClientRect();
+      clone.inert = true;
+      clone.setAttribute("aria-hidden", "true");
+      clone.setAttribute(cloneAttribute, "");
+      for (const element of clone.querySelectorAll("[id]")) {
+         element.removeAttribute("id");
+      }
+      document.body.append(clone);
+      gsap.set(clone, {
+         boxSizing: "border-box",
+         height: bounds.height,
+         left: bounds.left,
+         margin: 0,
+         position: "fixed",
+         top: bounds.top,
+         width: bounds.width,
+         zIndex: headerCloneLayer,
+      });
+      return [clone];
+   }
+
+   function complete({
+      enter,
+      followers,
+      headerClones,
+      headers,
+      leave,
+      shade,
+   }: TransitionScene) {
       leave?.done();
+      for (const clone of headerClones) clone.remove();
       if (followers.length) {
          gsap.set(followers, { clearProps: "transform,transformOrigin" });
       }
+      if (headers.length) gsap.set(headers, { clearProps: "transform" });
       if (shade) gsap.set(shade, { clearProps: "opacity,visibility" });
       if (enter) gsap.set(enter.element, { clearProps: enteringProps });
       $pageTransition.finish();
@@ -97,7 +138,14 @@ export function usePageTransitionMotion(): TransitionProps {
       entering = null;
 
       if (prefersReducedMotion()) {
-         complete(leave, enter, [], null);
+         complete({
+            enter,
+            followers: [],
+            headerClones: [],
+            headers: [],
+            leave,
+            shade: null,
+         });
          return;
       }
 
@@ -105,16 +153,26 @@ export function usePageTransitionMotion(): TransitionProps {
       const followers = leave
          ? Array.from(document.querySelectorAll<HTMLElement>(followSelector))
          : [];
-      const leavingSurfaces = leave ? [leave.element, ...followers] : [];
+      const headers =
+         leave && enter
+            ? Array.from(document.querySelectorAll<HTMLElement>(headerSelector))
+            : [];
+      const headerClones = headers.flatMap(cloneHeader);
+      const leavingSurfaces = leave
+         ? [leave.element, ...followers, ...headerClones]
+         : [];
+      const scene = { enter, followers, headerClones, headers, leave, shade };
 
       if (leave) anchorPinnedElements(leave.element);
       for (const surface of leavingSurfaces) {
          gsap.set(surface, { transformOrigin: viewportCenterOrigin(surface) });
       }
+      if (headers.length) gsap.set(headers, { y: window.innerHeight });
+      $pageTransition.move();
 
       const timeline = gsap.timeline({
          defaults: { duration: transitionDuration, ease },
-         onComplete: () => complete(leave, enter, followers, shade),
+         onComplete: () => complete(scene),
          paused: true,
       });
 
@@ -133,7 +191,7 @@ export function usePageTransitionMotion(): TransitionProps {
             0,
          );
       }
-      if (enter) timeline.to(enter.element, { y: 0 }, 0);
+      if (enter) timeline.to([enter.element, ...headers], { y: 0 }, 0);
       timeline.call($pageTransition.reveal, undefined, revealDelay);
 
       gsap.ticker.add(() => {

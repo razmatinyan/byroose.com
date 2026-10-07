@@ -669,8 +669,19 @@ incoming page is fixed to the viewport with the canvas color, at least one
 already sits where it will rest. It rises from the viewport bottom. All three
 movements share `1.1s` on the `page-transition` CustomEase,
 `0.73, 0.05, 0.112, 1`, which leaves slowly, moves fast through the middle, and
-lands softly. The shade sits at `z-10`, the incoming page at `20`, and the
-header stays above both at `z-60`.
+lands softly. The shade sits at `z-10` and the incoming page at `20`.
+
+The header transitions with the layout. The layout marks the header and the
+logo layer with `data-page-transition-header`. When the movement starts, each is
+replaced in place by a static copy marked `data-page-transition-clone`. The copy
+is inert, hidden from assistive technology, and fixed at `z-5` under the shade,
+and it leaves with the outgoing page and footer, so the old header lifts, shrinks,
+and darkens with the page it belonged to. In the same frame the real header jumps
+to the viewport bottom and rises with the incoming page, so it lands at the top
+of the new page. The header stays at `z-60` above the incoming page throughout.
+While it is off screen it switches to its full state, because the incoming page
+always lands at the top. A compact header therefore never lands compact and then
+expands.
 
 When the movement ends, one task removes the leaving page, returns the incoming
 page to normal flow, clears every transition style, reverts the leaving page's
@@ -1627,8 +1638,8 @@ the button itself, because `useHoverBounce` owns the button's transform. On a
 direct home request the intro timeline runs this reveal at `expand+=0.1`. A page
 transition into home lowers the pieces and runs the reveal again at the
 transition's reveal point, as described in Home intro motion. On every other
-route `useSiteHeaderMotion` runs it after mount, and later page transitions keep
-the revealed header in place. Until the reveal finishes the
+route `useSiteHeaderMotion` runs it after mount, and later page transitions carry
+the revealed header in with the incoming page, as described in Page transitions. Until the reveal finishes the
 `nav` has no `data-nav-revealed` attribute, and the header and the logo layer
 have no `data-header-revealed` attribute, so their pieces stay hidden in CSS
 and a server-rendered piece never flashes before it rises. Reduced motion shows

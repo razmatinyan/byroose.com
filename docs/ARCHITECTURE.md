@@ -261,7 +261,9 @@ once a reveal has finished, whether it ran there or in the home intro. It
 exports `getHeaderRevealParts`, which collects the `data-home-intro-nav-item`
 links and `data-header-rise` targets from the header and logo layer in visual
 order along with their `data-header-rise-mask` wrappers, so both reveals rise
-the same pieces. It composes
+the same pieces. When a page transition reaches its `moving` phase, it switches the header to
+its full state, because the real header is off screen and the incoming page
+lands at the top. It composes
 useGsap and useSmoothScroll so the layout component remains focused on header
 structure and navigation content. It also returns the header root ref, so the
 header can hand it to useHeaderSurface without registering a second template
@@ -327,9 +329,9 @@ callback, the notice stays mounted until its exit finishes.
 
 useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, the scroll lock, the scroll reset, refresh behavior, the refresh hold, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances. `lock` returns a release function, and Lenis only runs while no lock is held, so the page transition and the home intro can hold the scroll at the same time without either one restarting it early.
 
-usePageTransition is the component-facing contract for the page transition plugin. It exposes `isActive`, `deferCleanup`, which runs a cleanup immediately or, while a transition runs, after the leaving page has been covered and removed, and `waitForReveal`, which resolves at the transition's reveal point or immediately when no transition runs. useGsap routes its scope cleanup through `deferCleanup`, so a leaving page keeps every animation, pin, and inline style in place while it is visible.
+usePageTransition is the component-facing contract for the page transition plugin. It exposes `isActive`, `phase`, which is `preparing` from the navigation until the pages start moving, `moving` while they move, and `idle` otherwise, `deferCleanup`, which runs a cleanup immediately or, while a transition runs, after the leaving page has been covered and removed, and `waitForReveal`, which resolves at the transition's reveal point or immediately when no transition runs. useGsap routes its scope cleanup through `deferCleanup`, so a leaving page keeps every animation, pin, and inline style in place while it is visible.
 
-usePageTransitionMotion owns the overlap page transition choreography and returns the Vue transition hooks that app.vue passes to NuxtPage. It sets the incoming page up as a fixed surface before insertion, moves the leaving page and every `data-page-transition-follow` element together, fades the layout's `data-page-transition-shade` element, and restores normal flow in one task when the timeline ends.
+usePageTransitionMotion owns the overlap page transition choreography and returns the Vue transition hooks that app.vue passes to NuxtPage. It sets the incoming page up as a fixed surface before insertion, moves the leaving page and every `data-page-transition-follow` element together, replaces every `data-page-transition-header` element with an inert static copy that leaves with them while the real header rises with the incoming page, fades the layout's `data-page-transition-shade` element, and restores normal flow in one task when the timeline ends.
 
 ### Library modules
 

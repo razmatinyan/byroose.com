@@ -14,7 +14,7 @@ const layoutIntroState = computed(() =>
 
 <template>
 	<div class="site-layout" :data-home-intro-state="layoutIntroState">
-		<SiteHeader data-home-intro-header />
+		<SiteHeader data-home-intro-header data-page-transition-header />
 		<main>
 			<slot />
 		</main>

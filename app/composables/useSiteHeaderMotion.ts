@@ -45,6 +45,7 @@ export function useSiteHeaderMotion() {
 	const menuButton = useTemplateRef<HTMLElement>('menuButton')
 	const { createContext, createMatchMedia, gsap } = useGsap()
 	const { onScroll } = useSmoothScroll()
+	const { phase: transitionPhase } = usePageTransition()
 	const introState = useHomeIntroState()
 	const route = useRoute()
 
@@ -206,6 +207,10 @@ export function useSiteHeaderMotion() {
 
 				setHeaderMode(headerMode.value, { immediate: true })
 
+				const stopTransitionWatch = watch(transitionPhase, phase => {
+					if (phase === 'moving') setHeaderMode('full', { immediate: true })
+				})
+
 				const unsubscribe = onScroll(lenis => {
 					const scroll = Math.max(0, lenis.animatedScroll)
 
@@ -221,6 +226,7 @@ export function useSiteHeaderMotion() {
 
 				return () => {
 					unsubscribe()
+					stopTransitionWatch()
 					activeTimeline?.kill()
 				}
 			},

@@ -42,7 +42,7 @@ const selectors = {
    card: "[data-home-intro-card]",
    copy: "[data-home-intro-copy]",
    removedCard: "[data-home-intro-card-remove]",
-   header: "[data-home-intro-header]",
+   header: "[data-home-intro-header]:not([data-page-transition-clone])",
    mediaGrid: "[data-home-intro-media-grid]",
    title: "[data-home-intro-title]",
 } as const;

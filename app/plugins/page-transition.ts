@@ -1,12 +1,14 @@
-import { readonly, shallowRef } from 'vue'
+import { computed, readonly, shallowRef } from 'vue'
 
 type Cleanup = () => void
+type PageTransitionPhase = 'idle' | 'moving' | 'preparing'
 
 export default defineNuxtPlugin({
 	name: 'page-transition',
 	dependsOn: ['lenis-scroll'],
 	setup(nuxtApp) {
-		const isActive = shallowRef(false)
+		const phase = shallowRef<PageTransitionPhase>('idle')
+		const isActive = computed(() => phase.value !== 'idle')
 		const pendingCleanups: Cleanup[] = []
 		const revealWaiters: Array<() => void> = []
 		let isClaimed = false
@@ -14,7 +16,7 @@ export default defineNuxtPlugin({
 		let releaseRefresh: (() => Promise<void>) | null = null
 
 		function begin() {
-			isActive.value = true
+			phase.value = 'preparing'
 			isClaimed = false
 			releaseScroll = nuxtApp.$smoothScroll.lock()
 			releaseRefresh = nuxtApp.$smoothScroll.holdRefresh()
@@ -22,6 +24,10 @@ export default defineNuxtPlugin({
 
 		function claim() {
 			isClaimed = true
+		}
+
+		function move() {
+			if (phase.value === 'preparing') phase.value = 'moving'
 		}
 
 		function reveal() {
@@ -37,7 +43,7 @@ export default defineNuxtPlugin({
 			releaseRefresh?.()
 			releaseScroll = null
 			releaseRefresh = null
-			isActive.value = false
+			phase.value = 'idle'
 			reveal()
 		}
 
@@ -79,7 +85,9 @@ export default defineNuxtPlugin({
 					claim,
 					deferCleanup,
 					finish,
-					isActive: readonly(isActive),
+					isActive,
+					move,
+					phase: readonly(phase),
 					reveal,
 					waitForReveal,
 				},

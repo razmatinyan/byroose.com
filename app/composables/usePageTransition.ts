@@ -4,6 +4,7 @@ export function usePageTransition() {
 	return {
 		deferCleanup: $pageTransition.deferCleanup,
 		isActive: $pageTransition.isActive,
+		phase: $pageTransition.phase,
 		waitForReveal: $pageTransition.waitForReveal,
 	}
 }
