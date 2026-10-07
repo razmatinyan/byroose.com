@@ -66,7 +66,13 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .home-hero-scroll-space {
-	height: 100svh;
+	height: 50svh;
+}
+
+@media (min-width: 64rem) {
+	.home-hero-scroll-space {
+		height: 100svh;
+	}
 }
 
 .landing-page:not([data-home-intro-state="complete"])
