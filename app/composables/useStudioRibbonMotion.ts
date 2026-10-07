@@ -4,7 +4,6 @@ import { useResizeObserver } from "@vueuse/core";
 import {
 	createRibbonDrawTiming,
 	resolveRibbonRoute,
-	ribbonHeadLead,
 	ribbonHeadLine,
 	ribbonPathData,
 	ribbonSegments,
@@ -23,10 +22,13 @@ interface RibbonStroke {
 interface RibbonGeometry {
 	samples: RibbonSample[];
 	startY: number;
+	strokeWidth: number;
 	strokes: RibbonStroke[];
+	width: number;
 }
 
 const sampleSpacing = 8;
+const drawScrub = 1;
 const revealOffset = 0.01;
 
 const selectors = {
@@ -90,6 +92,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		const strokes: RibbonStroke[] = [];
 		const samples: RibbonSample[] = [];
 		let drawnLength = 0;
+		let strokeWidth = 0;
 
 		for (const segment of ribbonSegments) {
 			const path = svg.querySelector<SVGPathElement>(
@@ -102,12 +105,11 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 				ribbonPathData(points, segment.from, segment.to),
 			);
 
+			strokeWidth = Number.parseFloat(getComputedStyle(path).strokeWidth);
+
 			if (segment.crossing !== undefined) {
 				const shade = svg.querySelector<SVGLinearGradientElement>(
 					selectors.shade(segment.id),
-				);
-				const strokeWidth = Number.parseFloat(
-					getComputedStyle(path).strokeWidth,
 				);
 				const line = ribbonShadeLine(
 					points,
@@ -125,9 +127,11 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 
 			for (let step = 0; step <= steps; step += 1) {
 				const distance = (length * step) / steps;
+				const point = path.getPointAtLength(distance);
 				samples.push({
 					length: drawnLength + distance,
-					y: path.getPointAtLength(distance).y,
+					x: point.x,
+					y: point.y,
 				});
 			}
 
@@ -136,10 +140,22 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		}
 
 		measuredSize = `${width}x${height}`;
-		return { samples, startY: points[0]?.y ?? 0, strokes };
+		return {
+			samples,
+			startY: points[0]?.y ?? 0,
+			strokeWidth,
+			strokes,
+			width,
+		};
 	}
 
-	function draw({ samples, startY, strokes }: RibbonGeometry) {
+	function draw({
+		samples,
+		startY,
+		strokeWidth,
+		strokes,
+		width,
+	}: RibbonGeometry) {
 		const studio = toValue(scope);
 		if (!studio) return;
 
@@ -160,17 +176,18 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			position += length;
 		}
 
-		const timing = createRibbonDrawTiming(
-			samples,
-			window.innerHeight * ribbonHeadLead,
-		);
+		const timing = createRibbonDrawTiming(samples, {
+			height: window.innerHeight,
+			margin: strokeWidth / 2,
+			width,
+		});
 
 		strokeTimeline = timeline;
 		drawing = gsap.to(timeline, {
 			ease: timing.ease,
 			scrollTrigger: {
 				end: `+=${timing.duration}`,
-				scrub: true,
+				scrub: drawScrub,
 				start: startPosition(startY),
 				trigger: studio,
 			},

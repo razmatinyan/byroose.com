@@ -22,7 +22,14 @@ export interface RibbonSegment {
 
 export interface RibbonSample {
 	length: number;
+	x: number;
 	y: number;
+}
+
+export interface RibbonView {
+	height: number;
+	margin: number;
+	width: number;
 }
 
 export interface RibbonShadeLine {
@@ -39,55 +46,54 @@ export interface RibbonDrawTiming {
 
 export const ribbonTuckReach = 0.05;
 export const ribbonEndReach = 0.093;
-export const ribbonHeadLine = 0.6;
-export const ribbonHeadLead = 0.3;
-export const ribbonLengthShare = 0.15;
+export const ribbonHeadLine = 0.8;
+export const ribbonHeadLead = 0.8;
+export const ribbonLengthShare = 0.3;
+export const ribbonHiddenShare = 0.03;
 export const ribbonShadeReach = 1.5;
 
 const ribbonRoute: ReadonlyArray<readonly [number, number]> = [
-	[0.54, 0],
-	[0.504, 1.1],
-	[0.469, 1.87],
-	[0.45, 2.45],
-	[0.463, 2.95],
-	[0.504, 4.02],
-	[0.575, 4.14],
-	[0.677, 4.17],
-	[0.785, 4.09],
-	[0.83, 2.95],
-	[0.798, 2.4],
-	[0.709, 2.225],
-	[0.594, 2.45],
-	[0.492, 3],
-	[0.421, 4.05],
-	[0.383, 4.24],
-	[0.393, 4.43],
-	[0.409, 4.62],
-	[0.447, 4.81],
-	[0.498, 4.93],
-	[0.607, 5.11],
-	[0.734, 5.27],
-	[0.881, 5.08],
-	[1.034, 4.84],
-	[1.124, 4.73],
-	[1.098, 4.47],
-	[0.958, 4.46],
-	[0.798, 4.54],
-	[0.639, 4.73],
-	[0.53, 4.97],
-	[0.396, 5.75],
-	[0.268, 6.38],
-	[0.166, 6.52],
-	[0.089, 6.08],
-	[0.038, 5.3],
-	[-0.077, 4.84],
+	[0.227, 0],
+	[0.23, 0.885],
+	[0.259, 1.487],
+	[0.326, 1.936],
+	[0.425, 2.205],
+	[0.53, 2.436],
+	[0.613, 2.846],
+	[0.683, 4],
+	[0.725, 4.226],
+	[0.731, 4.433],
+	[0.709, 4.64],
+	[0.664, 4.8],
+	[0.581, 4.895],
+	[0.495, 4.866],
+	[0.425, 4.744],
+	[0.386, 4.546],
+	[0.38, 4.32],
+	[0.402, 4.094],
+	[0.457, 3],
+	[0.53, 2.487],
+	[0.619, 2.179],
+	[0.747, 2.026],
+	[0.888, 2.154],
+	[1.009, 2.436],
+	[1.124, 3.429],
+	[1.149, 4.32],
+	[1.098, 4.603],
+	[0.971, 4.838],
+	[0.849, 5.122],
+	[0.702, 5.699],
+	[0.549, 6.021],
+	[0.383, 6.089],
+	[0.23, 5.827],
+	[0.096, 5.314],
+	[-0.089, 4.791],
 ];
 
 export const ribbonSegments: readonly RibbonSegment[] = [
-	{ from: 0, id: "lead", layer: "over", to: 11 },
-	{ crossing: 13, from: 11, id: "loop", layer: "under", to: 15 },
-	{ from: 15, id: "sweep", layer: "over", to: 26 },
-	{ crossing: 29, from: 26, id: "return", layer: "under", to: 35 },
+	{ from: 0, id: "lead", layer: "over", to: 15 },
+	{ crossing: 19, from: 15, id: "climb", layer: "under", to: 23 },
+	{ from: 23, id: "sweep", layer: "over", to: 34 },
 ];
 
 export const ribbonPaintOrder: readonly RibbonSegment[] = [
@@ -140,26 +146,57 @@ function formatPoint({ x, y }: RibbonPoint) {
 	return `${x.toFixed(1)} ${y.toFixed(1)}`;
 }
 
+function knotSpan(from: RibbonPoint, to: RibbonPoint) {
+	return Math.sqrt(Math.max(Math.hypot(to.x - from.x, to.y - from.y), 1e-6));
+}
+
+function centripetalHandle(
+	outer: RibbonPoint,
+	anchor: RibbonPoint,
+	toward: RibbonPoint,
+	outerSpan: number,
+	innerSpan: number,
+): RibbonPoint {
+	const outerSquare = outerSpan * outerSpan;
+	const innerSquare = innerSpan * innerSpan;
+	const anchorWeight =
+		2 * outerSquare + 3 * outerSpan * innerSpan + innerSquare;
+	const divisor = 3 * outerSpan * (outerSpan + innerSpan);
+
+	return {
+		x:
+			(outerSquare * toward.x - innerSquare * outer.x + anchorWeight * anchor.x) /
+			divisor,
+		y:
+			(outerSquare * toward.y - innerSquare * outer.y + anchorWeight * anchor.y) /
+			divisor,
+	};
+}
+
 export function ribbonPathData(
 	points: readonly RibbonPoint[],
 	from: number,
 	to: number,
 ) {
 	const commands = [`M ${formatPoint(pointAt(points, from))}`];
+	const lastIndex = points.length - 1;
 
 	for (let index = from; index < to; index += 1) {
 		const previous = pointAt(points, index - 1);
 		const start = pointAt(points, index);
 		const end = pointAt(points, index + 1);
 		const next = pointAt(points, index + 2);
-		const startHandle = {
-			x: start.x + (end.x - previous.x) / 6,
-			y: start.y + (end.y - previous.y) / 6,
-		};
-		const endHandle = {
-			x: end.x - (next.x - start.x) / 6,
-			y: end.y - (next.y - start.y) / 6,
-		};
+		const span = knotSpan(start, end);
+		const leadingSpan = index > 0 ? knotSpan(previous, start) : span;
+		const trailingSpan = index + 2 <= lastIndex ? knotSpan(end, next) : span;
+		const startHandle = centripetalHandle(
+			previous,
+			start,
+			end,
+			leadingSpan,
+			span,
+		);
+		const endHandle = centripetalHandle(next, end, start, trailingSpan, span);
 
 		commands.push(
 			`C ${formatPoint(startHandle)} ${formatPoint(endHandle)} ${formatPoint(end)}`,
@@ -202,9 +239,19 @@ function sampleIndexAt(times: readonly number[], target: number) {
 	return low;
 }
 
+function isHidden(
+	sample: RibbonSample,
+	tipScreenY: number,
+	{ margin, width }: RibbonView,
+) {
+	return (
+		sample.x < -margin || sample.x > width + margin || tipScreenY < -margin
+	);
+}
+
 export function createRibbonDrawTiming(
 	samples: readonly RibbonSample[],
-	lead: number,
+	view: RibbonView,
 ): RibbonDrawTiming {
 	const first = samples[0];
 	const last = samples.at(-1);
@@ -212,16 +259,23 @@ export function createRibbonDrawTiming(
 		return { duration: 1, ease: (progress) => progress };
 	}
 
+	const headLine = view.height * ribbonHeadLine;
+	const headLead = view.height * ribbonHeadLead;
 	const times = [0];
+
 	for (let index = 1; index < samples.length; index += 1) {
 		const sample = samples[index] as RibbonSample;
 		const previous = samples[index - 1] as RibbonSample;
 		const previousTime = times[index - 1] ?? 0;
+		const tipScreenY = sample.y - first.y - previousTime + headLine;
+		const share = isHidden(sample, tipScreenY, view)
+			? ribbonHiddenShare
+			: ribbonLengthShare;
 
 		times.push(
 			Math.max(
-				previousTime + (sample.length - previous.length) * ribbonLengthShare,
-				sample.y - first.y - lead,
+				previousTime + (sample.length - previous.length) * share,
+				sample.y - first.y - headLead,
 			),
 		);
 	}

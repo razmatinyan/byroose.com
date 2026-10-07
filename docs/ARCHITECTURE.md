@@ -360,9 +360,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   and the founder photo both read them.
 - ribbon-path.ts owns the Studio ribbon's route, its segment and paint order,
   the anchor mapping that turns the route into section coordinates, the
-  Catmull-Rom path data, the shade line at each crossing, and the draw timing
-  that turns scroll progress into drawn length. It takes measured numbers and
-  never queries the DOM.
+  centripetal Catmull-Rom path data, the shade line at each crossing, and the
+  draw timing that turns scroll progress into drawn length. It takes measured
+  numbers and never queries the DOM.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It

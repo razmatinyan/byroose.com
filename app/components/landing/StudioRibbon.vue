@@ -62,7 +62,7 @@ function segmentStroke(segmentId: string, crossing?: number) {
    stroke: var(--color-ribbon);
    stroke-linecap: round;
    stroke-linejoin: round;
-   stroke-width: clamp(3rem, 10vw, 10rem);
+   stroke-width: clamp(4.5rem, 13vw, 15rem);
    visibility: hidden;
 }
 

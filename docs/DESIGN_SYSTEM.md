@@ -49,8 +49,8 @@ visual and accessibility review.
 | `muted` | Pale warm neutral, `#EEE3D5` | Quiet backgrounds and placeholders |
 | `brand-soft` | Mid neutral | Secondary labels and low-emphasis copy |
 | `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
-| `ribbon` | Light neutral grey, `oklch(0.925 0 0)` | The decorative Studio ribbon stroke |
-| `ribbon-shade` | Mid neutral grey, `oklch(0.83 0 0)` | The ribbon's shading where it passes under itself |
+| `ribbon` | Fresh green, `oklch(0.82 0.16 135)` | The decorative Studio ribbon stroke |
+| `ribbon-shade` | Deeper green, `oklch(0.66 0.15 142)` | The ribbon's shading where it passes under itself |
 | `destructive` | Alert red | Destructive and error actions only |
 | `border`, `input`, and `ring` | Semantic controls | Boundaries, fields, and focus indicators |
 
@@ -886,11 +886,13 @@ their resting positions without a ScrollTrigger animation or parallax.
 
 ### Studio ribbon
 
-A thick grey ribbon draws itself behind the Studio section as the reader
+A thick green ribbon draws itself behind the Studio section as the reader
 scrolls. It comes out from under the featured hero card as the hero transition
-ends, bends down past the statement, loops back under itself, crosses the copy
-column, leaves past the right edge, and returns across the section to finish
-over the "What we've done" title before it leaves at the left edge.
+ends and sweeps down and right past the end of the statement. It then turns
+down behind the copy column, rounds a loop beside the photo, and climbs back
+up, crossing under its own first sweep, to leave past the right edge. It
+returns from the right in one long curve that settles just above the "What
+we've done" title and leaves at the left edge.
 
 `StudioRibbon` is a decorative SVG, hidden from assistive technology, that
 fills the Studio section with `overflow: visible`, so the ribbon can reach
@@ -901,32 +903,41 @@ canvas and below every in-flow block. The featured hero card, the statement,
 the photo, the copy, and the work title therefore all paint above it, and the
 landing wrapper's horizontal clip hides it past the viewport edges. Do not
 give the Studio section a `z-index`, `isolation`, or a background, because any
-of them would hide the ribbon or lift it above the content.
+of them would hide the ribbon or lift it above the content. The header logo
+blends with `difference`, so it reads violet while it passes over the green.
 
-The stroke uses the `ribbon` token at `clamp(3rem, 10vw, 10rem)` with round
+The stroke uses the `ribbon` token at `clamp(4.5rem, 13vw, 15rem)` with round
 caps and joins. Its route lives in `app/lib/ribbon-path.ts` as horizontal
 fractions of the section width and vertical positions between measured anchor
 lines: a tuck under the hero card, the section top, the statement top and
 bottom, the grid top and bottom, the section bottom, and a reach into the work
 title. The ribbon therefore follows the content at every breakpoint. A
-Catmull-Rom spline through the route gives the path data.
+centripetal Catmull-Rom spline through the route gives the path data. Unlike a
+uniform spline, it never overshoots or forms a kink where neighboring route
+points sit at uneven distances, so every turn stays round. Keep that spline
+when the route changes, and move a point rather than adding a sharp corner.
 
-The route is split into four segments that draw one after another. The two
-segments that pass under an earlier strand paint first in the document, so the
-earlier strand covers them, and their stroke is a gradient that darkens to
-`ribbon-shade` around the crossing, `1.5` stroke widths either side. As those
-segments draw, the ribbon reads as if it is weaving under itself.
+The route is split into three segments that draw one after another: the lead
+from the card around the loop, the climb back up to the right edge, and the
+returning sweep. The climb passes under the lead, so it paints first in the
+document, and its stroke is a gradient that darkens to `ribbon-shade` around
+the crossing, `1.5` stroke widths either side. As it draws, the ribbon reads as
+if it is weaving under itself.
 
 `useStudioRibbonMotion` scrubs one DrawSVG timeline with the scroll. Each
 segment draws from `0% 0%` to `0% 100%` over a duration equal to its length,
 and it stays hidden until its turn so a waiting round cap never shows as a dot.
-The scroll starts when the tuck point reaches 60 percent of the viewport. The
-draw timing keeps the drawing tip near that line: the tip may run up to 30
-percent of the viewport ahead of it, and every pixel of ribbon costs at least
-`0.15` pixels of scroll, so loops and flat sweeps draw up to about seven times
-faster than the scroll without ever jumping. The geometry and the timeline are
-rebuilt whenever the section resizes. Reduced motion shows the complete ribbon
-without drawing it.
+The scroll starts when the tuck point reaches 80 percent of the viewport. Every
+visible pixel of ribbon costs `0.3` pixels of scroll, so the ribbon draws at
+most about three times faster than the page moves. The tip may run up to 80
+percent of the viewport ahead of that line, which lets the loop draw just
+below the viewport so the climb is still on screen while it rises. Any part of
+the ribbon outside the viewport, past a side edge or above the top, costs only
+`0.03` pixels, so the reader never scrolls through a stretch where nothing
+visible draws. The scrub uses one second of smoothing, so a wheel step glides
+the tip forward instead of revealing a whole stretch at once. The geometry and
+the timeline are rebuilt whenever the section resizes. Reduced motion shows the
+complete ribbon without drawing it.
 
 ### Work section
 
