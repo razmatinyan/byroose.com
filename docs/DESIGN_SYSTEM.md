@@ -271,7 +271,8 @@ The `drawn` prop defaults to `true`. Changing it to `false` erases the path back
 to its starting point, and changing it to `true` draws it again. The motion uses
 the shared GSAP DrawSVG integration and resolves immediately to the requested
 state when reduced motion is enabled. The SVG is decorative and stays outside
-the accessibility tree.
+the accessibility tree. The services intro title is its first consumer and
+toggles `drawn` from its scrubbed word reveal.
 
 Only the `outline` and `secondary` variants may carry a border. Filled variants
 stay borderless so a stray one-pixel ring never survives on top of a rollover
@@ -1267,14 +1268,18 @@ top of the viewport for one and a half viewport heights and scrubs its title
 against that pin. Its triggers use a `refreshPriority` of `-1`, so they
 measure after the work section's pin above them.
 
-The intro panel centers its heading, currently "What can we do for You", on two
+The intro panel centers its heading, currently "What can we do for You?", on two
 lines at `clamp(3rem, 10vw, 12rem)`, with each line held to one line through
-`white-space: nowrap`. Each line is its own `SplitText` word split, and
-screen readers get the phrase from an `sr-only` copy. Every word starts invisible,
+`white-space: nowrap`. Each line is its own `SplitText` word split, and the
+closing "You?" is a separate split so it can carry a `WaveUnderline` in the
+brand orange `primary` color directly below it. Screen readers get the phrase from an
+`sr-only` copy. Every word starts invisible,
 blurred, and small, at `0` opacity, `blur(16px)`, and `0.6` scale, and
 grows to full opacity, no blur, and its resting size. The words resolve one
-after another in reading order, and the pin holds the finished title for a
-short beat before releasing it.
+after another in reading order. Once the scrub reaches the end of the
+"You?" reveal, the underline draws itself under the word on its own timing,
+and scrolling back above that point erases it. The pin holds the finished title for
+a short beat before releasing it. Reduced motion shows the underline drawn.
 
 Each service panel stacks its title at `text-service`, a description below
 it, and an image below that. The panels use a narrower gutter than the

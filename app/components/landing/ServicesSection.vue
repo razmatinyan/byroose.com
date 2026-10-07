@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
+import WaveUnderline from "@/components/shared/WaveUnderline.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const TrailingTooltip = defineAsyncComponent(
@@ -14,8 +15,11 @@ interface Service {
    title: string;
 }
 
-const introLines = ["What can we do", "for You?"];
-const introTitle = introLines.join(" ");
+const introLines = ["What can we do", "for"];
+const introUnderlinedWord = "You?";
+const introPhrases = [...introLines, introUnderlinedWord];
+const introTitle = introPhrases.join(" ");
+const lastIntroLineIndex = introLines.length - 1;
 const servicesRoute = "/services";
 const tooltipText = "More Details";
 
@@ -38,7 +42,7 @@ const servicesData: Service[] = [
 
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
 const introSplits = shallowRef<(SplitTextResult | undefined)[]>(
-   introLines.map(() => undefined),
+   introPhrases.map(() => undefined),
 );
 const descriptionSplits = shallowRef<(SplitTextResult | undefined)[]>(
    servicesData.map(() => undefined),
@@ -53,7 +57,7 @@ const {
    size: tooltipSize,
 } = useTrailingTooltip();
 
-useServicesMotion(servicesRoot, {
+const { introRevealed } = useServicesMotion(servicesRoot, {
    descriptionSplits,
    introSplits,
 });
@@ -83,14 +87,32 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
          <h2 class="section-title services-intro-title">
             <span class="sr-only">{{ introTitle }}</span>
             <span aria-hidden="true">
-               <SplitText
+               <span
                   v-for="(line, index) in introLines"
                   :key="line"
                   class="services-intro-line"
-                  aria="none"
-                  :text="line"
-                  @split="setIntroSplit(index, $event)"
-               />
+               >
+                  <SplitText
+                     aria="none"
+                     :text="line"
+                     @split="setIntroSplit(index, $event)"
+                  />
+                  <span
+                     v-if="index === lastIntroLineIndex"
+                     class="services-intro-underlined"
+                  >
+                     <SplitText
+                        aria="none"
+                        :text="introUnderlinedWord"
+                        @split="setIntroSplit(introLines.length, $event)"
+                     />
+                     <WaveUnderline
+                        class="services-intro-wave"
+                        color="var(--color-primary)"
+                        :drawn="introRevealed"
+                     />
+                  </span>
+               </span>
             </span>
          </h2>
       </div>
@@ -192,6 +214,14 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .services-intro-line {
    @apply block whitespace-nowrap;
+}
+
+.services-intro-underlined {
+   @apply relative ml-[0.25em] inline-block;
+}
+
+.services-intro-wave {
+   @apply absolute top-full left-0 -mt-[0.04em];
 }
 
 .services-intro-title :deep(.split-text-word) {

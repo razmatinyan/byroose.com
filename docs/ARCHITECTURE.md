@@ -200,7 +200,10 @@ blurred word reveal and, for each `data-service-panel`, the slowed travel of
 the children of its `data-service-content` block, the description line rise
 anchored to the static service title, and the scrubbed bottom origin image entry
 and top origin image exit with the scroll hold between them that keeps the image
-near the viewport center. It also owns the scrubbed rise of a dark panel's
+near the viewport center. It returns `introRevealed`, which turns true once
+the scrubbed intro reaches the end of its last word and false again above that
+point, and ServicesSection feeds it to the `drawn` prop of the WaveUnderline
+under "You?". It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved
 exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
