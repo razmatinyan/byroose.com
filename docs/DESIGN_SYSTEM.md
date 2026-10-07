@@ -891,8 +891,9 @@ scrolls. It comes out from under the featured hero card as the hero transition
 ends and sweeps down and right past the end of the statement. It then turns
 down behind the copy column, rounds a loop beside the photo, and climbs back
 up, crossing under its own first sweep, to leave past the right edge. It
-returns from the right in one long curve that settles just above the "What
-we've done" title and leaves at the left edge.
+returns from the right in one long curve that dips under the "What we've done"
+title, bottoms out just above the first case study, and rises out through the
+left edge.
 
 `StudioRibbon` is a decorative SVG, hidden from assistive technology, that
 fills the Studio section with `overflow: visible`, so the ribbon can reach
@@ -916,6 +917,33 @@ centripetal Catmull-Rom spline through the route gives the path data. Unlike a
 uniform spline, it never overshoots or forms a kink where neighboring route
 points sit at uneven distances, so every turn stays round. Keep that spline
 when the route changes, and move a point rather than adding a sharp corner.
+
+To edit the route, change the `ribbonRoute` list. Each entry is one point as
+`[x, y]`, and the list order is the drawing order, so the ribbon always draws
+from the first entry to the last. `x` is a share of the section width: `0` is
+the left edge, `1` is the right edge, and values outside that range sit off
+screen. `y` is a position on the anchor scale:
+
+| `y` | Anchor line |
+| --- | --- |
+| `0` | The tuck under the hero card |
+| `1` | The Studio section top |
+| `2` | The statement top |
+| `3` | The statement bottom |
+| `4` | The photo and copy grid top |
+| `5` | The grid bottom |
+| `6` | The Studio section bottom, which is the work title top |
+| `7` | `0.093` of the section width below that |
+
+A fraction sits between two lines, so `4.5` is halfway down the grid. Values
+past `7` keep stepping by that last span, which is how the closing sweep
+reaches below the work title. To place a point from a screenshot, read its
+pixel position, divide the left offset by the section width for `x`, and find
+the two anchor lines it falls between for `y`. After editing, update the `from`
+and `to` indices in `ribbonSegments`, and the `crossing` index of any segment
+that passes under an earlier strand, because they refer to positions in the
+list. Reversing the list reverses the drawing direction, and its segment
+indices must be mirrored the same way.
 
 The route is split into three segments that draw one after another: the lead
 from the card around the loop, the climb back up to the right edge, and the

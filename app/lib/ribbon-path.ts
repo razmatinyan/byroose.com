@@ -78,22 +78,23 @@ const ribbonRoute: ReadonlyArray<readonly [number, number]> = [
 	[0.888, 2.154],
 	[1.009, 2.436],
 	[1.124, 3.429],
-	[1.149, 4.32],
-	[1.098, 4.603],
-	[0.971, 4.838],
-	[0.849, 5.122],
-	[0.702, 5.699],
-	[0.549, 6.021],
-	[0.383, 6.089],
-	[0.23, 5.827],
-	[0.096, 5.314],
-	[-0.089, 4.791],
+	[1.16, 4.6],
+	[1.1, 5.2],
+	[1, 5.564],
+	[0.92, 6.45],
+	[0.77, 7.2],
+	[0.58, 7.7],
+	[0.42, 7.78],
+	[0.27, 7.5],
+	[0.14, 6.85],
+	[0.04, 5.95],
+	[-0.07, 5.15],
 ];
 
 export const ribbonSegments: readonly RibbonSegment[] = [
 	{ from: 0, id: "lead", layer: "over", to: 15 },
 	{ crossing: 19, from: 15, id: "climb", layer: "under", to: 23 },
-	{ from: 23, id: "sweep", layer: "over", to: 34 },
+	{ from: 23, id: "sweep", layer: "over", to: 35 },
 ];
 
 export const ribbonPaintOrder: readonly RibbonSegment[] = [
