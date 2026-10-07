@@ -20,7 +20,6 @@ export interface RibbonPiece {
 }
 
 export interface RibbonSegment {
-	crossing?: number;
 	from: number;
 	id: string;
 	layer: "over" | "under";
@@ -67,13 +66,13 @@ export const ribbonArtwork = {
 		statementTop: 144,
 		width: 1440,
 	},
-	path: "M316.5 0.0899658C331.86 84.0813 498.583 129.704 695.093 199.07M695.093 199.07C799.228 235.828 911.727 279.254 1014.5 338.59C1240 468.782 1209 709.795 1014.5 822.09C857.247 912.88 528 914.09 389.5 775.59C241 627.09 315 364.589 447.5 288.09C522.352 244.874 605.769 215.327 695.093 199.07ZM695.093 199.07C896.943 162.334 1128.96 193.464 1360.5 288.09C1627.7 397.29 1750.5 516.59 1750.5 648.59C1750.5 796.59 1546.5 966.59 1388.5 1026.59C1191 1101.59 394.5 1186.09 -97.5 1011.09",
+	path: "M506.025 0.312774C534.213 83.3379 563.326 168.415 622.417 234.607C716.235 331.577 846.616 375.958 959.75 446.089C1098.6 536.255 1095.55 784.261 947.824 862.188C819.72 908.143 650.052 898.547 563.411 782.872C489.023 672.057 497.385 492.434 619.75 420.089C844.232 283.458 1127.56 321.746 1360.31 420.119C1526.82 480.623 1681.87 629.469 1668.5 817.656C1667.12 978.541 1531.14 1103.84 1388.32 1157.69C989.626 1263.93 564.949 1269.77 157.359 1207.15C71.0114 1191.99 -14.8975 1171.45 -97.3324 1142.19",
 } as const satisfies { anchors: RibbonAnchors; path: string };
 
 export const ribbonSegments: readonly RibbonSegment[] = [
 	{ from: 0, id: "lead", layer: "over", to: 4 },
-	{ crossing: 6, from: 4, id: "climb", layer: "under", to: 7 },
-	{ from: 7, id: "sweep", layer: "over", to: 10 },
+	{ from: 4, id: "climb", layer: "under", to: 6 },
+	{ from: 6, id: "sweep", layer: "over", to: 10 },
 ];
 
 export const ribbonPaintOrder: readonly RibbonSegment[] = [
@@ -308,19 +307,93 @@ export function ribbonSegmentPath(
 	return commands.join(" ");
 }
 
+interface PieceSample {
+	heading: RibbonPoint;
+	point: RibbonPoint;
+}
+
+const crossingSteps = 32;
+
+function pieceSample(piece: RibbonPiece, progress: number): PieceSample {
+	const rest = 1 - progress;
+	const { end, endHandle, start, startHandle } = piece;
+	const axis = (key: "x" | "y") => ({
+		heading:
+			3 * rest * rest * (startHandle[key] - start[key]) +
+			6 * rest * progress * (endHandle[key] - startHandle[key]) +
+			3 * progress * progress * (end[key] - endHandle[key]),
+		point:
+			rest * rest * rest * start[key] +
+			3 * rest * rest * progress * startHandle[key] +
+			3 * rest * progress * progress * endHandle[key] +
+			progress * progress * progress * end[key],
+	});
+	const x = axis("x");
+	const y = axis("y");
+
+	return {
+		heading: direction({ x: 0, y: 0 }, { x: x.heading, y: y.heading }),
+		point: { x: x.point, y: y.point },
+	};
+}
+
+function segmentSamples(
+	pieces: readonly RibbonPiece[],
+	{ from, to }: RibbonSegment,
+) {
+	return pieces
+		.slice(from, to)
+		.flatMap((piece) =>
+			Array.from({ length: crossingSteps + 1 }, (_, step) =>
+				pieceSample(piece, step / crossingSteps),
+			),
+		);
+}
+
+function findCrossing(
+	pieces: readonly RibbonPiece[],
+	segment: RibbonSegment,
+	clearance: number,
+): PieceSample | undefined {
+	const first = pieces[segment.from];
+	const last = pieces[segment.to - 1];
+	if (!first || !last) return undefined;
+
+	const awayFromJoints = ({ point }: PieceSample) =>
+		Math.hypot(point.x - first.start.x, point.y - first.start.y) > clearance &&
+		Math.hypot(point.x - last.end.x, point.y - last.end.y) > clearance;
+	const underSamples = segmentSamples(pieces, segment).filter(awayFromJoints);
+	const overSamples = ribbonSegments
+		.filter(({ layer }) => layer === "over")
+		.flatMap((over) => segmentSamples(pieces, over));
+	let closest: PieceSample | undefined;
+	let closestDistance = Number.POSITIVE_INFINITY;
+
+	for (const under of underSamples) {
+		for (const over of overSamples) {
+			const distance = Math.hypot(
+				under.point.x - over.point.x,
+				under.point.y - over.point.y,
+			);
+			if (distance >= closestDistance) continue;
+
+			closest = under;
+			closestDistance = distance;
+		}
+	}
+
+	return closest;
+}
+
 export function ribbonShadeLine(
 	pieces: readonly RibbonPiece[],
-	crossing: number,
+	segment: RibbonSegment,
 	reach: number,
 ): RibbonShadeLine | undefined {
-	const piece = pieces[crossing];
-	if (!piece) return undefined;
+	const crossing = findCrossing(pieces, segment, reach);
+	if (!crossing) return undefined;
 
-	const previous = pieces[crossing - 1];
-	const heading = previous
-		? direction(previous.endHandle, piece.startHandle)
-		: direction(piece.start, piece.startHandle);
-	const center = piece.start;
+	const { heading, point: center } = crossing;
 
 	return {
 		x1: center.x - heading.x * reach,

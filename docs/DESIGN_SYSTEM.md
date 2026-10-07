@@ -892,7 +892,7 @@ ends and sweeps down and right through the statement. It then rounds a large
 clockwise loop behind the copy column and the photo and climbs back to the
 point where it first crossed the statement, passing under its own first
 sweep. From there it leaves past the right edge and returns in one long curve
-along the top of the "What we've done" title before it leaves at the left edge.
+that dips under the "What we've done" title before it leaves at the left edge.
 
 `StudioRibbon` is a decorative SVG, hidden from assistive technology, that
 fills the Studio section with `overflow: visible`, so the ribbon can reach
@@ -925,8 +925,11 @@ on a frame that matches the Studio section at 1440 wide, with its top edge on
 the section top. Draw it in the direction it should animate, because the
 ribbon draws from the start of the path to its end, and draw any off-screen
 turns outside the frame. Do not outline the stroke, because a filled shape
-cannot be drawn. Paste the exported `d` string into `ribbonArtwork.path`. The
-parser accepts `M`, `L`, `H`, `V`, `C`, `S`, and `Z` in absolute and relative
+cannot be drawn. An outlined export runs forward along one edge of the stroke,
+around a small cap, and back along the other edge. If one arrives, keep only
+the forward edge up to the first cap, drop any zero-length curves, and use
+that as the centerline. Paste the exported `d` string into
+`ribbonArtwork.path`. The parser accepts `M`, `L`, `H`, `V`, `C`, `S`, and `Z` in absolute and relative
 form, and it throws on any other command. If the frame was drawn at another
 width or the Studio layout has changed, remeasure the anchor lines at the
 frame width and update `ribbonArtwork.anchors`.
@@ -936,15 +939,17 @@ order they appear in `d`, starting at `0`, and a closing `Z` that ends on its
 own start point adds no piece. Each segment covers the pieces from `from` up to
 but not including `to`, segments draw one after another, and the last `to`
 equals the piece count. A segment marked `under` paints before the `over`
-segments, so it passes beneath them wherever they cross, and its `crossing`
-index names the piece whose start point is the crossing.
+segments, so it passes beneath them wherever they cross. Its crossing is found
+automatically: the point on the segment closest to any `over` segment, ignoring
+points within the shade reach of the segment's own two ends, where it simply
+joins its neighbors.
 
 The current artwork has ten pieces in three segments. The lead covers pieces
 `0` to `3`, from the card through the statement and around the loop to its
-lower left. The climb covers pieces `4` to `6`, up the loop's left side,
-through the crossing at the start of piece `6`, and out toward the right edge.
-The sweep covers pieces `7` to `9`, the off-screen turn and the closing curve.
-The climb is `under`, and its stroke is a gradient that darkens to
+lower left. The climb covers pieces `4` and `5`, up the loop's left side and
+under the lead beside the statement, out toward the right edge. The sweep
+covers pieces `6` to `9`, the off-screen turn and the closing curve under the
+work title. The climb is `under`, and its stroke is a gradient that darkens to
 `ribbon-shade` around the crossing, `1.5` stroke widths either side. As it
 draws, the ribbon reads as if it is weaving under itself.
 

@@ -362,7 +362,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   data and the anchor lines it was drawn against, the parser that turns the
   path into cubic Bézier pieces, the projection that maps those pieces onto
   the live Studio anchors, the segment and paint order, the lead-in under the
-  hero card, the shade line at each crossing, and the draw timing that turns
+  hero card, the crossing search and shade line for every segment that passes
+  under another, and the draw timing that turns
   scroll progress into drawn length. It takes measured numbers and never
   queries the DOM.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead

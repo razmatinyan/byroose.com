@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { useId } from "vue";
 import { ribbonPaintOrder, ribbonSegments } from "@/lib/ribbon-path";
+import type { RibbonSegment } from "@/lib/ribbon-path";
 
 const shadeIdPrefix = useId();
 const shadedSegments = ribbonSegments.filter(
-   ({ crossing }) => crossing !== undefined,
+   ({ layer }) => layer === "under",
 );
 
 function shadeId(segmentId: string) {
    return `${shadeIdPrefix}-${segmentId}`;
 }
 
-function segmentStroke(segmentId: string, crossing?: number) {
-   if (crossing === undefined) return undefined;
+function segmentStroke(segment: RibbonSegment) {
+   if (segment.layer !== "under") return undefined;
 
-   return { stroke: `url(#${shadeId(segmentId)})` };
+   return { stroke: `url(#${shadeId(segment.id)})` };
 }
 </script>
 
@@ -45,7 +46,7 @@ function segmentStroke(segmentId: string, crossing?: number) {
          :key="segment.id"
          class="studio-ribbon-segment"
          :data-studio-ribbon-segment="segment.id"
-         :style="segmentStroke(segment.id, segment.crossing)"
+         :style="segmentStroke(segment)"
       />
    </svg>
 </template>

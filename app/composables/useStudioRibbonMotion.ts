@@ -115,13 +115,13 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 
 			strokeWidth = Number.parseFloat(getComputedStyle(path).strokeWidth);
 
-			if (segment.crossing !== undefined) {
+			if (segment.layer === "under") {
 				const shade = svg.querySelector<SVGLinearGradientElement>(
 					selectors.shade(segment.id),
 				);
 				const line = ribbonShadeLine(
 					pieces,
-					segment.crossing,
+					segment,
 					strokeWidth * ribbonShadeReach,
 				);
 
