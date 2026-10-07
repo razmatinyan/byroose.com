@@ -34,7 +34,7 @@ visual and accessibility review.
 
 | Token | Visual role | Intended use |
 | --- | --- | --- |
-| `background` | Warm off-white, `#FDFAF1` | Main page canvas |
+| `background` | Neutral off-white, `#FCFCFC` | Main page canvas |
 | `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces |
 | `foreground` | Near-black ink | Primary text and dark surfaces |
 | `card` | White | Elevated and contained content |
@@ -64,9 +64,9 @@ color behavior remains consistent in both themes. Text selection uses the same
 pair, white `primary-foreground` on the orange `primary`, through the global
 `::selection` rule.
 
-The light canvas is a warm off-white, `#FDFAF1` or
-`oklch(0.985 0.0123 91.52)`, and the creams sit on it as distinct surfaces. Do
-not set the canvas to pure white. Every warm surface steps clearly below the
+The light canvas is a neutral off-white, about `#FCFCFC` or
+`oklch(0.99 0 0)`, and the creams sit on it as distinct surfaces. Do not set
+the canvas to pure white. Every warm surface steps clearly below the
 canvas, so none of them reads as the page itself. `paper`, at
 `oklch(0.95 0.022 84)`, is a light cream for the footer and the first
 working-process card. Keep `background` and `paper` visibly different whenever
@@ -196,7 +196,7 @@ looks.
 
 The texture, its opacity, and its light blend live in the `canvas-grain` utility.
 The body layer is its only consumer, and one opacity value tunes the whole
-effect, currently `opacity-50`. The dark override sits next to the `body::before` selector, because
+effect, currently `opacity-85`. The dark override sits next to the `body::before` selector, because
 Tailwind cannot attach a `.dark` ancestor to an applied pseudo-element. The
 light theme multiplies the light tile into everything beneath it, which keeps
 warm hues. The dark theme inverts the same asset
