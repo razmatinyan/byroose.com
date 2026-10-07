@@ -34,6 +34,8 @@ interface RibbonGeometry {
 const sampleSpacing = 8;
 const drawScrub = 1;
 const revealOffset = 0.01;
+const desktopMotionQuery =
+	"(min-width: 64rem) and (prefers-reduced-motion: no-preference)";
 
 const selectors = {
 	grid: "[data-studio-ribbon-grid]",
@@ -242,7 +244,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		if (!measure()) return;
 
 		createMatchMedia(
-			"(prefers-reduced-motion: no-preference)",
+			desktopMotionQuery,
 			(context) => {
 				const geometry = measure();
 				if (!geometry) return;

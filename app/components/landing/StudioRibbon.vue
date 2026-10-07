@@ -83,4 +83,10 @@ function segmentStroke(segment: RibbonSegment) {
       visibility: visible;
    }
 }
+
+@media (max-width: 63.999rem) {
+   .studio-ribbon-segment {
+      visibility: visible;
+   }
+}
 </style>
