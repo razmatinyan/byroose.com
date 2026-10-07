@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import SiteCookieBanner from '@/components/layout/SiteCookieBanner.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
-import SiteScrollbar from '@/components/layout/SiteScrollbar.vue'
 
 const route = useRoute()
 const homeIntroState = useHomeIntroState()
@@ -25,7 +24,6 @@ const layoutIntroState = computed(() =>
 			aria-hidden="true"
 		/>
 		<SiteCookieBanner v-if="layoutIntroState === 'complete'" />
-		<SiteScrollbar />
 	</div>
 </template>
 

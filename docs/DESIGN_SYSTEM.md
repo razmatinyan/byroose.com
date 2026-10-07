@@ -172,8 +172,8 @@ The whole page carries a fine, moving grain so flat areas read as printed film
 rather than flat screen color. The texture is `public/images/noise.webp`, a
 256px neutral noise tile stored losslessly. A fixed `body::before` layer in the
 global base layer tiles it at its natural size and sits at `z-999`, above every
-page element, including the header, overlays, the cookie notice, the trailing
-tooltip, and the scrollbar. It is `pointer-events-none` and `select-none`, so it
+page element, including the header, overlays, the cookie notice, and the trailing
+tooltip. It is `pointer-events-none` and `select-none`, so it
 never intercepts a click, a hover, or a text selection.
 
 The grain is built to keep moving. The layer is twice the viewport in each direction
@@ -305,7 +305,7 @@ corner.
 
 The notice sits at `z-70`, above the featured hero card's `50` scroll
 transition layer, the `z-50` menu panel and trailing tooltip, and the `z-60`
-header, and below the `z-80` overlay scrollbar. The home intro's `70` media
+header. The home intro's `70` media
 grid never meets it, because the layout withholds the notice until the intro
 completes.
 
@@ -530,8 +530,7 @@ flies past. So `scrollTo` measures the distance to its target and sets the
 duration to the fourth root of that distance in viewports, in seconds, kept
 between `1.5s` and `2.5s`. Short scrolls take `1.5s`, the whole home page takes
 about `2.25s`, and the last viewport of a long scroll always gets about `0.6s`
-to settle. Lenis anchor links keep the `1.5s` floor. The scrollbar drag passes
-`immediate`. Under reduced motion Lenis makes every programmatic scroll
+to settle. Lenis anchor links keep the `1.5s` floor. Under reduced motion Lenis makes every programmatic scroll
 immediate.
 
 The composable also exposes `instance`, `isReady`, `onScroll`, `ready`, `refresh`,
@@ -562,24 +561,24 @@ frame loop. The app plugin is the only owner of initialization and teardown.
 
 ### Scrollbar
 
-The page shows a thumb with no track. A classic scrollbar always reserves its own
-gutter, and that gutter paints the root canvas color, so it would show as a light
-strip beside dark sections. The base layer therefore hides the root scrollbar
-with `scrollbar-width: none` and `html::-webkit-scrollbar { display: none }`.
-Nested scroll regions keep the global `::-webkit-scrollbar` styling.
+The page uses the browser's native scrollbar. The base layer sets
+`scrollbar-color` on `html` to a `foreground` thumb at 30 percent over a
+transparent track, so only the thumb shows. Nested scroll regions keep the
+global `::-webkit-scrollbar` styling.
 
-`SiteScrollbar` in the layout replaces it with a fixed overlay thumb on the right
-edge. It reads the native scroll position, viewport height, and document height
-after mount. It updates on scroll and resize, and through a resize observer on
-the body, so pin spacers and late content keep the thumb in proportion. The
-thumb is at least `48px` tall. A `w-1.5` pill sits inside a `w-3.5` drag target
-painted in `background` at half opacity with `mix-blend-mode: difference`, so it
-reads dark on the canvas and light on dark surfaces without a separate color
-per section. Dragging the thumb scrolls through `useSmoothScroll` with
-`immediate`, so Lenis stays the single owner of the scroll position. The overlay
-is hidden from assistive technology. It never intercepts wheel, keyboard, or
-touch scrolling, and the overlay renders nothing until mount or when the page does not
-scroll.
+CSS cannot stop a classic scrollbar from reserving its width. `scrollbar-gutter`
+only chooses when that space is reserved, never removes it. On Windows the
+gutter therefore stays about `15px` wide, and it paints the root canvas color,
+so it shows as a light strip beside dark sections such as More works and the
+services backdrop. This trade-off was accepted in exchange for the native
+control. macOS and touch devices use overlay scrollbars that reserve no space.
+
+Because the gutter is outside the layout viewport, scripts that center or fit
+an element to the viewport width read `document.documentElement.clientWidth`
+rather than `window.innerWidth`, which includes the scrollbar. The home intro
+sets `scrollbar-gutter: stable` while it hides the root overflow, so the gutter
+stays reserved during the preloader and the page does not shift sideways when
+the scrollbar returns.
 
 The implementation follows the official [Lenis GSAP integration](https://github.com/darkroomengineering/lenis#gsap-scrolltrigger)
 and [GSAP ScrollTrigger guidance](https://gsap.com/docs/v3/Plugins/ScrollTrigger/).

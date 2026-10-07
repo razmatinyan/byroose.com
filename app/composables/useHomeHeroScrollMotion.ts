@@ -39,7 +39,7 @@ function getFeaturedCardTransform(
 		offsetParent = offsetParent.offsetParent;
 	}
 
-	const availableWidth = window.innerWidth * 0.92;
+	const availableWidth = document.documentElement.clientWidth * 0.92;
 	const availableHeight = window.innerHeight * 0.82;
 	const finalCardHeight = card.offsetWidth / featuredAspectRatio;
 	const heroRect = hero.getBoundingClientRect();
@@ -54,7 +54,7 @@ function getFeaturedCardTransform(
 	return {
 		scale,
 		x:
-			window.innerWidth / 2 -
+			document.documentElement.clientWidth / 2 -
 			(heroRect.left + offsetLeft + card.offsetWidth / 2),
 		yAtCenter:
 			window.innerHeight / 2 +

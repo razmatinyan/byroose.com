@@ -102,7 +102,7 @@ A landing section should not become a general component merely because it contai
 ### Layout components
 
 app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
-SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, and SiteFooter. Layout components
+SiteMenuLink, SiteNavLink, SiteCookieBanner, and SiteFooter. Layout components
 may use shared components and UI primitives. They should not depend on a landing
 section.
 
@@ -111,11 +111,6 @@ byroose-cookie-consent cookie through Nuxt's useCookie, so the server and the
 first client render agree on whether the notice is visible and an accepted or
 declined notice never reappears. The layout withholds the banner until the home intro
 reports a complete state, so it never paints over the preloader.
-
-SiteScrollbar owns the overlay scroll thumb that replaces the hidden root
-scrollbar. It measures native scroll and document geometry only after mount, so
-it adds nothing to the server output. It routes thumb dragging through
-useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
