@@ -258,6 +258,21 @@ Props use Vue's reactive destructuring syntax. Static primitive defaults can be
 declared directly in the destructure. Array and object defaults can also use
 native destructuring defaults. Do not use `withDefaults`.
 
+### Wave underline
+
+`WaveUnderline` is the shared decorative SVG for a thick repeating wave that
+draws from left to right. The component renders one stroked path and owns no
+surrounding surface, so it can sit on any section background. Its `color` prop
+defaults to `currentColor`; consumers can inherit a semantic text color or pass
+a CSS color value such as `var(--color-ribbon)`. `strokeWidth`, `duration`, and
+`delay` tune its appearance and entrance without changing the artwork.
+
+The `drawn` prop defaults to `true`. Changing it to `false` erases the path back
+to its starting point, and changing it to `true` draws it again. The motion uses
+the shared GSAP DrawSVG integration and resolves immediately to the requested
+state when reduced motion is enabled. The SVG is decorative and stays outside
+the accessibility tree.
+
 Only the `outline` and `secondary` variants may carry a border. Filled variants
 stay borderless so a stray one-pixel ring never survives on top of a rollover
 layer or an animated surface.
