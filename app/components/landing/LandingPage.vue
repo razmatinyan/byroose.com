@@ -66,7 +66,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .home-hero-scroll-space {
-	height: 50svh;
+	height: 20svh;
 }
 
 @media (min-width: 64rem) {

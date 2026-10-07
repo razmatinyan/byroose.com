@@ -810,8 +810,8 @@ and focus ring are not cut off afterwards.
 After the home intro completes, the third of the four retained hero cards becomes
 the featured transition image. The hero leaves through normal document scrolling
 while LandingPage's empty transition space keeps Studio below the viewport. The
-space is half a small viewport below `lg` and one full small viewport from `lg`
-upward, so mobile uses a shorter scale-up path. The featured card offsets that
+space is one fifth of a small viewport below `lg` and one full small viewport
+from `lg` upward, so mobile uses a shorter scale-up path. The featured card offsets that
 document movement as it leaves its rotated grid position, reaches the viewport
 center, and expands to fit within 92 percent of the viewport width and 82 percent
 of its height. The movement and scale are scrubbed directly to scroll progress,
