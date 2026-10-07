@@ -3,12 +3,14 @@ import type { MaybeRefOrGetter } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 import {
 	createRibbonDrawTiming,
-	resolveRibbonRoute,
+	resolveRibbonPieces,
 	ribbonHeadLine,
-	ribbonPathData,
+	ribbonSegmentPath,
 	ribbonSegments,
 	ribbonShadeLine,
 	ribbonShadeReach,
+	ribbonTuckPoint,
+	ribbonTuckReach,
 } from "@/lib/ribbon-path";
 import type { RibbonSample } from "@/lib/ribbon-path";
 
@@ -78,7 +80,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		const height = studio.offsetHeight;
 		const statementTop = offsetWithin(statementElement, studio);
 		const gridTop = offsetWithin(gridElement, studio);
-		const points = resolveRibbonRoute({
+		const pieces = resolveRibbonPieces({
 			gridBottom: gridTop + gridElement.offsetHeight,
 			gridTop,
 			height,
@@ -86,6 +88,8 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			statementTop,
 			width,
 		});
+
+		const tuck = ribbonTuckPoint(pieces, width * ribbonTuckReach);
 
 		svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
@@ -102,7 +106,11 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 
 			path.setAttribute(
 				"d",
-				ribbonPathData(points, segment.from, segment.to),
+				ribbonSegmentPath(
+					pieces,
+					segment,
+					segment.from === 0 ? tuck : undefined,
+				),
 			);
 
 			strokeWidth = Number.parseFloat(getComputedStyle(path).strokeWidth);
@@ -112,12 +120,12 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 					selectors.shade(segment.id),
 				);
 				const line = ribbonShadeLine(
-					points,
+					pieces,
 					segment.crossing,
 					strokeWidth * ribbonShadeReach,
 				);
 
-				for (const [name, value] of Object.entries(line)) {
+				for (const [name, value] of Object.entries(line ?? {})) {
 					shade?.setAttribute(name, value.toFixed(1));
 				}
 			}
@@ -142,7 +150,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		measuredSize = `${width}x${height}`;
 		return {
 			samples,
-			startY: points[0]?.y ?? 0,
+			startY: tuck?.y ?? 0,
 			strokeWidth,
 			strokes,
 			width,

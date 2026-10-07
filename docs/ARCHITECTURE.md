@@ -358,11 +358,13 @@ app/lib contains pure helpers, shared constants, and stable names.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images
   and the founder photo both read them.
-- ribbon-path.ts owns the Studio ribbon's route, its segment and paint order,
-  the anchor mapping that turns the route into section coordinates, the
-  centripetal Catmull-Rom path data, the shade line at each crossing, and the
-  draw timing that turns scroll progress into drawn length. It takes measured
-  numbers and never queries the DOM.
+- ribbon-path.ts owns the Studio ribbon's artwork: the hand-drawn SVG path
+  data and the anchor lines it was drawn against, the parser that turns the
+  path into cubic Bézier pieces, the projection that maps those pieces onto
+  the live Studio anchors, the segment and paint order, the lead-in under the
+  hero card, the shade line at each crossing, and the draw timing that turns
+  scroll progress into drawn length. It takes measured numbers and never
+  queries the DOM.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It

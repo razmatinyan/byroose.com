@@ -888,12 +888,11 @@ their resting positions without a ScrollTrigger animation or parallax.
 
 A thick green ribbon draws itself behind the Studio section as the reader
 scrolls. It comes out from under the featured hero card as the hero transition
-ends and sweeps down and right past the end of the statement. It then turns
-down behind the copy column, rounds a loop beside the photo, and climbs back
-up, crossing under its own first sweep, to leave past the right edge. It
-returns from the right in one long curve that dips under the "What we've done"
-title, bottoms out just above the first case study, and rises out through the
-left edge.
+ends and sweeps down and right through the statement. It then rounds a large
+clockwise loop behind the copy column and the photo and climbs back to the
+point where it first crossed the statement, passing under its own first
+sweep. From there it leaves past the right edge and returns in one long curve
+along the top of the "What we've done" title before it leaves at the left edge.
 
 `StudioRibbon` is a decorative SVG, hidden from assistive technology, that
 fills the Studio section with `overflow: visible`, so the ribbon can reach
@@ -908,49 +907,46 @@ of them would hide the ribbon or lift it above the content. The header logo
 blends with `difference`, so it reads violet while it passes over the green.
 
 The stroke uses the `ribbon` token at `clamp(4.5rem, 13vw, 15rem)` with round
-caps and joins. Its route lives in `app/lib/ribbon-path.ts` as horizontal
-fractions of the section width and vertical positions between measured anchor
-lines: a tuck under the hero card, the section top, the statement top and
-bottom, the grid top and bottom, the section bottom, and a reach into the work
-title. The ribbon therefore follows the content at every breakpoint. A
-centripetal Catmull-Rom spline through the route gives the path data. Unlike a
-uniform spline, it never overshoots or forms a kink where neighboring route
-points sit at uneven distances, so every turn stays round. Keep that spline
-when the route changes, and move a point rather than adding a sharp corner.
+caps and joins. The shape comes from a hand-drawn SVG path. `ribbonArtwork` in
+`app/lib/ribbon-path.ts` stores its `d` string unchanged, together with the
+Studio anchor lines measured at the width it was drawn on: the statement top
+and bottom, the grid top and bottom, and the section height, all at 1440 wide.
+The path is parsed into cubic Bézier pieces, so the curves keep the exact
+handles from the drawing. At runtime every point is scaled by the live section
+width horizontally, and mapped vertically between the matching live anchor
+lines, so the ribbon follows the content at every breakpoint and matches the
+drawing exactly at 1440 wide. Points above the section top or below its bottom
+move by the width ratio. A short straight lead-in, `0.05` of the section width,
+is added before the first point along its starting direction, so the round cap
+starts hidden under the hero card.
 
-To edit the route, change the `ribbonRoute` list. Each entry is one point as
-`[x, y]`, and the list order is the drawing order, so the ribbon always draws
-from the first entry to the last. `x` is a share of the section width: `0` is
-the left edge, `1` is the right edge, and values outside that range sit off
-screen. `y` is a position on the anchor scale:
+To replace the ribbon, draw a single stroked path in Figma or a similar tool
+on a frame that matches the Studio section at 1440 wide, with its top edge on
+the section top. Draw it in the direction it should animate, because the
+ribbon draws from the start of the path to its end, and draw any off-screen
+turns outside the frame. Do not outline the stroke, because a filled shape
+cannot be drawn. Paste the exported `d` string into `ribbonArtwork.path`. The
+parser accepts `M`, `L`, `H`, `V`, `C`, `S`, and `Z` in absolute and relative
+form, and it throws on any other command. If the frame was drawn at another
+width or the Studio layout has changed, remeasure the anchor lines at the
+frame width and update `ribbonArtwork.anchors`.
 
-| `y` | Anchor line |
-| --- | --- |
-| `0` | The tuck under the hero card |
-| `1` | The Studio section top |
-| `2` | The statement top |
-| `3` | The statement bottom |
-| `4` | The photo and copy grid top |
-| `5` | The grid bottom |
-| `6` | The Studio section bottom, which is the work title top |
-| `7` | `0.093` of the section width below that |
+Then set `ribbonSegments`. Its indices count the curve and line pieces in the
+order they appear in `d`, starting at `0`, and a closing `Z` that ends on its
+own start point adds no piece. Each segment covers the pieces from `from` up to
+but not including `to`, segments draw one after another, and the last `to`
+equals the piece count. A segment marked `under` paints before the `over`
+segments, so it passes beneath them wherever they cross, and its `crossing`
+index names the piece whose start point is the crossing.
 
-A fraction sits between two lines, so `4.5` is halfway down the grid. Values
-past `7` keep stepping by that last span, which is how the closing sweep
-reaches below the work title. To place a point from a screenshot, read its
-pixel position, divide the left offset by the section width for `x`, and find
-the two anchor lines it falls between for `y`. After editing, update the `from`
-and `to` indices in `ribbonSegments`, and the `crossing` index of any segment
-that passes under an earlier strand, because they refer to positions in the
-list. Reversing the list reverses the drawing direction, and its segment
-indices must be mirrored the same way.
-
-The route is split into three segments that draw one after another: the lead
-from the card around the loop, the climb back up to the right edge, and the
-returning sweep. The climb passes under the lead, so it paints first in the
-document, and its stroke is a gradient that darkens to `ribbon-shade` around
-the crossing, `1.5` stroke widths either side. As it draws, the ribbon reads as
-if it is weaving under itself.
+The current artwork has ten pieces in three segments. The lead covers pieces
+`0` to `3`, from the card through the statement and around the loop to its
+lower left. The climb covers pieces `4` to `6`, up the loop's left side,
+through the crossing at the start of piece `6`, and out toward the right edge.
+The sweep covers pieces `7` to `9`, the off-screen turn and the closing curve.
+The climb is `under`, and its stroke is a gradient that darkens to
+`ribbon-shade` around the crossing, `1.5` stroke widths either side. As it
+draws, the ribbon reads as if it is weaving under itself.
 
 `useStudioRibbonMotion` scrubs one DrawSVG timeline with the scroll. Each
 segment draws from `0% 0%` to `0% 100%` over a duration equal to its length,
