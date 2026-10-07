@@ -11,20 +11,16 @@ const {
 	description,
 	image,
 	imageAlt,
-	resultLabel,
-	resultValue,
+	results,
 	revealTones = ["primary", "yellow", "blue", "green"],
-	tone = "primary",
 } = defineProps<{
 	class?: HTMLAttributes["class"]
 	client: string
 	description: string
 	image: string
 	imageAlt: string
-	resultLabel: string
-	resultValue: string
+	results: readonly { label: string, value: string }[]
 	revealTones?: readonly SurfaceTone[]
-	tone?: SurfaceTone
 }>()
 
 const emit = defineEmits<{
@@ -78,19 +74,20 @@ const emit = defineEmits<{
 				</p>
 			</div>
 
-			<div class="case-line mt-10 md:mt-14">
-				<span
-					data-work-case-reveal
-					:class="cn('case-result-value', surfaceTones[tone])"
-				>
-					{{ resultValue }}
-				</span>
-			</div>
+			<div class="case-results">
+				<div v-for="result in results" :key="result.label" class="case-result">
+					<div class="case-line">
+						<p data-work-case-reveal class="case-result-value">
+							{{ result.value }}
+						</p>
+					</div>
 
-			<div class="case-line mt-3">
-				<p data-work-case-reveal class="case-result-label">
-					{{ resultLabel }}
-				</p>
+					<div class="case-line mt-3">
+						<p data-work-case-reveal class="case-result-label">
+							{{ result.label }}
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</Card>
@@ -131,18 +128,26 @@ const emit = defineEmits<{
 }
 
 .case-title {
-	@apply m-0 text-3xl leading-tight font-bold tracking-[-0.03em] md:text-4xl xl:text-5xl;
+	@apply m-0 pb-[0.12em] text-5xl leading-none font-bold tracking-[-0.045em] md:text-6xl xl:text-[5rem];
 }
 
 .case-description {
-	@apply m-0 max-w-[42ch] text-lg leading-snug tracking-tight text-brand-subtle md:text-xl;
+	@apply m-0 max-w-[36ch] text-xl leading-tight font-medium tracking-[-0.03em] text-brand-subtle md:text-2xl;
+}
+
+.case-results {
+	@apply mt-10 flex flex-wrap gap-x-12 gap-y-8 md:mt-14;
+}
+
+.case-result {
+	@apply min-w-0;
 }
 
 .case-result-value {
-	@apply inline-block rounded-md px-3 py-1 text-2xl leading-tight font-semibold tracking-tight md:text-3xl;
+	@apply m-0 text-5xl leading-none font-bold tracking-[-0.05em] text-primary md:text-6xl;
 }
 
 .case-result-label {
-	@apply m-0 max-w-[24ch] text-2xl leading-tight tracking-tight font-medium md:text-3xl;
+	@apply m-0 max-w-[14ch] text-lg leading-tight font-medium tracking-[-0.02em] md:text-xl;
 }
 </style>

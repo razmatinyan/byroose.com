@@ -901,11 +901,22 @@ to one column. Case study cards carry no surface color of their own, so the
 canvas grain stays visible behind them and the image is the only filled shape in
 the row.
 
-The copy column reads title, description, result value, result label. The value
-is an inline highlight that takes a `surface-*` utility through the card's
-`tone` prop, so a case study picks a brand color from `app/lib/surfaces.ts`
-rather than defining one. The label below it stays at foreground weight, because
-the color belongs to the number and not to the sentence that explains it.
+The copy column reads title, description, then a results row. The title is bold
+in the same `foreground` ink as the section heading at `text-5xl`, `text-6xl`
+from `md`, and `5rem` from `xl`, with `leading-none` and `-0.045em` tracking.
+Its `0.12em` of bottom padding keeps descenders inside its reveal mask. The
+description is `font-medium` `brand-subtle` copy at `text-xl`, `text-2xl` from
+`md`, with `leading-tight`, `-0.03em` tracking, and a `36ch` measure.
+
+The card's `results` prop takes a list of value and label pairs, currently two
+per case study. They sit side by side in a wrapping row with `gap-x-12`. Each
+value is bold `primary` text at `text-5xl`, `text-6xl` from `md`, with
+`leading-none` and `-0.05em` tracking, and has no surface behind it. The label
+below it is `font-medium` `foreground` text at `text-lg`, `text-xl` from `md`,
+held to `14ch` so it wraps into a short stack under its number. The color
+belongs to the number and not to the sentence that explains it. The values meet
+the large text contrast threshold on the canvas because of their size and
+weight, so keep them at display size.
 
 Case images are currently reused from the hero set. They are content images with
 their own alternative text, and they will be replaced by real project media when
@@ -939,10 +950,8 @@ this section run that recipe through `addStackReveal` in
 `0.12s` stagger. Change the timing there and both reveals move together.
 
 Each case study gets its own four-color sequence through the card's
-`revealTones` prop, resolved through the same `surface-*` map as the result
-highlight. The sequences are all different, and each one ends on the card's own
-`tone`, so the color that lands immediately before the image is the color the
-result number wears.
+`revealTones` prop, resolved through the `surface-*` map in
+`app/lib/surfaces.ts`. The sequences are all different.
 
 Layers bleed one pixel past the frame and inherit its radius, and the frame
 shapes itself with `clip-path: inset(0 round var(--radius-2xl))` alongside its
@@ -953,9 +962,10 @@ they are decorative, which keeps a solid color block off the card before the
 motion initializes and without JavaScript. The image wrapper carries no CSS rest
 state, so the image itself is always present in the server output.
 
-The four text lines share the card's timeline rather than running their own
-trigger. They start at the halfway point of the media reveal, so the copy is
-already arriving while the last colored layers are still landing, and they rise
+The text lines share the card's timeline rather than running their own
+trigger. In document order they are the title, the description, and each
+result's value then label. They start a tenth of the way into the media reveal,
+so the copy is already arriving while the colored layers are still landing, and they rise
 from their masks over `0.8s` with a `0.08s` stagger. The position is read from
 the timeline's own duration after the stack tweens are added, so retiming the
 stack moves the text with it. The image inside the frame is held at `1.3` scale and scrubbed

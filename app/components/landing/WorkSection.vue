@@ -15,10 +15,8 @@ interface CaseStudy {
 	description: string;
 	image: string;
 	imageAlt: string;
-	resultLabel: string;
-	resultValue: string;
+	results: readonly { label: string; value: string }[];
 	revealTones: readonly SurfaceTone[];
-	tone: SurfaceTone;
 }
 
 const workTitle = "What we've done";
@@ -30,10 +28,11 @@ const caseStudies: CaseStudy[] = [
 			"A launch film and sixty cutdowns produced in one sprint, cut for every placement the brand actually buys.",
 		image: "/images/hero/1.png",
 		imageAlt: "Nova Dairy project visual",
-		resultLabel: "Views earned across the launch",
-		resultValue: "11M",
+		results: [
+			{ label: "Views earned across the launch", value: "11M" },
+			{ label: "Cutdowns delivered in one sprint", value: "60" },
+		],
 		revealTones: ["blue", "green", "yellow", "primary"],
-		tone: "primary",
 	},
 	{
 		client: "Kessler Tools",
@@ -41,10 +40,11 @@ const caseStudies: CaseStudy[] = [
 			"A product site rebuilt around how buyers actually search, from the category pages down to the specs they compare.",
 		image: "/images/hero/2.png",
 		imageAlt: "Kessler Tools project visual",
-		resultLabel: "More qualified enquiries",
-		resultValue: "41%",
+		results: [
+			{ label: "More qualified enquiries", value: "41%" },
+			{ label: "Organic traffic to category pages", value: "3.2x" },
+		],
 		revealTones: ["pink", "primary", "blue", "yellow"],
-		tone: "yellow",
 	},
 	{
 		client: "Halden Clinics",
@@ -52,10 +52,11 @@ const caseStudies: CaseStudy[] = [
 			"A booking flow rebuilt in five weeks, with the questions patients could not answer taken out of the way.",
 		image: "/images/hero/3.png",
 		imageAlt: "Halden Clinics project visual",
-		resultLabel: "Increase in completed bookings",
-		resultValue: "+38%",
+		results: [
+			{ label: "Increase in completed bookings", value: "+38%" },
+			{ label: "From brief to a live booking flow", value: "5 wks" },
+		],
 		revealTones: ["green", "yellow", "primary", "pink"],
-		tone: "pink",
 	},
 	{
 		client: "Marrow & Co",
@@ -63,10 +64,11 @@ const caseStudies: CaseStudy[] = [
 			"One landing page rebuilt around a single offer, with the proof moved above the decision.",
 		image: "/images/hero/4.png",
 		imageAlt: "Marrow and Co project visual",
-		resultLabel: "Conversion rate, up from 3.1%",
-		resultValue: "4.7%",
+		results: [
+			{ label: "Conversion rate, up from 3.1%", value: "4.7%" },
+			{ label: "Lower bounce rate on the offer page", value: "-24%" },
+		],
 		revealTones: ["yellow", "blue", "pink", "green"],
-		tone: "green",
 	},
 ];
 
