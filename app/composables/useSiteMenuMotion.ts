@@ -57,7 +57,7 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 					const buttonBounds = buttonElement.getBoundingClientRect()
 					const panelWidth = panelElement.offsetWidth
 					const maximumLeft =
-						document.documentElement.clientWidth - panelWidth - menuViewportInset
+						window.innerWidth - panelWidth - menuViewportInset
 					const desiredLeft =
 						buttonBounds.right - panelWidth + menuPanelOffset
 					const left = Math.max(

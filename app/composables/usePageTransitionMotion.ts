@@ -42,7 +42,7 @@ function asTransitionPart(element: Element, done: () => void) {
 
 function viewportCenterOrigin(element: HTMLElement) {
    const bounds = element.getBoundingClientRect();
-   const x = document.documentElement.clientWidth / 2 - bounds.left;
+   const x = window.innerWidth / 2 - bounds.left;
    const y = window.innerHeight / 2 - bounds.top;
    return `${x}px ${y}px`;
 }

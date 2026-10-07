@@ -94,10 +94,9 @@ function getStackPlacements(
    const firstCard = cardRects[0];
    if (!firstCard || firstCard.width === 0) return null;
 
-   const viewportWidth = document.documentElement.clientWidth;
-   const stackWidth = Math.min(520, Math.max(240, viewportWidth - 40));
+   const stackWidth = Math.min(520, Math.max(240, window.innerWidth - 40));
    const stackScale = stackWidth / firstCard.width;
-   const startCenterX = viewportWidth / 2;
+   const startCenterX = window.innerWidth / 2;
    const startCenterY = window.innerHeight / 2;
 
    return {

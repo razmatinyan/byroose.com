@@ -229,7 +229,11 @@
 	}
 
 	html {
-		scrollbar-color: --alpha(var(--color-foreground) / 30%) transparent;
+		scrollbar-width: none;
+	}
+
+	html::-webkit-scrollbar {
+		display: none;
 	}
 
 	::-webkit-scrollbar {
