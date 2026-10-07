@@ -17,6 +17,7 @@ interface CaseStudy {
 	imageAlt: string;
 	results: readonly { label: string; value: string }[];
 	revealTones: readonly SurfaceTone[];
+	tone: SurfaceTone;
 }
 
 const workTitle = "What we've done";
@@ -33,6 +34,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Cutdowns delivered in one sprint", value: "60" },
 		],
 		revealTones: ["blue", "green", "yellow", "primary"],
+		tone: "primary",
 	},
 	{
 		client: "Kessler Tools",
@@ -45,6 +47,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Organic traffic to category pages", value: "3.2x" },
 		],
 		revealTones: ["pink", "primary", "blue", "yellow"],
+		tone: "yellow",
 	},
 	{
 		client: "Halden Clinics",
@@ -57,6 +60,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "From brief to a live booking flow", value: "5 wks" },
 		],
 		revealTones: ["green", "yellow", "primary", "pink"],
+		tone: "pink",
 	},
 	{
 		client: "Marrow & Co",
@@ -69,6 +73,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Lower bounce rate on the offer page", value: "-24%" },
 		],
 		revealTones: ["yellow", "blue", "pink", "green"],
+		tone: "green",
 	},
 ];
 

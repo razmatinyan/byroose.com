@@ -909,14 +909,19 @@ description is `font-medium` `brand-subtle` copy at `text-xl`, `text-2xl` from
 `md`, with `leading-tight`, `-0.03em` tracking, and a `36ch` measure.
 
 The card's `results` prop takes a list of value and label pairs, currently two
-per case study. They sit side by side in a wrapping row with `gap-x-12`. Each
-value is bold `primary` text at `text-5xl`, `text-6xl` from `md`, with
-`leading-none` and `-0.05em` tracking, and has no surface behind it. The label
-below it is `font-medium` `foreground` text at `text-lg`, `text-xl` from `md`,
-held to `14ch` so it wraps into a short stack under its number. The color
-belongs to the number and not to the sentence that explains it. The values meet
-the large text contrast threshold on the canvas because of their size and
-weight, so keep them at display size.
+per case study. They sit side by side in a wrapping row with `gap-x-10`. From
+`md` the copy column stretches to the height of the media and the row takes
+`mt-auto`, so the results sit on the bottom edge of the image while the title
+and description stay at the top. Below `md` the row follows the description
+with `mt-10`. Each value is an extrabold inline highlight at `text-5xl`,
+`text-6xl` from `md`, with `leading-none` and `-0.05em` tracking, that takes a
+`surface-*` utility through the card's `tone` prop, so a case study picks a
+brand color from `app/lib/surfaces.ts` rather than defining one. The highlight
+keeps a surface behind the number because yellow and pink would not be
+readable as text on the canvas. The label below it is `font-semibold`
+`foreground` text at `text-lg`, `text-xl` from `md`, held to `14ch` so it wraps
+into a short stack under its number. The color belongs to the number and not to
+the sentence that explains it.
 
 Case images are currently reused from the hero set. They are content images with
 their own alternative text, and they will be replaced by real project media when
@@ -950,8 +955,10 @@ this section run that recipe through `addStackReveal` in
 `0.12s` stagger. Change the timing there and both reveals move together.
 
 Each case study gets its own four-color sequence through the card's
-`revealTones` prop, resolved through the `surface-*` map in
-`app/lib/surfaces.ts`. The sequences are all different.
+`revealTones` prop, resolved through the same `surface-*` map as the result
+highlights. The sequences are all different, and each one ends on the card's own
+`tone`, so the color that lands immediately before the image is the color the
+result numbers wear.
 
 Layers bleed one pixel past the frame and inherit its radius, and the frame
 shapes itself with `clip-path: inset(0 round var(--radius-2xl))` alongside its

@@ -13,6 +13,7 @@ const {
 	imageAlt,
 	results,
 	revealTones = ["primary", "yellow", "blue", "green"],
+	tone = "primary",
 } = defineProps<{
 	class?: HTMLAttributes["class"]
 	client: string
@@ -21,6 +22,7 @@ const {
 	imageAlt: string
 	results: readonly { label: string, value: string }[]
 	revealTones?: readonly SurfaceTone[]
+	tone?: SurfaceTone
 }>()
 
 const emit = defineEmits<{
@@ -77,7 +79,10 @@ const emit = defineEmits<{
 			<div class="case-results">
 				<div v-for="result in results" :key="result.label" class="case-result">
 					<div class="case-line">
-						<p data-work-case-reveal class="case-result-value">
+						<p
+							data-work-case-reveal
+							:class="cn('case-result-value', surfaceTones[tone])"
+						>
 							{{ result.value }}
 						</p>
 					</div>
@@ -120,7 +125,7 @@ const emit = defineEmits<{
 }
 
 .case-body {
-	@apply min-w-0;
+	@apply flex min-w-0 flex-col md:self-stretch;
 }
 
 .case-line {
@@ -136,7 +141,7 @@ const emit = defineEmits<{
 }
 
 .case-results {
-	@apply mt-10 flex flex-wrap gap-x-12 gap-y-8 md:mt-14;
+	@apply mt-10 flex flex-wrap gap-x-10 gap-y-8 md:mt-auto md:pt-14;
 }
 
 .case-result {
@@ -144,10 +149,10 @@ const emit = defineEmits<{
 }
 
 .case-result-value {
-	@apply m-0 text-5xl leading-none font-bold tracking-[-0.05em] text-primary md:text-6xl;
+	@apply m-0 inline-block rounded-lg px-3 py-1.5 text-5xl leading-none font-extrabold tracking-[-0.05em] md:text-6xl;
 }
 
 .case-result-label {
-	@apply m-0 max-w-[14ch] text-lg leading-tight font-medium tracking-[-0.02em] md:text-xl;
+	@apply m-0 max-w-[14ch] text-lg leading-tight font-semibold tracking-[-0.02em] md:text-xl;
 }
 </style>
