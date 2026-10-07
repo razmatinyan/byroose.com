@@ -888,11 +888,12 @@ their resting positions without a ScrollTrigger animation or parallax.
 
 A thick green ribbon draws itself behind the Studio section as the reader
 scrolls. It comes out from under the featured hero card as the hero transition
-ends and sweeps down and right through the statement. It then rounds a large
-clockwise loop behind the copy column and the photo and climbs back to the
-point where it first crossed the statement, passing under its own first
-sweep. From there it leaves past the right edge and returns in one long curve
-that dips under the "What we've done" title before it leaves at the left edge.
+ends and sweeps down and right beside the statement to a crossing near the
+right edge. It then curves down behind the copy column and rounds one large
+loop out to the left, behind the photo, and back up to that crossing, where it
+passes under its own first sweep. From there it bows out past the right edge
+and returns in one long curve that dips under the "What we've done" title,
+just above the first case study, before it leaves at the left edge.
 
 `StudioRibbon` is a decorative SVG, hidden from assistive technology, that
 fills the Studio section with `overflow: visible`, so the ribbon can reach
@@ -944,12 +945,11 @@ automatically: the point on the segment closest to any `over` segment, ignoring
 points within the shade reach of the segment's own two ends, where it simply
 joins its neighbors.
 
-The current artwork has ten pieces in three segments. The lead covers pieces
-`0` to `3`, from the card through the statement and around the loop to its
-lower left. The climb covers pieces `4` and `5`, up the loop's left side and
-under the lead beside the statement, out toward the right edge. The sweep
-covers pieces `6` to `9`, the off-screen turn and the closing curve under the
-work title. The climb is `under`, and its stroke is a gradient that darkens to
+The current artwork has six pieces in three segments. The lead covers pieces
+`0` to `2`, from the card to the crossing, down behind the copy, and around the
+large loop. The climb covers pieces `3` and `4`, back up through the crossing
+under the lead and out past the right edge. The sweep is piece `5`, the closing
+curve under the work title. The climb is `under`, and its stroke is a gradient that darkens to
 `ribbon-shade` around the crossing, `1.5` stroke widths either side. As it
 draws, the ribbon reads as if it is weaving under itself.
 
