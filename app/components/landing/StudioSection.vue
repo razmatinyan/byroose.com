@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef } from "vue";
+import RotatingBadge from "@/components/shared/RotatingBadge.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -23,6 +24,7 @@ const statementSplit = shallowRef<SplitTextResult>();
 const copySplits = shallowRef<
    Partial<Record<CopyParagraphId, SplitTextResult>>
 >({});
+const badgePhrases = ["from seen", "to chosen", "byroose"] as const;
 const studioStatement =
    "We make work that gets chosen, not just seen. Sharp thinking, fast execution, numbers you can defend.";
 
@@ -51,14 +53,22 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 
 <template>
    <section id="studio" ref="studioRoot" class="studio section-gutter">
-      <SplitText
-         class="studio-statement"
-         as="p"
-         mask="words"
-         :text="studioStatement"
-         type="words"
-         @split="setStatementSplit"
-      />
+      <div class="studio-intro">
+         <SplitText
+            class="studio-statement"
+            as="p"
+            mask="words"
+            :text="studioStatement"
+            type="words"
+            @split="setStatementSplit"
+         />
+
+         <div class="studio-badge">
+            <div data-studio-badge class="studio-badge-reveal">
+               <RotatingBadge :phrases="badgePhrases" />
+            </div>
+         </div>
+      </div>
 
       <div class="studio-grid">
          <div class="studio-column">
@@ -101,8 +111,20 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
    @apply w-full py-section;
 }
 
+.studio-intro {
+   @apply flex flex-wrap items-center justify-between gap-8;
+}
+
 .studio-statement {
    @apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
+}
+
+.studio-badge {
+   @apply ml-auto w-28 md:w-40 xl:w-52;
+}
+
+.studio-badge-reveal {
+   visibility: hidden;
 }
 
 .studio-statement :deep(.split-text-word),

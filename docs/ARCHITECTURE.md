@@ -45,6 +45,7 @@ app/
     useNavLinkMotion.ts
     usePageTransition.ts
     usePageTransitionMotion.ts
+    useRotatingBadgeMotion.ts
     useServicesMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -123,7 +124,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, RotatingBadge, SplitText, and TrailingTooltip. RotatingBadge renders a decorative circular badge whose phrases run around its edge on an SVG text path, with a masked mark at its center. It owns its spin through useRotatingBadgeMotion, and its owner places and reveals it. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -153,8 +154,14 @@ viewport center and expands. LandingPage supplies the empty one-viewport scroll
 space before Studio. Responsive measurements, the reduced-motion outcome,
 ScrollTrigger lifecycle, and route cleanup remain inside the composable.
 
+useRotatingBadgeMotion owns the RotatingBadge spin. A GSAP ticker callback
+advances the rotation from a speed value, so the speed can tween through zero
+into reverse. Shared Lenis scroll callbacks boost the speed with the scroll
+velocity and take its sign, and a short idle delay eases it back to the resting
+forward speed. Reduced motion leaves the badge still.
+
 useStudioMotion owns the Studio section's entrance: the statement words, the
-founder photo's frame clip reveal and image parallax, and the copy paragraph
+scale-up of the `data-studio-badge` wrapper after them, the founder photo's frame clip reveal and image parallax, and the copy paragraph
 words. It waits until the shared
 SplitText component has reported every statement and copy paragraph split, then
 creates the section-scoped ScrollTriggers in page order. It resolves reduced

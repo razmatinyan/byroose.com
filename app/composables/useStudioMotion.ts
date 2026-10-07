@@ -12,6 +12,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 import {
 	addWordReveal,
 	wordRevealDenseStagger,
+	wordRevealEase,
 	wordRevealStagger,
 	wordRevealStart,
 } from "@/lib/word-reveal";
@@ -27,6 +28,9 @@ interface StudioMotionTargets {
 	statementSplit: SplitSource;
 }
 
+const badgeSelector = "[data-studio-badge]";
+const badgeRevealDuration = 1;
+const badgeRevealOverlap = 0.3;
 const portraitImageSelector = "[data-studio-portrait-image]";
 const hiddenPortraitClip = "inset(0% 0% 100% 0%)";
 const visiblePortraitClip = "inset(0% 0% 0% 0%)";
@@ -56,6 +60,34 @@ export function useStudioMotion(
 		});
 
 		addWordReveal(timeline, words, { stagger });
+	}
+
+	function revealStatement(words: HTMLElement[], root: HTMLElement) {
+		const badge = root.querySelector<HTMLElement>(badgeSelector);
+		if (!words.length && !badge) return;
+
+		const timeline = gsap.timeline({
+			scrollTrigger: {
+				once: true,
+				start: wordRevealStart,
+				trigger: root,
+			},
+		});
+
+		addWordReveal(timeline, words, { stagger: wordRevealStagger });
+		if (!badge) return;
+
+		timeline.fromTo(
+			badge,
+			{ scale: 0, visibility: "inherit" },
+			{
+				clearProps: "transform",
+				duration: badgeRevealDuration,
+				ease: wordRevealEase,
+				scale: 1,
+			},
+			words.length ? `-=${badgeRevealOverlap}` : 0,
+		);
 	}
 
 	function revealPortrait(frame: HTMLElement) {
@@ -106,6 +138,13 @@ export function useStudioMotion(
 		});
 	}
 
+	function showBadge(root: HTMLElement) {
+		const badge = root.querySelector<HTMLElement>(badgeSelector);
+		if (!badge) return;
+
+		gsap.set(badge, { clearProps: "transform", visibility: "inherit" });
+	}
+
 	async function initialize(
 		statementWords: HTMLElement[],
 		paragraphWords: HTMLElement[],
@@ -135,10 +174,11 @@ export function useStudioMotion(
 			(context) => {
 				if (context.conditions?.reduceMotion) {
 					showWords([...statementWords, ...paragraphWords]);
+					showBadge(root);
 					return;
 				}
 
-				revealWords(statementWords, root, wordRevealStagger);
+				revealStatement(statementWords, root);
 				revealPortrait(frame);
 				parallaxPortrait(frame);
 				revealWords(paragraphWords, copyRoot, wordRevealDenseStagger);
