@@ -34,6 +34,7 @@ export interface RibbonSample {
 
 export interface RibbonView {
 	height: number;
+	lead?: number;
 	margin: number;
 	width: number;
 }
@@ -465,7 +466,7 @@ export function createRibbonDrawTiming(
 	}
 
 	const headLine = view.height * ribbonHeadLine;
-	const headLead = view.height * ribbonHeadLead;
+	const headLead = view.height * (view.lead ?? ribbonHeadLead);
 	const times = [0];
 
 	for (let index = 1; index < samples.length; index += 1) {

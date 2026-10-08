@@ -996,6 +996,40 @@ the timeline are rebuilt whenever the section resizes. The ribbon is hidden belo
 the `lg` breakpoint. Reduced motion shows the complete ribbon without drawing it
 on larger screens.
 
+`createRibbonDrawTiming` accepts an optional `lead` in its view, a share of the
+viewport height that replaces the default `0.8` head lead. The Studio ribbon
+leaves it unset.
+
+### Work line
+
+A faint grey line draws itself behind the work case list as the reader
+scrolls. It enters from past the right edge level with the top of the first
+case study, weaves left, right, and left again behind the cards, and ends at
+the bottom of the last case study.
+
+`WorkLine` is a decorative SVG, hidden from assistive technology, placed inside
+the `relative` case list at `-z-10`, so every card paints above it. It bleeds
+across the page gutters with a negative `--spacing-page` offset and an explicit
+width, because an absolutely positioned SVG ignores opposing insets and keeps
+its default 300 pixel width. The stroke uses `foreground` at the ribbon's
+`clamp(4.5rem, 13vw, 15rem)` width with round caps and joins, and the SVG's
+`opacity-3` class turns it into a soft grey. Adjust that class to make the line
+fainter or stronger.
+
+`workLineArtwork` in `app/lib/work-line-path.ts` stores the hand-drawn `d`
+string, drawn on a 1440 wide frame whose top edge is the first case study's
+top. At runtime the path is scaled by the live frame width horizontally and
+stretched vertically so its last point lands on the case list's bottom edge.
+To replace it, draw a single stroked path in the direction it should animate
+and paste its `d` string into `workLineArtwork.path`.
+
+`useWorkLineMotion` scrubs the line with the same draw timing as the Studio
+ribbon, with a head lead of `0`, so the drawing tip stays at 80 percent of the
+viewport instead of running ahead below it. Because the line sits inside the
+case list, it moves and fades with the list during the handoff to the more
+works panel. The line is hidden below the `lg` breakpoint, and reduced motion
+shows it complete without drawing it.
+
 ### Work section
 
 The work section centers its heading, currently "What we've done", and gives

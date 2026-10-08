@@ -2,6 +2,7 @@
 import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import CaseStudyCard from "@/components/cards/CaseStudyCard.vue";
 import MoreWorksPanel from "./MoreWorksPanel.vue";
+import WorkLine from "./WorkLine.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 import type { SurfaceTone } from "@/lib/surfaces";
@@ -90,6 +91,7 @@ const {
 } = useTrailingTooltip();
 
 useWorkMotion(workRoot, { titleSplit });
+useWorkLineMotion(workRoot);
 
 function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts;
@@ -117,6 +119,8 @@ function activatePanelTooltip(image: string, label: string) {
 			/>
 
 			<div class="case-list" data-work-case-list>
+				<WorkLine />
+
 				<CaseStudyCard
 					v-for="item in caseStudies"
 					:key="item.client"
@@ -160,6 +164,6 @@ function activatePanelTooltip(image: string, label: string) {
 }
 
 .case-list {
-	@apply mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 xl:mt-24 xl:gap-32;
+	@apply relative mt-16 flex flex-col gap-20 md:mt-20 md:gap-28 xl:mt-24 xl:gap-32;
 }
 </style>

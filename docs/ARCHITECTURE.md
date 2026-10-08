@@ -52,6 +52,7 @@ app/
     useStudioMotion.ts
     useStudioRibbonMotion.ts
     useTrailingTooltip.ts
+    useWorkLineMotion.ts
     useWorkMotion.ts
   lib/
     char-reveal.ts
@@ -64,6 +65,7 @@ app/
     swap-timing.ts
     utils.ts
     word-reveal.ts
+    work-line-path.ts
   layouts/
     default.vue
   pages/
@@ -186,6 +188,15 @@ owns the handoff from the last card to the MoreWorksPanel. It slows and fades
 the `data-work-case-list` element and brings in the `data-work-more-panel`
 surface inside the `data-work-more` track, because that handoff choreographs
 WorkSection's own cards against its closing panel.
+
+useWorkLineMotion owns the faint line behind the work case list. WorkLine
+renders the empty SVG inside `data-work-case-list`, so the line moves and fades
+with the list during the handoff. After mount the composable measures the SVG,
+writes the path data, samples its length, and scrubs one DrawSVG tween with the
+scroll through the shared ribbon draw timing. It observes the SVG itself and
+rebuilds the geometry and the drawing inside the same GSAP media context
+whenever the SVG resizes. Reduced motion keeps the measured line fully drawn
+through CSS.
 
 useMoreWorksMotion owns the MoreWorksPanel's internal motion: the pin, the
 scrubbed reveal that brings the words in from their sides character by character
@@ -370,6 +381,10 @@ app/lib contains pure helpers, shared constants, and stable names.
   under another, and the draw timing that turns
   scroll progress into drawn length. It takes measured numbers and never
   queries the DOM.
+- work-line-path.ts owns the work line's artwork: the hand-drawn SVG path
+  data, the projection that scales it to the live case list frame, and the
+  head lead the work line passes to the shared ribbon draw timing. It reuses
+  the ribbon parser and path formatter and never queries the DOM.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It
