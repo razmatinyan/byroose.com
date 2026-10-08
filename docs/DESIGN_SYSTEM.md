@@ -1788,7 +1788,7 @@ because then the reveal is not driven by scrolling. Reduced motion has no
 footer reveal, so the actions and the logo never fade.
 
 The primary navigation is plain text: no surface, padding, or shadow on the
-`nav` or its links. It lists Home, About, Works, Services, Blog, and Contact.
+`nav` or its links. It lists Home, Works, Services, About, Blog, and Contact.
 Each `SiteNavLink` sets its label in semibold at `text-lg`, in the title case
 of the nav labels rather than uppercase, and stacks a hidden copy in the same
 grid cell. Its `size` prop defaults to `lg`. The `inherit` size drops the
