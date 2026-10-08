@@ -21,12 +21,15 @@ app/
       lenis.css
       tailwind.css
   components/
+    about/
     cards/
     landing/
     layout/
     shared/
     ui/
   composables/
+    useAboutHeroMotion.ts
+    useAboutSectionMotion.ts
     useArrowSwapHover.ts
     useBlogMotion.ts
     useCookieBannerMotion.ts
@@ -95,13 +98,27 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. The remaining page files own the About, Works, Services, Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about. The remaining page files own the Works, Services, Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
 app/components/landing contains sections that are specific to the landing experience. A landing section may own static section content and compose cards, shared components, layouts, and UI primitives.
 
 A landing section should not become a general component merely because it contains several elements. Extract only the parts that have a stable reusable contract.
+
+### About components
+
+app/components/about contains the About route's sections. AboutPage composes
+AboutHero, AboutTeamSection, AboutTrustSection, AboutBrandsSection, and
+AboutCtaSection, and app/pages/about.vue renders it with the route metadata.
+AboutTitle renders a title from explicit lines, each in its own mask, with an
+optional underlined word that carries a WaveUnderline. AboutMediaFrame wraps
+any image or placeholder in a frame and a parallax layer. AboutStatement is the
+large split statement, placed in the right two thirds of its section, shared by
+the trust and brands sections, and
+AboutSectionHeading pairs a title with a cycling image. AboutTeamMember shows a
+portrait, or a placeholder when it receives none, a name, and a role. The sections own their copy. They do not depend
+on landing sections.
 
 ### Layout components
 
@@ -127,7 +144,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen and never under reduced motion. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -258,6 +275,20 @@ answer lines. It waits for the title's line split, rebuilds the title reveal
 when the lines re-split before it plays, and resolves every reveal and toggle
 instantly under reduced motion. FaqSection owns the copy, the controlled
 accordion value, and the title and answer splits.
+
+useAboutHeroMotion owns the About hero. It waits for the description split
+and the page transition's reveal point, then rises the title lines and, just
+before they land, the description lines, and scrubs the hero content down at half the
+scroll speed and fades it out while the hero leaves, so the team section covers it. It returns
+`revealed`, which lifts the hero's hidden CSS rest state.
+
+useAboutSectionMotion owns the scroll reveals of one About section. Inside its
+scope it reveals the `data-about-title` lines, clip reveals and parallaxes
+every `data-about-media` frame through its `data-about-media-layer`, rises the
+`data-about-rise` items of every `data-about-rise-group` from their
+`data-about-rise-mask`, and rises the lines of every `data-about-text` split,
+matched by order to the `textSplits` it receives. It returns `titleRevealed`,
+which the section feeds to its title underline.
 
 useFooterMotion owns the site footer's scroll reveal. It receives the footer
 root, the content wrapper, and the shade overlay as template refs and builds
@@ -405,7 +436,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   `navRevealStagger`, which the home intro and the site header share for the
   navigation link rise, and the line reveal timing, `lineRevealDuration`,
   `lineRevealEase`, and `lineRevealStagger`, which the services descriptions
-  and the journey step cards share.
+  and the journey step cards share. `titleLineRevealOffset` and
+  `titleLineRevealStagger` hold the padded title line rise, `150` percent
+  with a `0.1s` stagger, which the About titles use.
 - utils.ts contains pure class and value helpers. `formatPublishDate` formats
   an ISO date in fixed `en-US` long style at UTC, so the server and the client
   render the same blog card date.

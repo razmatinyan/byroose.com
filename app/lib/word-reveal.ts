@@ -8,6 +8,8 @@ export const navRevealStagger = 0.08;
 export const lineRevealDuration = 1.5;
 export const lineRevealEase = "power3";
 export const lineRevealStagger = 0.1;
+export const titleLineRevealOffset = 150;
+export const titleLineRevealStagger = 0.1;
 
 export interface WordRevealOptions {
 	duration?: number;

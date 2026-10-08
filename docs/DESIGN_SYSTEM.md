@@ -40,6 +40,7 @@ visual and accessibility review.
 | `card` | White | Elevated and contained content |
 | `panel` | Soft sand, `#F5E8D4` | Large panels that sit on the canvas, such as the blog section |
 | `paper` | Light cream, `#F5EEDE` | The site footer and the first working-process card |
+| `canvas-shade` | Neutral grey, `oklch(0.955 0 0)` | A grey band one step below the canvas, such as the About team section |
 | `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
 | `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
 | `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
@@ -51,6 +52,7 @@ visual and accessibility review.
 | `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
 | `ribbon` | Fresh green, `oklch(0.82 0.16 135)` | The decorative Studio ribbon stroke |
 | `ribbon-shade` | Deeper green, `oklch(0.66 0.15 142)` | The ribbon's shading where it passes under itself |
+| `ribbon-foreground` | Near-black ink | Text on a `ribbon` surface, such as the About call to action |
 | `destructive` | Alert red | Destructive and error actions only |
 | `border`, `input`, and `ring` | Semantic controls | Boundaries, fields, and focus indicators |
 
@@ -85,6 +87,13 @@ its foreground, card, popover, accent, and cream foreground tokens. Change
 `muted-foreground`, `brand-soft`, and `brand-subtle` against the canvas and
 `muted`, and recheck them against `panel` and `paper` when those change.
 `brand-soft` on `muted` is the tightest pair at about 4.75:1.
+
+`canvas-shade` is neutral rather than warm, so it reads as a grey version of
+the canvas instead of another cream. It pairs with the ink
+`canvas-shade-foreground`, and in the dark theme it sits one step above the dark
+canvas with the cream foreground. `ribbon` doubles as a surface on the About
+call to action. Its `ribbon-foreground` is the ink in the light theme and the
+cream in the dark theme, where the ribbon itself turns a deeper green.
 
 ### Adding colors
 
@@ -1740,6 +1749,67 @@ reveal at rest and switches items instantly.
 
 The questions and answers are placeholder copy until the real policies are
 confirmed.
+
+### About page
+
+The About route stacks five sections: a centered hero, a grey team section, a
+trust section, a brands section, and a green call to action, followed by the
+site footer.
+
+The hero fills the first screen below the header except for
+`--about-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded top of the team
+section shows at the bottom of the first screen. It centers the "Welcome to"
+and "byroose" title above a three line description, `5rem` below the title and
+`7rem` from `md`, which keeps the descender of the y clear. The title and the call
+to action title use `AboutTitle` at its `display` size,
+`clamp(3.5rem, 11vw, 12rem)`. The section titles use its `section` size,
+`clamp(2.75rem, 8vw, 8.5rem)`. Every title is bold with `-0.05em` tracking and
+`0.88` leading, and each explicit line sits in a mask with `0.2em` of block
+padding, cancelled by a `-0.4em` bottom margin and a `-0.2em` title top margin,
+as the home hero title does. The masks clip only while their lines rise, so the
+underline wave below a word is never cut afterwards. The hero rises like the
+home hero on a client-side entry: at the page transition's reveal point the
+title lines rise from `150` percent over `0.8s` on `power3.out` with a `0.1s`
+stagger. The description lines follow at `0.35s`, while the last title line
+is still visibly settling, because the `power3.out` lines look finished long
+before their tweens end. They rise from `115` percent with a `0.06s` stagger. On a direct request it starts once the description is split, beside
+the header reveal. Until then both stay hidden in CSS. As the reader scrolls,
+the hero content drifts down at half the scroll speed and fades out
+linearly, reaching zero opacity as the hero leaves the top of the viewport, so
+the team section appears to arrive faster and covers it.
+
+The team section paints the `canvas-shade` grey with
+`clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
+"Who stands behind byroose" sits on the left with a primary orange wave under
+"behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan, "Mer axper
+Ruzanna", on the right, and Razmik Matinyan, Senior Web Developer, on the left,
+pulled up by `0.45` of the portrait width from `md`. Ruzan's portrait reuses
+`public/images/founder.jpg`. A member without a `portrait` shows the striped
+`MediaPlaceholder` until a photo exists.
+
+The trust and brands sections share `AboutSectionHeading`: the title on the
+left and a 5:6 `ImageCycle` frame on the right, centered on the title from
+`md`, that cuts through four images from `public/images/work` every `750ms`, as
+the More works panel does. "trust" carries a `ribbon` green wave and "choose" a
+primary orange one. Each wave draws once its title has risen. Below each
+heading a statement takes the right two thirds of the row from `md`. The
+statements use `AboutStatement`, which owns that placement, semibold at `text-2xl`,
+`text-4xl` from `md`, and `text-5xl` from `xl`, with `0.95` leading and
+`-0.04em` tracking, and they rise line by line with the services description
+timing, `1.5s`, `power3`, and a `0.1s` stagger.
+
+The call to action is a `bg-ribbon` section with the same rounded top corners,
+a full `100svh` tall, centering "Become chosen byroose" above a `dark` `cta-lg` "Start
+Now" action with an arrow right glyph that routes to `/contact`. The action
+scales its label, padding, and glyph in `em` from
+`clamp(1.25rem, 2.2vw, 2rem)` and rises from a mask that clips only during the
+reveal.
+
+Every frame on the page reveals with the Studio portrait's bottom-up clip and
+carries the shared image parallax on its `data-about-media-layer`. Every scroll
+reveal starts at `82` percent of the viewport and runs once. Reduced motion
+shows every title, line, image, and underline at rest, without the hero drift
+or image cycling.
 
 ### Header motion
 
