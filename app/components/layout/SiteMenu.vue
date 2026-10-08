@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { nextTick } from 'vue'
-import { onClickOutside, onKeyStroke } from '@vueuse/core'
+import { nextTick, shallowRef, watch } from 'vue'
+import {
+	onClickOutside,
+	onKeyStroke,
+	useEventListener,
+	useTimeoutFn,
+} from '@vueuse/core'
 import SiteMenuLink from '@/components/layout/SiteMenuLink.vue'
 
 interface NavItem {
 	href: string
 	label: string
 }
+
+type MenuOpenMode = 'click' | 'hover'
+
+const hoverCloseDelay = 200
 
 const {
 	bordered = false,
@@ -31,8 +40,59 @@ function setOpen(nextOpen: boolean) {
 	emit('update:open', nextOpen)
 }
 
+const openMode = shallowRef<MenuOpenMode | null>(null)
+
+const hoverClose = useTimeoutFn(
+	() => {
+		if (openMode.value === 'hover') closeMenu()
+	},
+	hoverCloseDelay,
+	{ immediate: false },
+)
+
+watch(
+	() => open,
+	isOpen => {
+		if (isOpen) return
+
+		openMode.value = null
+		hoverClose.stop()
+	},
+)
+
 function toggleMenu() {
+	hoverClose.stop()
+
+	if (open && openMode.value === 'hover') {
+		openMode.value = 'click'
+		return
+	}
+
+	openMode.value = open ? null : 'click'
 	setOpen(!open)
+}
+
+function openOnHover(event: PointerEvent) {
+	if (event.pointerType !== 'mouse' || open) return
+
+	openMode.value = 'hover'
+	setOpen(true)
+}
+
+function isPointerInside(element: HTMLElement | null, event: PointerEvent) {
+	if (!element) return false
+
+	const bounds = element.getBoundingClientRect()
+	return (
+		event.clientX >= bounds.left &&
+		event.clientX <= bounds.right &&
+		event.clientY >= bounds.top &&
+		event.clientY <= bounds.bottom
+	)
+}
+
+function isHoverPointer(event: PointerEvent) {
+	return openMode.value === 'hover' && event.pointerType === 'mouse'
 }
 
 async function closeMenu(returnFocus = false) {
@@ -44,6 +104,30 @@ async function closeMenu(returnFocus = false) {
 	await nextTick()
 	menuButton.value?.focus()
 }
+
+useEventListener(
+	'pointermove',
+	(event: PointerEvent) => {
+		if (!isHoverPointer(event)) return
+
+		if (
+			isPointerInside(menuButton.value, event) ||
+			isPointerInside(menuPanel.value, event)
+		) {
+			hoverClose.stop()
+			return
+		}
+
+		if (!hoverClose.isPending.value) hoverClose.start()
+	},
+	{ passive: true },
+)
+
+useEventListener('pointerout', (event: PointerEvent) => {
+	if (!isHoverPointer(event) || event.relatedTarget) return
+
+	hoverClose.start()
+})
 
 onClickOutside(
 	menuPanel,
@@ -75,6 +159,7 @@ onKeyStroke(
 			:aria-expanded="open"
 			aria-controls="site-menu-navigation"
 			@click="toggleMenu"
+			@pointerenter="openOnHover"
 		>
 			<span class="site-menu-button-label">Menu</span>
 			<span class="site-menu-icon" aria-hidden="true">

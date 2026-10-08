@@ -1721,6 +1721,15 @@ The control has no hover motion, only the shared press feedback. Activating it
 opens its own menu and never restores the primary navigation. There is no
 separate mobile dropdown.
 
+A mouse pointer entering the control also opens the menu. A menu opened this
+way closes once the pointer has stayed outside both the control and the panel
+for `200ms`, or leaves the window. The bounds are measured rather than read
+from the hovered element, because the header actions sit above the panel.
+Clicking the control while a hover opened menu is showing pins it open instead
+of closing it. A menu opened by a click, a tap, or the keyboard never closes on
+pointer leave and stays open until the control, a link, an outside click, or
+Escape closes it. Touch and pen pointers never open the menu on hover.
+
 Both header actions share the dark action surface, so over a dark block they
 gain a one-pixel `background/20` border that keeps their outline readable. The
 dark blocks are the More works panel and the services backdrop surface and
