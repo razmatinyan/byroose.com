@@ -88,7 +88,7 @@ export function useHomeHeroScrollMotion(
 		if (!hero || !transitionSpace || !featuredCard) return;
 
 		createMatchMedia(
-			"(prefers-reduced-motion: no-preference)",
+			"(min-width: 64rem) and (prefers-reduced-motion: no-preference)",
 			() => {
 				gsap.set(featuredCard, {
 					alignSelf: "center",
