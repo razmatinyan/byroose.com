@@ -34,6 +34,7 @@ app/
     useArrowSwapHover.ts
     useBlogMotion.ts
     useCookieBannerMotion.ts
+    useDrawnLineMotion.ts
     useFaqMotion.ts
     useFitText.ts
     useFooterMotion.ts
@@ -59,7 +60,9 @@ app/
     useWorkLineMotion.ts
     useWorkMotion.ts
   lib/
+    about-line-path.ts
     char-reveal.ts
+    drawn-line-path.ts
     icons.ts
     image-parallax.ts
     ribbon-path.ts
@@ -112,6 +115,10 @@ A landing section should not become a general component merely because it contai
 app/components/about contains the About route's sections. AboutPage composes
 AboutHero, AboutTeamSection, AboutTrustSection, AboutBrandsSection, and
 AboutCtaSection, and app/pages/about.vue renders it with the route metadata.
+AboutPage wraps the trust, brands, and call to action sections in an isolated
+`about-story` block that holds their shared DrawnLine and marks the brands and
+call to action roots with `data-drawn-line-anchor`. AboutTeamSection holds its
+own DrawnLine.
 AboutTitle renders a title from explicit lines, each in its own mask, with an
 optional underlined word that carries a WaveUnderline. AboutMediaFrame wraps
 any image or placeholder in a frame and a parallax layer. AboutStatement is the
@@ -145,7 +152,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen and never under reduced motion. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen and never under reduced motion. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -208,14 +215,20 @@ the `data-work-case-list` element and brings in the `data-work-more-panel`
 surface inside the `data-work-more` track, because that handoff choreographs
 WorkSection's own cards against its closing panel.
 
-useWorkLineMotion owns the faint line behind the work case list. WorkLine
-renders the empty SVG inside `data-work-case-list`, so the line moves and fades
-with the list during the handoff. After mount the composable measures the SVG,
-writes the path data, samples its length, and scrubs one DrawSVG tween with the
-scroll through the shared ribbon draw timing. It observes the SVG itself and
-rebuilds the geometry and the drawing inside the same GSAP media context
-whenever the SVG resizes. Reduced motion keeps the measured line fully drawn
-through CSS.
+useDrawnLineMotion owns a single scroll-drawn line. It receives a scope and a
+DrawnLine, the path builder and optional head lead from a lib artwork module,
+and finds the `data-drawn-line` SVG inside that scope. After mount it measures
+the SVG and the tops of every `data-drawn-line-anchor` inside the scope relative
+to the SVG, writes the path data, samples its length, and scrubs one DrawSVG
+tween with the scroll through the shared ribbon draw timing. It observes the
+SVG itself and rebuilds the geometry and the drawing inside the same GSAP media
+context whenever the SVG resizes. Reduced motion keeps the measured line fully
+drawn through CSS.
+
+useWorkLineMotion passes the work line to useDrawnLineMotion. WorkLine renders
+DrawnLine inside `data-work-case-list`, so the line moves and fades with the
+list during the handoff. AboutTeamSection and AboutPage call useDrawnLineMotion
+directly with the team and story lines.
 
 useMoreWorksMotion owns the MoreWorksPanel's internal motion: the pin, the
 scrubbed reveal that brings the words in from their sides character by character
@@ -420,16 +433,24 @@ app/lib contains pure helpers, shared constants, and stable names.
   and the founder photo both read them.
 - ribbon-path.ts owns the Studio ribbon's artwork: the hand-drawn SVG path
   data and the anchor lines it was drawn against, the parser that turns the
-  path into cubic Bézier pieces, the projection that maps those pieces onto
-  the live Studio anchors, the segment and paint order, the lead-in under the
+  path into cubic Bézier pieces, the anchor projection `projectRibbonPieces`
+  that maps those pieces onto the live Studio anchors or any other anchor pairs, the segment and paint order, the lead-in under the
   hero card, the crossing search and shade line for every segment that passes
   under another, and the draw timing that turns
   scroll progress into drawn length. It takes measured numbers and never
   queries the DOM.
 - work-line-path.ts owns the work line's artwork: the hand-drawn SVG path
   data, the projection that scales it to the live case list frame, and the
-  head lead the work line passes to the shared ribbon draw timing. It reuses
-  the ribbon parser and path formatter and never queries the DOM.
+  head lead the work line passes to the shared ribbon draw timing, exported
+  together as `workLine`. It reuses the ribbon parser and path formatter and
+  never queries the DOM.
+- drawn-line-path.ts owns the DrawnLine contract and `createDrawnLinePath`,
+  which parses an artwork once and maps it onto a live frame: x by the width
+  ratio, y piecewise between the artwork's top, anchor, and bottom lines and
+  the frame's measured ones. It reuses the ribbon parser, projection, and path
+  formatter and never queries the DOM.
+- about-line-path.ts owns the About route's two line artworks and their
+  DrawnLine definitions, `aboutTeamLine` and `aboutStoryLine`.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It

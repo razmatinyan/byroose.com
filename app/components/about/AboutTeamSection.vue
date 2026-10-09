@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
+import DrawnLine from "@/components/shared/DrawnLine.vue";
+import { aboutTeamLine } from "@/lib/about-line-path";
 import AboutTeamMember from "./AboutTeamMember.vue";
 import type { AboutMemberPortrait } from "./AboutTeamMember.vue";
 import AboutTitle from "./AboutTitle.vue";
@@ -32,10 +34,13 @@ const members: readonly TeamMember[] = [
 
 const teamRoot = useTemplateRef<HTMLElement>("teamRoot");
 const { titleRevealed } = useAboutSectionMotion(teamRoot);
+useDrawnLineMotion(teamRoot, aboutTeamLine);
 </script>
 
 <template>
    <section ref="teamRoot" class="about-team section-gutter">
+      <DrawnLine class="about-team-line" />
+
       <AboutTitle :drawn="titleRevealed" :lines="titleLines" />
 
       <div class="about-team-members">
@@ -57,6 +62,10 @@ const { titleRevealed } = useAboutSectionMotion(teamRoot);
 .about-team {
    @apply relative z-10 rounded-t-[clamp(1.5rem,3vw,3rem)] bg-canvas-shade py-section text-canvas-shade-foreground;
    --about-member-width: clamp(16rem, 34vw, 32rem);
+}
+
+.about-team-line {
+   @apply inset-0 size-full overflow-hidden text-ribbon;
 }
 
 .about-team-members {

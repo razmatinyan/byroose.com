@@ -204,7 +204,12 @@ export function parseRibbonPath(data: string): RibbonPiece[] {
 
 const artworkPieces = parseRibbonPath(ribbonArtwork.path);
 
-function anchorPairs(design: RibbonAnchors, live: RibbonAnchors) {
+export type RibbonAnchorPair = readonly [design: number, live: number];
+
+function anchorPairs(
+	design: RibbonAnchors,
+	live: RibbonAnchors,
+): RibbonAnchorPair[] {
 	return [
 		[0, 0],
 		[design.statementTop, live.statementTop],
@@ -212,16 +217,17 @@ function anchorPairs(design: RibbonAnchors, live: RibbonAnchors) {
 		[design.gridTop, live.gridTop],
 		[design.gridBottom, live.gridBottom],
 		[design.height, live.height],
-	] as const;
+	];
 }
 
 function projectY(
 	y: number,
-	pairs: ReturnType<typeof anchorPairs>,
+	pairs: readonly RibbonAnchorPair[],
 	scale: number,
 ) {
 	const first = pairs[0];
-	const last = pairs[pairs.length - 1] ?? first;
+	const last = pairs.at(-1);
+	if (!first || !last) return y * scale;
 	if (y <= first[0]) return first[1] + (y - first[0]) * scale;
 	if (y >= last[0]) return last[1] + (y - last[0]) * scale;
 
@@ -239,21 +245,32 @@ function projectY(
 	return last[1];
 }
 
-export function resolveRibbonPieces(live: RibbonAnchors): RibbonPiece[] {
-	const design = ribbonArtwork.anchors;
-	const scale = live.width / design.width;
-	const pairs = anchorPairs(design, live);
+export function projectRibbonPieces(
+	pieces: readonly RibbonPiece[],
+	pairs: readonly RibbonAnchorPair[],
+	scale: number,
+): RibbonPiece[] {
 	const project = ({ x, y }: RibbonPoint) => ({
 		x: x * scale,
 		y: projectY(y, pairs, scale),
 	});
 
-	return artworkPieces.map(({ end, endHandle, start, startHandle }) => ({
+	return pieces.map(({ end, endHandle, start, startHandle }) => ({
 		end: project(end),
 		endHandle: project(endHandle),
 		start: project(start),
 		startHandle: project(startHandle),
 	}));
+}
+
+export function resolveRibbonPieces(live: RibbonAnchors): RibbonPiece[] {
+	const design = ribbonArtwork.anchors;
+
+	return projectRibbonPieces(
+		artworkPieces,
+		anchorPairs(design, live),
+		live.width / design.width,
+	);
 }
 
 function direction(from: RibbonPoint, to: RibbonPoint) {

@@ -47,7 +47,11 @@ useAboutSectionMotion(ctaRoot);
 @reference '../../assets/css/tailwind.css';
 
 .about-cta {
-   @apply grid min-h-svh place-items-center rounded-t-[clamp(1.5rem,3vw,3rem)] bg-ribbon py-section text-center text-ribbon-foreground;
+   @apply relative grid min-h-svh place-items-center rounded-t-[clamp(1.5rem,3vw,3rem)] py-section text-center text-ribbon-foreground;
+}
+
+.about-cta::before {
+   @apply absolute inset-0 -z-20 rounded-[inherit] bg-ribbon content-[''];
 }
 
 .about-cta-content {

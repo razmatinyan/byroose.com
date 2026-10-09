@@ -1,5 +1,6 @@
 import { parseRibbonPath, ribbonSegmentPath } from "@/lib/ribbon-path";
 import type { RibbonPiece, RibbonSegment } from "@/lib/ribbon-path";
+import type { DrawnLine } from "@/lib/drawn-line-path";
 
 export interface WorkLineFrame {
 	height: number;
@@ -41,3 +42,8 @@ function resolveWorkLinePieces({ height, width }: WorkLineFrame): RibbonPiece[] 
 export function workLinePath(frame: WorkLineFrame) {
 	return ribbonSegmentPath(resolveWorkLinePieces(frame), workLineSegment);
 }
+
+export const workLine: DrawnLine = {
+	lead: workLineLead,
+	path: workLinePath,
+};

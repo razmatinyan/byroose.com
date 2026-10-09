@@ -1030,14 +1030,16 @@ scrolls. It enters from past the right edge level with the top of the first
 case study, weaves left, right, and left again behind the cards, and ends at
 the bottom of the last case study.
 
-`WorkLine` is a decorative SVG, hidden from assistive technology, placed inside
-the `relative` case list at `-z-10`, so every card paints above it. It bleeds
+`WorkLine` renders the shared `DrawnLine`, a decorative SVG hidden from
+assistive technology, inside the `relative` case list at `-z-10`, so every card
+paints above it. It bleeds
 across the page gutters with a negative `--spacing-page` offset and an explicit
 width, because an absolutely positioned SVG ignores opposing insets and keeps
 its default 300 pixel width. The stroke uses `foreground` at the ribbon's
 `clamp(4.5rem, 13vw, 15rem)` width with round caps and joins, and the SVG's
 `opacity-3` class turns it into a soft grey. Adjust that class to make the line
-fainter or stronger.
+fainter or stronger. `DrawnLine` strokes `currentColor`, so `WorkLine` sets the
+color with `text-foreground`.
 
 `workLineArtwork` in `app/lib/work-line-path.ts` stores the hand-drawn `d`
 string, drawn on a 1440 wide frame whose top edge is the first case study's
@@ -1827,18 +1829,48 @@ statements use `AboutStatement`, which owns that placement, semibold at `text-2x
 `-0.04em` tracking, and they rise line by line with the services description
 timing, `1.5s`, `power3`, and a `0.1s` stagger.
 
-The call to action is a `bg-ribbon` section with the same rounded top corners,
+The call to action is a `ribbon` green section with the same rounded top corners,
 a full `100svh` tall, centering "Become chosen byroose" above a `dark` `cta-lg` "Start
 Now" action with an arrow right glyph that routes to `/contact`. The action
 scales its label, padding, and glyph in `em` from
 `clamp(1.25rem, 2.2vw, 2rem)` and rises from a mask that clips only during the
-reveal.
+reveal. The green paints from a `-z-20` `::before` layer that inherits the
+corners, so the story line can draw over the surface and still sit under the
+title and the action.
+
+Two lines draw themselves with the scroll on larger screens, as the home Studio
+ribbon and work line do. Both come from `public/vectors.svg`, a 1440 wide frame
+whose top edge is the team section's top. `app/lib/about-line-path.ts` stores
+each layer's `d` string unchanged with the section lines it was drawn against,
+measured at 1440 by 900: the team section from `0` to `1768`, and the trust,
+brands, and call to action sections at `1768`, `2866`, `3820`, and `4720`. At
+runtime x scales by the live width and y maps between the matching live
+section lines, so each line keeps its place against the content at every
+breakpoint.
+
+The team line, Layer 1, is a `DrawnLine` with `text-ribbon` at full strength
+inside the team section, so it paints above the grey surface and below the
+title and portraits. It enters past the right edge beside the title, loops
+around the portraits, and leaves at the right edge near the section bottom.
+It uses the Studio ribbon's default head lead, and its SVG clips at the
+section edges.
+
+The story line, Layer 2, uses the work line's `text-foreground` and
+`opacity-3`. It sits at `-z-10` in the isolated `about-story` block that wraps
+the trust, brands, and call to action sections. It enters past the right edge
+beside the trust title, sweeps left behind the trust statement, curves back
+right behind the brands heading, and ends with a round cap inside the call to
+action, where it reads as a darker green under the title. It uses the work
+line's head lead of `0`. To replace either line, draw it on the same frame in
+the direction it should animate, paste its `d` string into the matching
+artwork, and remeasure the section lines if the layout has changed.
 
 Every frame on the page reveals with the Studio portrait's bottom-up clip and
 carries the shared image parallax on its `data-about-media-layer`. Every scroll
 reveal starts at `82` percent of the viewport and runs once. Reduced motion
 shows every title, line, image, and underline at rest, without the hero drift,
-the cursor trail, or image cycling.
+the cursor trail, or image cycling, and shows both drawn lines complete. Below
+the `lg` breakpoint the drawn lines are hidden.
 
 ### Header motion
 
