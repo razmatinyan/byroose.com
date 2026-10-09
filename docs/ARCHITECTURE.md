@@ -125,7 +125,13 @@ any image or placeholder in a frame and a parallax layer. AboutStatement is the
 large split statement, placed in the right two thirds of its section, shared by
 the trust and brands sections, and
 AboutSectionHeading pairs a title with a cycling image. AboutTeamMember shows a
-portrait, or a placeholder when it receives none, a name, and a role. The sections own their copy. They do not depend
+portrait, or a placeholder when it receives none, a name, a role, and a round
+action. It owns a Dialog whose open state both the action and a click anywhere
+on the card set, locks the smooth scroll while it is open, and emits `activate`
+and `deactivate` on pointer enter and leave. AboutMemberDialog renders the
+dialog content: the portrait, the name, the role, the social links, the bio,
+and the close action. AboutTeamSection owns the member data, including each
+bio and social link, and the shared TrailingTooltip the cards drive. The sections own their copy. They do not depend
 on landing sections.
 
 ### Layout components
@@ -156,7 +162,7 @@ app/components/shared contains small project-wide composition patterns such as S
 
 ### UI primitives
 
-app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain byroose page copy or feature-specific data.
+app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain byroose page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`.
 
 Preserve Reka UI integration, attribute forwarding, data-slot values, keyboard behavior, focus behavior, and CVA contracts when modifying this layer.
 
@@ -332,8 +338,9 @@ uses it for its title.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the
 image, label, and size, the 200ms close delay, and whether the fine-pointer tooltip
-should load. WorkSection and ServicesSection both compose it and keep their own
-TrailingTooltip instance.
+should load. WorkSection, ServicesSection, and AboutTeamSection compose it and
+keep their own TrailingTooltip instance. `show` takes an optional image, so a
+text-only tooltip opens without one.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 the top-of-page scroll thresholds, and responsive animation states. It also
@@ -394,7 +401,8 @@ layer groups from a target through their data attributes, coordinates their GSAP
 timelines, and tracks pointer and focus state together. It only animates elements
 the consuming components render. Those components own the markup, the semantic
 layer and copied-text colors, the paired glyphs, and the clipped positioning
-host.
+host. The text group is optional: an icon-only host animates its layers and
+glyphs and takes its covered icon color from the final layer.
 
 useArrowSwapHover owns the arrow swap hover: a slow-fast-slow scale and a swap
 between the glyphs marked `data-arrow-swap-glyph` and

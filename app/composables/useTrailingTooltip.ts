@@ -26,7 +26,7 @@ export function useTrailingTooltip() {
 	);
 
 	function show(
-		nextImage: string,
+		nextImage = "",
 		nextLabel?: string,
 		nextSize: TrailingTooltipSize = "default",
 	) {

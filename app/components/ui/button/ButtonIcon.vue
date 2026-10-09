@@ -18,12 +18,18 @@ const {
 
 const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
 const slidesHorizontally = computed(() => icon === appIcons.arrowRight)
+const scalesInPlace = computed(() => icon === appIcons.close)
+const glyphAxis = computed(() => {
+	if (slidesHorizontally.value) return 'x'
+	if (scalesInPlace.value) return 'scale'
+	return undefined
+})
 </script>
 
 <template>
 	<span
 		aria-hidden="true"
-		:data-rollover-glyph-axis="slidesHorizontally ? 'x' : undefined"
+		:data-rollover-glyph-axis="glyphAxis"
 		:class="
 			cn(
 				'button-icon',
@@ -31,6 +37,7 @@ const slidesHorizontally = computed(() => icon === appIcons.arrowRight)
 				tone !== 'plain' && size === 'sm' && 'button-icon-sm',
 				tone === 'plain' && 'button-icon-plain',
 				slidesHorizontally && 'button-icon-slide',
+				scalesInPlace && 'button-icon-scale',
 				tone === 'dark' && 'button-icon-dark',
 				tone === 'soft' && 'button-icon-soft',
 				className,
@@ -73,6 +80,10 @@ const slidesHorizontally = computed(() => icon === appIcons.arrowRight)
 
 .button-icon-slide .button-icon-glyph[data-rollover-glyph-copy] {
 	transform: translate(-100%, 0);
+}
+
+.button-icon-scale .button-icon-glyph[data-rollover-glyph-copy] {
+	transform: scale(0);
 }
 
 .button-icon-sm {

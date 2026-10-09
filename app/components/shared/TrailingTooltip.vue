@@ -18,12 +18,14 @@ interface TooltipLayer {
 
 const {
 	active = false,
-	image,
+	icon,
+	image = "",
 	label = "See Full Project",
 	size = "default",
 } = defineProps<{
 	active?: boolean;
-	image: string;
+	icon?: string;
+	image?: string;
 	label?: string;
 	size?: TrailingTooltipSize;
 }>();
@@ -154,6 +156,7 @@ onScopeDispose(() => {
 			:data-active="active"
 			:data-size="size"
 			:data-resize="resizesSmoothly ? 'smooth' : undefined"
+			:data-media="layers.length > 0"
 			aria-hidden="true"
 		>
 			<span v-if="layers.length" ref="media" class="trailing-tooltip-media">
@@ -171,7 +174,10 @@ onScopeDispose(() => {
 					draggable="false"
 				/>
 			</span>
-			<span class="trailing-tooltip-label">{{ label }}</span>
+			<span class="trailing-tooltip-label">
+				{{ label }}
+				<Icon v-if="icon" class="trailing-tooltip-icon" :name="icon" />
+			</span>
 		</div>
 	</Teleport>
 </template>
@@ -202,7 +208,15 @@ onScopeDispose(() => {
 }
 
 .trailing-tooltip-label {
-	@apply whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
+	@apply inline-flex items-center gap-2 whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
+}
+
+.trailing-tooltip-icon {
+	@apply size-[0.8em] shrink-0;
+}
+
+.trailing-tooltip[data-media="false"] {
+	@apply px-5 py-3;
 }
 
 .trailing-tooltip[data-size="compact"] {

@@ -25,7 +25,12 @@ const {
 } = defineProps<Props>();
 
 const buttonElement = useTemplateRef<ComponentPublicInstance>("buttonElement");
-const isCallToAction = computed(() => size === "cta-sm" || size === "cta-lg");
+const rolloverSizes: ReadonlySet<ButtonVariants["size"]> = new Set([
+   "cta-icon",
+   "cta-lg",
+   "cta-sm",
+]);
+const isCallToAction = computed(() => rolloverSizes.has(size));
 const rolloverLayers = computed(() => {
    if (!isCallToAction.value) return null;
 
@@ -90,7 +95,11 @@ useHoverRollover(rolloverTarget);
                data-rollover-layer
             />
          </span>
-         <span class="button-rollover-texts" data-rollover-texts>
+         <span
+            v-if="$slots.default"
+            class="button-rollover-texts"
+            data-rollover-texts
+         >
             <span class="button-rollover-label" data-rollover-label>
                <slot />
             </span>
@@ -118,7 +127,12 @@ useHoverRollover(rolloverTarget);
 @reference '../../../assets/css/tailwind.css';
 
 .button-rollover-host {
-   clip-path: inset(0 round var(--radius-action));
+   --button-rollover-radius: var(--radius-action);
+   clip-path: inset(0 round var(--button-rollover-radius));
+}
+
+.button-rollover-host[data-size="cta-icon"] {
+   --button-rollover-radius: 9999px;
 }
 
 .button-rollover-host:focus-visible {

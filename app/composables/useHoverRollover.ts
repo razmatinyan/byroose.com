@@ -103,19 +103,23 @@ export function useHoverRollover(
 			const textContainer = element.querySelector(
 				':scope > [data-rollover-texts]',
 			)
-			if (!layerContainer || !textContainer) return
+			if (!layerContainer) return
 
-			const label = textContainer.querySelector(
-				':scope > [data-rollover-label]',
-			)
-			const labelCopy = textContainer.querySelector(
-				':scope > [data-rollover-label-copy]',
-			)
+			const label =
+				textContainer?.querySelector(':scope > [data-rollover-label]') ??
+				null
+			const labelCopy =
+				textContainer?.querySelector(
+					':scope > [data-rollover-label-copy]',
+				) ?? null
 			const layers = Array.from(
 				layerContainer.querySelectorAll(':scope > [data-rollover-layer]'),
 			)
+			const finalLayer = layers.at(-1)
 
-			if (!label || !labelCopy || layers.length === 0) return
+			if (!finalLayer) return
+
+			const texts = label && labelCopy ? { copy: labelCopy, label } : null
 
 			const icon = element.querySelector(':scope > [data-rollover-icon]')
 			const glyph = element.querySelector(
@@ -130,19 +134,36 @@ export function useHoverRollover(
 			const glyphPath = horizontalGlyphBox
 				? horizontalGlyphPath
 				: diagonalGlyphPath
+			const scalingGlyphBox = element.querySelector(
+				':scope > [data-rollover-icon] [data-rollover-glyph-axis="scale"]',
+			)
 			const glyphTravel = () =>
 				horizontalGlyphBox?.clientWidth ?? element.clientHeight
+			const glyphState = (cover: boolean, copy: boolean) => {
+				if (scalingGlyphBox) {
+					return { scale: cover === copy ? 1 : 0, ...glyphRest }
+				}
+
+				const travel = glyphTravel()
+				if (copy) {
+					return glyphOffset(cover ? glyphRest : glyphPath.entry, travel)
+				}
+
+				return glyphOffset(cover ? glyphPath.exit : glyphRest, travel)
+			}
 			const reduceMotion = Boolean(context.conditions?.reduceMotion)
 			const descending = [...layers].reverse()
 			const occludedLayers = layers.slice(0, -1)
 			const layerSettleTime =
 				(layers.length - 1) * layerStagger + layerDuration
-			const restingColor = getComputedStyle(label).color
-			const coveredColor = getComputedStyle(labelCopy).color
+			const restingColor = getComputedStyle(label ?? element).color
+			const coveredColor = getComputedStyle(labelCopy ?? finalLayer).color
 			const coloredText = [label, icon].filter(Boolean)
 
-			gsap.set(label, { opacity: 1 })
-			gsap.set(labelCopy, { opacity: 0 })
+			if (texts) {
+				gsap.set(texts.label, { opacity: 1 })
+				gsap.set(texts.copy, { opacity: 0 })
+			}
 			gsap.set(layers, {
 				force3D: false,
 				scale: layerRestScale,
@@ -153,8 +174,8 @@ export function useHoverRollover(
 
 			if (glyph && glyphCopy) {
 				gsap.set([glyph, glyphCopy], { xPercent: 0, yPercent: 0 })
-				gsap.set(glyph, glyphOffset(glyphRest, glyphTravel()))
-				gsap.set(glyphCopy, glyphOffset(glyphPath.entry, glyphTravel()))
+				gsap.set(glyph, glyphState(false, false))
+				gsap.set(glyphCopy, glyphState(false, true))
 			}
 
 			let rollover: gsap.core.Timeline | null = null
@@ -180,29 +201,24 @@ export function useHoverRollover(
 				const hostBackground = cover
 					? { backgroundClip: 'content-box' }
 					: { clearProps: 'backgroundClip' }
-				const travel = glyphTravel()
-				const glyphPosition = glyphOffset(
-					cover ? glyphPath.exit : glyphRest,
-					travel,
-				)
-				const glyphCopyPosition = glyphOffset(
-					cover ? glyphRest : glyphPath.entry,
-					travel,
-				)
+				const glyphPosition = glyphState(cover, false)
+				const glyphCopyPosition = glyphState(cover, true)
 
 				if (reduceMotion) {
 					rollover = null
-					gsap.set(label, {
-						[textAngleProperty]: labelAngle,
-						[textYProperty]: labelY,
-						opacity: labelOpacity,
-					})
+					if (texts) {
+						gsap.set(texts.label, {
+							[textAngleProperty]: labelAngle,
+							[textYProperty]: labelY,
+							opacity: labelOpacity,
+						})
+						gsap.set(texts.copy, {
+							[textAngleProperty]: labelCopyAngle,
+							[textYProperty]: labelCopyY,
+							opacity: labelCopyOpacity,
+						})
+					}
 					gsap.set(coloredText, { color: labelColor })
-					gsap.set(labelCopy, {
-						[textAngleProperty]: labelCopyAngle,
-						[textYProperty]: labelCopyY,
-						opacity: labelCopyOpacity,
-					})
 					gsap.set(layers, {
 						force3D: false,
 						scale: layerScale,
@@ -226,33 +242,6 @@ export function useHoverRollover(
 				timeline.timeScale(speed)
 
 				timeline.to(
-					label,
-					{
-						[textYProperty]: labelY,
-						duration: textTranslateDuration,
-						ease: eases.elastic,
-					},
-					0,
-				)
-				timeline.to(
-					label,
-					{
-						[textAngleProperty]: labelAngle,
-						duration: textRotateDuration,
-						ease: eases.smooth,
-					},
-					0,
-				)
-				timeline.to(
-					label,
-					{
-						duration: textOpacityDuration,
-						ease: eases.opacity,
-						opacity: labelOpacity,
-					},
-					0,
-				)
-				timeline.to(
 					coloredText,
 					{
 						color: labelColor,
@@ -261,33 +250,63 @@ export function useHoverRollover(
 					},
 					0,
 				)
-				timeline.to(
-					labelCopy,
-					{
-						[textYProperty]: labelCopyY,
-						duration: textTranslateDuration,
-						ease: eases.elastic,
-					},
-					labelCopyStart,
-				)
-				timeline.to(
-					labelCopy,
-					{
-						[textAngleProperty]: labelCopyAngle,
-						duration: textRotateDuration,
-						ease: eases.smooth,
-					},
-					labelCopyStart,
-				)
-				timeline.to(
-					labelCopy,
-					{
-						duration: textOpacityDuration,
-						ease: eases.opacity,
-						opacity: labelCopyOpacity,
-					},
-					labelCopyStart,
-				)
+
+				if (texts) {
+					timeline.to(
+						texts.label,
+						{
+							[textYProperty]: labelY,
+							duration: textTranslateDuration,
+							ease: eases.elastic,
+						},
+						0,
+					)
+					timeline.to(
+						texts.label,
+						{
+							[textAngleProperty]: labelAngle,
+							duration: textRotateDuration,
+							ease: eases.smooth,
+						},
+						0,
+					)
+					timeline.to(
+						texts.label,
+						{
+							duration: textOpacityDuration,
+							ease: eases.opacity,
+							opacity: labelOpacity,
+						},
+						0,
+					)
+					timeline.to(
+						texts.copy,
+						{
+							[textYProperty]: labelCopyY,
+							duration: textTranslateDuration,
+							ease: eases.elastic,
+						},
+						labelCopyStart,
+					)
+					timeline.to(
+						texts.copy,
+						{
+							[textAngleProperty]: labelCopyAngle,
+							duration: textRotateDuration,
+							ease: eases.smooth,
+						},
+						labelCopyStart,
+					)
+					timeline.to(
+						texts.copy,
+						{
+							duration: textOpacityDuration,
+							ease: eases.opacity,
+							opacity: labelCopyOpacity,
+						},
+						labelCopyStart,
+					)
+				}
 
 				for (const [index, layer] of (cover
 					? layers
@@ -360,9 +379,11 @@ export function useHoverRollover(
 				element.removeEventListener('pointerleave', handlePointerLeave)
 				rollover?.kill()
 				gsap.set(element, { clearProps: 'backgroundClip' })
-				gsap.set([label, labelCopy], {
-					clearProps: `${textAngleProperty},${textYProperty},color,opacity`,
-				})
+				if (texts) {
+					gsap.set([texts.label, texts.copy], {
+						clearProps: `${textAngleProperty},${textYProperty},color,opacity`,
+					})
+				}
 				gsap.set(coloredText, { clearProps: 'color' })
 				gsap.set(
 					[...layers, glyph, glyphCopy].filter(Boolean),

@@ -319,6 +319,11 @@ text color. CTA buttons use `plain`, so the `cta-sm` and
 `cta-lg` sizes use symmetric horizontal padding, `px-4` and `px-5`, with the
 shared 4px vertical inset and their minimum heights.
 
+The `cta-icon` size is a round `size-13` icon-only action that keeps the CTA
+rollover. It renders no text grid, so it needs an `aria-label`, and its host
+clip uses a fully round radius instead of `radius-action`. The `ribbon` variant
+fills it with the `ribbon` green and the `yellow` variant with butter yellow.
+
 The `light`, `dark`, and `soft` tones render a filled tile, `size-11` or
 `size-9` at `sm`, that clips its own overflow, for icons outside a button, such
 as the course card link.
@@ -1214,8 +1219,13 @@ movement stays on two-dimensional transforms with `force3D: false`, and the
 tooltip has no persistent `will-change` promotion, so its settled text remains
 sharp. Reduced motion removes the movement delay and clip transition.
 
+The tooltip also has a text-only form. Without an image it renders no
+thumbnail frame, switches to `px-5 py-3` padding, and can append an `icon`
+after the label at `0.8em`. The About team cards use it for "More Info" with an
+arrow up right glyph.
+
 The open, close-delay, and loading state lives in `useTrailingTooltip`, which
-the services section shares. Each consumer loads the component asynchronously
+the services section and the About team section share. Each consumer loads the component asynchronously
 only after mount and only while `(hover: hover) and (pointer: fine)` matches. Phones, tablets, and other
 touch-first devices never request or mount the tooltip chunk.
 
@@ -1816,11 +1826,36 @@ absent on touch devices and under reduced motion.
 The team section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
 "Who stands behind byroose" sits on the left with a primary orange wave under
-"behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan, "Mer axper
-Ruzanna", on the right, and Razmik Matinyan, Senior Web Developer, on the left,
-pulled up by `0.45` of the portrait width from `md`. Ruzan's portrait reuses
+"behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan,
+Founder & Creative Director, on the right, and Razmik Matinyan, Co-Founder &
+Senior Web Developer, on the left, pulled up by `0.45` of the portrait width
+from `md`. The name and the role share the section's ink. Ruzan's portrait reuses
 `public/images/founder.jpg`. A member without a `portrait` shows the striped
 `MediaPlaceholder` until a photo exists.
+
+A round `ribbon` `cta-icon` action with an arrow up right glyph sits to the
+right of each name and role, centered on both, and rises with them. Hovering
+it runs the CTA rollover. Hovering anywhere on a card opens the text-only
+TrailingTooltip, "More Info" with an arrow up right glyph, set in title case at
+the user's request. Clicking the card or the action opens that member's dialog.
+The tooltip closes as the dialog opens.
+
+The member dialog is a centered Shadcn dialog at `z-90`, above the header, the
+cookie notice, and the overlay scrollbar, over a `foreground` overlay at half
+opacity. Its panel is `brand-cream` with `clamp(1.5rem, 3vw, 3rem)` corners, up
+to `72rem` wide and never closer than `1rem` to the viewport edges, and at most
+the viewport height less `2rem`. The body scrolls inside the panel with
+`data-lenis-prevent` while the page's smooth scroll is locked. From `md` it is a
+`5fr 6fr` grid: the 5:6 portrait on the left, and on the right the name with one
+word per line, then a row with the role on the left and round `background`
+social links on the right, then the bio paragraphs. Below `md` everything
+stacks. Each social link opens in a new tab and is named "{name} on {network}".
+The close action is a round `yellow` `cta-icon` in the top right corner whose
+close glyph scales in place on hover. Opening focuses the dialog itself rather
+than the close action, so a pointer open never shows the close action in its
+covered or focus state, and Tab reaches it first. Escape, the overlay, and the
+close action all close the dialog, and focus returns to the card action. The
+bios are working copy to be replaced.
 
 The trust and brands sections share `AboutSectionHeading`: the title on the
 left and a 5:6 `ImageCycle` frame on the right, centered on the title from
@@ -2113,7 +2148,12 @@ with `data-rollover-glyph-axis="x"` and the `button-icon-slide` class, which
 clips the box to the glyph. The original slides out through the right edge of
 that box while the copy, parked one box width to the left, slides in to rest.
 The travel is the box's `clientWidth`, read when each swap starts. Because the
-icon box itself clips, the copy never crosses the label on its way in. Every
+icon box itself clips, the copy never crosses the label on its way in.
+
+A close glyph scales in place instead. `ButtonIcon` marks its box with
+`data-rollover-glyph-axis="scale"` and the `button-icon-scale` class, which
+parks the copy at `scale(0)`. On rollover the original shrinks to zero while the
+copy grows to full size in the same spot, and leaving reverses both. Every
 other glyph keeps the diagonal swap.
 
 Render the swap in the template rather than cloning a node at runtime. The icon
@@ -2143,6 +2183,8 @@ surface names:
 | `outline` | primary, green, dark |
 | `cream` | primary, green, dark |
 | `light` | blue, pink, primary |
+| `ribbon` | yellow, primary, dark |
+| `yellow` | green, primary, dark |
 
 `destructive`, `secondary`, `ghost`, `link`, and `inverse` are absent from that
 map on purpose. They keep their plain color hover at every size and render no
@@ -2169,7 +2211,9 @@ These invariants keep this working:
   `data-rollover-layers`, `data-rollover-texts`, and `data-rollover-icon`.
 - Layers are direct children of the layer group with `data-rollover-layer`.
   Original and copied labels are direct children of the text grid with
-  `data-rollover-label` and `data-rollover-label-copy`.
+  `data-rollover-label` and `data-rollover-label-copy`. The text grid is
+  optional. Without it the icon takes its covered color from the final layer's
+  foreground.
 - Every rounded edge in the stack must be rasterized once. Coincident
   antialiased edges blend instead of covering each other, so the surface below
   survives as a hairline rim, and the hover scale magnifies it because

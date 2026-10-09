@@ -21,6 +21,8 @@ export const buttonVariants = cva(
 					"bg-secondary text-secondary-foreground hover:bg-secondary/80",
 				ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
 				link: "text-primary underline-offset-4 hover:underline",
+				ribbon: "bg-ribbon text-ribbon-foreground hover:bg-foreground hover:text-background",
+				yellow: "bg-brand-yellow text-brand-yellow-foreground hover:bg-foreground hover:text-background",
 				cream: "bg-brand-cream text-brand-cream-foreground hover:bg-card hover:text-foreground",
 				light: "bg-card text-card-foreground hover:bg-brand-cream hover:text-brand-cream-foreground",
 				inverse:
@@ -37,6 +39,8 @@ export const buttonVariants = cva(
 				"icon-lg": "size-10",
 				"cta-sm":
 					"relative h-auto min-h-11 gap-2.5 overflow-hidden !rounded-action px-4 py-action-inset text-sm transition-colors sm:text-base",
+				"cta-icon":
+					"relative size-13 overflow-hidden !rounded-full transition-colors [&_svg:not([class*='size-'])]:size-5",
 				"cta-lg":
 					"relative h-auto min-h-13 gap-3 overflow-hidden !rounded-action px-5 py-action-inset text-lg transition-colors sm:text-xl",
 			},
@@ -57,6 +61,8 @@ export const variantRolloverTones: Partial<
 	cream: ["primary", "green", "dark"],
 	light: ["blue", "pink", "primary"],
 	dark: ["green", "pink", "primary"],
+	ribbon: ["yellow", "primary", "dark"],
+	yellow: ["green", "primary", "dark"],
 	default: ["blue", "green", "dark"],
 	outline: ["primary", "green", "dark"],
 };
