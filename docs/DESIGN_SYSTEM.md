@@ -1791,6 +1791,22 @@ the hero content drifts down at half the scroll speed and fades out
 linearly, reaching zero opacity as the hero leaves the top of the viewport, so
 the team section appears to arrive faster and covers it.
 
+Moving a mouse across the hero leaves a trail of work images. Every time the
+pointer has travelled a third of the viewport width, counting horizontal and
+vertical movement together, the next image appears centered on the pointer,
+with a random horizontal offset of up to `40` percent of its width and a
+random tilt of up to `10` degrees. It lands from `1.3` scale over `0.6s` on
+`elastic.out(2, 0.6)`, and over `1.5s` on `power4.out` it is thrown four times
+the pointer's last movement while it turns to a new random tilt. `0.1s` after
+the throw it shrinks to zero over `0.3s` on `back.in(1.5)`. The images are the
+seven files in `public/images/work`, cycled in order, in `rounded-xl` 3:4
+frames `clamp(9rem, 15vw, 16rem)` wide. They paint above the hero content and
+below the team section, never take the pointer, and stay hidden from
+assistive technology. The layer holds two recycled frames per image, so a fast
+pointer reuses a frame only after thirteen newer ones. The trail starts at the
+page transition's reveal point, runs only for a fine hover pointer, and is
+absent on touch devices and under reduced motion.
+
 The team section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
 "Who stands behind byroose" sits on the left with a primary orange wave under
@@ -1821,8 +1837,8 @@ reveal.
 Every frame on the page reveals with the Studio portrait's bottom-up clip and
 carries the shared image parallax on its `data-about-media-layer`. Every scroll
 reveal starts at `82` percent of the viewport and runs once. Reduced motion
-shows every title, line, image, and underline at rest, without the hero drift
-or image cycling.
+shows every title, line, image, and underline at rest, without the hero drift,
+the cursor trail, or image cycling.
 
 ### Header motion
 

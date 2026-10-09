@@ -29,6 +29,7 @@ app/
     ui/
   composables/
     useAboutHeroMotion.ts
+    useAboutHeroTrail.ts
     useAboutSectionMotion.ts
     useArrowSwapHover.ts
     useBlogMotion.ts
@@ -281,6 +282,15 @@ and the page transition's reveal point, then rises the title lines and, just
 before they land, the description lines, and scrubs the hero content down at half the
 scroll speed and fades it out while the hero leaves, so the team section covers it. It returns
 `revealed`, which lifts the hero's hidden CSS rest state.
+
+useAboutHeroTrail owns the About hero's cursor image trail. After the page
+transition's reveal point, inside a GSAP media context that matches only a fine
+hover pointer with motion allowed, it returns `armed` as true and listens to
+mouse pointer movement on the hero. It adds up the travelled distance and,
+each time it passes a third of the viewport width, plays the next
+`data-about-hero-trail-item` of the `data-about-hero-trail` layer at the
+pointer. AboutHero owns the image list and renders that layer only while
+`armed` is true, so the server output and touch devices never request it.
 
 useAboutSectionMotion owns the scroll reveals of one About section. Inside its
 scope it reveals the `data-about-title` lines, clip reveals and parallaxes
