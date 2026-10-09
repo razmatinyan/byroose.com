@@ -8,14 +8,14 @@ const { href, label } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-	navigate: []
+	navigate: [event: MouseEvent]
 }>()
 const link = useTemplateRef<ComponentPublicInstance>('link')
 
 useMenuLinkMotion(link)
 
-function handleNavigate() {
-	emit('navigate')
+function handleNavigate(event: MouseEvent) {
+	emit('navigate', event)
 }
 </script>
 

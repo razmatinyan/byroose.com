@@ -341,9 +341,12 @@ box is hit even where nothing dark is painted.
 
 useSiteMenuMotion owns the compact navigation panel's trigger-relative fixed
 geometry, translated two-stage scale reveal, staggered content entrance,
-two-line toggle morph, resize correction, and reduced-motion states. SiteMenu
+two-line toggle morph, resize correction, and reduced-motion states. It closes
+the panel instantly while a page transition is active. SiteMenu
 teleports the panel into Nuxt's shared overlay target so the trigger can stay in
-the header action group without containing the expanded navigation.
+the header action group without containing the expanded navigation. It marks the
+panel with `data-page-transition-overlay`, keeps the menu open when a link starts
+a page transition, and closes it once the transition leaves its `preparing` phase.
 useMenuLinkMotion lazily splits the expanded navigation link's two visual text
 copies into characters, then owns their vertical rollover and its forward-ordered
 return on hover and visible keyboard focus. Both composables scope their GSAP work and cleanup
@@ -390,7 +393,7 @@ useSmoothScroll is the component-facing contract for the global Lenis instance. 
 
 usePageTransition is the component-facing contract for the page transition plugin. It exposes `isActive`, `phase`, which is `preparing` from the navigation until the pages start moving, `moving` while they move, and `idle` otherwise, `deferCleanup`, which runs a cleanup immediately or, while a transition runs, after the leaving page has been covered and removed, and `waitForReveal`, which resolves at the transition's reveal point or immediately when no transition runs. useGsap routes its scope cleanup through `deferCleanup`, so a leaving page keeps every animation, pin, and inline style in place while it is visible.
 
-usePageTransitionMotion owns the overlap page transition choreography and returns the Vue transition hooks that app.vue passes to NuxtPage. When the leaving page is handed over, before the incoming page mounts, it freezes the leaving scene: it pauses every ScrollTrigger without reverting it, anchors active pins to the page, copies the header, offsets the leaving page and its followers by the current scroll position, and resets the scroll to the top. The incoming page therefore builds its scroll-linked motion against the scroll position it will land at, and the paused triggers that outlive the leaving page, such as the footer reveal, resume through `deferCleanup` before the final refresh. It sets the incoming page up as a fixed surface before insertion, moves the leaving page and every `data-page-transition-follow` element together, replaces every `data-page-transition-header` element with an inert static copy that leaves with them while the real header rises with the incoming page, fades the layout's `data-page-transition-shade` element, and restores normal flow in one task when the timeline ends.
+usePageTransitionMotion owns the overlap page transition choreography and returns the Vue transition hooks that app.vue passes to NuxtPage. When the leaving page is handed over, before the incoming page mounts, it freezes the leaving scene: it pauses every ScrollTrigger without reverting it, anchors active pins to the page, copies the header and every visible `data-page-transition-overlay` element, such as the open site menu panel, offsets the leaving page and its followers by the current scroll position, and resets the scroll to the top. The incoming page therefore builds its scroll-linked motion against the scroll position it will land at, and the paused triggers that outlive the leaving page, such as the footer reveal, resume through `deferCleanup` before the final refresh. It sets the incoming page up as a fixed surface before insertion, moves the leaving page and every `data-page-transition-follow` element together, replaces every `data-page-transition-header` element with an inert static copy that leaves with them while the real header rises with the incoming page, fades the layout's `data-page-transition-shade` element, and restores normal flow in one task when the timeline ends.
 
 ### Library modules
 

@@ -727,6 +727,12 @@ While it is off screen it switches to its full state, because the incoming page
 always lands at the top. A compact header therefore never lands compact and then
 expands.
 
+Overlays that belong to the leaving page carry `data-page-transition-overlay`.
+The expanded site menu panel is the current one. If an overlay is visible at
+the handover, it gets the same inert static copy under the header copy and
+leaves with the outgoing page, while the real overlay closes instantly. An open
+menu therefore never sits above both pages.
+
 When the movement ends, one task removes the leaving page, returns the incoming
 page to normal flow, clears every transition style, reverts the leaving page's
 deferred GSAP work, resets the scroll to the top, and refreshes Lenis and
@@ -1841,6 +1847,12 @@ Clicking the control while a hover opened menu is showing pins it open instead
 of closing it. A menu opened by a click, a tap, or the keyboard never closes on
 pointer leave and stays open until the control, a link, an outside click, or
 Escape closes it. Touch and pen pointers never open the menu on hover.
+
+A menu link that leads to another page keeps the menu open until the page
+transition takes it over, so the open menu leaves with the old page as
+described in Page transitions. A link to the current page, or one followed while a
+transition is already running, closes the menu with its normal animation.
+Any menu close during a page transition is instant.
 
 Both header actions share the dark action surface, so over a dark block they
 gain a one-pixel `background/20` border that keeps their outline readable. The

@@ -10,15 +10,15 @@ interface TransitionPart {
 }
 
 interface FrozenScene {
+   clones: HTMLElement[];
    followers: HTMLElement[];
-   headerClones: HTMLElement[];
    headers: HTMLElement[];
 }
 
 interface TransitionScene {
+   clones: HTMLElement[];
    enter: TransitionPart | null;
    followers: HTMLElement[];
-   headerClones: HTMLElement[];
    headers: HTMLElement[];
    leave: TransitionPart | null;
    shade: HTMLElement | null;
@@ -31,10 +31,11 @@ const leaveTravel = 0.25;
 const shadeOpacity = 0.8;
 const revealDelay = 0.4;
 const enteringLayer = 20;
-const headerCloneLayer = 5;
+const cloneLayer = 5;
 const cloneAttribute = "data-page-transition-clone";
 const followSelector = "[data-page-transition-follow]";
 const headerSelector = "[data-page-transition-header]";
+const overlaySelector = "[data-page-transition-overlay]";
 const shadeSelector = "[data-page-transition-shade]";
 const enteringProps =
    "backgroundColor,left,minHeight,paddingTop,position,right,top,transform,zIndex";
@@ -45,6 +46,10 @@ function prefersReducedMotion() {
 
 function asTransitionPart(element: Element, done: () => void) {
    return element instanceof HTMLElement ? { done, element } : null;
+}
+
+function isVisible(element: HTMLElement) {
+   return getComputedStyle(element).visibility !== "hidden";
 }
 
 function viewportCenterOrigin(element: HTMLElement) {
@@ -94,18 +99,20 @@ export function usePageTransitionMotion(): TransitionProps {
       }
    }
 
-   function cloneHeader(header: HTMLElement) {
-      const clone = header.cloneNode(true);
+   function cloneInPlace(source: HTMLElement) {
+      const clone = source.cloneNode(true);
       if (!(clone instanceof HTMLElement)) return [];
 
-      const bounds = header.getBoundingClientRect();
+      const bounds = source.getBoundingClientRect();
       clone.inert = true;
+      clone.removeAttribute("id");
       clone.setAttribute("aria-hidden", "true");
       clone.setAttribute(cloneAttribute, "");
       for (const element of clone.querySelectorAll("[id]")) {
          element.removeAttribute("id");
       }
       document.body.append(clone);
+      clone.scrollTop = source.scrollTop;
       gsap.set(clone, {
          boxSizing: "border-box",
          height: bounds.height,
@@ -114,7 +121,7 @@ export function usePageTransitionMotion(): TransitionProps {
          position: "fixed",
          top: bounds.top,
          width: bounds.width,
-         zIndex: headerCloneLayer,
+         zIndex: cloneLayer,
       });
       return [clone];
    }
@@ -140,25 +147,28 @@ export function usePageTransitionMotion(): TransitionProps {
       const headers = Array.from(
          document.querySelectorAll<HTMLElement>(headerSelector),
       );
-      const headerClones = headers.flatMap(cloneHeader);
+      const overlays = Array.from(
+         document.querySelectorAll<HTMLElement>(overlaySelector),
+      ).filter(isVisible);
+      const clones = [...overlays, ...headers].flatMap(cloneInPlace);
 
       $pageTransition.deferCleanup(() => resumeScrollTriggers(triggers));
       anchorPinnedElements(page);
       gsap.set([page, ...followers], { y: -window.scrollY });
       resetScroll();
-      return { followers, headerClones, headers };
+      return { clones, followers, headers };
    }
 
    function complete({
+      clones,
       enter,
       followers,
-      headerClones,
       headers,
       leave,
       shade,
    }: TransitionScene) {
       leave?.done();
-      for (const clone of headerClones) clone.remove();
+      for (const clone of clones) clone.remove();
       if (followers.length) {
          gsap.set(followers, { clearProps: "transform,transformOrigin" });
       }
@@ -173,9 +183,9 @@ export function usePageTransitionMotion(): TransitionProps {
       isScheduled = false;
       const leave = leaving;
       const enter = entering;
-      const { followers, headerClones, headers } = frozen ?? {
+      const { clones, followers, headers } = frozen ?? {
+         clones: [],
          followers: [],
-         headerClones: [],
          headers: [],
       };
       leaving = null;
@@ -184,9 +194,9 @@ export function usePageTransitionMotion(): TransitionProps {
 
       if (prefersReducedMotion()) {
          complete({
+            clones,
             enter,
             followers,
-            headerClones,
             headers: [],
             leave,
             shade: null,
@@ -197,12 +207,12 @@ export function usePageTransitionMotion(): TransitionProps {
       const shade = document.querySelector<HTMLElement>(shadeSelector);
       const risingHeaders = enter ? headers : [];
       const leavingSurfaces = leave
-         ? [leave.element, ...followers, ...headerClones]
+         ? [leave.element, ...followers, ...clones]
          : [];
       const scene = {
+         clones,
          enter,
          followers,
-         headerClones,
          headers: risingHeaders,
          leave,
          shade,

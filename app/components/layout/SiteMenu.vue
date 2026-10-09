@@ -33,6 +33,9 @@ const emit = defineEmits<{
 
 const { menuButton, menuLineBottom, menuLineTop, menuPanel, siteMenuRoot } =
 	useSiteMenuMotion(() => open)
+const route = useRoute()
+const { isActive: isTransitionActive, phase: transitionPhase } =
+	usePageTransition()
 
 useHoverBounce(menuButton, { hover: false, press: true })
 
@@ -104,6 +107,19 @@ async function closeMenu(returnFocus = false) {
 	await nextTick()
 	menuButton.value?.focus()
 }
+
+function handleNavigate(href: string, event: MouseEvent) {
+	const startsTransition =
+		event.defaultPrevented &&
+		href !== route.path &&
+		!isTransitionActive.value
+
+	if (!startsTransition) closeMenu()
+}
+
+watch(transitionPhase, phase => {
+	if (phase !== 'preparing') closeMenu()
+})
 
 useEventListener(
 	'pointermove',
@@ -183,6 +199,7 @@ onKeyStroke(
 				:aria-hidden="!open"
 				:inert="!open"
 				data-lenis-prevent
+				data-page-transition-overlay
 			>
 				<div class="site-menu-content">
 					<p
@@ -202,7 +219,7 @@ onKeyStroke(
 							<SiteMenuLink
 								:href="item.href"
 								:label="item.label"
-								@navigate="closeMenu()"
+								@navigate="handleNavigate(item.href, $event)"
 							/>
 						</li>
 					</ul>
@@ -218,7 +235,7 @@ onKeyStroke(
 							class="site-menu-home"
 							to="/"
 							aria-label="byroose home"
-							@click="closeMenu()"
+							@click="handleNavigate('/', $event)"
 						>
 							<NuxtImg
 								class="site-menu-logo"

@@ -14,11 +14,12 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 	const menuLineTop = useTemplateRef<HTMLElement>('menuLineTop')
 	const menuLineBottom = useTemplateRef<HTMLElement>('menuLineBottom')
 	const { createMatchMedia, gsap } = useGsap()
+	const { isActive: isTransitionActive } = usePageTransition()
 	let applyMenuState: ApplyMenuState = () => undefined
 
 	watch(
 		() => toValue(open),
-		value => applyMenuState(value),
+		value => applyMenuState(value, isTransitionActive.value),
 		{ flush: 'post' },
 	)
 
