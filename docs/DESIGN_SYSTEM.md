@@ -696,9 +696,16 @@ Every page change runs an overlap transition from `usePageTransitionMotion`,
 passed to NuxtPage in `app/app.vue`. The first page load never runs it, so a
 direct home request still opens with the preloader.
 
-The leaving page stays in the document at its current scroll position and moves
-up a quarter of the viewport height while it scales to `0.97`. The site footer
-carries `data-page-transition-follow`, so it moves with the page as one rigid
+The leaving page stays on screen exactly where the reader left it and moves
+up a quarter of the viewport height while it scales to `0.97`. Before the
+incoming page mounts, every scroll-linked animation pauses in its current
+state, the document scroll returns to the top, and the leaving page and footer
+are offset by the old scroll position, so nothing visibly moves. The incoming
+page therefore builds its scrubbed motion, such as the About hero drift,
+against the scroll position it lands at, and never arrives part way through a
+scroll effect that snaps back when the transition ends. The overlay scrollbar
+shows the incoming page's position from the start of the transition. The site
+footer carries `data-page-transition-follow`, so it moves with the page as one rigid
 surface, and both scale around the viewport center. A `foreground` shade in the
 layout, `data-page-transition-shade`, fades over them to `0.8` opacity. The
 incoming page is fixed to the viewport with the canvas color, at least one
@@ -709,8 +716,8 @@ movements share `1.1s` on the `page-transition` CustomEase,
 lands softly. The shade sits at `z-10` and the incoming page at `20`.
 
 The header transitions with the layout. The layout marks the header and the
-logo layer with `data-page-transition-header`. When the movement starts, each is
-replaced in place by a static copy marked `data-page-transition-clone`. The copy
+logo layer with `data-page-transition-header`. Before the scroll returns to the
+top, each is replaced in place by a static copy marked `data-page-transition-clone`. The copy
 is inert, hidden from assistive technology, and fixed at `z-5` under the shade,
 and it leaves with the outgoing page and footer, so the old header lifts, shrinks,
 and darkens with the page it belonged to. In the same frame the real header jumps

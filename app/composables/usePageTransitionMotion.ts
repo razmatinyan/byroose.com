@@ -2,10 +2,17 @@ import { onMounted } from "vue";
 import type { TransitionProps } from "vue";
 
 type ScrollTriggerPlugin = typeof import("gsap/ScrollTrigger").ScrollTrigger;
+type ScrollTriggerInstance = ReturnType<ScrollTriggerPlugin["getAll"]>[number];
 
 interface TransitionPart {
    done: () => void;
    element: HTMLElement;
+}
+
+interface FrozenScene {
+   followers: HTMLElement[];
+   headerClones: HTMLElement[];
+   headers: HTMLElement[];
 }
 
 interface TransitionScene {
@@ -50,10 +57,12 @@ function viewportCenterOrigin(element: HTMLElement) {
 export function usePageTransitionMotion(): TransitionProps {
    const { gsap, loadPlugin } = useGsap();
    const { $pageTransition } = useNuxtApp();
+   const { reset: resetScroll } = useSmoothScroll();
    let ease: gsap.EaseString | gsap.EaseFunction = "power3.inOut";
    let scrollTrigger: ScrollTriggerPlugin | null = null;
    let leaving: TransitionPart | null = null;
    let entering: TransitionPart | null = null;
+   let frozen: FrozenScene | null = null;
    let isScheduled = false;
 
    onMounted(async () => {
@@ -110,6 +119,36 @@ export function usePageTransitionMotion(): TransitionProps {
       return [clone];
    }
 
+   function pauseScrollTriggers() {
+      const triggers = scrollTrigger?.getAll() ?? [];
+      for (const trigger of triggers) trigger.disable(false);
+      return triggers;
+   }
+
+   function resumeScrollTriggers(triggers: ScrollTriggerInstance[]) {
+      const remaining = new Set(scrollTrigger?.getAll());
+      for (const trigger of triggers) {
+         if (remaining.has(trigger)) trigger.enable(false, false);
+      }
+   }
+
+   function freeze(page: HTMLElement): FrozenScene {
+      const triggers = pauseScrollTriggers();
+      const followers = Array.from(
+         document.querySelectorAll<HTMLElement>(followSelector),
+      );
+      const headers = Array.from(
+         document.querySelectorAll<HTMLElement>(headerSelector),
+      );
+      const headerClones = headers.flatMap(cloneHeader);
+
+      $pageTransition.deferCleanup(() => resumeScrollTriggers(triggers));
+      anchorPinnedElements(page);
+      gsap.set([page, ...followers], { y: -window.scrollY });
+      resetScroll();
+      return { followers, headerClones, headers };
+   }
+
    function complete({
       enter,
       followers,
@@ -134,14 +173,20 @@ export function usePageTransitionMotion(): TransitionProps {
       isScheduled = false;
       const leave = leaving;
       const enter = entering;
+      const { followers, headerClones, headers } = frozen ?? {
+         followers: [],
+         headerClones: [],
+         headers: [],
+      };
       leaving = null;
       entering = null;
+      frozen = null;
 
       if (prefersReducedMotion()) {
          complete({
             enter,
-            followers: [],
-            headerClones: [],
+            followers,
+            headerClones,
             headers: [],
             leave,
             shade: null,
@@ -150,24 +195,25 @@ export function usePageTransitionMotion(): TransitionProps {
       }
 
       const shade = document.querySelector<HTMLElement>(shadeSelector);
-      const followers = leave
-         ? Array.from(document.querySelectorAll<HTMLElement>(followSelector))
-         : [];
-      const headers =
-         leave && enter
-            ? Array.from(document.querySelectorAll<HTMLElement>(headerSelector))
-            : [];
-      const headerClones = headers.flatMap(cloneHeader);
+      const risingHeaders = enter ? headers : [];
       const leavingSurfaces = leave
          ? [leave.element, ...followers, ...headerClones]
          : [];
-      const scene = { enter, followers, headerClones, headers, leave, shade };
+      const scene = {
+         enter,
+         followers,
+         headerClones,
+         headers: risingHeaders,
+         leave,
+         shade,
+      };
 
-      if (leave) anchorPinnedElements(leave.element);
       for (const surface of leavingSurfaces) {
          gsap.set(surface, { transformOrigin: viewportCenterOrigin(surface) });
       }
-      if (headers.length) gsap.set(headers, { y: window.innerHeight });
+      if (risingHeaders.length) {
+         gsap.set(risingHeaders, { y: window.innerHeight });
+      }
       $pageTransition.move();
 
       const timeline = gsap.timeline({
@@ -179,7 +225,7 @@ export function usePageTransitionMotion(): TransitionProps {
       if (leavingSurfaces.length) {
          timeline.to(
             leavingSurfaces,
-            { scale: leaveScale, y: -window.innerHeight * leaveTravel },
+            { scale: leaveScale, y: `-=${window.innerHeight * leaveTravel}` },
             0,
          );
       }
@@ -191,7 +237,7 @@ export function usePageTransitionMotion(): TransitionProps {
             0,
          );
       }
-      if (enter) timeline.to([enter.element, ...headers], { y: 0 }, 0);
+      if (enter) timeline.to([enter.element, ...risingHeaders], { y: 0 }, 0);
       timeline.call($pageTransition.reveal, undefined, revealDelay);
 
       gsap.ticker.add(() => {
@@ -246,6 +292,7 @@ export function usePageTransitionMotion(): TransitionProps {
          return;
       }
 
+      if (!prefersReducedMotion()) frozen = freeze(leaving.element);
       schedule();
    }
 
