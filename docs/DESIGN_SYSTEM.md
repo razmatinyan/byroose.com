@@ -1014,7 +1014,11 @@ below the viewport so the climb is still on screen while it rises. Any part of
 the ribbon outside the viewport, past a side edge or above the top, costs only
 `0.03` pixels, so the reader never scrolls through a stretch where nothing
 visible draws. The scrub uses one second of smoothing, so a wheel step glides
-the tip forward instead of revealing a whole stretch at once. The geometry and
+the tip forward instead of revealing a whole stretch at once. Scrolling back
+above the start lets that smoothing finish, so the ribbon retracts all the way
+to its start point instead of vanishing. Do not force the scrub tween to
+complete on leave back. The work line and the About lines follow the same
+rule. The geometry and
 the timeline are rebuilt whenever the section resizes. The ribbon is hidden below
 the `lg` breakpoint. Reduced motion shows the complete ribbon without drawing it
 on larger screens.
@@ -1834,9 +1838,7 @@ a full `100svh` tall, centering "Become chosen byroose" above a `dark` `cta-lg` 
 Now" action with an arrow right glyph that routes to `/contact`. The action
 scales its label, padding, and glyph in `em` from
 `clamp(1.25rem, 2.2vw, 2rem)` and rises from a mask that clips only during the
-reveal. The green paints from a `-z-20` `::before` layer that inherits the
-corners, so the story line can draw over the surface and still sit under the
-title and the action.
+reveal.
 
 Two lines draw themselves with the scroll on larger screens, as the home Studio
 ribbon and work line do. Both come from `public/vectors.svg`, a 1440 wide frame
@@ -1846,7 +1848,9 @@ measured at 1440 by 900: the team section from `0` to `1768`, and the trust,
 brands, and call to action sections at `1768`, `2866`, `3820`, and `4720`. At
 runtime x scales by the live width and y maps between the matching live
 section lines, so each line keeps its place against the content at every
-breakpoint.
+breakpoint. The team artwork's top line sits at `-120` instead of `0`, which
+lowers the line by about `120` pixels at 1440 wide so its top curve clears the
+section's top edge instead of being cut by it.
 
 The team line, Layer 1, is a `DrawnLine` with `text-ribbon` at full strength
 inside the team section, so it paints above the grey surface and below the
@@ -1859,8 +1863,8 @@ The story line, Layer 2, uses the work line's `text-foreground` and
 `opacity-3`. It sits at `-z-10` in the isolated `about-story` block that wraps
 the trust, brands, and call to action sections. It enters past the right edge
 beside the trust title, sweeps left behind the trust statement, curves back
-right behind the brands heading, and ends with a round cap inside the call to
-action, where it reads as a darker green under the title. It uses the work
+right behind the brands heading, and passes under the call to action, whose
+green surface paints above it and hides its end. It uses the work
 line's head lead of `0`. To replace either line, draw it on the same frame in
 the direction it should animate, paste its `d` string into the matching
 artwork, and remeasure the section lines if the layout has changed.

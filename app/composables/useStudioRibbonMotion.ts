@@ -204,7 +204,6 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			ease: timing.ease,
 			scrollTrigger: {
 				end: `+=${timing.duration}`,
-				onLeaveBack: (self) => self.getTween()?.progress(1),
 				scrub: drawScrub,
 				start: startPosition(startY),
 				trigger: svg,
