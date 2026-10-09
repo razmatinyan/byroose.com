@@ -1878,9 +1878,10 @@ unbreakable "Become chosen" line shrinks with the viewport below about `467px`
 instead of overflowing it, and keeps the shared size everywhere wider.
 
 Two lines draw themselves with the scroll on larger screens, as the home Studio
-ribbon and work line do. Both come from `public/vectors.svg`, a 1440 wide frame
-whose top edge is the team section's top. `app/lib/about-line-path.ts` stores
-each layer's `d` string unchanged with the section lines it was drawn against,
+ribbon and work line do. Both were drawn as two layers of one 1440 wide frame
+whose top edge is the team section's top. The source file is not kept in the
+repository. `app/lib/about-line-path.ts` stores each layer's `d` string
+unchanged with the section lines it was drawn against,
 measured at 1440 by 900: the team section from `0` to `1768`, and the trust,
 brands, and call to action sections at `1768`, `2866`, `3820`, and `4720`. At
 runtime x scales by the live width and y maps between the matching live
