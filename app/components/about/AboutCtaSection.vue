@@ -54,6 +54,10 @@ useAboutSectionMotion(ctaRoot);
    @apply flex flex-col items-center;
 }
 
+.about-cta-content :deep(.about-title-display) {
+   font-size: min(clamp(3.5rem, 11vw, 12rem), 12vw);
+}
+
 .about-cta-action-group {
    @apply mt-16 md:mt-24;
 }

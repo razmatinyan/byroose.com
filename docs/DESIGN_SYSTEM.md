@@ -1873,7 +1873,9 @@ a full `100svh` tall, centering "Become chosen byroose" above a `dark` `cta-lg` 
 Now" action with an arrow right glyph that routes to `/contact`. The action
 scales its label, padding, and glyph in `em` from
 `clamp(1.25rem, 2.2vw, 2rem)` and rises from a mask that clips only during the
-reveal.
+reveal. Its display title caps the shared display size at `12vw`, so the
+unbreakable "Become chosen" line shrinks with the viewport below about `467px`
+instead of overflowing it, and keeps the shared size everywhere wider.
 
 Two lines draw themselves with the scroll on larger screens, as the home Studio
 ribbon and work line do. Both come from `public/vectors.svg`, a 1440 wide frame
