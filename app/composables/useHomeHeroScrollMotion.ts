@@ -24,28 +24,46 @@ const selectors = {
 	space: "[data-home-hero-scroll-space]",
 } as const;
 
-function getFeaturedCardTransform(
-	hero: HTMLElement,
-	card: HTMLElement,
-	scrollDistance: number,
-): FeaturedCardTransform {
-	let offsetLeft = card.offsetLeft;
-	let offsetTop = card.offsetTop;
+function getCardOffset(hero: HTMLElement, card: HTMLElement) {
+	let left = card.offsetLeft;
+	let top = card.offsetTop;
 	let offsetParent = card.offsetParent;
 
 	while (offsetParent instanceof HTMLElement && offsetParent !== hero) {
-		offsetLeft += offsetParent.offsetLeft;
-		offsetTop += offsetParent.offsetTop;
+		left += offsetParent.offsetLeft;
+		top += offsetParent.offsetTop;
 		offsetParent = offsetParent.offsetParent;
 	}
 
+	return { left, top };
+}
+
+function getCardDocumentCenterY(hero: HTMLElement, card: HTMLElement) {
+	const heroDocumentTop = hero.getBoundingClientRect().top + window.scrollY;
+
+	return heroDocumentTop + getCardOffset(hero, card).top + card.offsetHeight / 2;
+}
+
+function getTransitionStart(hero: HTMLElement, card: HTMLElement) {
+	return Math.max(
+		0,
+		getCardDocumentCenterY(hero, card) - window.innerHeight / 2,
+	);
+}
+
+function getFeaturedCardTransform(
+	hero: HTMLElement,
+	card: HTMLElement,
+	transitionEnd: number,
+): FeaturedCardTransform {
 	const availableWidth = window.innerWidth * 0.92;
 	const availableHeight = window.innerHeight * 0.82;
 	const finalCardHeight = card.offsetWidth / featuredAspectRatio;
 	const heroRect = hero.getBoundingClientRect();
-	const heroDocumentTop = heroRect.top + window.scrollY;
-	const cardDocumentCenterY =
-		heroDocumentTop + offsetTop + card.offsetHeight / 2;
+	const cardDocumentCenterY = getCardDocumentCenterY(hero, card);
+	const transitionStart = getTransitionStart(hero, card);
+	const centerArrival =
+		transitionStart + (transitionEnd - transitionStart) * centerArrivalProgress;
 	const scale = Math.min(
 		availableWidth / card.offsetWidth,
 		availableHeight / finalCardHeight,
@@ -55,12 +73,9 @@ function getFeaturedCardTransform(
 		scale,
 		x:
 			window.innerWidth / 2 -
-			(heroRect.left + offsetLeft + card.offsetWidth / 2),
-		yAtCenter:
-			window.innerHeight / 2 +
-			scrollDistance * centerArrivalProgress -
-			cardDocumentCenterY,
-		yAtEnd: window.innerHeight / 2 + scrollDistance - cardDocumentCenterY,
+			(heroRect.left + getCardOffset(hero, card).left + card.offsetWidth / 2),
+		yAtCenter: window.innerHeight / 2 + centerArrival - cardDocumentCenterY,
+		yAtEnd: window.innerHeight / 2 + transitionEnd - cardDocumentCenterY,
 	};
 }
 
@@ -99,11 +114,10 @@ export function useHomeHeroScrollMotion(
 
 				const timeline = gsap.timeline({
 					scrollTrigger: {
-						end: () => `+=${transitionSpace.offsetHeight}`,
+						end: () => transitionSpace.offsetHeight,
 						invalidateOnRefresh: true,
 						scrub: true,
-						start: 0,
-						trigger: hero,
+						start: () => getTransitionStart(hero, featuredCard),
 					},
 				});
 

@@ -862,7 +862,10 @@ and focus ring are not cut off afterwards.
 ### Home hero scroll transition
 
 From the `lg` breakpoint upward, after the home intro completes, the third of
-the four retained hero cards becomes the featured transition image. The hero
+the four retained hero cards becomes the featured transition image. It stays
+in the grid and scrolls with the page until the card row's center reaches the
+viewport's center, and only then starts its transition, which runs until the
+end of the transition space. The hero
 leaves through normal document scrolling while LandingPage's empty transition
 space, one full small viewport tall, keeps Studio below the viewport. Below `lg`
 the transition is disabled: the space collapses to zero, the featured card

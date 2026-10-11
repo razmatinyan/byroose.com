@@ -216,8 +216,9 @@ useHomeIntroMotion owns the home route's entry sequence, geometry measurements, 
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
-through normal document scrolling while the featured retained card moves to the
-viewport center and expands. The transition runs only from `lg` upward, where
+through normal document scrolling. Once the featured retained card's center
+reaches the viewport center, the card moves to the viewport center and
+expands until the transition space ends. The transition runs only from `lg` upward, where
 LandingPage supplies a full-viewport empty scroll space before Studio. Below `lg`
 the space collapses and the composable creates no animation. Responsive
 measurements, the reduced-motion outcome, ScrollTrigger lifecycle, and route
