@@ -6,6 +6,43 @@ type ApplyMenuState = (open: boolean, immediate?: boolean) => void
 
 const menuPanelOffset = 8
 const menuViewportInset = 16
+const transformProperties = ['transform', 'translate', 'scale', 'rotate'] as const
+
+function hasTransform(element: HTMLElement) {
+	const style = getComputedStyle(element)
+	return transformProperties.some(property => style[property] !== 'none')
+}
+
+function measureLayoutBounds(element: HTMLElement) {
+	const transformedElements: HTMLElement[] = []
+
+	for (
+		let current: HTMLElement | null = element;
+		current;
+		current = current.parentElement
+	) {
+		if (hasTransform(current)) transformedElements.push(current)
+	}
+
+	const inlineStyles = transformedElements.map(
+		transformedElement => transformedElement.style.cssText,
+	)
+
+	transformedElements.forEach(transformedElement => {
+		transformedElement.style.transition = 'none'
+		transformProperties.forEach(property => {
+			transformedElement.style[property] = 'none'
+		})
+	})
+
+	const bounds = element.getBoundingClientRect()
+
+	transformedElements.forEach((transformedElement, index) => {
+		transformedElement.style.cssText = inlineStyles[index] ?? ''
+	})
+
+	return bounds
+}
 
 export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 	const siteMenuRoot = useTemplateRef<HTMLElement>('siteMenuRoot')
@@ -55,7 +92,7 @@ export function useSiteMenuMotion(open: MaybeRefOrGetter<boolean>) {
 					buttonElement: HTMLButtonElement,
 					panelElement: HTMLElement,
 				) {
-					const buttonBounds = buttonElement.getBoundingClientRect()
+					const buttonBounds = measureLayoutBounds(buttonElement)
 					const panelWidth = panelElement.offsetWidth
 					const maximumLeft =
 						window.innerWidth - panelWidth - menuViewportInset

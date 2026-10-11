@@ -2192,14 +2192,17 @@ states without animated travel.
 
 The expanded menu is a dark panel with the control's `radius-action` corners, teleported to Nuxt's shared overlay
 target, outside the header action group. Position its fixed surface from the
-control's live viewport bounds, resting eight pixels above and to the right
+control's layout bounds, measured with the transforms on the control and its
+ancestors briefly neutralized. A menu opened while the header is still scaling
+the control in, or while the control is pressed, therefore opens from the
+control's final revealed position. Rest the panel eight pixels above and to the right
 while keeping a safe viewport inset. It grows from the control's exact width and
 height through `scaleX` and `scaleY`. Derive the transform origin from the final
 panel position and collapsed scales so the closed panel bounds match the control
 exactly, then sweep up and right through a subtle translate, skew, and scale
-overshoot before settling at full dimensions. The panel has no heading. Its
-navigation items and a muted footer line that carries the slogan, "From seen to
-chosen", enter with opacity and a tight stagger after the overshoot, keeping
+overshoot before settling at full dimensions. The panel holds only its
+navigation items, with no heading or footer. They enter with opacity and a
+tight stagger after the overshoot, keeping
 the content itself steady while the panel settles.
 Closing reverses the same sequence so the content and panel move immediately on
 the same short timeline, matching the opening speed as the panel swooshes down

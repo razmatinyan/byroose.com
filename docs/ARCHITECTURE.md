@@ -454,7 +454,7 @@ Mark the painted surface rather than a transparent wrapper, because a wrapper's
 box is hit even where nothing dark is painted.
 
 useSiteMenuMotion owns the compact navigation panel's trigger-relative fixed
-geometry, translated two-stage scale reveal, staggered content entrance,
+geometry, measured from the trigger's untransformed layout bounds, translated two-stage scale reveal, staggered content entrance,
 two-line toggle morph, resize correction, and reduced-motion states. It closes
 the panel instantly while a page transition is active. SiteMenu
 teleports the panel into Nuxt's shared overlay target so the trigger can stay in

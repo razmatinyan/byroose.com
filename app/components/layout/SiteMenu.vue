@@ -216,10 +216,6 @@ onKeyStroke(
 							/>
 						</li>
 					</ul>
-
-					<p class="site-menu-footer site-menu-reveal" data-menu-reveal>
-						From seen to chosen
-					</p>
 				</div>
 			</nav>
 		</Teleport>
@@ -269,10 +265,6 @@ onKeyStroke(
 
 .site-menu-links {
 	@apply grid list-none gap-0 p-0;
-}
-
-.site-menu-footer {
-	@apply mt-auto border-t border-background/15 pt-5 text-sm font-medium text-background/45;
 }
 
 .site-menu-reveal {
