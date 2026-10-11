@@ -1,5 +1,6 @@
 import { onMounted, onScopeDispose, readonly, shallowRef, toValue } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import { swapEase } from "@/lib/swap-timing";
 import {
    titleLineRevealOffset,
    titleLineRevealStagger,
@@ -22,8 +23,6 @@ const mediaOpenProperty = "--services-hero-media-open";
 const mediaRevealStart = 0.9;
 const mediaRevealGap = 0.8;
 const mediaRevealDuration = 1.1;
-const mediaRevealEase = "power3.inOut";
-const mediaImageEase = "power3.out";
 const mediaImageScale = 1.3;
 const heroDrift = 0.5;
 
@@ -48,7 +47,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
          {
             [mediaOpenProperty]: 1,
             duration: mediaRevealDuration,
-            ease: mediaRevealEase,
+            ease: swapEase,
          },
          position,
       );
@@ -58,7 +57,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
 
       timeline.to(
          image,
-         { duration: mediaRevealDuration, ease: mediaImageEase, scale: 1 },
+         { duration: mediaRevealDuration, ease: swapEase, scale: 1 },
          position,
       );
    }

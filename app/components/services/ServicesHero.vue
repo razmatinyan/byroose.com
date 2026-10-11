@@ -14,13 +14,6 @@ interface HeroTitleLine {
    trail?: string;
 }
 
-const contentImages: readonly HeroImage[] = [
-   { height: 1919, src: "/images/work/1.png", width: 1080 },
-   { height: 1919, src: "/images/work/2.png", width: 1080 },
-   { height: 1620, src: "/images/work/3.png", width: 1080 },
-   { height: 1919, src: "/images/work/4.png", width: 1080 },
-];
-
 const websiteImages: readonly HeroImage[] = [
    { height: 816, src: "/images/hero/1.png", width: 1456 },
    { height: 816, src: "/images/hero/2.png", width: 1456 },
@@ -30,13 +23,15 @@ const websiteImages: readonly HeroImage[] = [
 
 const titleLines: readonly HeroTitleLine[] = [
    { lead: "We create" },
-   { images: contentImages, lead: "AI content ", trail: "and" },
-   { images: websiteImages, lead: "make ", trail: "websites" },
+   { lead: "AI Content and" },
+   { images: websiteImages, lead: "", trail: "Websites" },
 ];
 
-const titleLabel = titleLines
-   .map(({ lead, trail = "" }) => `${lead}${trail}`)
-   .join(" ");
+function lineText({ lead, trail = "" }: HeroTitleLine) {
+   return `${lead}${trail}`;
+}
+
+const titleLabel = titleLines.map(lineText).join(" ");
 
 const heroRoot = useTemplateRef<HTMLElement>("heroRoot");
 const { revealed } = useServicesHeroMotion(heroRoot);
@@ -54,7 +49,7 @@ const { revealed } = useServicesHeroMotion(heroRoot);
             <span aria-hidden="true">
                <span
                   v-for="line in titleLines"
-                  :key="line.lead"
+                  :key="lineText(line)"
                   class="services-hero-title-mask"
                   data-services-hero-title-mask
                >
@@ -96,7 +91,7 @@ const { revealed } = useServicesHeroMotion(heroRoot);
 
 .services-hero-title {
    @apply m-0 font-bold tracking-[-0.05em];
-   font-size: clamp(2rem, 10.5vw, 12rem);
+   font-size: clamp(2rem, 11vw, 12rem);
    line-height: 0.88;
    margin-top: -0.2em;
    --services-hero-media-height: 0.8em;

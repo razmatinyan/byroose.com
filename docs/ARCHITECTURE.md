@@ -142,8 +142,8 @@ on landing sections.
 app/components/services contains the Services route's sections. ServicesPage
 composes ServicesHero and ServicesStatementSection, and app/pages/services.vue
 renders it with the route metadata. ServicesHero owns the title lines and the
-two image lists. Each image list renders an ImageCycle inside a
-`data-services-hero-media` frame placed inline in its title line.
+image list. A title line that carries images renders an ImageCycle inside a
+`data-services-hero-media` frame placed inline in that line.
 ServicesStatementSection owns the statement copy and its split. The sections
 own their copy and do not depend on landing or About components.
 
@@ -325,8 +325,8 @@ pointer. AboutHero owns the image list and renders that layer only while
 `armed` is true, so the server output and touch devices never request it.
 
 useServicesHeroMotion owns the Services hero. After the fonts load and the
-page transition's reveal point, it rises the title lines, then opens each
-`data-services-hero-media` frame in turn by tweening its
+page transition's reveal point, it rises the title lines, then opens every
+`data-services-hero-media` frame, one after another, by tweening its
 `--services-hero-media-open` property from `0` to `1`, and scrubs the hero
 content down at half the scroll speed while it fades out, as the About hero
 does. It returns `revealed`, which lifts the hero's hidden CSS rest state.
@@ -494,8 +494,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   hovers and toggles, and the programmatic scroll bounds `swapScrollDuration`
   and `swapScrollMaxDuration` with `getSwapScrollDuration`, a pure function
   that turns a scroll distance and viewport height into a duration.
-  useArrowSwapHover, useNavLinkMotion, useFaqMotion, and the Lenis plugin
-  import it instead of repeating the values.
+  useArrowSwapHover, useNavLinkMotion, useFaqMotion, useServicesHeroMotion,
+  and the Lenis plugin import it instead of repeating the values.
 - word-reveal.ts owns the shared masked word rise recipe, its `top 82%` start,
   and its two staggers. Callers may override the stagger, the duration, and
   the ease. The Studio section and the services panels both append it to their

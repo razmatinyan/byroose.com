@@ -690,7 +690,7 @@ component.
 
 | Name | Timing | Source and current users |
 | --- | --- | --- |
-| Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle |
+| Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle. The Services hero image frame uses its ease over `1.1s` |
 | Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top and the home logo |
 
 Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
@@ -1922,33 +1922,33 @@ followed by the site footer. The user is still shaping the sections that follow.
 The hero repeats the About hero's frame: it fills the first screen below the
 header except for `--services-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the
 rounded top of the statement section shows at the bottom of the first screen.
-It has no description. The `h1` sets "We create", "AI content and", and "make
-websites" on three centered lines, bold with `-0.05em` tracking and `0.88`
+It has no description. The `h1` sets "We create", "AI Content and", and
+"Websites" on three centered lines, with an image frame before "Websites", bold with `-0.05em` tracking and `0.88`
 leading, in the same padded line masks as `AboutTitle`. Its size is
-`clamp(2rem, 10.5vw, 12rem)`, smaller than the About display size, because the
-image frames widen the second and third lines. Every line stays on one line
+`clamp(2rem, 11vw, 12rem)`, the About display size with a lower `2rem` floor,
+so "AI Content and" still fits a 390 wide phone. Every line stays on one line
 and fits the content width from 390 to 1440 wide. Screen readers get the
 phrase from an `sr-only` copy.
 
-Two image frames sit inside the title, one after "content" and one after
-"make". Each frame is an inline block as tall as the letters, `0.8em`, set
+The image frame is an inline block as tall as the letters, `0.8em`, set
 `0.06em` below the baseline so it spans from just under the baseline to the
 ascender line, at a 16:9 width with `0.06em` corners. Each frame holds an
-`ImageCycle` that cuts through four images every `750ms`, the way the About
-section headings do: the first frame uses `public/images/work` and the second
-`public/images/hero`. The images are decorative and load eagerly. A frame's
-width and its `0.12em` end margin, which matches a word space, are multiplied by
-`--services-hero-media-open`, so at `0` the frame takes no room and the line
-reads as plain text. The cycle inside keeps its full width and stays centered,
-so as the frame widens the picture is uncovered from its center outward while
-the words on both sides move apart.
+`ImageCycle` that cuts through four images from `public/images/hero` every
+`750ms`, the way the About section headings do. The images are decorative and
+load eagerly. The frame's width and its `0.12em` end margin, which matches a
+word space, are multiplied by `--services-hero-media-open`, so at `0` the frame
+takes no room and the line reads as plain text. The cycle inside keeps its full
+width and stays centered, so as the frame widens the picture is uncovered from
+its center outward while the centered line spreads around it. The title data
+still accepts images on any line, and each further frame would open `0.8s`
+after the one before it.
 
 The title rises with the About hero timing at the page transition's reveal
-point, or after the fonts load on a direct request. `0.9s` later the first
-frame opens over `1.1s` on `power3.inOut` while its picture settles from `1.3`
-scale on `power3.out`, and the second frame starts `0.8s` after the first, so
-the images arrive one after the other. Until the reveal the title is hidden and
-both frames are closed in CSS. As the reader scrolls, the hero content drifts
+point, or after the fonts load on a direct request. `0.9s` later the frame
+opens over `1.1s` on the swap timing's `power4.inOut` ease, `swapEase` from
+`app/lib/swap-timing.ts`, while its picture settles from `1.3` scale on the
+same ease. Until the reveal the title is hidden and the frame is closed
+in CSS. As the reader scrolls, the hero content drifts
 down at half the scroll speed and fades out like the About hero, while the
 statement section covers it.
 
@@ -1963,7 +1963,7 @@ lines rise once with the services description timing, `1.5s`, `power3`, and a
 opacity in reading order, from when the text top reaches 65 percent of the
 viewport until its bottom reaches the viewport middle, with about three words
 fading in at a time, so the read part of the statement stays dark while the
-rest waits in grey. Reduced motion shows the title, both open frames without
+rest waits in grey. Reduced motion shows the title, the open frame without
 cycling, and the statement at full opacity, without the rise, the drift, or the
 scrub.
 
