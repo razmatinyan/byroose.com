@@ -127,7 +127,10 @@ AboutPage wraps the trust, brands, and call to action sections in an isolated
 call to action roots with `data-drawn-line-anchor`. AboutTeamSection holds its
 own DrawnLine.
 AboutTitle renders a title from explicit lines, each in its own mask, with an
-optional underlined word that carries a WaveUnderline. AboutMediaFrame wraps
+optional underlined word that carries a WaveUnderline, every other text
+fragment in a `data-about-title-text` span that an owner can style, and an optional
+`images` list that opens a `data-about-title-inset` ImageCycle frame before the
+line's text. AboutMediaFrame wraps
 any image or placeholder in a frame and a parallax layer. AboutStatement is the
 large split statement, placed in the right two thirds of its section, shared by
 the trust and brands sections, and
@@ -331,9 +334,15 @@ instantly under reduced motion. FaqSection owns the copy, the controlled
 accordion value, and the title and answer splits.
 
 useAboutHeroMotion owns the About hero. It waits for the description split
-and the page transition's reveal point, then rises the title lines and, just
-before they land, the description lines, and scrubs the hero content down at half the
-scroll speed and fades it out while the hero leaves, so the team section covers it. It returns
+and the page transition's reveal point, then rises the title lines through
+masks clipped with `overflow` and a relative `top` offset, so no stacking
+context isolates the blended title text, and, just
+before they land, the description lines, opens every `data-about-title-inset`
+frame on the swap ease by tweening its `--about-title-inset-open` property, and
+scrubs the hero content's `top` down at half the
+scroll speed while it fades every title text fragment, the image frame, and the
+description one by one as the hero leaves, so no transform or opacity isolates
+the blended text from the image trail, so the team section covers it. It returns
 `revealed`, which lifts the hero's hidden CSS rest state.
 
 useAboutHeroTrail owns the About hero's cursor image trail. After the page

@@ -2,12 +2,15 @@
 import { shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import AboutTitle from "./AboutTitle.vue";
-import type { AboutTitleLine } from "./AboutTitle.vue";
+import type { AboutTitleImage, AboutTitleLine } from "./AboutTitle.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
+const titleImages: readonly AboutTitleImage[] = [1, 2, 3, 4].map(
+   (index) => ({ height: 816, src: `/images/hero/${index}.png`, width: 1456 }),
+);
 const titleLines: readonly AboutTitleLine[] = [
    { text: "Welcome to" },
-   { text: "byroose" },
+   { images: titleImages, text: "byroose" },
 ];
 const description =
    "A creative agency that pairs AI content creation with web development, so your brand gets seen and chosen.";
@@ -34,23 +37,6 @@ function setDescriptionSplit(parts: SplitTextResult) {
       class="about-hero section-gutter"
       :data-about-hero-revealed="revealed || undefined"
    >
-      <div class="about-hero-content" data-about-hero-content>
-         <AboutTitle
-            as="h1"
-            data-about-hero-reveal
-            :lines="titleLines"
-            size="display"
-         />
-         <SplitText
-            class="about-hero-description"
-            data-about-hero-reveal
-            as="p"
-            mask="lines"
-            :text="description"
-            type="lines"
-            @split="setDescriptionSplit"
-         />
-      </div>
       <div
          v-if="trailArmed"
          class="about-hero-trail"
@@ -75,6 +61,24 @@ function setDescriptionSplit(parts: SplitTextResult) {
             />
          </span>
       </div>
+      <div class="about-hero-content" data-about-hero-content>
+         <AboutTitle
+            as="h1"
+            data-about-hero-reveal
+            :lines="titleLines"
+            size="display"
+         />
+         <SplitText
+            class="about-hero-description"
+            data-about-hero-drift
+            data-about-hero-reveal
+            as="p"
+            mask="lines"
+            :text="description"
+            type="lines"
+            @split="setDescriptionSplit"
+         />
+      </div>
    </section>
 </template>
 
@@ -88,7 +92,12 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .about-hero-content {
-   @apply flex flex-col items-center text-center;
+   @apply relative flex flex-col items-center text-center;
+}
+
+.about-hero-content :deep(.about-title-text),
+.about-hero-description {
+   @apply text-background mix-blend-difference;
 }
 
 .about-hero-description {
@@ -117,9 +126,18 @@ function setDescriptionSplit(parts: SplitTextResult) {
    visibility: hidden;
 }
 
+.about-hero:not([data-about-hero-revealed]) :deep([data-about-title-inset]) {
+   --about-title-inset-open: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
    .about-hero:not([data-about-hero-revealed]) [data-about-hero-reveal] {
       visibility: inherit;
+   }
+
+   .about-hero:not([data-about-hero-revealed])
+      :deep([data-about-title-inset]) {
+      --about-title-inset-open: 1;
    }
 }
 </style>

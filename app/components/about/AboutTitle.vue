@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import ImageCycle from "@/components/shared/ImageCycle.vue";
 import WaveUnderline from "@/components/shared/WaveUnderline.vue";
 
+export interface AboutTitleImage {
+   height: number;
+   src: string;
+   width: number;
+}
+
 export interface AboutTitleLine {
+   images?: readonly AboutTitleImage[];
    text: string;
    underlined?: string;
 }
@@ -23,9 +31,10 @@ const {
 
 const label = computed(() => lines.map((line) => line.text).join(" "));
 const segmentedLines = computed(() =>
-   lines.map(({ text, underlined = "" }) => {
+   lines.map(({ images, text, underlined = "" }) => {
       const start = underlined ? text.indexOf(underlined) : -1;
-      if (start < 0) return { segments: [{ text, underlined: false }], text };
+      if (start < 0)
+         return { images, segments: [{ text, underlined: false }], text };
 
       const segments = [
          { text: text.slice(0, start), underlined: false },
@@ -33,7 +42,11 @@ const segmentedLines = computed(() =>
          { text: text.slice(start + underlined.length), underlined: false },
       ];
 
-      return { segments: segments.filter((segment) => segment.text), text };
+      return {
+         images,
+         segments: segments.filter((segment) => segment.text),
+         text,
+      };
    }),
 );
 </script>
@@ -54,6 +67,17 @@ const segmentedLines = computed(() =>
             data-about-title-mask
          >
             <span class="about-title-line" data-about-title-line>
+               <span
+                  v-if="line.images"
+                  class="about-title-inset"
+                  data-about-title-inset
+                  ><ImageCycle
+                     class="about-title-inset-content"
+                     data-about-title-inset-content
+                     :images="line.images"
+                     loading="eager"
+                     sizes="sm:448px"
+               /></span>
                <template v-for="segment in line.segments" :key="segment.text">
                   <span v-if="segment.underlined" class="about-title-underlined"
                      >{{ segment.text
@@ -62,7 +86,9 @@ const segmentedLines = computed(() =>
                         :color="underlineColor"
                         :drawn="drawn"
                   /></span>
-                  <template v-else>{{ segment.text }}</template>
+                  <span v-else class="about-title-text" data-about-title-text>{{
+                     segment.text
+                  }}</span>
                </template>
             </span>
          </span>
@@ -99,6 +125,21 @@ const segmentedLines = computed(() =>
 
 .about-title-line {
    @apply whitespace-nowrap;
+}
+
+.about-title-inset {
+   @apply relative inline-block overflow-hidden rounded-[0.06em];
+   height: 0.8em;
+   margin-inline-end: calc(0.12em * var(--about-title-inset-open));
+   vertical-align: -0.06em;
+   width: calc(var(--about-title-inset-width) * var(--about-title-inset-open));
+   --about-title-inset-open: 1;
+   --about-title-inset-width: calc(0.8em * 16 / 9);
+}
+
+.about-title-inset > .about-title-inset-content {
+   @apply absolute top-0 left-1/2 h-full -translate-x-1/2;
+   width: var(--about-title-inset-width);
 }
 
 .about-title-underlined {

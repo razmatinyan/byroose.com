@@ -1819,8 +1819,21 @@ is still visibly settling, because the `power3.out` lines look finished long
 before their tweens end. They rise from `115` percent with a `0.06s` stagger. On a direct request it starts once the description is split, beside
 the header reveal. Until then both stay hidden in CSS. As the reader scrolls,
 the hero content drifts down at half the scroll speed and fades out
-linearly, reaching zero opacity as the hero leaves the top of the viewport, so
+linearly. The drift moves the content through `top` and fades the text and
+the image frame one by one, because a transform or opacity on the content
+itself would isolate the blended text from the trail behind it. It reaches zero opacity as the hero leaves the top of the viewport, so
 the team section appears to arrive faster and covers it.
+
+The "byroose" line opens a 16:9 image frame before the word, the same frame the
+Services hero sets before "Websites": `0.8em` tall, `0.06em` below the
+baseline, with `0.06em` corners, and its width and `0.12em` end margin
+multiplied by `--about-title-inset-open`. It holds an `ImageCycle` of the four
+eager images `1.png` to `4.png` in `public/images/hero`. `0.3s` into the title
+rise the frame opens from the center over `1.1s` on the swap ease while its
+images settle from `1.3` scale, so the centered line spreads around it.
+`AboutTitle` renders the frame for any line that passes `images`. Until the
+reveal the frame is closed in CSS, and reduced motion shows it open with its
+first image.
 
 Moving a mouse across the hero leaves a trail of work images. Every time the
 pointer has travelled a third of the viewport width, counting horizontal and
@@ -1831,8 +1844,15 @@ random tilt of up to `10` degrees. It lands from `1.3` scale over `0.6s` on
 the pointer's last movement while it turns to a new random tilt. `0.1s` after
 the throw it shrinks to zero over `0.3s` on `back.in(1.5)`. The images are the
 seven files in `public/images/work`, cycled in order, in `rounded-xl` 3:4
-frames `clamp(9rem, 15vw, 16rem)` wide. They paint above the hero content and
-below the team section, never take the pointer, and stay hidden from
+frames `clamp(9rem, 15vw, 16rem)` wide. They paint behind the hero text and
+below the team section. The title text and the description are set in
+`background` with `mix-blend-difference`, as the Services dark section intro
+is, so they read black over the canvas and invert over a passing image, and
+stay readable. The title's image frame does not blend. Because a clip path
+or a transform would isolate the blended text from the canvas, the hero title
+rises through `overflow: clip` on its masks and a relative `top` offset on its
+lines, the same `150` percent of the line height, instead of the clip path and
+`yPercent` the other About titles use. The images never take the pointer, and stay hidden from
 assistive technology. The layer holds two recycled frames per image, so a fast
 pointer reuses a frame only after thirteen newer ones. The trail starts at the
 page transition's reveal point, runs only for a fine hover pointer, and is
