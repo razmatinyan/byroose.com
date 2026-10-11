@@ -15,10 +15,12 @@ interface CycleImage {
 const {
    images,
    interval = 750,
+   loading = "lazy",
    sizes,
 } = defineProps<{
    images: readonly CycleImage[];
    interval?: number;
+   loading?: "eager" | "lazy";
    sizes: string;
 }>();
 
@@ -59,7 +61,7 @@ function showNextImage() {
          :width="image.width"
          :height="image.height"
          :sizes="sizes"
-         loading="lazy"
+         :loading="loading"
          draggable="false"
       />
    </div>
