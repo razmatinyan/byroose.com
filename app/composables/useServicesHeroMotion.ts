@@ -1,5 +1,9 @@
 import { onMounted, onScopeDispose, readonly, shallowRef, toValue } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import {
+   servicesHeroInsetContentScale,
+   servicesHeroInsetOpenProperty,
+} from "@/lib/services-hero";
 import { swapEase } from "@/lib/swap-timing";
 import {
    titleLineRevealOffset,
@@ -19,11 +23,9 @@ const selectors = {
    titleMask: "[data-services-hero-title-mask]",
 } as const;
 
-const insetOpenProperty = "--services-hero-inset-open";
 const insetRevealStart = 0.3;
 const insetRevealGap = 0.3;
 const insetRevealDuration = 1.1;
-const insetContentScale = 1.3;
 const heroDrift = 0.5;
 
 function queryAll(root: HTMLElement, selector: string) {
@@ -45,7 +47,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
       timeline.to(
          frame,
          {
-            [insetOpenProperty]: 1,
+            [servicesHeroInsetOpenProperty]: 1,
             duration: insetRevealDuration,
             ease: swapEase,
          },
@@ -78,8 +80,8 @@ export function useServicesHeroMotion(scope: MotionScope) {
 
       gsap.set(titleMasks, { clipPath: "inset(0)" });
       gsap.set(titleLines, { yPercent: titleLineRevealOffset });
-      gsap.set(insets, { [insetOpenProperty]: 0 });
-      gsap.set(insetContents, { scale: insetContentScale });
+      gsap.set(insets, { [servicesHeroInsetOpenProperty]: 0 });
+      gsap.set(insetContents, { scale: servicesHeroInsetContentScale });
       gsap.set(revealTargets, { visibility: "inherit" });
 
       const timeline = gsap

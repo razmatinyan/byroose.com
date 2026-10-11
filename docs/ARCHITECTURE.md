@@ -53,7 +53,9 @@ app/
     usePageTransition.ts
     usePageTransitionMotion.ts
     useServicesHeroMotion.ts
+    useServicesMediaFlight.ts
     useServicesMotion.ts
+    useServicesRevealMotion.ts
     useServicesStatementMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -70,6 +72,7 @@ app/
     icons.ts
     image-parallax.ts
     ribbon-path.ts
+    services-hero.ts
     split-text.ts
     stack-reveal.ts
     surfaces.ts
@@ -141,13 +144,28 @@ on landing sections.
 ### Services components
 
 app/components/services contains the Services route's sections. ServicesPage
-composes ServicesHero and ServicesStatementSection, and app/pages/services.vue
-renders it with the route metadata. ServicesHero owns the title lines, the
-image list, the About link, and its TrailingTooltip. A title line can carry
-one `data-services-hero-inset` frame placed inline in the line: the link
-frame, a NuxtLink to `/about`, or the media frame, an ImageCycle.
-ServicesStatementSection owns the statement copy and its split. The sections
-own their copy and do not depend on landing or About components.
+composes ServicesHero, ServicesStatementSection, a light ServicesOfferSection
+for AI Content Creation, a dark one for Website Development, and
+ServicesCtaSection, and app/pages/services.vue renders it with the route
+metadata. ServicesPage also owns both offers' copy and blocks, and
+the `data-services-flight` layer, an ImageCycle of the hero images that is
+absolutely positioned in the page and travels from the hero to the first
+block. ServicesHero owns the title lines, the About link, and its
+TrailingTooltip. A title line can carry one `data-services-hero-inset` frame
+placed inline in the line: the link frame, a NuxtLink to `/about`, or the
+media frame, which is the flight's `data-services-flight-origin` and holds only
+a still poster for reduced motion. ServicesStatementSection owns the statement
+copy and its split. ServicesOfferSection receives a title, a description, a
+`surface` of `light` or `dark`, and a list of blocks, each with a title, a
+description, a tone, and either its own images or the `flight` flag that makes
+its media slot the flight's `data-services-flight-target`. The dark surface
+adds a `data-services-reveal-backdrop` layer at `-z-10` without isolating
+the section, so the intro text can blend with it and the page behind it.
+ServicesCtaSection owns the closing call to action copy and its link to
+`/contact`. app/lib/services-hero.ts holds the hero images
+and the inset open property and content scale that the hero motion and the
+flight share. The sections own their copy and do not depend on landing or
+About components.
 
 ### Layout components
 
@@ -334,6 +352,25 @@ to `1` and settling its `data-services-hero-inset-content` from a larger
 scale, and scrubs the hero
 content down at half the scroll speed while it fades out, as the About hero
 does. It returns `revealed`, which lifts the hero's hidden CSS rest state.
+
+useServicesMediaFlight owns the Services image flight. On every GSAP ticker
+frame, after Lenis has scrolled, it measures the hero's media frame and the
+first block's media slot against the page, interpolates the position, size,
+and corner radius between them by the progress of a ScrollTrigger that runs
+from the top of the page until the slot's center reaches the viewport's
+center, and writes them to the flight layer. While the hero frame is still
+opening, it also matches the frame's content scale from its
+`--services-hero-inset-open` value. Reduced motion keeps the layer in the slot.
+
+useServicesRevealMotion owns the scroll reveals of ServicesOfferSection and
+ServicesCtaSection. It waits for every `data-services-reveal-text` line split,
+then rises each text's lines once with the shared line reveal timing when it
+enters, and rises every `data-services-reveal-rise` item once with the word
+reveal timing. When the scope has a `data-services-reveal-backdrop` layer, it
+extends the layer one viewport above the section and scrubs its clip path from
+a rounded point at the bottom center of the viewport to the full width, over
+`0.8` of a viewport of scroll, as useServicesMotion does for the home dark
+panel. Reduced motion shows the text and the backdrop at rest.
 
 useServicesStatementMotion owns the Services statement. It waits for the
 statement's line and word split, rises the lines once with the shared line

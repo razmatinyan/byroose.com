@@ -1,30 +1,17 @@
 <script setup lang="ts">
 import { defineAsyncComponent, useTemplateRef } from "vue";
-import ImageCycle from "@/components/shared/ImageCycle.vue";
 import { appIcons } from "@/lib/icons";
+import { servicesHeroImages } from "@/lib/services-hero";
 
 const TrailingTooltip = defineAsyncComponent(
    () => import("@/components/shared/TrailingTooltip.vue"),
 );
-
-interface HeroImage {
-   height: number;
-   src: string;
-   width: number;
-}
 
 interface HeroTitleLine {
    inset?: "link" | "media";
    lead: string;
    trail?: string;
 }
-
-const websiteImages: readonly HeroImage[] = [
-   { height: 816, src: "/images/hero/1.png", width: 1456 },
-   { height: 816, src: "/images/hero/2.png", width: 1456 },
-   { height: 816, src: "/images/hero/3.png", width: 1456 },
-   { height: 816, src: "/images/hero/4.png", width: 1456 },
-];
 
 const titleLines: readonly HeroTitleLine[] = [
    { inset: "link", lead: "We ", trail: "create" },
@@ -33,6 +20,7 @@ const titleLines: readonly HeroTitleLine[] = [
 ];
 
 const aboutLabel = "About";
+const [poster] = servicesHeroImages;
 
 function lineText({ lead, trail = "" }: HeroTitleLine) {
    return `${lead}${trail}`;
@@ -93,13 +81,19 @@ function showAboutTooltip() {
                      v-else-if="line.inset === 'media'"
                      class="services-hero-inset services-hero-media"
                      data-services-hero-inset
+                     data-services-flight-origin
                      aria-hidden="true"
-                     ><ImageCycle
-                        class="services-hero-inset-content"
+                     ><NuxtImg
+                        v-if="poster"
+                        class="services-hero-inset-content services-hero-poster"
                         data-services-hero-inset-content
-                        :images="websiteImages"
+                        :src="poster.src"
+                        alt=""
+                        :width="poster.width"
+                        :height="poster.height"
+                        sizes="sm:448px"
                         loading="eager"
-                        sizes="sm:448px" /></span
+                        draggable="false" /></span
                   ><span aria-hidden="true">{{ line.trail }}</span></span
                >
             </span>
@@ -167,10 +161,13 @@ function showAboutTooltip() {
 }
 
 .services-hero-media {
-   @apply bg-muted;
    --services-hero-inset-width: calc(
       var(--services-hero-inset-height) * 16 / 9
    );
+}
+
+.services-hero-poster {
+   @apply hidden object-cover select-none motion-reduce:block;
 }
 
 .services-hero-link {

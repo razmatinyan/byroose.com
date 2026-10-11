@@ -41,6 +41,12 @@
 	--color-brand-violet-foreground: var(--brand-violet-foreground);
 	--color-brand-pink: var(--brand-pink);
 	--color-brand-pink-foreground: var(--brand-pink-foreground);
+	--color-brand-pink-tint: var(--brand-pink-tint);
+	--color-brand-blue-tint: var(--brand-blue-tint);
+	--color-brand-green-tint: var(--brand-green-tint);
+	--color-brand-orange-deep: var(--brand-orange-deep);
+	--color-brand-violet-deep: var(--brand-violet-deep);
+	--color-brand-yellow-deep: var(--brand-yellow-deep);
 	--color-brand-cream: var(--brand-cream);
 	--color-brand-cream-foreground: var(--brand-cream-foreground);
 	--color-brand-soft: var(--brand-soft);
@@ -126,6 +132,12 @@
 	--brand-violet-foreground: oklch(1 0 0);
 	--brand-pink: oklch(0.8778 0.0665 334.17);
 	--brand-pink-foreground: oklch(0.1796 0.0039 48.5);
+	--brand-pink-tint: oklch(0.955 0.022 334);
+	--brand-blue-tint: oklch(0.955 0.02 265);
+	--brand-green-tint: oklch(0.96 0.025 155);
+	--brand-orange-deep: oklch(0.27 0.045 40);
+	--brand-violet-deep: oklch(0.26 0.05 293);
+	--brand-yellow-deep: oklch(0.29 0.035 92);
 	--brand-cream: oklch(0.9441 0.0215 76.53);
 	--brand-cream-foreground: oklch(0.1796 0.0039 48.5);
 	--brand-soft: oklch(0.5 0.0184 70.39);
@@ -177,6 +189,12 @@
 	--brand-yellow-foreground: oklch(0.1796 0.0039 48.5);
 	--brand-violet: oklch(0.541337 0.246586 293.009);
 	--brand-violet-foreground: oklch(1 0 0);
+	--brand-pink-tint: oklch(0.24 0.02 334);
+	--brand-blue-tint: oklch(0.235 0.025 265);
+	--brand-green-tint: oklch(0.24 0.02 155);
+	--brand-orange-deep: oklch(0.9 0.035 40);
+	--brand-violet-deep: oklch(0.9 0.035 293);
+	--brand-yellow-deep: oklch(0.91 0.04 92);
 	--brand-cream: oklch(0.225 0.006 55);
 	--brand-cream-foreground: oklch(0.9441 0.0215 76.53);
 	--brand-soft: oklch(0.74 0.018 70.39);

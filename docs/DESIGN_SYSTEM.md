@@ -47,6 +47,8 @@ visual and accessibility review.
 | `brand-yellow` | Butter yellow, `#F8E5AA` | Warm editorial surfaces and selective highlights |
 | `brand-violet` | Vivid violet, `#7C3AED` | Expressive editorial surfaces and selective highlights |
 | `accent` and `brand-pink` | Soft pink | Playful highlights and alternate surfaces |
+| `brand-pink-tint`, `brand-blue-tint`, and `brand-green-tint` | Very light pink, blue, and green, near `oklch(0.955)` | Quiet tinted blocks that use the default `foreground` ink, such as the Services offer blocks |
+| `brand-orange-deep`, `brand-violet-deep`, and `brand-yellow-deep` | Deep, low-chroma orange, violet, and yellow, near `oklch(0.27)` | Quiet tinted blocks on a `foreground` dark surface with `background` ink. They turn light in the dark theme, where that surface turns light too |
 | `muted` | Pale warm neutral, `#EEE3D5` | Quiet backgrounds and placeholders |
 | `brand-soft` | Mid neutral | Secondary labels and low-emphasis copy |
 | `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
@@ -1926,8 +1928,9 @@ the `lg` breakpoint the drawn lines are hidden.
 
 ### Services page
 
-The Services route stacks a centered hero and a grey statement section,
-followed by the site footer. The user is still shaping the sections that follow.
+The Services route stacks a centered hero, a grey statement section, a light
+AI Content Creation section, a dark Website Development section, and a dark
+call to action, followed by the site footer.
 
 The hero repeats the About hero's frame: it fills the first screen below the
 header except for `--services-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the
@@ -1959,9 +1962,11 @@ twenty-four units, so the glyph scales to `2`, which brings the arrow itself
 most of the way to the padding. Hovering it opens the hero's text-only TrailingTooltip, "About"
 with an arrow up right glyph, and keyboard focus shows the standard ring.
 
-The image frame is 16:9 and holds an `ImageCycle` that cuts through four images
+The image frame is 16:9 and shows an `ImageCycle` that cuts through four images
 from `public/images/hero` every `750ms`, the way the About section headings do.
-The images are decorative and load eagerly.
+The images are decorative and load eagerly. The slider is not inside the frame:
+it is a page-level layer that sits exactly on the frame at the top of the page
+and becomes the first AI Content Creation block's image, as described below.
 
 The title rises with the About hero timing at the page transition's reveal
 point, or after the fonts load on a direct request. `0.5s` later, while the
@@ -1985,9 +1990,64 @@ lines rise once with the services description timing, `1.5s`, `power3`, and a
 opacity in reading order, from when the text top reaches 65 percent of the
 viewport until its bottom reaches the viewport middle, with about three words
 fading in at a time, so the read part of the statement stays dark while the
-rest waits in grey. Reduced motion shows the title, both open frames without
-image cycling, and the statement at full opacity, without the rise, the drift, or the
-scrub.
+rest waits in grey. Reduced motion shows the title, both open frames with a
+still first image in the image frame, and the statement at full opacity,
+without the rise, the drift, or the scrub.
+
+The AI Content Creation section sits on the white `background` canvas, like
+the hero. Its intro repeats the home services panel: the title in bold
+`text-service` with `-0.045em` tracking on the left, and the description below
+it in the home service description style, two thirds wide and aligned right
+from `md`. Three blocks follow, Reels, Videos, and Images with AI, stacked
+`0.75rem` apart inside the page gutter. Each block has
+`clamp(1.5rem, 3vw, 3rem)` corners, `clamp(1rem, 2.5vw, 2rem)` padding, and its
+own light tint, `brand-pink-tint`, `brand-blue-tint`, and `brand-green-tint`.
+From `md` a block splits into two columns: the left holds the `section-title`
+title at `0.88` leading at the top, then the description, semibold
+`brand-subtle`, darker than `muted-foreground` for contrast on the tints, at `text-lg` and `text-xl` from `md` with `1.15` leading and `-0.02em` tracking, `2rem`
+below the title and `3rem` from `md`. The right holds a 4:3 media slot with
+`rounded-2xl` corners. Below `md` the media follows the text. The Videos block
+shows one image and the Images block cycles four work images. Every title and
+description rises line by line from its line masks with the services
+description timing when it reaches 82 percent of the viewport.
+
+The Reels block has no image of its own. Its slot receives the hero slider,
+which flies there with the scroll: from the top of the page until the slot's
+center reaches the viewport's center, the slider's position, size, and corner
+radius move linearly from the hero frame to the slot. Because the page scrolls
+at the same time, the slider barely moves on screen. It leaves the fading hero
+title, grows to the slot's size, and the statement section and the AI Content
+Creation intro, both above it at `z-10`, slide over it. It sits at `z-5`, above
+the blocks, so the Reels block arrives under it as it lands. While the hero
+frame is still opening, the slider follows its width and its `1.3` to `1`
+scale. Reduced motion places the slider in the Reels slot at rest.
+
+The Website Development section repeats the AI Content Creation layout on a
+dark `foreground` surface with `background` ink. Its intro title is "Website
+Development" with the home Website Development description, and its three
+blocks, "Designed and coded from scratch", "Sites that sell and scale", and
+"Connected and easy to find", cover custom design and code, the kinds of sites
+built, and CRM, API, and technical SEO work. They sit on `brand-orange-deep`,
+`brand-violet-deep`, and `brand-yellow-deep`, with descriptions in
+`background` at 75 percent. The dark surface is revealed like the home
+services dark panel: as the section's top enters the viewport it grows from a
+rounded `32px` point at the bottom center of the viewport to the full width,
+over `0.8` of a viewport of scroll. It rises behind the page content, so the
+last AI Content Creation block stays on top of it. The surface marks the
+header as dark. As in the home dark panel, the intro title and description
+are set in `background` with `mix-blend-difference`, so they read black over
+the light canvas and turn light where the dark surface has grown behind them.
+
+The call to action follows on the same dark surface, so the two read as one
+dark block that ends in a straight edge above the footer. It fills at least
+the viewport, centered, with "Have an idea?" and "Let's build it." on two
+bold lines at the About call to action's display size, `-0.05em` tracking,
+and `0.88` leading, and a large `light` Start a project action to `/contact`
+with an arrow right glyph and the hover bounce. The lines rise from their line
+masks and the action rises `0.3s` later when they reach 82 percent of the
+viewport. The action's rise mask clips only vertically, so the hover bounce
+can grow the action past its sides without cutting its corners. Reduced motion shows the dark surface, the text, and the action at
+rest.
 
 ### Header motion
 
