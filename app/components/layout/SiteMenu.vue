@@ -33,7 +33,6 @@ const emit = defineEmits<{
 
 const { menuButton, menuLineBottom, menuLineTop, menuPanel, siteMenuRoot } =
 	useSiteMenuMotion(() => open)
-const route = useRoute()
 const { isActive: isTransitionActive, phase: transitionPhase } =
 	usePageTransition()
 
@@ -108,11 +107,8 @@ async function closeMenu(returnFocus = false) {
 	menuButton.value?.focus()
 }
 
-function handleNavigate(href: string, event: MouseEvent) {
-	const startsTransition =
-		event.defaultPrevented &&
-		href !== route.path &&
-		!isTransitionActive.value
+function handleNavigate(event: MouseEvent) {
+	const startsTransition = event.defaultPrevented && !isTransitionActive.value
 
 	if (!startsTransition) closeMenu()
 }
@@ -212,7 +208,7 @@ onKeyStroke(
 							<SiteMenuLink
 								:href="item.href"
 								:label="item.label"
-								@navigate="handleNavigate(item.href, $event)"
+								@navigate="handleNavigate"
 							/>
 						</li>
 					</ul>

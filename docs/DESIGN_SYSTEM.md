@@ -693,15 +693,16 @@ component.
 | Name | Timing | Source and current users |
 | --- | --- | --- |
 | Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle. The Services hero link and image frames use its ease over `1.1s` |
-| Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top and the home logo |
+| Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top |
 
 Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
 
 ### Page transitions
 
 Every page change runs an overlap transition from `usePageTransitionMotion`,
-passed to NuxtPage in `app/app.vue`. The first page load never runs it, so a
-direct home request still opens with the preloader.
+passed to NuxtPage in `app/app.vue`. A link to the current page runs the same
+transition and replaces the page with a fresh copy of itself. The first page
+load never runs it, so a direct home request still opens with the preloader.
 
 The leaving page stays on screen exactly where the reader left it and moves
 up a quarter of the viewport height while it scales to `0.97`. Before the
@@ -2096,10 +2097,10 @@ of closing it. A menu opened by a click, a tap, or the keyboard never closes on
 pointer leave and stays open until the control, a link, an outside click, or
 Escape closes it. Touch and pen pointers never open the menu on hover.
 
-A menu link that leads to another page keeps the menu open until the page
-transition takes it over, so the open menu leaves with the old page as
-described in Page transitions. A link to the current page, or one followed while a
-transition is already running, closes the menu with its normal animation.
+A menu link keeps the menu open until the page transition takes it over, so
+the open menu leaves with the old page as described in Page transitions. This
+includes a link to the current page, which replays that page. A link followed
+while a transition is already running closes the menu with its normal animation.
 Any menu close during a page transition is instant.
 
 Both header actions share the dark action surface, so over a dark block they
@@ -2164,9 +2165,9 @@ and a server-rendered piece never flashes before it rises. Reduced motion shows
 everything at rest without the rise.
 
 The header logo always renders a real link to the home route so it stays
-crawlable and opens in a new tab on a modified click. On the home route a plain
-click scrolls smoothly to the top through the shared Lenis contract instead of
-repeating the current navigation. Every other route follows the link.
+crawlable and opens in a new tab on a modified click. A plain click always
+follows the link, so on the home route it replays the home page through the
+page transition like any other link to the current page.
 
 The header logo reads on every surface through `mix-blend-mode: difference`.
 It is painted in the `background` token, so it shows as black on the canvas and

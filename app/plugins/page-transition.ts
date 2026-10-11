@@ -1,4 +1,6 @@
 import { computed, readonly, shallowRef } from 'vue'
+import { isNavigationFailure, NavigationFailureType } from 'vue-router'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 type Cleanup = () => void
 type PageTransitionPhase = 'idle' | 'moving' | 'preparing'
@@ -11,6 +13,7 @@ export default defineNuxtPlugin({
 		const isActive = computed(() => phase.value !== 'idle')
 		const pendingCleanups: Cleanup[] = []
 		const revealWaiters: Array<() => void> = []
+		const replayCount = shallowRef(0)
 		let isClaimed = false
 		let releaseScroll: (() => void) | null = null
 		let releaseRefresh: (() => Promise<void>) | null = null
@@ -20,6 +23,15 @@ export default defineNuxtPlugin({
 			isClaimed = false
 			releaseScroll = nuxtApp.$smoothScroll.lock()
 			releaseRefresh = nuxtApp.$smoothScroll.holdRefresh()
+		}
+
+		function replay() {
+			begin()
+			replayCount.value += 1
+		}
+
+		function pageKey(route: RouteLocationNormalizedLoaded) {
+			return `${route.path}:${replayCount.value}`
 		}
 
 		function claim() {
@@ -69,6 +81,14 @@ export default defineNuxtPlugin({
 				(to, from) => !isActive.value || to.path === from.path,
 			)
 			nuxtApp.$router.afterEach((to, from, failure) => {
+				if (
+					isNavigationFailure(failure, NavigationFailureType.duplicated) &&
+					!isActive.value
+				) {
+					replay()
+					return
+				}
+
 				if (failure || !from.matched.length || to.path === from.path) return
 
 				begin()
@@ -87,6 +107,7 @@ export default defineNuxtPlugin({
 					finish,
 					isActive,
 					move,
+					pageKey,
 					phase: readonly(phase),
 					reveal,
 					waitForReveal,

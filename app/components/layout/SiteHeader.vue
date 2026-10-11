@@ -37,8 +37,6 @@ const resolvedNavItems = computed(() => navItems ?? defaultNavItems);
 const menuOpen = shallowRef(false);
 const headerCtaVariant = computed(() => (menuOpen.value ? "default" : "dark"));
 const isDesktop = useMediaQuery("(min-width: 64rem)");
-const route = useRoute();
-const { scrollTo } = useSmoothScroll();
 const { headerMode, headerRoot, navRevealed } = useSiteHeaderMotion();
 const headerActions = useTemplateRef<HTMLElement>("headerActions");
 const { onDarkSurface } = useHeaderSurface(headerRoot, headerActions);
@@ -61,15 +59,8 @@ function closeMenu() {
    setMenuOpen(false);
 }
 
-function handleLogoClick(event: MouseEvent) {
+function handleLogoClick() {
    closeMenu();
-
-   if (route.path !== "/") return;
-   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-      return;
-   }
-
-   scrollTo(0);
 }
 
 watch([headerMode, isDesktop], ([mode, desktop]) => {
