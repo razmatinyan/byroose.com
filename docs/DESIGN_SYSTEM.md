@@ -1827,8 +1827,8 @@ The team section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
 "Who stands behind byroose" sits on the left with a primary orange wave under
 "behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan,
-Founder & Creative Director, on the right, and Razmik Matinyan, Co-Founder &
-Senior Web Developer, on the left, pulled up by `0.45` of the portrait width
+Co-Founder & Creative Director, on the right, and Razmik Matinyan, Co-Founder &
+Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width
 from `md`. The name and the role share the section's ink. Ruzan's portrait reuses
 `public/images/founder.jpg`. A member without a `portrait` shows the striped
 `MediaPlaceholder` until a photo exists.
@@ -2152,13 +2152,16 @@ competing scroll container that breaks sticky positioning.
 
 ### Hover bounce
 
-Actions bounce on hover. `useHoverBounce` attaches GSAP scale tweens to a target,
+Actions can bounce on hover. `useHoverBounce` attaches GSAP scale tweens to a target,
 scales it to `1.08` with an elastic ease, and settles it back with a short
-overshoot when the pointer leaves. The `cta-sm` and `cta-lg` button sizes share
-this motion character.
+overshoot when the pointer leaves.
 
-Every size of the shared button primitive and the header navigation control
-also enable press feedback. Pointer down and keyboard activation scale the control to `0.96`, then
+The shared button primitive only bounces when it receives `bounceOnHover`, which
+defaults to `false`. With it, every size gets press feedback and the
+`cta-sm`, `cta-lg`, and `cta-icon` sizes also get the hover bounce. Without it,
+a button has neither. The About team card action and the member dialog close
+action currently opt in. The header navigation control always enables press
+feedback. Pointer down and keyboard activation scale the control to `0.96`, then
 release returns it to `1.08` while still hovered or `1` at rest. Disabled controls
 ignore the press state. Hover enlargement only runs for hover-capable pointers,
 while press feedback also works with touch. Readers who prefer reduced motion
@@ -2256,7 +2259,8 @@ surface names:
 
 `destructive`, `secondary`, `ghost`, `link`, and `inverse` are absent from that
 map on purpose. They keep their plain color hover at every size and render no
-rollover markup. A CTA-size button still bounces regardless of its variant.
+rollover markup. A CTA-size button that opts into `bounceOnHover` bounces
+regardless of its variant.
 
 Tone names resolve through `app/lib/surfaces.ts` to the `surface-*` utilities,
 which pair a background with its readable foreground. `surface-dark` was added

@@ -419,8 +419,8 @@ resolves instantly under reduced motion. SiteNavLink owns the markup.
 useHoverBounce owns the hover and press scale states of action surfaces. It
 receives a target plus optional hover and press behavior, composes useGsap, and
 keeps its listeners and tweens inside a motion media context. The button
-primitive enables press feedback for every size and hover bounce for call to
-action sizes, and SiteMenu enables press feedback only on the compact navigation
+primitive calls it only when its `bounceOnHover` prop is set, then enables press
+feedback for every size and hover bounce for call to action sizes, and SiteMenu enables press feedback only on the compact navigation
 control. This leaves generic markup, variant contracts, and
 accessibility behavior in their owning components.
 

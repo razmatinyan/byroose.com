@@ -13,6 +13,7 @@ interface Props extends PrimitiveProps {
    size?: ButtonVariants["size"];
    class?: HTMLAttributes["class"];
    rolloverTones?: RolloverTones;
+   bounceOnHover?: Boolean;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
    asChild = false,
    class: className,
    rolloverTones,
+   bounceOnHover = false,
    size = "default",
    variant = "default",
 } = defineProps<Props>();
@@ -57,7 +59,10 @@ const actionClasses = computed(() => {
 const rolloverTarget = () =>
    rolloverLayers.value ? buttonElement.value : null;
 
-// useHoverBounce(buttonElement, { hover: isCallToAction, press: true })
+if (bounceOnHover) {
+   useHoverBounce(buttonElement, { hover: isCallToAction, press: true });
+}
+
 useHoverRollover(rolloverTarget);
 </script>
 
