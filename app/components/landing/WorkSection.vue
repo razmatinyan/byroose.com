@@ -78,6 +78,8 @@ const caseStudies: CaseStudy[] = [
 	},
 ];
 
+const tooltipPreload = caseStudies.map((item) => item.image);
+
 const workRoot = useTemplateRef<HTMLElement>("workRoot");
 const titleSplit = shallowRef<SplitTextResult>();
 const {
@@ -141,6 +143,7 @@ function activatePanelTooltip(image: string, label: string) {
 			:active="tooltipActive"
 			:image="tooltipImage"
 			:label="tooltipLabel"
+			:preload="tooltipPreload"
 			:size="tooltipSize"
 		/>
 	</section>

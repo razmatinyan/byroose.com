@@ -1214,7 +1214,15 @@ layers, and each completion clears only the layers beneath itself, so a newer
 image is never removed by an older tween. The reveal runs only when the tooltip
 was already open before the image changed. Opening from a closed state, and
 reduced motion, both replace the thumbnail in one step instead, so a stale
-project image never shows while the panel is wiping open. The
+project image never shows while the panel is wiping open.
+
+A new layer never shows before its image has loaded. It stays invisible while
+it loads, and only then reveals over the previous layer or, when opening from a
+closed state, replaces it, so the thumbnail frame never shows an empty box
+during a swap. Owners can pass the images they will show through the `preload`
+prop, which fetches each thumbnail with the same size settings while the
+tooltip is idle. The work section preloads its case images and the services
+section its service images. The
 movement stays on two-dimensional transforms with `force3D: false`, and the
 tooltip has no persistent `will-change` promotion, so its settled text remains
 sharp. Reduced motion removes the movement delay and clip transition.
@@ -1286,7 +1294,8 @@ paints above the image with `mix-blend-mode: exclusion`, so the letters that
 cross the frame invert against the photograph. A visually hidden copy
 carries the accessible name while both visual words stay hidden from assistive
 technology. The frame cycles through the seven images in `public/images/work`,
-cutting to the next one every `750ms` without a crossfade. They are decorative,
+cutting to the next one every `750ms` without a crossfade, once all seven
+images have loaded. They are decorative,
 so they carry an empty alt.
 
 The handoff from the cards to the panel starts only once the reader has fully
@@ -1335,7 +1344,8 @@ panel. `useMoreWorksMotion` owns the panel's own motion:
   the gap always stays open.
 - Pin: the track pins for one viewport of scroll once its top reaches the
   viewport top.
-- Cycling: images only cycle while the panel is on screen.
+- Cycling: images only cycle while the panel is on screen and after every
+  panel image has loaded.
 
 The track carries `pointer-events: none` and only the panel accepts input.
 Reduced motion drops the runway, the pin, the fade, the slowdown, the reveal,

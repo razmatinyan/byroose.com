@@ -28,8 +28,10 @@ const root = useTemplateRef<HTMLElement>("root");
 const activeIndex = shallowRef(0);
 const visible = useElementVisibility(root);
 const motionPreference = usePreferredReducedMotion();
+const { loaded } = useImagesLoaded(root);
 const cycling = computed(
    () =>
+      loaded.value &&
       visible.value &&
       motionPreference.value !== "reduce" &&
       images.length > 1,

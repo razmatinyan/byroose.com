@@ -8,11 +8,13 @@ import {
 	useTemplateRef,
 	watch,
 } from "vue";
+import { whenImageLoaded } from "@/composables/useImagesLoaded";
 import type { TrailingTooltipSize } from "@/composables/useTrailingTooltip";
 import { stackRevealEase } from "@/lib/stack-reveal";
 
 interface TooltipLayer {
 	id: number;
+	ready: boolean;
 	src: string;
 }
 
@@ -21,16 +23,26 @@ const {
 	icon,
 	image = "",
 	label = "See Full Project",
+	preload = [],
 	size = "default",
 } = defineProps<{
 	active?: boolean;
 	icon?: string;
 	image?: string;
 	label?: string;
+	preload?: readonly string[];
 	size?: TrailingTooltipSize;
 }>();
 
 const swapDuration = 0.6;
+const thumbnail = {
+	alt: "",
+	draggable: "false",
+	height: 96,
+	loading: "eager",
+	sizes: "sm:448px",
+	width: 96,
+} as const;
 
 const tooltip = useTemplateRef<HTMLElement>("tooltip");
 const media = useTemplateRef<HTMLElement>("media");
@@ -44,12 +56,29 @@ function keepLayersFrom(id: number) {
 	layers.value = layers.value.filter((layer) => layer.id >= id);
 }
 
-async function revealLayer(id: number) {
-	await nextTick();
-	const element = media.value?.querySelector<HTMLElement>(
-		`[data-tooltip-layer="${id}"]`,
+function hasLayer(id: number) {
+	return layers.value.some((layer) => layer.id === id);
+}
+
+function markLayerReady(id: number) {
+	layers.value = layers.value.map((layer) =>
+		layer.id === id ? { ...layer, ready: true } : layer,
 	);
-	if (!element) {
+}
+
+async function showLayer(id: number, reveal: boolean) {
+	await nextTick();
+	const element = media.value?.querySelector(`[data-tooltip-layer="${id}"]`);
+	if (!(element instanceof HTMLImageElement)) {
+		if (hasLayer(id)) keepLayersFrom(id);
+		return;
+	}
+
+	await whenImageLoaded(element);
+	if (!hasLayer(id)) return;
+
+	markLayerReady(id);
+	if (!reveal) {
 		keepLayersFrom(id);
 		return;
 	}
@@ -75,13 +104,15 @@ watch(
 		const revealsOverPrevious =
 			Boolean(previous?.[0]) && isActive && layers.value.length > 0;
 
+		const layer = { id, ready: false, src: nextImage };
+
 		if (!revealsOverPrevious || prefersReducedMotion.value) {
-			layers.value = [{ id, src: nextImage }];
-			return;
+			layers.value = [layer];
+			return showLayer(id, false);
 		}
 
-		layers.value = [...layers.value, { id, src: nextImage }];
-		return revealLayer(id);
+		layers.value = [...layers.value, layer];
+		return showLayer(id, true);
 	},
 	{ flush: "post", immediate: true },
 );
@@ -163,20 +194,24 @@ onScopeDispose(() => {
 				<NuxtImg
 					v-for="layer in layers"
 					:key="layer.id"
+					v-bind="thumbnail"
 					:data-tooltip-layer="layer.id"
+					:data-ready="layer.ready"
 					class="trailing-tooltip-image"
 					:src="layer.src"
-					alt=""
-					width="96"
-					height="96"
-					sizes="sm:448px"
-					loading="eager"
-					draggable="false"
 				/>
 			</span>
 			<span class="trailing-tooltip-label">
 				{{ label }}
 				<Icon v-if="icon" class="trailing-tooltip-icon" :name="icon" />
+			</span>
+			<span v-if="preload.length" class="trailing-tooltip-preload">
+				<NuxtImg
+					v-for="src in preload"
+					:key="src"
+					v-bind="thumbnail"
+					:src="src"
+				/>
 			</span>
 		</div>
 	</Teleport>
@@ -205,6 +240,14 @@ onScopeDispose(() => {
 .trailing-tooltip-image {
 	@apply absolute inset-0 size-full object-cover;
 	border-radius: inherit;
+}
+
+.trailing-tooltip-image[data-ready="false"] {
+	@apply invisible;
+}
+
+.trailing-tooltip-preload {
+	@apply hidden;
 }
 
 .trailing-tooltip-label {

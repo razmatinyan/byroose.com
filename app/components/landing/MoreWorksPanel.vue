@@ -56,14 +56,19 @@ const { cycling } = useMoreWorksMotion(track, {
 	startWord,
 });
 
+const { loaded: imagesLoaded } = useImagesLoaded(media);
+
 const { pause, resume } = useIntervalFn(showNextImage, imageInterval, {
 	immediate: false,
 });
 
-watch(cycling, (active) => {
-	if (active) resume();
-	else pause();
-});
+watch(
+	() => cycling.value && imagesLoaded.value,
+	(active) => {
+		if (active) resume();
+		else pause();
+	},
+);
 
 watch(activeImage, () => {
 	if (previewing.value) showPreview();

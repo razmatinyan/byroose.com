@@ -40,6 +40,8 @@ const servicesData: Service[] = [
    },
 ];
 
+const tooltipPreload = servicesData.map((service) => service.image);
+
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
 const introSplits = shallowRef<(SplitTextResult | undefined)[]>(
    introPhrases.map(() => undefined),
@@ -191,6 +193,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
          :active="tooltipActive"
          :image="tooltipImage"
          :label="tooltipLabel"
+         :preload="tooltipPreload"
          :size="tooltipSize"
       />
    </section>
