@@ -183,7 +183,7 @@ function showAboutTooltip() {
 }
 
 .services-hero-link-icon {
-   @apply block size-full scale-[2.4];
+   @apply block size-full scale-[2];
 }
 
 .services-hero:not([data-services-hero-revealed]) [data-services-hero-reveal] {

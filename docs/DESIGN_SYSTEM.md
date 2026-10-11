@@ -1945,8 +1945,8 @@ The link frame is a square `NuxtLink` to `/about` on the `canvas-shade` grey of
 the statement section below, named "About" through `aria-label`. It holds a
 brand orange `primary` arrow up right glyph that fills the frame inside
 `0.14em` of padding. Lucide draws that arrow across only ten of its
-twenty-four units, so the glyph scales to `2.4` to make the arrow itself reach
-the padding. Hovering it opens the hero's text-only TrailingTooltip, "About"
+twenty-four units, so the glyph scales to `2`, which brings the arrow itself
+most of the way to the padding. Hovering it opens the hero's text-only TrailingTooltip, "About"
 with an arrow up right glyph, and keyboard focus shows the standard ring.
 
 The image frame is 16:9 and holds an `ImageCycle` that cuts through four images
@@ -1954,8 +1954,9 @@ from `public/images/hero` every `750ms`, the way the About section headings do.
 The images are decorative and load eagerly.
 
 The title rises with the About hero timing at the page transition's reveal
-point, or after the fonts load on a direct request. `0.9s` later the link frame
-opens over `1.1s` on the swap timing's `power4.inOut` ease, `swapEase` from
+point, or after the fonts load on a direct request. `0.5s` later, while the
+title lines are still rising, the link frame opens over `1.1s` on the swap
+timing's `power4.inOut` ease, `swapEase` from
 `app/lib/swap-timing.ts`, while its content settles from `1.3` scale on the
 same ease. The image frame starts `0.3s` later on the same timing, so the two
 openings overlap. Until the reveal the title is hidden and both frames are

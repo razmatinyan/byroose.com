@@ -20,7 +20,7 @@ const selectors = {
 } as const;
 
 const insetOpenProperty = "--services-hero-inset-open";
-const insetRevealStart = 0.9;
+const insetRevealStart = 0.3;
 const insetRevealGap = 0.3;
 const insetRevealDuration = 1.1;
 const insetContentScale = 1.3;
