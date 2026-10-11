@@ -12,18 +12,18 @@ type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 
 const selectors = {
    content: "[data-services-hero-content]",
-   media: "[data-services-hero-media]",
-   mediaImage: "[data-services-hero-media-image]",
+   inset: "[data-services-hero-inset]",
+   insetContent: "[data-services-hero-inset-content]",
    reveal: "[data-services-hero-reveal]",
    titleLine: "[data-services-hero-title-line]",
    titleMask: "[data-services-hero-title-mask]",
 } as const;
 
-const mediaOpenProperty = "--services-hero-media-open";
-const mediaRevealStart = 0.9;
-const mediaRevealGap = 0.8;
-const mediaRevealDuration = 1.1;
-const mediaImageScale = 1.3;
+const insetOpenProperty = "--services-hero-inset-open";
+const insetRevealStart = 0.9;
+const insetRevealGap = 0.3;
+const insetRevealDuration = 1.1;
+const insetContentScale = 1.3;
 const heroDrift = 0.5;
 
 function queryAll(root: HTMLElement, selector: string) {
@@ -37,7 +37,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
    const revealed = shallowRef(false);
    let disposed = false;
 
-   function openMedia(
+   function openInset(
       timeline: gsap.core.Timeline,
       frame: HTMLElement,
       position: number,
@@ -45,19 +45,19 @@ export function useServicesHeroMotion(scope: MotionScope) {
       timeline.to(
          frame,
          {
-            [mediaOpenProperty]: 1,
-            duration: mediaRevealDuration,
+            [insetOpenProperty]: 1,
+            duration: insetRevealDuration,
             ease: swapEase,
          },
          position,
       );
 
-      const image = frame.querySelector<HTMLElement>(selectors.mediaImage);
-      if (!image) return;
+      const content = frame.querySelector<HTMLElement>(selectors.insetContent);
+      if (!content) return;
 
       timeline.to(
-         image,
-         { duration: mediaRevealDuration, ease: swapEase, scale: 1 },
+         content,
+         { duration: insetRevealDuration, ease: swapEase, scale: 1 },
          position,
       );
    }
@@ -66,20 +66,20 @@ export function useServicesHeroMotion(scope: MotionScope) {
       const titleLines = queryAll(root, selectors.titleLine);
       const titleMasks = queryAll(root, selectors.titleMask);
       const revealTargets = queryAll(root, selectors.reveal);
-      const media = queryAll(root, selectors.media);
-      const mediaImages = queryAll(root, selectors.mediaImage);
+      const insets = queryAll(root, selectors.inset);
+      const insetContents = queryAll(root, selectors.insetContent);
       const animated = [
          ...titleLines,
          ...titleMasks,
          ...revealTargets,
-         ...media,
-         ...mediaImages,
+         ...insets,
+         ...insetContents,
       ];
 
       gsap.set(titleMasks, { clipPath: "inset(0)" });
       gsap.set(titleLines, { yPercent: titleLineRevealOffset });
-      gsap.set(media, { [mediaOpenProperty]: 0 });
-      gsap.set(mediaImages, { scale: mediaImageScale });
+      gsap.set(insets, { [insetOpenProperty]: 0 });
+      gsap.set(insetContents, { scale: insetContentScale });
       gsap.set(revealTargets, { visibility: "inherit" });
 
       const timeline = gsap
@@ -100,8 +100,8 @@ export function useServicesHeroMotion(scope: MotionScope) {
             0,
          );
 
-      media.forEach((frame, index) =>
-         openMedia(timeline, frame, mediaRevealStart + index * mediaRevealGap),
+      insets.forEach((frame, index) =>
+         openInset(timeline, frame, insetRevealStart + index * insetRevealGap),
       );
    }
 

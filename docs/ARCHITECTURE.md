@@ -141,9 +141,10 @@ on landing sections.
 
 app/components/services contains the Services route's sections. ServicesPage
 composes ServicesHero and ServicesStatementSection, and app/pages/services.vue
-renders it with the route metadata. ServicesHero owns the title lines and the
-image list. A title line that carries images renders an ImageCycle inside a
-`data-services-hero-media` frame placed inline in that line.
+renders it with the route metadata. ServicesHero owns the title lines, the
+image list, the About link, and its TrailingTooltip. A title line can carry
+one `data-services-hero-inset` frame placed inline in the line: the link
+frame, a NuxtLink to `/about`, or the media frame, an ImageCycle.
 ServicesStatementSection owns the statement copy and its split. The sections
 own their copy and do not depend on landing or About components.
 
@@ -171,7 +172,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frames. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has finished revealing, so the owner still passes a single image string and never manages the transition. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -326,8 +327,10 @@ pointer. AboutHero owns the image list and renders that layer only while
 
 useServicesHeroMotion owns the Services hero. After the fonts load and the
 page transition's reveal point, it rises the title lines, then opens every
-`data-services-hero-media` frame, one after another, by tweening its
-`--services-hero-media-open` property from `0` to `1`, and scrubs the hero
+`data-services-hero-inset` frame, each starting shortly after the one before
+so they overlap, by tweening its `--services-hero-inset-open` property from `0`
+to `1` and settling its `data-services-hero-inset-content` from a larger
+scale, and scrubs the hero
 content down at half the scroll speed while it fades out, as the About hero
 does. It returns `revealed`, which lifts the hero's hidden CSS rest state.
 
@@ -363,7 +366,7 @@ uses it for its title.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the
 image, label, and size, the 200ms close delay, and whether the fine-pointer tooltip
-should load. WorkSection, ServicesSection, and AboutTeamSection compose it and
+should load. WorkSection, ServicesSection, AboutTeamSection, and ServicesHero compose it and
 keep their own TrailingTooltip instance. `show` takes an optional image, so a
 text-only tooltip opens without one.
 
