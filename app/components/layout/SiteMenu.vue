@@ -202,13 +202,6 @@ onKeyStroke(
 				data-page-transition-overlay
 			>
 				<div class="site-menu-content">
-					<p
-						class="site-menu-heading site-menu-reveal"
-						data-menu-reveal
-					>
-						Navigation
-					</p>
-
 					<ul class="site-menu-links">
 						<li
 							v-for="item in navItems"
@@ -224,30 +217,9 @@ onKeyStroke(
 						</li>
 					</ul>
 
-					<div
-						class="site-menu-footer site-menu-reveal"
-						data-menu-reveal
-					>
-						<span class="site-menu-footer-label"
-							>Creative agency</span
-						>
-						<NuxtLink
-							class="site-menu-home"
-							to="/"
-							aria-label="byroose home"
-							@click="handleNavigate('/', $event)"
-						>
-							<NuxtImg
-								class="site-menu-logo"
-								src="/logo.svg"
-								alt="byroose"
-								width="651"
-								height="187"
-								format="svg"
-								provider="none"
-							/>
-						</NuxtLink>
-					</div>
+					<p class="site-menu-footer site-menu-reveal" data-menu-reveal>
+						From seen to chosen
+					</p>
 				</div>
 			</nav>
 		</Teleport>
@@ -295,26 +267,12 @@ onKeyStroke(
 	@apply flex min-h-full flex-col px-5 pt-20 pb-5;
 }
 
-.site-menu-heading,
-.site-menu-footer-label {
-	@apply text-xs font-medium text-background/45;
-}
-
 .site-menu-links {
-	@apply mt-4 grid list-none gap-0 p-0;
+	@apply grid list-none gap-0 p-0;
 }
 
 .site-menu-footer {
-	@apply mt-auto flex items-end justify-between gap-6 border-t border-background/15 pt-5;
-}
-
-.site-menu-home {
-	@apply block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-background/70;
-}
-
-.site-menu-logo {
-	@apply block h-auto w-28;
-	filter: invert(1);
+	@apply mt-auto border-t border-background/15 pt-5 text-sm font-medium text-background/45;
 }
 
 .site-menu-reveal {

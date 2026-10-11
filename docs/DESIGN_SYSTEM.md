@@ -2197,8 +2197,9 @@ while keeping a safe viewport inset. It grows from the control's exact width and
 height through `scaleX` and `scaleY`. Derive the transform origin from the final
 panel position and collapsed scales so the closed panel bounds match the control
 exactly, then sweep up and right through a subtle translate, skew, and scale
-overshoot before settling at full dimensions. Its heading, navigation items,
-and footer enter with opacity and a tight stagger after the overshoot, keeping
+overshoot before settling at full dimensions. The panel has no heading. Its
+navigation items and a muted footer line that carries the slogan, "From seen to
+chosen", enter with opacity and a tight stagger after the overshoot, keeping
 the content itself steady while the panel settles.
 Closing reverses the same sequence so the content and panel move immediately on
 the same short timeline, matching the opening speed as the panel swooshes down
@@ -2216,7 +2217,8 @@ the label color softens. Leaving sends the resting characters back down and the
 copied characters below with the same left-to-right stagger, rather than
 reversing the entry order. Each change tweens from the current character
 positions, so a quick exit or re-entry stays continuous. Keep the rollover
-clipped to the label line, revert both
+clipped to the label line, and keep the label line height at `1.2` so the clip
+holds full descenders and the copied characters stay hidden below it. Revert both
 SplitText instances during cleanup, and skip character splitting for touch-only
 pointers or reduced-motion preferences.
 
