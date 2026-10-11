@@ -527,6 +527,15 @@ looks soft, so work out `sizes` for every new image with this checklist:
    source width, such as 1536 for a 1456 image, returns the original converted
    to WebP.
 
+The Services offer media and the hero image that flies into the first of them
+share `servicesOfferImageSizes` from `app/lib/services-hero.ts`, so the flying
+layer and its landing slot request the same file. The slot is a 4/3 box that
+fills the block below `md` and half of it above, and it shows 16:9 sources, so
+it lists `sm:1024px md:640px lg:768px xl:1024px 2xl:1536px` with
+`densities="x1"`. Fluid entries such as `md:50vw` resolve against the screen
+value, here 384px, which is not in `screens`. `ImageCycle` forwards an optional
+`densities` value to each of its images.
+
 Small fixed slots follow the same rules. The TrailingTooltip thumbnail is a
 104px square cropped from a 16:9 source, so it needs about 185px at 1x and uses
 `sm:448px` for 448 and 896 candidates.

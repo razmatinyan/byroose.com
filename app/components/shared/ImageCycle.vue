@@ -13,11 +13,13 @@ interface CycleImage {
 }
 
 const {
+   densities,
    images,
    interval = 750,
    loading = "lazy",
    sizes,
 } = defineProps<{
+   densities?: string;
    images: readonly CycleImage[];
    interval?: number;
    loading?: "eager" | "lazy";
@@ -63,6 +65,7 @@ function showNextImage() {
          :width="image.width"
          :height="image.height"
          :sizes="sizes"
+         :densities="densities"
          :loading="loading"
          draggable="false"
       />

@@ -2,6 +2,7 @@
 import { shallowRef, useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
+import { servicesOfferImageSizes } from "@/lib/services-hero";
 import type { ServicesImage } from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -122,7 +123,8 @@ function setTextSplit(index: number, parts: SplitTextResult) {
                   v-if="block.images"
                   class="services-offer-cycle"
                   :images="block.images"
-                  sizes="sm:100vw md:50vw"
+                  :sizes="servicesOfferImageSizes"
+                  densities="x1"
                />
             </div>
          </article>

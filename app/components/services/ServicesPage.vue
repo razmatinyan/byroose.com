@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
-import { servicesHeroImages } from "@/lib/services-hero";
+import {
+   servicesHeroImages,
+   servicesOfferImageSizes,
+} from "@/lib/services-hero";
 import type { ServicesImage } from "@/lib/services-hero";
 import ServicesCtaSection from "./ServicesCtaSection.vue";
 import ServicesHero from "./ServicesHero.vue";
@@ -102,7 +105,8 @@ useServicesMediaFlight(pageRoot);
             data-services-flight-layer
             :images="servicesHeroImages"
             loading="eager"
-            sizes="sm:100vw md:50vw"
+            :sizes="servicesOfferImageSizes"
+            densities="x1"
          />
       </div>
    </div>
