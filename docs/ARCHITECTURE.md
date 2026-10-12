@@ -423,9 +423,9 @@ reveal timing, and scrubs every word from a dimmed opacity to full with the
 scroll. Reduced motion shows the lines at rest at full opacity.
 
 useWorkHeroMotion owns the Work hero. It waits for the description split and
-the page transition's reveal point, then rises the title lines from their
-clipped masks and, `0.35s` later, the description lines, with the About hero
-timing, and scrubs the hero content down at half the scroll speed while it
+the page transition's reveal point, then rises the `data-work-hero-title-word`
+words one by one inside their clipped mask and, `0.35s` later, the description
+lines, with the About hero timing, and scrubs the hero content down at half the scroll speed while it
 fades out, as the Services hero does. It returns `revealed`, which lifts the
 hero's hidden CSS rest state.
 

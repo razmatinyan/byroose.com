@@ -2161,14 +2161,14 @@ action that also closes the Services route, followed by the site footer.
 The hero repeats the Services hero's frame: it fills the first screen below the
 header except for `--work-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded
 top of the projects section shows at the bottom of the first screen. Its
-content fills that space. The title sets "Our work" on one line across the
+content fills that space. The title sets "Our Work" on one line across the
 full content width at the top, and the description sits at the bottom of the
 space below it, in the right half of a two-column grid with a `4rem` gap from
 `lg` and across the full width below `lg`. The title is bold with `-0.05em`
 tracking and a tight `0.76` leading, in the same padded line mask as the
-Services hero. The content is an inline-size container, and the title sets
+Services hero, with each word an inline block inside it. The content is an inline-size container, and the title sets
 `calc(var(--work-hero-title-size) * var(--fit-text-scale, 1))`. The
-`--work-hero-title-size` of `24.75cqi` is measured from the phrase, so the
+`--work-hero-title-size` of `23.95cqi` is measured from the phrase, so the
 first paint already sits at the edge, and `useFitText` corrects the scale
 whenever the title's box resizes, as it does for the journey title. The title
 is `w-max` with `0.05em` of end padding, so its box includes the last letter's
@@ -2182,8 +2182,9 @@ in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
 measure, in line masks that carry `0.12em` above and `0.18em` below.
 
 The hero reveals like the home hero. At the page transition's reveal point, or
-once the description is split on a direct request, the title line rises from
-`150` percent over `0.8s` on `power3.out`, and `0.35s`
+once the description is split on a direct request, the title words rise one
+by one from `150` percent inside the shared mask over `0.8s` on `power3.out`
+with a `0.12s` stagger, and `0.35s`
 later the description lines rise from `115` percent with a `0.06s` stagger.
 Until then both stay hidden in CSS. As the reader scrolls, the hero content
 drifts down at half the scroll speed and fades out while the projects section

@@ -3,7 +3,8 @@ import { shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
-const title = "Our work";
+const titleWords = ["Our", "Work"];
+const title = titleWords.join(" ");
 const description =
    "Reels that stop the scroll. Visuals directed like a shoot. Websites designed and coded from scratch. The proof is in our projects.";
 
@@ -33,9 +34,16 @@ function setDescriptionSplit(parts: SplitTextResult) {
             aria-hidden="true"
          >
             <span class="work-hero-title-mask" data-work-hero-title-mask>
-               <span class="work-hero-title-line" data-work-hero-title-line>{{
-                  title
-               }}</span>
+               <span class="work-hero-title-line">
+                  <template v-for="(word, index) in titleWords" :key="word">
+                     <template v-if="index">{{ " " }}</template>
+                     <span
+                        class="work-hero-title-word"
+                        data-work-hero-title-word
+                        >{{ word }}</span
+                     >
+                  </template>
+               </span>
             </span>
          </div>
          <SplitText
@@ -65,7 +73,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .work-hero-title {
-   --work-hero-title-size: 24.75cqi;
+   --work-hero-title-size: 23.95cqi;
    @apply col-span-full w-max self-start pe-[0.05em] leading-[0.76] font-bold tracking-[-0.05em];
    font-size: calc(
       var(--work-hero-title-size) * var(--fit-text-scale, 1)
@@ -85,6 +93,10 @@ function setDescriptionSplit(parts: SplitTextResult) {
 
 .work-hero-title-line {
    @apply whitespace-nowrap;
+}
+
+.work-hero-title-word {
+   @apply inline-block;
 }
 
 .work-hero-description {

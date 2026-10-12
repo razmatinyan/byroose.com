@@ -4,7 +4,6 @@ import { until } from "@vueuse/core";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
    titleLineRevealOffset,
-   titleLineRevealStagger,
    wordRevealDuration,
    wordRevealEase,
    wordRevealOffset,
@@ -16,13 +15,14 @@ type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 const selectors = {
    content: "[data-work-hero-content]",
    reveal: "[data-work-hero-reveal]",
-   titleLine: "[data-work-hero-title-line]",
+   titleWord: "[data-work-hero-title-word]",
    titleMask: "[data-work-hero-title-mask]",
 } as const;
 
 const descriptionLineStagger = 0.06;
 const descriptionStart = 0.35;
 const heroDrift = 0.5;
+const titleWordStagger = 0.12;
 
 function queryAll(root: HTMLElement, selector: string) {
    return Array.from(root.querySelectorAll<HTMLElement>(selector));
@@ -39,18 +39,18 @@ export function useWorkHeroMotion(
    let disposed = false;
 
    function revealHero(root: HTMLElement, descriptionLines: HTMLElement[]) {
-      const titleLines = queryAll(root, selectors.titleLine);
+      const titleWords = queryAll(root, selectors.titleWord);
       const titleMasks = queryAll(root, selectors.titleMask);
       const revealTargets = queryAll(root, selectors.reveal);
       const animated = [
-         ...titleLines,
+         ...titleWords,
          ...titleMasks,
          ...descriptionLines,
          ...revealTargets,
       ];
 
       gsap.set(titleMasks, { clipPath: "inset(0)" });
-      gsap.set(titleLines, { yPercent: titleLineRevealOffset });
+      gsap.set(titleWords, { yPercent: titleLineRevealOffset });
       gsap.set(descriptionLines, { yPercent: wordRevealOffset });
       gsap.set(revealTargets, { visibility: "inherit" });
 
@@ -62,7 +62,7 @@ export function useWorkHeroMotion(
                gsap.set(animated, { clearProps: "all" });
             },
          })
-         .to(titleLines, { stagger: titleLineRevealStagger, yPercent: 0 }, 0)
+         .to(titleWords, { stagger: titleWordStagger, yPercent: 0 }, 0)
          .to(
             descriptionLines,
             { stagger: descriptionLineStagger, yPercent: 0 },
