@@ -1251,14 +1251,16 @@ sharp. Reduced motion removes the movement delay and clip transition.
 
 The tooltip also has a text-only form. Without an image it renders no
 thumbnail frame, switches to `px-5 py-3` padding, and can append an `icon`
-after the label at `0.8em`. The About team cards use it for "More Info" and the
-Services hero link for "About", both with an arrow up right glyph. Passing an
+after the label at `0.8em`. The About team cards use it for "More Info", the
+Services hero link for "About", and the Work project cards for "View Project",
+all with an arrow up right glyph. Passing an
 empty image drops every thumbnail layer, so a tooltip that switches from an
 image target to a text-only one, such as the home services image and its
 service link, never keeps the previous thumbnail.
 
 The open, close-delay, and loading state lives in `useTrailingTooltip`, which
-the services section, the About team section, and the Services hero share. Each consumer loads the component asynchronously
+the services section, the About team section, the Services hero, and the Work
+projects section share. Each consumer loads the component asynchronously
 only after mount and only while `(hover: hover) and (pointer: fine)` matches. Phones, tablets, and other
 touch-first devices never request or mount the tooltip chunk.
 
@@ -2140,7 +2142,7 @@ header as dark. As in the home dark panel, the intro title and description
 are set in `background` with `mix-blend-difference`, so they read black over
 the light canvas and turn light where the dark surface has grown behind them.
 
-The call to action follows on the same dark surface, so the two read as one
+The call to action, `ProjectCtaSection`, follows on the same dark surface, so the two read as one
 dark block that ends in a straight edge above the footer. It fills at least
 the viewport, centered, with "Have an idea?" and "Let's build it." on two
 bold lines at the About call to action's display size, `-0.05em` tracking,
@@ -2150,6 +2152,89 @@ masks and the action rises `0.3s` later when they reach 82 percent of the
 viewport. The action's rise mask clips only vertically, so the hover bounce
 can grow the action past its sides without cutting its corners. Reduced motion shows the dark surface, the text, and the action at
 rest.
+
+### Work page
+
+The Work route stacks a hero, a grey projects section, and the dark call to
+action that also closes the Services route, followed by the site footer.
+
+The hero repeats the Services hero's frame: it fills the first screen below the
+header except for `--work-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded
+top of the projects section shows at the bottom of the first screen. Its
+content sits at the bottom of that space. From `lg` it is a two-column grid
+with a `4rem` gap: the title takes an auto-width left column and the
+description fills the right column, both aligned to the bottom. Below `lg` the
+description stacks under the title. The title sets "Our" and "work" on two
+lines, bold with `-0.05em` tracking and `0.88` leading, in the same padded line
+masks as the Services hero, at `min(34vw, 18rem)` below `lg` and
+`min(19vw, 22rem)` from `lg`. A `0.2em` bottom margin cancels the last mask's
+negative margin, so the description never crowds the letters on phones. The
+`h1` is an `sr-only` copy of the phrase and the visual lines are hidden from
+assistive technology. The description, "Reels that stop the scroll. Visuals
+directed like a shoot. Websites designed and coded from scratch. The proof is
+in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
+`text-5xl` from `xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
+measure, in line masks that carry `0.12em` above and `0.18em` below.
+
+The hero reveals like the home hero. At the page transition's reveal point, or
+once the description is split on a direct request, the title lines rise from
+`150` percent over `0.8s` on `power3.out` with a `0.1s` stagger, and `0.35s`
+later the description lines rise from `115` percent with a `0.06s` stagger.
+Until then both stay hidden in CSS. As the reader scrolls, the hero content
+drifts down at half the scroll speed and fades out while the projects section
+covers it, as the Services hero does.
+
+The projects section paints the `canvas-shade` grey with
+`clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, like the Services statement
+section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
+names it. It opens with the filters: a bold "Filters" label at `text-3xl`,
+`text-4xl` from `md`, and `text-5xl` from `xl`, with the `split-title` group
+at `-0.05em` tracking, above a wrapping row of `cta-sm` toggle buttons, All,
+AI Content, and Website Development, `0.5rem` apart. The pressed button uses
+the `dark` variant and the others use `outline`, and each carries
+`aria-pressed` inside a group labelled by "Filters". When the filters reach 82
+percent of the viewport, the label characters rise with the shared character
+reveal, and `0.3s` in the buttons rise from `115` percent of their masks over
+`0.8s` on `power3.out` with the `0.08s` navigation stagger. The masks clip only
+during the rise, so the focus ring and the rollover are never cut.
+
+The project cards follow in one column below `md` and two columns from `md`,
+`1rem` apart, `1.25rem` from `md`, with `3rem` between rows, `4rem` from `md`,
+and `5rem` from `xl`. Each card is an article with a 4:3 `rounded-2xl` image
+frame, then a row with the project name on the left and its categories in
+parentheses on the right, semibold and medium `brand-subtle` at `text-lg`,
+`text-xl` from `md`, with `-0.02em` tracking. The categories are Reels, Video,
+and Imagery for AI content, and Web Design, Development, and E-commerce for
+website development. The images are `object-cover` crops of the hero and work
+placeholders, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
+with `densities="x1"`, which covers the 4:3 crop and the hover scale. The
+projects, their names, and their images are placeholders, so the cards stay
+articles without a link until real case study routes exist. The pointer
+cursor marks the future link surface, as the home case study cards do.
+
+Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
+the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
+TrailingTooltip in its text-only form, "View Project" with an arrow up right
+glyph. The scale applies only to `(hover: hover)` pointers and switches without
+the transition under reduced motion. When a card reaches 82 percent of the
+viewport, its frame opens with the Studio portrait clip, `1.2s` on
+`power3.inOut`, and `0.4s` later its name and category row rises from its
+mask with the line reveal timing. Cards that share a layout row start `0.15s`
+apart.
+
+Choosing a filter presses its button at once. The shown cards then fade out
+and drop `24px` over `0.35s` on `power2.in` with a `0.03s` stagger, the grid
+swaps to the matching projects, and those rise from `48px` while they fade in
+over `0.8s` on `power3.out` with a `0.08s` stagger. A project appears under a
+service when any of its categories belongs to that service, so a project with
+both kinds of work appears under both. A polite live status announces how many
+projects are shown. A newer choice interrupts a running swap. Reduced motion
+shows the label, the buttons, and every card at rest and swaps the cards
+instantly.
+
+The call to action is `ProjectCtaSection`, the Services route's dark closing
+section described above. Here it follows the grey projects section with a
+straight top edge.
 
 ### Header motion
 
@@ -2374,7 +2459,10 @@ directions, so the outgoing and returning original label both have a visible pop
 
 The rollover tweens the icon slot's text color together with the original
 label, from the resting color to the copied label's color, so a `plain` glyph
-follows the final layer's foreground.
+follows the final layer's foreground. Both colors are read from the host and
+the copied label each time a rollover starts, and the inline color is cleared
+once the label returns, so a button whose variant changes while it is hovered,
+such as a Work filter that becomes pressed, rests in its new variant's ink.
 
 The icon box stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above

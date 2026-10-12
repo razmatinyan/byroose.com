@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
+import ProjectCtaSection from "@/components/shared/ProjectCtaSection.vue";
 import { servicesAnchors } from "@/lib/services-anchors";
 import {
    servicesHeroImages,
    servicesOfferImageSizes,
 } from "@/lib/services-hero";
 import type { ServicesImage } from "@/lib/services-hero";
-import ServicesCtaSection from "./ServicesCtaSection.vue";
 import ServicesHero from "./ServicesHero.vue";
 import ServicesOfferSection from "./ServicesOfferSection.vue";
 import type { ServicesOfferBlock } from "./ServicesOfferSection.vue";
@@ -101,7 +101,7 @@ useServicesMediaFlight(pageRoot);
          surface="dark"
          :title="webTitle"
       />
-      <ServicesCtaSection />
+      <ProjectCtaSection />
       <div class="services-flight" data-services-flight aria-hidden="true">
          <ImageCycle
             class="services-flight-layer"

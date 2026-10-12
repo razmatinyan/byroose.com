@@ -28,16 +28,16 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 <template>
    <section
       ref="ctaRoot"
-      class="services-cta section-gutter"
+      class="project-cta section-gutter"
       data-header-surface="dark"
    >
-      <h2 class="services-cta-title">
+      <h2 class="project-cta-title">
          <span class="sr-only">{{ title }}</span>
          <span aria-hidden="true">
             <SplitText
                v-for="(line, index) in titleLines"
                :key="line"
-               class="services-cta-title-line"
+               class="project-cta-title-line"
                data-services-reveal-text
                aria="none"
                mask="lines"
@@ -47,10 +47,10 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
             />
          </span>
       </h2>
-      <div class="services-cta-action-mask">
-         <span class="services-cta-action-rise" data-services-reveal-rise>
+      <div class="project-cta-action-mask">
+         <span class="project-cta-action-rise" data-services-reveal-rise>
             <Button
-               class="services-cta-action"
+               class="project-cta-action"
                :as="NuxtLink"
                :to="contactRoute"
                variant="light"
@@ -70,52 +70,52 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
-.services-cta {
+.project-cta {
    @apply flex min-h-svh flex-col items-center justify-center bg-foreground py-section text-center text-background;
 }
 
-.services-cta-title {
+.project-cta-title {
    @apply m-0 leading-[0.88] font-bold tracking-[-0.05em];
    font-size: min(clamp(3.5rem, 11vw, 12rem), 12vw);
 }
 
-.services-cta-title-line {
+.project-cta-title-line {
    @apply block whitespace-nowrap;
 }
 
-.services-cta-title :deep(.split-text-line),
-.services-cta-title :deep(.split-text-line-mask) {
+.project-cta-title :deep(.split-text-line),
+.project-cta-title :deep(.split-text-line-mask) {
    display: block;
 }
 
-.services-cta-title :deep(.split-text-line-mask) {
+.project-cta-title :deep(.split-text-line-mask) {
    margin-block: -0.12em -0.18em;
    padding-block: 0.12em 0.18em;
 }
 
-.services-cta-title :deep(.split-text-line) {
+.project-cta-title :deep(.split-text-line) {
    visibility: hidden;
 }
 
-.services-cta-action-mask {
+.project-cta-action-mask {
    @apply mt-16 overflow-x-visible overflow-y-clip md:mt-24;
    padding: 0.5rem;
 }
 
-.services-cta-action-rise {
+.project-cta-action-rise {
    @apply block;
    visibility: hidden;
 }
 
-.services-cta-action {
+.project-cta-action {
    gap: 0.6em;
    min-height: 2.6em;
    padding-inline: 1.1em;
    font-size: clamp(1.25rem, 2.2vw, 2rem);
 }
 
-.services-cta-action :deep(.button-icon),
-.services-cta-action :deep(.button-icon svg) {
+.project-cta-action :deep(.button-icon),
+.project-cta-action :deep(.button-icon svg) {
    width: 1em;
    height: 1em;
 }

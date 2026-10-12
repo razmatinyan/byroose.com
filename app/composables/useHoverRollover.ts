@@ -156,8 +156,9 @@ export function useHoverRollover(
 			const occludedLayers = layers.slice(0, -1)
 			const layerSettleTime =
 				(layers.length - 1) * layerStagger + layerDuration
-			const restingColor = getComputedStyle(label ?? element).color
-			const coveredColor = getComputedStyle(labelCopy ?? finalLayer).color
+			const restingColor = () => getComputedStyle(element).color
+			const coveredColor = () =>
+				getComputedStyle(labelCopy ?? finalLayer).color
 			const coloredText = [label, icon].filter(Boolean)
 
 			if (texts) {
@@ -190,7 +191,10 @@ export function useHoverRollover(
 				const labelAngle = cover ? '-60deg' : '0deg'
 				const labelY = cover ? '-2em' : '0em'
 				const labelOpacity = cover ? 0 : 1
-				const labelColor = cover ? coveredColor : restingColor
+				const labelColor = cover ? coveredColor() : restingColor()
+				const settledColor = cover
+					? { color: labelColor }
+					: { clearProps: 'color' }
 				const labelCopyAngle = cover ? '0deg' : '-30deg'
 				const labelCopyY = cover ? '0em' : '2em'
 				const labelCopyOpacity = cover ? 1 : 0
@@ -218,7 +222,7 @@ export function useHoverRollover(
 							opacity: labelCopyOpacity,
 						})
 					}
-					gsap.set(coloredText, { color: labelColor })
+					gsap.set(coloredText, settledColor)
 					gsap.set(layers, {
 						force3D: false,
 						scale: layerScale,
@@ -250,6 +254,10 @@ export function useHoverRollover(
 					},
 					0,
 				)
+
+				if (!cover) {
+					timeline.set(coloredText, settledColor, textColorDuration)
+				}
 
 				if (texts) {
 					timeline.to(
