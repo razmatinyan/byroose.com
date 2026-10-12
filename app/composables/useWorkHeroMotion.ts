@@ -1,6 +1,11 @@
 import { onMounted, onScopeDispose, readonly, shallowRef, toValue } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { until } from "@vueuse/core";
+import {
+   charRevealDuration,
+   charRevealEase,
+   charRevealStagger,
+} from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
    titleLineRevealOffset,
@@ -15,14 +20,13 @@ type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 const selectors = {
    content: "[data-work-hero-content]",
    reveal: "[data-work-hero-reveal]",
-   titleWord: "[data-work-hero-title-word]",
+   titleChar: "[data-work-hero-title-char]",
    titleMask: "[data-work-hero-title-mask]",
 } as const;
 
 const descriptionLineStagger = 0.06;
 const descriptionStart = 0.35;
 const heroDrift = 0.5;
-const titleWordStagger = 0.12;
 
 function queryAll(root: HTMLElement, selector: string) {
    return Array.from(root.querySelectorAll<HTMLElement>(selector));
@@ -39,18 +43,18 @@ export function useWorkHeroMotion(
    let disposed = false;
 
    function revealHero(root: HTMLElement, descriptionLines: HTMLElement[]) {
-      const titleWords = queryAll(root, selectors.titleWord);
+      const titleChars = queryAll(root, selectors.titleChar);
       const titleMasks = queryAll(root, selectors.titleMask);
       const revealTargets = queryAll(root, selectors.reveal);
       const animated = [
-         ...titleWords,
+         ...titleChars,
          ...titleMasks,
          ...descriptionLines,
          ...revealTargets,
       ];
 
       gsap.set(titleMasks, { clipPath: "inset(0)" });
-      gsap.set(titleWords, { yPercent: titleLineRevealOffset });
+      gsap.set(titleChars, { yPercent: titleLineRevealOffset });
       gsap.set(descriptionLines, { yPercent: wordRevealOffset });
       gsap.set(revealTargets, { visibility: "inherit" });
 
@@ -62,7 +66,16 @@ export function useWorkHeroMotion(
                gsap.set(animated, { clearProps: "all" });
             },
          })
-         .to(titleWords, { stagger: titleWordStagger, yPercent: 0 }, 0)
+         .to(
+            titleChars,
+            {
+               duration: charRevealDuration,
+               ease: charRevealEase,
+               stagger: charRevealStagger,
+               yPercent: 0,
+            },
+            0,
+         )
          .to(
             descriptionLines,
             { stagger: descriptionLineStagger, yPercent: 0 },

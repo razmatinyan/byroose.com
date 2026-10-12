@@ -5,6 +5,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 
 const titleWords = ["Our", "Work"];
 const title = titleWords.join(" ");
+const titleWordChars = titleWords.map((word) => ({ chars: [...word], word }));
 const description =
    "Reels that stop the scroll. Visuals directed like a shoot. Websites designed and coded from scratch. The proof is in our projects.";
 
@@ -35,12 +36,19 @@ function setDescriptionSplit(parts: SplitTextResult) {
          >
             <span class="work-hero-title-mask" data-work-hero-title-mask>
                <span class="work-hero-title-line">
-                  <template v-for="(word, index) in titleWords" :key="word">
+                  <template
+                     v-for="({ chars, word }, index) in titleWordChars"
+                     :key="word"
+                  >
                      <template v-if="index">{{ " " }}</template>
-                     <span
-                        class="work-hero-title-word"
-                        data-work-hero-title-word
-                        >{{ word }}</span
+                     <span class="work-hero-title-word"
+                        ><span
+                           v-for="(char, charIndex) in chars"
+                           :key="charIndex"
+                           class="work-hero-title-char"
+                           data-work-hero-title-char
+                           >{{ char }}</span
+                        ></span
                      >
                   </template>
                </span>
@@ -73,7 +81,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .work-hero-title {
-   --work-hero-title-size: 23.95cqi;
+   --work-hero-title-size: 23.71cqi;
    @apply col-span-full w-max self-start pe-[0.05em] leading-[0.76] font-bold tracking-[-0.05em];
    font-size: calc(
       var(--work-hero-title-size) * var(--fit-text-scale, 1)
@@ -95,7 +103,8 @@ function setDescriptionSplit(parts: SplitTextResult) {
    @apply whitespace-nowrap;
 }
 
-.work-hero-title-word {
+.work-hero-title-word,
+.work-hero-title-char {
    @apply inline-block;
 }
 

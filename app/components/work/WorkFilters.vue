@@ -50,6 +50,7 @@ function variantFor(id: FilterId) {
                   type="button"
                   :variant="variantFor(option.id)"
                   size="cta-lg"
+                  :rollover="false"
                   :aria-pressed="option.id === selected"
                   @click="emit('select', option.id)"
                >
@@ -79,7 +80,6 @@ function variantFor(id: FilterId) {
 
 @layer utilities {
    .work-filters-button {
-      --button-rollover-radius: 9999px;
       border-radius: 9999px !important;
    }
 }

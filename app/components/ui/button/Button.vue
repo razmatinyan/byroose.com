@@ -13,6 +13,7 @@ interface Props extends PrimitiveProps {
    size?: ButtonVariants["size"];
    class?: HTMLAttributes["class"];
    rolloverTones?: RolloverTones;
+   rollover?: boolean;
    bounceOnHover?: Boolean;
 }
 
@@ -21,6 +22,7 @@ const {
    asChild = false,
    class: className,
    rolloverTones,
+   rollover = true,
    bounceOnHover = false,
    size = "default",
    variant = "default",
@@ -34,7 +36,7 @@ const rolloverSizes: ReadonlySet<ButtonVariants["size"]> = new Set([
 ]);
 const isCallToAction = computed(() => rolloverSizes.has(size));
 const rolloverLayers = computed(() => {
-   if (!isCallToAction.value) return null;
+   if (!rollover || !isCallToAction.value) return null;
 
    const tones = rolloverTones ?? variantRolloverTones[variant ?? "default"];
    if (!tones) return null;

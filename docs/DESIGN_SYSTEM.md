@@ -2166,9 +2166,11 @@ full content width at the top, and the description sits at the bottom of the
 space below it, in the right half of a two-column grid with a `4rem` gap from
 `lg` and across the full width below `lg`. The title is bold with `-0.05em`
 tracking and a tight `0.76` leading, in the same padded line mask as the
-Services hero, with each word an inline block inside it. The content is an inline-size container, and the title sets
+Services hero, with each word and each of its characters an inline block
+inside it. Separate characters drop the font's kerning pairs, which the
+measured size accounts for. The content is an inline-size container, and the title sets
 `calc(var(--work-hero-title-size) * var(--fit-text-scale, 1))`. The
-`--work-hero-title-size` of `23.95cqi` is measured from the phrase, so the
+`--work-hero-title-size` of `23.71cqi` is measured from the phrase, so the
 first paint already sits at the edge, and `useFitText` corrects the scale
 whenever the title's box resizes, as it does for the journey title. The title
 is `w-max` with `0.05em` of end padding, so its box includes the last letter's
@@ -2182,9 +2184,9 @@ in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
 measure, in line masks that carry `0.12em` above and `0.18em` below.
 
 The hero reveals like the home hero. At the page transition's reveal point, or
-once the description is split on a direct request, the title words rise one
-by one from `150` percent inside the shared mask over `0.8s` on `power3.out`
-with a `0.12s` stagger, and `0.35s`
+once the description is split on a direct request, the title characters rise
+one by one from `150` percent inside the shared mask with the shared character
+reveal timing, `0.9s` on `power3.out` with a `0.035s` stagger, and `0.35s`
 later the description lines rise from `115` percent with a `0.06s` stagger.
 Until then both stay hidden in CSS. As the reader scrolls, the hero content
 drifts down at half the scroll speed and fades out while the projects section
@@ -2200,15 +2202,16 @@ AI Content, and Website Development, `0.5rem` apart. From `md` the label and
 the buttons share one row, the label on the left and the buttons aligned to
 the right edge, both resting on the row's bottom. Below `md` the buttons wrap
 under the label. The buttons are pills: a `9999px` radius, set inside the
-utilities layer so it overrides the size's important `radius-action`, and the
-same `--button-rollover-radius` for the rollover clip. They carry no icon, so
-each is exactly as wide as its label and padding. The pressed button uses
+utilities layer so it overrides the size's important `radius-action`. They
+pass `rollover` as `false`, so they skip the CTA rollover and keep their
+variant's plain color hover, and they carry no icon, so each is exactly as
+wide as its label and padding. The pressed button uses
 the `dark` variant and the others use `outline`, and each carries
 `aria-pressed` inside a group labelled by "Filters". When the filters reach 82
 percent of the viewport, the label characters rise with the shared character
 reveal, and `0.3s` in the buttons rise from `115` percent of their masks over
 `0.8s` on `power3.out` with the `0.08s` navigation stagger. The masks clip only
-during the rise, so the focus ring and the rollover are never cut.
+during the rise, so the focus ring is never cut.
 
 The project cards follow in one column below `md` and two columns from `md`,
 `1rem` apart, `1.25rem` from `md`, with `3rem` between rows, `4rem` from `md`,
@@ -2537,7 +2540,8 @@ surface names:
 
 `destructive`, `secondary`, `ghost`, `link`, and `inverse` are absent from that
 map on purpose. They keep their plain color hover at every size and render no
-rollover markup. A CTA-size button that opts into `bounceOnHover` bounces
+rollover markup. Any other button can opt out the same way through its
+`rollover` prop, which defaults to `true`, as the Work filters do. A CTA-size button that opts into `bounceOnHover` bounces
 regardless of its variant.
 
 Tone names resolve through `app/lib/surfaces.ts` to the `surface-*` utilities,
