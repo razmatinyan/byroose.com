@@ -3,14 +3,15 @@ import { shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
-const titleLines = ["Our", "work"];
-const title = titleLines.join(" ");
+const title = "Our work";
 const description =
    "Reels that stop the scroll. Visuals directed like a shoot. Websites designed and coded from scratch. The proof is in our projects.";
 
 const heroRoot = useTemplateRef<HTMLElement>("heroRoot");
+const heroTitle = useTemplateRef<HTMLElement>("heroTitle");
 const descriptionSplit = shallowRef<SplitTextResult>();
 const { revealed } = useWorkHeroMotion(heroRoot, descriptionSplit);
+useFitText(heroTitle);
 
 function setDescriptionSplit(parts: SplitTextResult) {
    descriptionSplit.value = parts;
@@ -26,18 +27,14 @@ function setDescriptionSplit(parts: SplitTextResult) {
       <div class="work-hero-content" data-work-hero-content>
          <h1 class="sr-only">{{ title }}</h1>
          <div
+            ref="heroTitle"
             class="work-hero-title"
             data-work-hero-reveal
             aria-hidden="true"
          >
-            <span
-               v-for="line in titleLines"
-               :key="line"
-               class="work-hero-title-mask"
-               data-work-hero-title-mask
-            >
+            <span class="work-hero-title-mask" data-work-hero-title-mask>
                <span class="work-hero-title-line" data-work-hero-title-line>{{
-                  line
+                  title
                }}</span>
             </span>
          </div>
@@ -64,12 +61,15 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .work-hero-content {
-   @apply grid grid-rows-[auto_1fr] gap-10 sm:gap-14 lg:grid-cols-[auto_minmax(0,1fr)] lg:grid-rows-1 lg:gap-x-16;
+   @apply @container grid grid-rows-[auto_1fr] gap-10 sm:gap-14 lg:grid-cols-2 lg:gap-x-16;
 }
 
 .work-hero-title {
-   @apply self-start leading-[0.76] font-bold tracking-[-0.05em];
-   font-size: min(34vw, 18rem);
+   --work-hero-title-size: 24.75cqi;
+   @apply col-span-full w-max self-start pe-[0.05em] leading-[0.76] font-bold tracking-[-0.05em];
+   font-size: calc(
+      var(--work-hero-title-size) * var(--fit-text-scale, 1)
+   );
    margin-block: -0.2em 0.2em;
 }
 
@@ -88,7 +88,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .work-hero-description {
-   @apply m-0 max-w-[20em] self-end text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl xl:text-5xl;
+   @apply m-0 max-w-[20em] self-end text-2xl lg:col-start-2 leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl xl:text-5xl;
 }
 
 .work-hero-description :deep(.split-text-line),
@@ -103,12 +103,6 @@ function setDescriptionSplit(parts: SplitTextResult) {
 
 .work-hero:not([data-work-hero-revealed]) [data-work-hero-reveal] {
    visibility: hidden;
-}
-
-@media (min-width: 64rem) {
-   .work-hero-title {
-      font-size: min(19vw, 22rem);
-   }
 }
 
 @media (prefers-reduced-motion: reduce) {

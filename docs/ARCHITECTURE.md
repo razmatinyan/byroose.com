@@ -178,8 +178,9 @@ About components.
 
 app/components/work contains the Work route's sections. WorkPage composes
 WorkHero, WorkProjectsSection, and the shared ProjectCtaSection, and
-app/pages/work.vue renders it with the route metadata. WorkHero owns the two
-title lines, an `sr-only` `h1` that names them, and the description split.
+app/pages/work.vue renders it with the route metadata. WorkHero owns the
+one-line title, which it fits through useFitText, an `sr-only` `h1` that names
+it, and the description split.
 WorkProjectsSection owns the project data, the category to service map, the
 filter options, and two filter states: `selectedFilter`, which presses its
 button at once, and `shownFilter`, which decides the visible projects and
@@ -464,7 +465,7 @@ to fade its actions and logo, so the header never queries footer markup.
 useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
 element, which the component's own font size must multiply. JourneySection
-uses it for its title.
+uses it for its title, and WorkHero for its title.
 
 useImagesLoaded reports through `loaded` whether every image inside a root
 has loaded. After mount it checks each image's completed state, so images that

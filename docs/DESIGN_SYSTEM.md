@@ -2161,25 +2161,29 @@ action that also closes the Services route, followed by the site footer.
 The hero repeats the Services hero's frame: it fills the first screen below the
 header except for `--work-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded
 top of the projects section shows at the bottom of the first screen. Its
-content fills that space. From `lg` it is a two-column grid with a `4rem` gap:
-the title sits at the top of an auto-width left column and the description at
-the bottom of the right column. Below `lg` the title stays at the top and the
-description sits at the bottom of the space below it. The title sets "Our" and
-"work" on two lines, bold with `-0.05em` tracking and a tight `0.76` leading,
-in the same padded line
-masks as the Services hero, at `min(34vw, 18rem)` below `lg` and
-`min(19vw, 22rem)` from `lg`. A `0.2em` bottom margin cancels the last mask's
-negative margin, so the description never crowds the letters on phones. The
-`h1` is an `sr-only` copy of the phrase and the visual lines are hidden from
-assistive technology. The description, "Reels that stop the scroll. Visuals
+content fills that space. The title sets "Our work" on one line across the
+full content width at the top, and the description sits at the bottom of the
+space below it, in the right half of a two-column grid with a `4rem` gap from
+`lg` and across the full width below `lg`. The title is bold with `-0.05em`
+tracking and a tight `0.76` leading, in the same padded line mask as the
+Services hero. The content is an inline-size container, and the title sets
+`calc(var(--work-hero-title-size) * var(--fit-text-scale, 1))`. The
+`--work-hero-title-size` of `24.75cqi` is measured from the phrase, so the
+first paint already sits at the edge, and `useFitText` corrects the scale
+whenever the title's box resizes, as it does for the journey title. The title
+is `w-max` with `0.05em` of end padding, so its box includes the last letter's
+ink. If the phrase changes, measure it again and update the size. A `0.2em`
+bottom margin cancels the mask's negative margin, so the description never
+crowds the letters on phones. The `h1` is an `sr-only` copy of the phrase and
+the visual line is hidden from assistive technology. The description, "Reels that stop the scroll. Visuals
 directed like a shoot. Websites designed and coded from scratch. The proof is
 in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
 `text-5xl` from `xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
 measure, in line masks that carry `0.12em` above and `0.18em` below.
 
 The hero reveals like the home hero. At the page transition's reveal point, or
-once the description is split on a direct request, the title lines rise from
-`150` percent over `0.8s` on `power3.out` with a `0.1s` stagger, and `0.35s`
+once the description is split on a direct request, the title line rises from
+`150` percent over `0.8s` on `power3.out`, and `0.35s`
 later the description lines rise from `115` percent with a `0.06s` stagger.
 Until then both stay hidden in CSS. As the reader scrolls, the hero content
 drifts down at half the scroll speed and fades out while the projects section
