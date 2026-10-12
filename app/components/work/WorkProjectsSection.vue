@@ -112,9 +112,6 @@ const {
 const shownCount = computed(
    () => projects.filter((project) => isShown(project)).length,
 );
-const shownSummary = computed(() =>
-   shownCount.value === 1 ? "1 project" : `${shownCount.value} projects`,
-);
 const shownStatus = computed(() =>
    shownCount.value === 1 ? "Showing 1 project" : `Showing ${shownCount.value} projects`,
 );
@@ -147,7 +144,7 @@ function activateTooltip() {
       <WorkFilters
          :options="filters"
          :selected="selectedFilter"
-         :summary="shownSummary"
+         :count="shownCount"
          @select="selectFilter"
       />
       <p class="sr-only" aria-live="polite">{{ shownStatus }}</p>

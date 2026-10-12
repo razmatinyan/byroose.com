@@ -11,7 +11,6 @@ import {
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 
 const selectors = {
-   count: "[data-work-filters-count]",
    countChar: "[data-work-filters-count-char]",
    filterMask: "[data-work-filter-mask]",
    filterRise: "[data-work-filter-rise]",
@@ -42,17 +41,9 @@ export function useWorkProjectsMotion(scope: MotionScope) {
       return queryAll(root, selectors.item).filter(isShown);
    }
 
-   function countText(root: HTMLElement) {
-      return root.querySelector(selectors.count)?.textContent ?? "";
-   }
-
    function showCount(root: HTMLElement) {
       const chars = queryAll(root, selectors.countChar);
       if (chars.length) gsap.set(chars, { visibility: "inherit" });
-   }
-
-   function revealCount(root: HTMLElement) {
-      addCharReveal(gsap.timeline(), queryAll(root, selectors.countChar));
    }
 
    function revealFilters(root: HTMLElement) {
@@ -109,12 +100,10 @@ export function useWorkProjectsMotion(scope: MotionScope) {
       await tweenItems(leaving, { ...swapLeave, autoAlpha: 0 });
       if (id !== swapId || disposed) return;
 
-      const previousCount = countText(root);
       update();
       await nextTick();
       if (id !== swapId || disposed) return;
 
-      if (countText(root) !== previousCount) revealCount(root);
       gsap.set(leaving, { clearProps: "opacity,visibility,transform" });
       const entering = shownItems(root);
       gsap.set(entering, { autoAlpha: 0, y: swapEnter.y });

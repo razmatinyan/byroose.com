@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="FilterId extends string">
-import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 
 export interface WorkFilterOption<Id extends string> {
@@ -7,10 +6,10 @@ export interface WorkFilterOption<Id extends string> {
    label: string;
 }
 
-const { options, selected, summary } = defineProps<{
+const { count, options, selected } = defineProps<{
+   count: number;
    options: readonly WorkFilterOption<FilterId>[];
    selected: FilterId;
-   summary: string;
 }>();
 
 const emit = defineEmits<{
@@ -18,12 +17,10 @@ const emit = defineEmits<{
 }>();
 
 const groupLabel = "Filter projects";
-const summaryWords = computed(() =>
-   summary.split(" ").map((word, index) => ({
-      chars: [...word],
-      key: `${index}-${word}`,
-   })),
-);
+const countWords = ["Projects", "-"].map((word) => ({
+   chars: [...word],
+   word,
+}));
 
 function variantFor(id: FilterId) {
    return id === selected ? "dark" : "outline";
@@ -32,14 +29,8 @@ function variantFor(id: FilterId) {
 
 <template>
    <div class="work-filters" data-work-filters>
-      <p
-         :key="summary"
-         class="work-filters-count"
-         data-work-filters-count
-         aria-hidden="true"
-      >
-         <template v-for="({ chars, key }, index) in summaryWords" :key="key">
-            <template v-if="index">{{ " " }}</template>
+      <p class="work-filters-count" aria-hidden="true">
+         <template v-for="{ chars, word } in countWords" :key="word">
             <span class="work-filters-word"
                ><span
                   v-for="(char, charIndex) in chars"
@@ -48,8 +39,13 @@ function variantFor(id: FilterId) {
                   data-work-filters-count-char
                   >{{ char }}</span
                ></span
-            >
+            >{{ " " }}
          </template>
+         <span
+            class="work-filters-char work-filters-number"
+            data-work-filters-count-char
+            >{{ count }}</span
+         >
       </p>
       <div class="work-filters-options" role="group" :aria-label="groupLabel">
          <div
@@ -96,6 +92,10 @@ function variantFor(id: FilterId) {
 
 .work-filters-char {
    visibility: hidden;
+}
+
+.work-filters-number {
+   @apply tabular-nums;
 }
 
 .work-filters-options {

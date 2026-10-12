@@ -190,9 +190,9 @@ the server output always holds every project. A project matches a service
 filter when any of its categories maps to that service, so one project can
 appear under both. The section also owns the polite live status that counts
 the shown projects and the shared TrailingTooltip the cards drive. WorkFilters
-renders the `summary` it receives, the project count for the shown filter,
-split into `data-work-filters-count-char` characters in its template and keyed
-by its text, so a changed count mounts new characters. It also renders one
+renders "Projects -" split into `data-work-filters-count-char` characters in
+its template, followed by the `count` it receives, the number of projects for
+the shown filter, as one more character element whose text simply changes. It also renders one
 toggle Button per option, with `rollover` off, `aria-pressed`, and a `select`
 emit, inside a group named "Filter projects". ProjectCard renders one project's image frame, name, and
 categories and emits `activate` and `deactivate` on pointer enter and leave.
@@ -437,8 +437,7 @@ it reveals the `data-work-filters` block once: the count characters with the
 shared character rise and the `data-work-filter-rise` buttons from their
 `data-work-filter-mask` wrappers. The project cards have no scroll reveal. It
 returns `swapProjects`, which receives the owner's state update. It fades the
-shown items out, applies the update, rises the new count's characters when the
-count text changed, refreshes the scroll measurements, and rises the newly
+shown items out, applies the update, refreshes the scroll measurements, and rises the newly
 shown items in. A newer swap
 interrupts an older one, which then stops without applying its update. Reduced
 motion applies the update at once and shows everything at rest.

@@ -2204,12 +2204,13 @@ covers it, as the Services hero does.
 The projects section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, like the Services statement
 section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
-names it. It opens with the filters: a bold project count, such as "8
-projects", at `text-3xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, with
+names it. It opens with the filters: a bold project count, such as
+"Projects - 8", at `text-3xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, with
 `-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
-AI Content, and Website Development, `0.5rem` apart. The count follows the
-shown filter and reads "1 project" in the singular. It is split into
-characters in the template and sits in a mask that clips only vertically. It
+AI Content, and Website Development, `0.5rem` apart. The number follows the
+shown filter and uses tabular figures. "Projects -" is split into characters
+in the template and the number is one more character element, and the line
+sits in a mask that clips only vertically. It
 is hidden from assistive technology, because the polite live status already
 reads the count. From `md` the count and
 the buttons share one row, the count on the left and the buttons aligned to
@@ -2251,9 +2252,9 @@ are always at rest and only move when a filter changes.
 Choosing a filter presses its button at once. The shown cards then fade out
 and drop `24px` over `0.35s` on `power2.in` with a `0.03s` stagger, the grid
 swaps to the matching projects, and those rise from `48px` while they fade in
-over `0.8s` on `power3.out` with a `0.08s` stagger. When the count changes
-with the swap, the new count's characters rise with the character reveal as
-the new cards come in. A project appears under a
+over `0.8s` on `power3.out` with a `0.08s` stagger. The count's number
+changes in place as the grid swaps, without any animation, and "Projects -"
+never moves. A project appears under a
 service when any of its categories belongs to that service, so a project with
 both kinds of work appears under both. A polite live status announces how many
 projects are shown. A newer choice interrupts a running swap. Reduced motion
