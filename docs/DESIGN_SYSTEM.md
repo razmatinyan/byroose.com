@@ -1265,7 +1265,7 @@ touch-first devices never request or mount the tooltip chunk.
 ### More works panel
 
 The work section ends with four case studies and a full-width dark panel,
-`MoreWorksPanel`, that leads to the `/works` route. The panel uses the
+`MoreWorksPanel`, that leads to the `/work` route. The panel uses the
 `foreground` surface with `background` text, fills at least one dynamic viewport
 height, `min-h-dvh`, and stacks a centered title stage above one large circular
 action. The dynamic unit follows the mobile browser bars, so the pinned panel
@@ -1291,7 +1291,7 @@ the circle and below the panel edge until it travels in. The surface never
 changes color. Visible keyboard focus runs the same swap and shows the
 standard focus ring. Reduced motion swaps the arrow instantly without scaling,
 and touch-first pointers swap the arrow without scaling. A click anywhere else on
-the panel also routes to `/works`, so the whole surface carries a pointer
+the panel also routes to `/work`, so the whole surface carries a pointer
 cursor. Keyboard users reach the destination through the action link.
 
 The panel is also a hover surface for the work section's shared trailing
@@ -2181,7 +2181,7 @@ because then the reveal is not driven by scrolling. Reduced motion has no
 footer reveal, so the actions and the logo never fade.
 
 The primary navigation is plain text: no surface, padding, or shadow on the
-`nav` or its links. It lists Home, Works, Services, About, Blog, and Contact.
+`nav` or its links. It lists Home, Work, Services, About, Blog, and Contact.
 Each `SiteNavLink` sets its label in semibold at `text-lg`, in the title case
 of the nav labels rather than uppercase, and stacks a hidden copy in the same
 grid cell. Its `size` prop defaults to `lg`. The `inherit` size drops the

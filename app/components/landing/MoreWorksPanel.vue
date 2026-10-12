@@ -16,7 +16,7 @@ const emit = defineEmits<{
    deactivate: [];
 }>();
 
-const worksRoute = "/works";
+const worksRoute = "/work";
 const titleStart = "View";
 const titleEnd = "work";
 const actionLabel = "Explore Projects";
