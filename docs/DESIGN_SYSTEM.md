@@ -1337,11 +1337,13 @@ panel. `useMoreWorksMotion` owns the panel's own motion:
 - Reveal: one timeline is scrubbed from when the track reaches 60 percent of
   the viewport until the end of the pin. Across it, both words travel in from
   `22` percent of the viewport width to their resting columns. The image frame
-  scales up from zero. Each character fades in from zero opacity, working
-  outward from the center, so "View" reveals right to left and "work" left to
-  right, and every character is visible before the words settle. Every
-  character is set to zero opacity before the timeline is built, and the
-  timeline only tweens toward one. Do not use a staggered `fromTo` here: inside
+  scales up from zero. Each character fades in from zero opacity and scales up
+  from zero around its own center, working outward from the center of the
+  title, so "View" reveals right to left and "work" left to right, and every
+  character is visible at full size before the words settle. The characters
+  are inline blocks so the scale applies. Every character is set to zero
+  opacity and zero scale before the timeline is built, and the timeline only
+  tweens toward one. Do not use a staggered `fromTo` here: inside
   a scrubbed timeline it applies its starting opacity only to the characters
   the playhead has reached. Later characters keep their natural full opacity
   until their turn, which reveals the outer letters first. The circular

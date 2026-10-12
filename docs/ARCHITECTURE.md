@@ -274,12 +274,12 @@ list during the handoff. AboutTeamSection and AboutPage call useDrawnLineMotion
 directly with the team and story lines.
 
 useMoreWorksMotion owns the MoreWorksPanel's internal motion: the pin, the
-scrubbed reveal that brings the words in from their sides character by character
-while the image scales up from zero, and the on-screen state that drives image
-cycling. The panel component owns the image list and the cycling interval, and
-the composable only reports whether cycling should run. The panel emits its
-hover state with its current image and label, and WorkSection feeds them to the
-same TrailingTooltip the case cards use.
+scrubbed reveal that brings the words in from their sides as each character
+fades and scales in, while the image scales up from zero, and the on-screen
+state that drives image cycling. The panel component owns the image list and
+the cycling interval, and the composable only reports whether cycling should
+run. The panel emits its hover state with its current image and label, and
+WorkSection feeds them to the same TrailingTooltip the case cards use.
 
 useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the slowed travel of

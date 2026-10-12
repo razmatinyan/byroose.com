@@ -240,6 +240,10 @@ function openWorks(event: MouseEvent) {
 	@apply inline-block;
 }
 
+.more-works-word :deep(.split-text-char) {
+	@apply inline-block;
+}
+
 .more-works-word-start {
 	@apply col-start-1 justify-self-end;
 }

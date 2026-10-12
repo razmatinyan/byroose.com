@@ -99,6 +99,7 @@ export function useMoreWorksMotion(
       const charReveal = {
          duration: charDuration,
          opacity: 1,
+         scale: 1,
          stagger: { amount: charSpread },
       };
 
@@ -126,7 +127,7 @@ export function useMoreWorksMotion(
       driftTitle({ endWord, media, startWord, track }, timeline);
 
       const chars = [...startChars, ...endChars];
-      if (chars.length) gsap.set(chars, { opacity: 0 });
+      if (chars.length) gsap.set(chars, { opacity: 0, scale: 0 });
 
       if (startChars.length) {
          timeline.to([...startChars].reverse(), { ...charReveal }, 0);
