@@ -1,11 +1,7 @@
 import { onMounted, onScopeDispose, readonly, shallowRef, toValue } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { until } from "@vueuse/core";
-import {
-   charRevealDuration,
-   charRevealEase,
-   charRevealStagger,
-} from "@/lib/char-reveal";
+import { charRevealDuration, charRevealEase } from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
    revealMaskClip,
@@ -28,6 +24,7 @@ const selectors = {
 const descriptionLineStagger = 0.06;
 const descriptionStart = 0.35;
 const heroDrift = 0.5;
+const titleCharStagger = 0.07;
 
 function queryAll(root: HTMLElement, selector: string) {
    return Array.from(root.querySelectorAll<HTMLElement>(selector));
@@ -72,7 +69,7 @@ export function useWorkHeroMotion(
             {
                duration: charRevealDuration,
                ease: charRevealEase,
-               stagger: charRevealStagger,
+               stagger: titleCharStagger,
                yPercent: 0,
             },
             0,

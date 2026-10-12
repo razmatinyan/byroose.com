@@ -2193,8 +2193,9 @@ measure, in line masks that carry `0.12em` above and `0.18em` below.
 
 The hero reveals like the home hero. At the page transition's reveal point, or
 once the description is split on a direct request, the title characters rise
-one by one from `150` percent inside the shared mask with the shared character
-reveal timing, `0.9s` on `power3.out` with a `0.035s` stagger, and `0.35s`
+one by one from `150` percent inside the shared mask over the shared
+character reveal's `0.9s` on `power3.out`, with a wider `0.07s` stagger than
+the shared `0.035s`, so each letter reads on its own, and `0.35s`
 later the description lines rise from `115` percent with a `0.06s` stagger.
 Until then both stay hidden in CSS. As the reader scrolls, the hero content
 drifts down at half the scroll speed and fades out while the projects section
