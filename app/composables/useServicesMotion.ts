@@ -44,6 +44,12 @@ interface PanelTravel {
    runway: number;
 }
 
+interface PanelInset {
+   content: string;
+   frame: string;
+   property: string;
+}
+
 interface ScrollSpan {
    end: number;
    start: number;
@@ -58,6 +64,8 @@ const selectors = {
    intro: "[data-services-intro]",
    link: "[data-service-link]",
    linkContent: "[data-service-link-content]",
+   titleInset: "[data-service-title-inset]",
+   titleInsetContent: "[data-service-title-inset-content]",
    media: "[data-service-media]",
    mediaExit: "[data-service-media-exit]",
    mediaFrame: "[data-service-media-frame]",
@@ -77,6 +85,7 @@ const introWordFrom = {
 };
 const textRevealAt = 0.6;
 const linkOpenProperty = "--service-link-open";
+const titleInsetOpenProperty = "--service-title-inset-open";
 const imageZoom = 1.3;
 const panelRunway = 1;
 const mediaPeakScale = 0.8;
@@ -294,26 +303,37 @@ export function useServicesMotion(
             panelRunway + mediaHoldLength * (1 - mediaHoldDrift),
       });
 
-      gsap.fromTo(
-         [...content.children],
-         { y: 0 },
-         {
-            ease: (progress) =>
-               travel ? contentShareAt(travel, progress) : progress,
-            y: () => {
-               travel = travelOf(layout);
-               return travel.runway;
-            },
-            scrollTrigger: {
-               end: "bottom top",
-               invalidateOnRefresh: true,
-               refreshPriority,
-               scrub: true,
-               start: "top bottom",
-               trigger: panel,
-            },
-         },
+      const children = [...content.children];
+      const titles = children.filter((child) =>
+         child.matches(selectors.title),
       );
+      const others = children.filter(
+         (child) => !child.matches(selectors.title),
+      );
+      const runway = () => {
+         travel = travelOf(layout);
+         return travel.runway;
+      };
+
+      const timeline = gsap.timeline({
+         defaults: {
+            ease: (progress: number) =>
+               travel ? contentShareAt(travel, progress) : progress,
+         },
+         scrollTrigger: {
+            end: "bottom top",
+            invalidateOnRefresh: true,
+            refreshPriority,
+            scrub: true,
+            start: "top bottom",
+            trigger: panel,
+         },
+      });
+
+      if (others.length) timeline.fromTo(others, { y: 0 }, { y: runway }, 0);
+      if (titles.length) {
+         timeline.fromTo(titles, { top: 0 }, { top: runway }, 0);
+      }
    }
 
    function textRevealStart(layout: PanelLayout, title: HTMLElement) {
@@ -353,17 +373,30 @@ export function useServicesMotion(
          ease: lineRevealEase,
          stagger: lineRevealStagger,
       });
-      openLink(timeline, panel);
+      openInset(timeline, panel, {
+         content: selectors.titleInsetContent,
+         frame: selectors.titleInset,
+         property: titleInsetOpenProperty,
+      });
+      openInset(timeline, panel, {
+         content: selectors.linkContent,
+         frame: selectors.link,
+         property: linkOpenProperty,
+      });
       textTimelines.set(panel, timeline);
    }
 
-   function openLink(timeline: gsap.core.Timeline, panel: HTMLElement) {
-      const link = panel.querySelector<HTMLElement>(selectors.link);
-      const content = panel.querySelector<HTMLElement>(selectors.linkContent);
-      if (!link) return;
+   function openInset(
+      timeline: gsap.core.Timeline,
+      panel: HTMLElement,
+      { content: contentSelector, frame: frameSelector, property }: PanelInset,
+   ) {
+      const frame = panel.querySelector<HTMLElement>(frameSelector);
+      const content = panel.querySelector<HTMLElement>(contentSelector);
+      if (!frame) return;
 
       const reveal = { duration: servicesHeroInsetDuration, ease: swapEase };
-      timeline.to(link, { ...reveal, [linkOpenProperty]: 1 }, 0);
+      timeline.to(frame, { ...reveal, [property]: 1 }, 0);
 
       if (content) {
          timeline.fromTo(

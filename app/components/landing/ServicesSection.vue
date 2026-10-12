@@ -5,11 +5,14 @@ import {
    shallowRef,
    useTemplateRef,
 } from "vue";
+import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import WaveUnderline from "@/components/shared/WaveUnderline.vue";
 import { appIcons } from "@/lib/icons";
 import { servicesAnchors, servicesSectionPath } from "@/lib/services-anchors";
 import type { ServicesAnchor } from "@/lib/services-anchors";
+import { servicesHeroImages } from "@/lib/services-hero";
+import type { ServicesImage } from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const TrailingTooltip = defineAsyncComponent(
@@ -21,7 +24,9 @@ interface Service {
    description: string;
    image: string;
    surface: "canvas" | "dark";
-   title: string;
+   titleImages: readonly ServicesImage[];
+   titleLead: string;
+   titleTrail: string;
 }
 
 const introLines = ["What can we do", "for"];
@@ -38,7 +43,9 @@ const servicesData: Service[] = [
          "Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
       image: "/images/hero/5.png",
       surface: "canvas",
-      title: "AI Content Creation",
+      titleImages: servicesHeroImages,
+      titleLead: "AI Content ",
+      titleTrail: "Creation",
    },
    {
       anchor: servicesAnchors.web,
@@ -46,11 +53,23 @@ const servicesData: Service[] = [
          "Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
       image: "/images/hero/6.png",
       surface: "dark",
-      title: "Website Development",
+      titleImages: [
+         { height: 1620, src: "/images/work/3.png", width: 1080 },
+         { height: 1919, src: "/images/work/6.png", width: 1080 },
+         { height: 1919, src: "/images/work/7.png", width: 1080 },
+      ],
+      titleLead: "Website ",
+      titleTrail: "Development",
    },
 ];
 
+const titleInsetSizes = "sm:448px";
+
 const tooltipPreload = servicesData.map((service) => service.image);
+
+function serviceTitle({ titleLead, titleTrail }: Service) {
+   return `${titleLead}${titleTrail}`;
+}
 
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
 const introSplits = shallowRef<(SplitTextResult | undefined)[]>(
@@ -135,7 +154,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
       <article
          v-for="(service, index) in servicesData"
-         :key="service.title"
+         :key="service.anchor"
          class="service-panel"
          :class="{ 'service-panel-dark': service.surface === 'dark' }"
          data-service-panel
@@ -159,14 +178,26 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
          </div>
          <div class="service-content" data-service-content>
             <h3 class="service-title" data-service-title>
-               {{ service.title }}
+               <span class="service-title-text">{{ service.titleLead }}</span
+               ><span
+                  class="service-title-inset"
+                  data-service-title-inset
+                  aria-hidden="true"
+                  ><span
+                     class="service-title-inset-content"
+                     data-service-title-inset-content
+                     ><ImageCycle
+                        class="service-title-images"
+                        :images="service.titleImages"
+                        :sizes="titleInsetSizes" /></span></span
+               ><span class="service-title-text">{{ service.titleTrail }}</span>
             </h3>
 
             <NuxtLink
                class="service-link inset-arrow-link"
                data-service-link
                :to="servicesSectionPath(service.anchor)"
-               :aria-label="`Explore ${service.title}`"
+               :aria-label="`Explore ${serviceTitle(service)}`"
                @click="hideTooltip"
                @pointerenter="showTooltip('', tooltipText, 'compact')"
                @pointerleave="hideTooltip"
@@ -201,7 +232,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
                      class="service-media"
                      data-service-media
                      :to="servicesSectionPath(service.anchor)"
-                     :aria-label="`More details about ${service.title}`"
+                     :aria-label="`More details about ${serviceTitle(service)}`"
                      @pointerenter="
                         showTooltip(service.image, tooltipText, 'compact')
                      "
@@ -277,7 +308,12 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .service-panel-dark .service-title,
 .service-panel-dark .service-description {
-   @apply text-background mix-blend-difference;
+   @apply text-background;
+}
+
+.service-panel-dark .service-title-text,
+.service-panel-dark .service-description {
+   @apply mix-blend-difference;
 }
 
 .service-backdrop {
@@ -300,7 +336,31 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-title {
-   @apply m-0 w-full text-left text-service font-bold tracking-[-0.045em] text-balance md:col-span-3;
+   @apply relative m-0 w-full text-left text-service font-bold tracking-[-0.045em] text-balance md:col-span-3;
+   --service-title-inset-height: 0.8em;
+   --service-title-inset-width: calc(
+      var(--service-title-inset-height) * 16 / 9
+   );
+}
+
+.service-title-inset {
+   @apply relative inline-block overflow-hidden rounded-[0.06em];
+   height: var(--service-title-inset-height);
+   margin-inline-end: calc(0.12em * var(--service-title-inset-open));
+   vertical-align: -0.06em;
+   width: calc(
+      var(--service-title-inset-width) * var(--service-title-inset-open)
+   );
+   --service-title-inset-open: 0;
+}
+
+.service-title-inset-content {
+   @apply absolute top-0 left-1/2 h-full -translate-x-1/2;
+   width: var(--service-title-inset-width);
+}
+
+.service-title-images {
+   @apply size-full;
 }
 
 .service-link {
@@ -356,6 +416,10 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 @media (prefers-reduced-motion: reduce) {
    .service-link {
       --service-link-open: 1;
+   }
+
+   .service-title-inset {
+      --service-title-inset-open: 1;
    }
 }
 

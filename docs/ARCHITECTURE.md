@@ -298,9 +298,13 @@ scroll positions computed from untransformed layout rather than trigger
 elements. On touch devices its media context drops the slowed travel, the
 hold, and the backdrop rise, so the content stays in place, the dark backdrop
 is shown at rest, and each image scales in once from a trigger on its frame.
-The same text timeline opens each panel's `data-service-link` by tweening its
-`--service-link-open` property and settles its `data-service-link-content`
-from the hero inset's content scale. ServicesSection owns the copy, the
+The same text timeline opens each panel's `data-service-title-inset` and
+`data-service-link` by tweening their `--service-title-inset-open` and
+`--service-link-open` properties, and settles their
+`data-service-title-inset-content` and `data-service-link-content` from the
+hero inset's content scale. The slowed travel moves the `data-service-title`
+through `top` and the other content children through a transform, so the
+title's blended text fragments stay unisolated. ServicesSection owns the copy, the
 service links, the image links, and the tooltip handlers. Both links route to
 the service's section through `servicesSectionPath`. The composable waits until the intro
 lines and every description have reported their splits.

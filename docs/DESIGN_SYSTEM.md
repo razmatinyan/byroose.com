@@ -1461,7 +1461,12 @@ image hold described below. The title, the description, and the image frame
 slide down together through that runway as the panel crosses the viewport. The shared offset is applied to each child of
 `data-service-content` rather than to the block itself, because a transform on
 the block would make it an isolated group and stop its text from blending with
-the dark backdrop. At 1440 by
+the dark backdrop. The title is the exception: it travels through its `top`
+offset rather than a transform, because its blended text fragments are its
+children, and a transform on the title would isolate them from the backdrop as
+it does for the About hero title. Both offsets take the same value on the same
+scrubbed timeline, so the title and the rest of the content never drift apart.
+At 1440 by
 900 the content moves about 0.7 times as fast as the scroll, and the text
 reveal and the image scale stretch across the longer distance. Reduced motion
 drops the runway.
@@ -1474,9 +1479,24 @@ element reaches that line once the slowed travel and the image hold are
 accounted for. The panel itself is never transformed, so it stays a reliable
 reference.
 
-The service titles do not animate. Each is a plain `h3` that is visible in
-the server output and at rest from the start, so the panel always names its
-service. The title still anchors the description reveal: when the title
+The service title text does not animate. Each is a plain `h3` that is visible
+in the server output and at rest from the start, so the panel always names its
+service. Inside it, a 16:9 image frame follows one word, "Content" in AI
+Content Creation and "Website" in Website Development. It repeats the Services
+hero's image frame: `0.8em` tall, `0.06em` below the baseline, with `0.06em`
+corners, and its width and `0.12em` end margin multiplied by
+`--service-title-inset-open`, which rests at `0` in CSS, so the closed title
+reads as plain text. Its content keeps the full frame width and stays
+centered, so it is uncovered from the center outward while the next word moves
+aside. The frame holds an `ImageCycle` that cuts every `750ms`: the four Services
+hero images for AI Content Creation, and the work images `3.png`, `6.png`, and
+`7.png` for Website Development, requested at `sm:448px`. The frame opens with
+the description reveal, over `1.1s` on the swap timing's `power4.inOut` ease,
+while its images settle from `1.3` scale, the Services hero frame's timing.
+The frame is hidden from assistive technology and the leading text keeps its
+word space, so the heading still reads "AI Content Creation". Every title
+stays on one line with the frame open from `md` up, and phones keep the same
+two lines whether it is open or closed. The title still anchors the description reveal: when the title
 reaches 60 percent of the viewport, the description rises line by line from
 `SplitText` line masks with a `0.1s` stagger set through
 `lineRevealStagger` in `app/lib/word-reveal.ts`. Each description line takes
@@ -1529,7 +1549,8 @@ media.
 
 Each service declares a `surface`. The Website Development panel uses `dark`,
 so it renders a `foreground` backdrop behind its content. Its title and
-description are set in `background` with `mix-blend-mode: difference`, so they
+description are set in `background`, and the description and the title's text
+fragments, but not its image frame, use `mix-blend-mode: difference`, so they
 read dark over the canvas and off-white over the backdrop, including the moment the
 rising edge crosses a line. The backdrop covers the panel's full width and
 height, including its runway, and ends at the panel's bottom edge, so the
@@ -1540,7 +1561,9 @@ paints above the dark surface while the two overlap.
 The blend only works while nothing between the text and the canvas forms an
 isolated group. Keep the section, the panel, and `data-service-content` free of
 `isolation`, `z-index` stacking, opacity below one, filters, and transforms.
-Motion that moves the text must transform the text elements themselves.
+Motion that moves the text must transform the text elements themselves, and
+the title, whose blended fragments sit inside it, must move without a
+transform.
 
 The backdrop rises from the bottom center of the viewport just ahead of the
 panel's text. `backdropRevealDelay` in `useServicesMotion` places its start
