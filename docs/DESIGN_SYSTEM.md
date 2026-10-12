@@ -2161,11 +2161,12 @@ action that also closes the Services route, followed by the site footer.
 The hero repeats the Services hero's frame: it fills the first screen below the
 header except for `--work-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded
 top of the projects section shows at the bottom of the first screen. Its
-content sits at the bottom of that space. From `lg` it is a two-column grid
-with a `4rem` gap: the title takes an auto-width left column and the
-description fills the right column, both aligned to the bottom. Below `lg` the
-description stacks under the title. The title sets "Our" and "work" on two
-lines, bold with `-0.05em` tracking and `0.88` leading, in the same padded line
+content fills that space. From `lg` it is a two-column grid with a `4rem` gap:
+the title sits at the top of an auto-width left column and the description at
+the bottom of the right column. Below `lg` the title stays at the top and the
+description sits at the bottom of the space below it. The title sets "Our" and
+"work" on two lines, bold with `-0.05em` tracking and a tight `0.76` leading,
+in the same padded line
 masks as the Services hero, at `min(34vw, 18rem)` below `lg` and
 `min(19vw, 22rem)` from `lg`. A `0.2em` bottom margin cancels the last mask's
 negative margin, so the description never crowds the letters on phones. The

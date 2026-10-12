@@ -58,17 +58,17 @@ function setDescriptionSplit(parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .work-hero {
-   @apply relative grid items-end pt-10 pb-16 sm:pb-20;
+   @apply relative grid pt-10 pb-16 sm:pb-20;
    min-height: calc(100svh - 4.75rem - var(--work-hero-peek));
    --work-hero-peek: clamp(3rem, 9svh, 6rem);
 }
 
 .work-hero-content {
-   @apply grid gap-10 sm:gap-14 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-end lg:gap-x-16;
+   @apply grid grid-rows-[auto_1fr] gap-10 sm:gap-14 lg:grid-cols-[auto_minmax(0,1fr)] lg:grid-rows-1 lg:gap-x-16;
 }
 
 .work-hero-title {
-   @apply leading-[0.88] font-bold tracking-[-0.05em];
+   @apply self-start leading-[0.76] font-bold tracking-[-0.05em];
    font-size: min(34vw, 18rem);
    margin-block: -0.2em 0.2em;
 }
@@ -88,7 +88,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .work-hero-description {
-   @apply m-0 max-w-[20em] text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl xl:text-5xl;
+   @apply m-0 max-w-[20em] self-end text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl xl:text-5xl;
 }
 
 .work-hero-description :deep(.split-text-line),
