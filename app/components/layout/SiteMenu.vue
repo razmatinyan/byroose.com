@@ -35,6 +35,7 @@ const { menuButton, menuLineBottom, menuLineTop, menuPanel, siteMenuRoot } =
 	useSiteMenuMotion(() => open)
 const { isActive: isTransitionActive, phase: transitionPhase } =
 	usePageTransition()
+const router = useRouter()
 
 useHoverBounce(menuButton, { hover: false, press: true })
 
@@ -107,8 +108,13 @@ async function closeMenu(returnFocus = false) {
 	menuButton.value?.focus()
 }
 
-function handleNavigate(event: MouseEvent) {
-	const startsTransition = event.defaultPrevented && !isTransitionActive.value
+function isCurrentPath(href: string) {
+	return router.resolve(href).path === router.currentRoute.value.path
+}
+
+function handleNavigate(event: MouseEvent, href: string) {
+	const startsTransition =
+		event.defaultPrevented && !isTransitionActive.value && !isCurrentPath(href)
 
 	if (!startsTransition) closeMenu()
 }
@@ -208,7 +214,7 @@ onKeyStroke(
 							<SiteMenuLink
 								:href="item.href"
 								:label="item.label"
-								@navigate="handleNavigate"
+								@navigate="handleNavigate($event, item.href)"
 							/>
 						</li>
 					</ul>

@@ -13,7 +13,6 @@ export default defineNuxtPlugin({
 		const isActive = computed(() => phase.value !== 'idle')
 		const pendingCleanups: Cleanup[] = []
 		const revealWaiters: Array<() => void> = []
-		const replayCount = shallowRef(0)
 		let isClaimed = false
 		let releaseScroll: (() => void) | null = null
 		let releaseRefresh: (() => Promise<void>) | null = null
@@ -25,13 +24,8 @@ export default defineNuxtPlugin({
 			releaseRefresh = nuxtApp.$smoothScroll.holdRefresh()
 		}
 
-		function replay() {
-			begin()
-			replayCount.value += 1
-		}
-
 		function pageKey(route: RouteLocationNormalizedLoaded) {
-			return `${route.path}:${replayCount.value}`
+			return route.path
 		}
 
 		function claim() {
@@ -44,6 +38,12 @@ export default defineNuxtPlugin({
 
 		function reveal() {
 			for (const resolve of revealWaiters.splice(0)) resolve()
+		}
+
+		function scrollToCurrentLocation() {
+			if (nuxtApp.$router.currentRoute.value.hash) return scrollToRouteHash()
+
+			return nuxtApp.$smoothScroll.scrollTo(0)
 		}
 
 		function scrollToRouteHash() {
@@ -95,7 +95,7 @@ export default defineNuxtPlugin({
 					isNavigationFailure(failure, NavigationFailureType.duplicated) &&
 					!isActive.value
 				) {
-					replay()
+					scrollToCurrentLocation()
 					return
 				}
 

@@ -709,8 +709,9 @@ Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the val
 ### Page transitions
 
 Every page change runs an overlap transition from `usePageTransitionMotion`,
-passed to NuxtPage in `app/app.vue`. A link to the current page runs the same
-transition and replaces the page with a fresh copy of itself. The first page
+passed to NuxtPage in `app/app.vue`. A link to the current page runs no
+transition. It scrolls the page back to the top on the swap scroll timing, or
+to the section its hash names. The first page
 load never runs it, so a direct home request still opens with the preloader.
 
 The leaving page stays on screen exactly where the reader left it and moves
@@ -2293,8 +2294,9 @@ pointer leave and stays open until the control, a link, an outside click, or
 Escape closes it. Touch and pen pointers never open the menu on hover.
 
 A menu link keeps the menu open until the page transition takes it over, so
-the open menu leaves with the old page as described in Page transitions. This
-includes a link to the current page, which replays that page. A link followed
+the open menu leaves with the old page as described in Page transitions. A
+link to the current page starts no transition, so the menu closes with its
+normal animation while the page scrolls to the top. A link followed
 while a transition is already running closes the menu with its normal animation.
 Any menu close during a page transition is instant.
 
@@ -2361,8 +2363,8 @@ everything at rest without the rise.
 
 The header logo always renders a real link to the home route so it stays
 crawlable and opens in a new tab on a modified click. A plain click always
-follows the link, so on the home route it replays the home page through the
-page transition like any other link to the current page.
+follows the link, so on the home route it scrolls the home page back to the
+top like any other link to the current page.
 
 The header logo reads on every surface through `mix-blend-mode: difference`.
 It is painted in the `background` token, so it shows as black on the canvas and
