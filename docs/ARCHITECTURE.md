@@ -58,6 +58,7 @@ app/
     useServicesMotion.ts
     useServicesRevealMotion.ts
     useServicesStatementMotion.ts
+    useSiteCtaMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
     useSmoothScroll.ts
@@ -208,7 +209,7 @@ section.
 SiteCtaSection is the dark "Have an idea? Let's build it." call to action
 that closes every route. The layout renders it inside the main landmark after
 the page, so no page owns a copy. It owns its copy and its link to `/contact`
-and reveals through useServicesRevealMotion. Like the footer, it carries
+and reveals through useSiteCtaMotion. Like the footer, it carries
 `data-page-transition-follow`, so it leaves with the outgoing page. Because the
 layout persists, the layout keys it and bumps that key through the page
 transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
@@ -417,8 +418,7 @@ center, and writes them to the flight layer. While the hero frame is still
 opening, it also matches the frame's content scale from its
 `--services-hero-inset-open` value. Reduced motion keeps the layer in the slot.
 
-useServicesRevealMotion owns the scroll reveals of ServicesOfferSection and
-SiteCtaSection. It waits for every `data-services-reveal-text` line split,
+useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` line split,
 then rises each text's lines once with the shared line reveal timing when it
 enters, and rises every `data-services-reveal-rise` item once with the word
 reveal timing. When the scope has a `data-services-reveal-backdrop` layer, it
@@ -449,6 +449,13 @@ shown items out, applies the update, refreshes the scroll measurements, and rise
 shown items in. A newer swap
 interrupts an older one, which then stops without applying its update. Reduced
 motion applies the update at once and shows everything at rest.
+
+useSiteCtaMotion owns the site call to action's reveal. It waits for both
+title lines' word splits, then builds one timeline on the title's
+`data-site-cta-title` trigger that rises every word of both lines in reading
+order with the shared word reveal and a `0.12s` stagger, and rises the
+`data-site-cta-action` one stagger step after the last word. Reduced motion
+shows the words and the action at rest.
 
 useAboutSectionMotion owns the scroll reveals of one About section. Inside its
 scope it reveals the `data-about-title` lines, clip reveals and parallaxes

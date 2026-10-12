@@ -382,9 +382,12 @@ dark `foreground` section with `background` text that fills at least the
 viewport, centered, with "Have an idea?" and "Let's build it." on two bold
 lines at `min(clamp(3.5rem, 11vw, 12rem), 12vw)`, `-0.05em` tracking, and
 `0.88` leading, and a large `light` Start a project action to `/contact` with
-an arrow right glyph and the hover bounce. It marks the header as dark. The
-lines rise from their line masks and the action rises `0.3s` later when they
-reach 82 percent of the viewport. The action's rise mask clips only
+an arrow right glyph and the hover bounce. It marks the header as dark. When
+the title reaches 82 percent of the viewport, its words rise one by one from
+their word masks in reading order across both lines, with the shared word
+reveal, `0.8s` on `power3.out`, and the blog title's `0.12s` stagger. The
+action rises one stagger step after the last word. The word masks carry
+`0.12em` above and `0.18em` below, cancelled by equal negative margins. The action's rise mask clips only
 vertically, so the hover bounce can grow the action past its sides without
 cutting its corners. Reduced motion shows the text and the action at rest.
 

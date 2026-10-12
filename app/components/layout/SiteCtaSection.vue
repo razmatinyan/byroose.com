@@ -16,7 +16,7 @@ const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
    titleLines.map(() => undefined),
 );
 
-useServicesRevealMotion(ctaRoot, titleSplits);
+useSiteCtaMotion(ctaRoot, titleSplits);
 
 function setTitleSplit(index: number, parts: SplitTextResult) {
    titleSplits.value = titleSplits.value.map((entry, entryIndex) =>
@@ -31,24 +31,23 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
       class="site-cta section-gutter"
       data-header-surface="dark"
    >
-      <h2 class="site-cta-title">
+      <h2 class="site-cta-title" data-site-cta-title>
          <span class="sr-only">{{ title }}</span>
          <span aria-hidden="true">
             <SplitText
                v-for="(line, index) in titleLines"
                :key="line"
                class="site-cta-title-line"
-               data-services-reveal-text
                aria="none"
-               mask="lines"
+               mask="words"
                :text="line"
-               type="lines"
+               type="words"
                @split="setTitleSplit(index, $event)"
             />
          </span>
       </h2>
       <div class="site-cta-action-mask">
-         <span class="site-cta-action-rise" data-services-reveal-rise>
+         <span class="site-cta-action-rise" data-site-cta-action>
             <Button
                class="site-cta-action"
                :as="NuxtLink"
@@ -83,17 +82,17 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
    @apply block whitespace-nowrap;
 }
 
-.site-cta-title :deep(.split-text-line),
-.site-cta-title :deep(.split-text-line-mask) {
-   display: block;
+.site-cta-title :deep(.split-text-word),
+.site-cta-title :deep(.split-text-word-mask) {
+   display: inline-block;
 }
 
-.site-cta-title :deep(.split-text-line-mask) {
+.site-cta-title :deep(.split-text-word-mask) {
    margin-block: -0.12em -0.18em;
    padding-block: 0.12em 0.18em;
 }
 
-.site-cta-title :deep(.split-text-line) {
+.site-cta-title :deep(.split-text-word) {
    visibility: hidden;
 }
 
