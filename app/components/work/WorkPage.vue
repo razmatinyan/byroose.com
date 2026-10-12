@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ProjectCtaSection from "@/components/shared/ProjectCtaSection.vue";
 import WorkHero from "./WorkHero.vue";
 import WorkProjectsSection from "./WorkProjectsSection.vue";
 </script>
@@ -8,7 +7,6 @@ import WorkProjectsSection from "./WorkProjectsSection.vue";
    <div class="work-page">
       <WorkHero />
       <WorkProjectsSection />
-      <ProjectCtaSection />
    </div>
 </template>
 

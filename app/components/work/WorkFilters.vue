@@ -103,15 +103,13 @@ function variantFor(id: FilterId) {
    @apply flex flex-wrap gap-2 md:justify-end;
 }
 
-@layer utilities {
-   .work-filters-button {
-      border-radius: 9999px !important;
-   }
+.work-filters-button {
+   --radius-sm: 9999px;
+}
 
-   @media (hover: hover) {
-      .work-filters-button:hover {
-         @apply border-foreground bg-foreground text-primary-foreground;
-      }
+@media (hover: hover) {
+   .work-filters-button:hover {
+      @apply border-foreground bg-foreground text-primary-foreground;
    }
 }
 

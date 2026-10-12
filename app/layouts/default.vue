@@ -1,14 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import SiteCookieBanner from '@/components/layout/SiteCookieBanner.vue'
+import SiteCtaSection from '@/components/layout/SiteCtaSection.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
 import SiteScrollbar from '@/components/layout/SiteScrollbar.vue'
 
 const route = useRoute()
+const router = useRouter()
 const homeIntroState = useHomeIntroState()
+const { deferCleanup, pageKey } = usePageTransition()
+const ctaKey = shallowRef(0)
 const layoutIntroState = computed(() =>
 	route.path === '/' ? homeIntroState.value : 'complete',
+)
+
+watch(
+	() => pageKey(router.currentRoute.value),
+	() =>
+		deferCleanup(() => {
+			ctaKey.value += 1
+		}),
 )
 </script>
 
@@ -17,6 +29,7 @@ const layoutIntroState = computed(() =>
 		<SiteHeader data-home-intro-header data-page-transition-header />
 		<main>
 			<slot />
+			<SiteCtaSection :key="ctaKey" data-page-transition-follow />
 		</main>
 		<SiteFooter data-page-transition-follow />
 		<div

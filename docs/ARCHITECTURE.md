@@ -113,7 +113,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, and app/pages/work.vue renders the Work experience from app/components/work. The remaining page files own the Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, and app/pages/work.vue renders the Work experience from app/components/work. The remaining page files own the Journey, Courses, Blog, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -124,11 +124,10 @@ A landing section should not become a general component merely because it contai
 ### About components
 
 app/components/about contains the About route's sections. AboutPage composes
-AboutHero, AboutTeamSection, AboutTrustSection, AboutBrandsSection, and
-AboutCtaSection, and app/pages/about.vue renders it with the route metadata.
-AboutPage wraps the trust, brands, and call to action sections in an isolated
-`about-story` block that holds their shared DrawnLine and marks the brands and
-call to action roots with `data-drawn-line-anchor`. AboutTeamSection holds its
+AboutHero, AboutTeamSection, AboutTrustSection, and AboutBrandsSection, and
+app/pages/about.vue renders it with the route metadata. AboutPage wraps the
+trust and brands sections in an isolated `about-story` block that holds their
+shared DrawnLine and marks the brands root with `data-drawn-line-anchor`. AboutTeamSection holds its
 own DrawnLine.
 AboutTitle renders a title from explicit lines, each in its own mask, with an
 optional underlined word that carries a WaveUnderline, every other text
@@ -152,8 +151,8 @@ on landing sections.
 
 app/components/services contains the Services route's sections. ServicesPage
 composes ServicesHero, ServicesStatementSection, a light ServicesOfferSection
-for AI Content Creation, a dark one for Website Development, and the shared
-ProjectCtaSection, and app/pages/services.vue renders it with the route
+for AI Content Creation, and a dark one for Website Development, and
+app/pages/services.vue renders it with the route
 metadata. ServicesPage also owns both offers' copy and blocks, and
 the `data-services-flight` layer, an ImageCycle of the hero images that is
 absolutely positioned in the page and travels from the hero to the first
@@ -177,7 +176,7 @@ About components.
 ### Work components
 
 app/components/work contains the Work route's sections. WorkPage composes
-WorkHero, WorkProjectsSection, and the shared ProjectCtaSection, and
+WorkHero and WorkProjectsSection, and
 app/pages/work.vue renders it with the route metadata. WorkHero owns the
 one-line title, which it fits through useFitText, an `sr-only` `h1` that names
 it, and the description split.
@@ -202,9 +201,18 @@ components.
 ### Layout components
 
 app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
-SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, and SiteFooter. Layout components
+SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, SiteCtaSection, and SiteFooter. Layout components
 may use shared components and UI primitives. They should not depend on a landing
 section.
+
+SiteCtaSection is the dark "Have an idea? Let's build it." call to action
+that closes every route. The layout renders it inside the main landmark after
+the page, so no page owns a copy. It owns its copy and its link to `/contact`
+and reveals through useServicesRevealMotion. Like the footer, it carries
+`data-page-transition-follow`, so it leaves with the outgoing page. Because the
+layout persists, the layout keys it and bumps that key through the page
+transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
+after the leaving page has been removed and every route reveals it again.
 
 SiteCookieBanner owns the cookie notice. Its consent value lives in the
 byroose-cookie-consent cookie through Nuxt's useCookie, so the server and the
@@ -223,7 +231,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, ProjectCtaSection, SplitText, and TrailingTooltip. ProjectCtaSection is the dark call to action that closes the Services and Work routes. It owns its copy and its link to `/contact` and reveals through useServicesRevealMotion. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -410,7 +418,7 @@ opening, it also matches the frame's content scale from its
 `--services-hero-inset-open` value. Reduced motion keeps the layer in the slot.
 
 useServicesRevealMotion owns the scroll reveals of ServicesOfferSection and
-ProjectCtaSection. It waits for every `data-services-reveal-text` line split,
+SiteCtaSection. It waits for every `data-services-reveal-text` line split,
 then rises each text's lines once with the shared line reveal timing when it
 enters, and rises every `data-services-reveal-rise` item once with the word
 reveal timing. When the scope has a `data-services-reveal-backdrop` layer, it

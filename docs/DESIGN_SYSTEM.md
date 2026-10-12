@@ -54,7 +54,7 @@ visual and accessibility review.
 | `brand-subtle`                                                    | Dark neutral                                                    | Editorial body copy below primary emphasis                                                                                                      |
 | `ribbon`                                                          | Fresh green, `oklch(0.82 0.16 135)`                             | The decorative Studio ribbon stroke                                                                                                             |
 | `ribbon-shade`                                                    | Deeper green, `oklch(0.66 0.15 142)`                            | The ribbon's shading where it passes under itself                                                                                               |
-| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface, such as the About call to action                                                                                    |
+| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface, such as the About team card actions                                                                                  |
 | `destructive`                                                     | Alert red                                                       | Destructive and error actions only                                                                                                              |
 | `border`, `input`, and `ring`                                     | Semantic controls                                               | Boundaries, fields, and focus indicators                                                                                                        |
 
@@ -93,8 +93,8 @@ its foreground, card, popover, accent, and cream foreground tokens. Change
 `canvas-shade` is neutral rather than warm, so it reads as a grey version of
 the canvas instead of another cream. It pairs with the ink
 `canvas-shade-foreground`, and in the dark theme it sits one step above the dark
-canvas with the cream foreground. `ribbon` doubles as a surface on the About
-call to action. Its `ribbon-foreground` is the ink in the light theme and the
+canvas with the cream foreground. `ribbon` doubles as a surface on the round
+`ribbon` actions of the About team cards. Its `ribbon-foreground` is the ink in the light theme and the
 cream in the dark theme, where the ribbon itself turns a deeper green.
 
 ### Adding colors
@@ -375,6 +375,25 @@ Accepting writes `accepted` and declining writes `declined` to the
 server already knows whether to render the notice, so an answered banner never
 flashes during hydration.
 
+## Site call to action
+
+`SiteCtaSection` closes every route, between the page and the footer. It is a
+dark `foreground` section with `background` text that fills at least the
+viewport, centered, with "Have an idea?" and "Let's build it." on two bold
+lines at `min(clamp(3.5rem, 11vw, 12rem), 12vw)`, `-0.05em` tracking, and
+`0.88` leading, and a large `light` Start a project action to `/contact` with
+an arrow right glyph and the hover bounce. It marks the header as dark. The
+lines rise from their line masks and the action rises `0.3s` later when they
+reach 82 percent of the viewport. The action's rise mask clips only
+vertically, so the hover bounce can grow the action past its sides without
+cutting its corners. Reduced motion shows the text and the action at rest.
+
+The section follows the outgoing page during a page transition, and a fresh
+copy replaces it once the new page has landed, so it reveals again on every
+route. On short routes such as Contact it already sits in the first screen and
+reveals at once. Its action links to `/contact` everywhere, so on the Contact
+route it scrolls that page back to the top.
+
 ## Site footer
 
 `SiteFooter` spans the full width with `paper-foreground` text. Like the
@@ -386,8 +405,8 @@ canvas color. The gradient lives on the footer root rather than the moving
 content wrapper, so it stays fixed while the content travels during the
 reveal. The footer is not a dark
 surface, so it carries no
-`data-header-surface` marker. The landing page no longer ends with an orange
-call to action section, and the footer follows the FAQ directly.
+`data-header-surface` marker. On every route it follows the site call to
+action.
 
 From `lg` the top row is a two-column grid. The left column stacks the slogan
 title above the email block. The right column holds Navigation, Social Media, and
@@ -1881,9 +1900,9 @@ confirmed.
 
 ### About page
 
-The About route stacks five sections: a centered hero, a grey team section, a
-trust section, a brands section, and a green call to action, followed by the
-site footer.
+The About route stacks four sections: a centered hero, a grey team section, a
+trust section, and a brands section, followed by the site call to action and
+the site footer.
 
 The hero fills the first screen below the header except for
 `--about-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded top of the team
@@ -1988,22 +2007,14 @@ statements use `AboutStatement`, which owns that placement, semibold at `text-2x
 `-0.04em` tracking, and they rise line by line with the services description
 timing, `1.5s`, `power3`, and a `0.1s` stagger.
 
-The call to action is a `ribbon` green section with the same rounded top corners,
-a full `100svh` tall, centering "Become chosen byroose" above a `dark` `cta-lg` "Start
-Now" action with an arrow right glyph that routes to `/contact`. The action
-scales its label, padding, and glyph in `em` from
-`clamp(1.25rem, 2.2vw, 2rem)` and rises from a mask that clips only during the
-reveal. Its display title caps the shared display size at `12vw`, so the
-unbreakable "Become chosen" line shrinks with the viewport below about `467px`
-instead of overflowing it, and keeps the shared size everywhere wider.
-
 Two lines draw themselves with the scroll on larger screens, as the home Studio
 ribbon and work line do. Both were drawn as two layers of one 1440 wide frame
 whose top edge is the team section's top. The source file is not kept in the
 repository. `app/lib/about-line-path.ts` stores each layer's `d` string
 unchanged with the section lines it was drawn against,
-measured at 1440 by 900: the team section from `0` to `1768`, and the trust,
-brands, and call to action sections at `1768`, `2866`, `3820`, and `4720`. At
+measured at 1440 by 900: the team section from `0` to `1768`, and the trust
+and brands sections at `1768`, `2866`, and `3820`, where the green call to
+action the story line was drawn under used to begin. At
 runtime x scales by the live width and y maps between the matching live
 section lines, so each line keeps its place against the content at every
 breakpoint. The team artwork's top line sits at `-120` instead of `0`, which
@@ -2019,10 +2030,11 @@ section edges.
 
 The story line, Layer 2, uses the work line's `text-foreground` and
 `opacity-3`. It sits at `-z-10` in the isolated `about-story` block that wraps
-the trust, brands, and call to action sections. It enters past the right edge
-beside the trust title, sweeps left behind the trust statement, curves back
-right behind the brands heading, and passes under the call to action, whose
-green surface paints above it and hides its end. It uses the work
+the trust and brands sections. It enters past the right edge beside the trust
+title, sweeps left behind the trust statement, and curves back right behind
+the brands heading. The rest of the artwork continues below the block, where
+the SVG clips it, so the line ends at the brands section's bottom edge, right
+where the site call to action begins. It uses the work
 line's head lead of `0`. To replace either line, draw it on the same frame in
 the direction it should animate, paste its `d` string into the matching
 artwork, and remeasure the section lines if the layout has changed.
@@ -2037,8 +2049,8 @@ the `lg` breakpoint the drawn lines are hidden.
 ### Services page
 
 The Services route stacks a centered hero, a grey statement section, a light
-AI Content Creation section, a dark Website Development section, and a dark
-call to action, followed by the site footer.
+AI Content Creation section, and a dark Website Development section, followed
+by the site call to action and the site footer.
 
 The hero repeats the About hero's frame: it fills the first screen below the
 header except for `--services-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the
@@ -2151,16 +2163,8 @@ header as dark. As in the home dark panel, the intro title and description
 are set in `background` with `mix-blend-difference`, so they read black over
 the light canvas and turn light where the dark surface has grown behind them.
 
-The call to action, `ProjectCtaSection`, follows on the same dark surface, so the two read as one
-dark block that ends in a straight edge above the footer. It fills at least
-the viewport, centered, with "Have an idea?" and "Let's build it." on two
-bold lines at the About call to action's display size, `-0.05em` tracking,
-and `0.88` leading, and a large `light` Start a project action to `/contact`
-with an arrow right glyph and the hover bounce. The lines rise from their line
-masks and the action rises `0.3s` later when they reach 82 percent of the
-viewport. The action's rise mask clips only vertically, so the hover bounce
-can grow the action past its sides without cutting its corners. Reduced motion shows the dark surface, the text, and the action at
-rest.
+The site call to action follows on the same dark surface, so the two read as
+one dark block that ends in a straight edge above the footer.
 
 ### Work page
 
@@ -2216,8 +2220,12 @@ is hidden from assistive technology, because the polite live status already
 reads the count. From `md` the count and
 the buttons share one row, the count on the left and the buttons aligned to
 the right edge, both resting on the row's bottom. Below `md` the buttons wrap
-under the count. The buttons are pills: a `9999px` radius, set inside the
-utilities layer so it overrides the size's important `radius-action`. They
+under the count. The buttons are pills: a `9999px` radius, set on the
+button itself as `--radius-sm`, the variable the size's important
+`radius-action` resolves to. Never declare a Tailwind layer in a component
+style block: a component sheet that loads before the global stylesheet would
+put `utilities` first in the layer order, and the base reset would then beat
+every utility, such as the button colors. They
 pass `rollover` as `false`, so they skip the CTA rollover, and they carry no
 icon, so each is exactly as wide as its label and padding. The pressed button
 uses the `dark` variant and the others use `outline`. On `(hover: hover)`
@@ -2265,9 +2273,8 @@ projects are shown. A newer choice interrupts a running swap. Reduced motion
 shows the count, the buttons, and every card at rest and swaps the cards
 instantly.
 
-The call to action is `ProjectCtaSection`, the Services route's dark closing
-section described above. Here it follows the grey projects section with a
-straight top edge.
+The site call to action follows the grey projects section with a straight top
+edge.
 
 ### Header motion
 

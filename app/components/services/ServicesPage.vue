@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
-import ProjectCtaSection from "@/components/shared/ProjectCtaSection.vue";
 import { servicesAnchors } from "@/lib/services-anchors";
 import {
    servicesHeroImages,
@@ -101,7 +100,6 @@ useServicesMediaFlight(pageRoot);
          surface="dark"
          :title="webTitle"
       />
-      <ProjectCtaSection />
       <div class="services-flight" data-services-flight aria-hidden="true">
          <ImageCycle
             class="services-flight-layer"
