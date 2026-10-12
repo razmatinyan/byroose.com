@@ -2230,13 +2230,13 @@ during the rise, so the focus ring is never cut.
 
 The project cards follow in one column below `md` and two columns from `md`,
 `1rem` apart, `1.25rem` from `md`, with `3rem` between rows, `4rem` from `md`,
-and `5rem` from `xl`. Each card is an article with a 4:3 `rounded-2xl` image
-frame, then a row with the project name on the left and its categories in
+and `5rem` from `xl`. Each card is an article with a 4:3 image frame with
+subtle `rounded-md` corners, about `13px`, then a row with the project name on the left and its categories in
 parentheses on the right, semibold and medium `brand-subtle` at `text-xl`,
 `text-2xl` from `md`, and `text-3xl` from `xl`, with `-0.03em` tracking. The
 row is inset from the frame's edges by `0.75rem`, `1rem` from `md`, and
 `1.25rem` from `xl`, so the name and the categories sit inside the image's
-rounded corners rather than flush with them. The categories are Reels, Video,
+edges rather than flush with them. The categories are Reels, Video,
 and Imagery for AI content, and Web Design, Development, and E-commerce for
 website development. The images are `object-cover` crops of the hero and work
 placeholders, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`

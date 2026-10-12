@@ -57,7 +57,7 @@ const categoryLabel = computed(() => `(${categories.join(", ")})`);
 }
 
 .project-card-media {
-   @apply relative aspect-4/3 overflow-hidden rounded-2xl bg-muted;
+   @apply relative aspect-4/3 overflow-hidden rounded-md bg-muted;
 }
 
 .project-card-image {
