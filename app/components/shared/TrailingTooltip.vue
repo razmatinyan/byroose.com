@@ -98,7 +98,12 @@ async function showLayer(id: number, reveal: boolean) {
 watch(
 	() => [active, image] as const,
 	([isActive, nextImage], previous) => {
-		if (!nextImage || nextImage === layers.value.at(-1)?.src) return;
+		if (!nextImage) {
+			layers.value = [];
+			return;
+		}
+
+		if (nextImage === layers.value.at(-1)?.src) return;
 
 		const id = nextLayerId++;
 		const revealsOverPrevious =

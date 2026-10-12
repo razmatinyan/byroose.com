@@ -63,7 +63,7 @@ function showAboutTooltip() {
                   ><span aria-hidden="true">{{ line.lead }}</span
                   ><NuxtLink
                      v-if="line.inset === 'link'"
-                     class="services-hero-inset services-hero-link inset-arrow-link"
+                     class="services-hero-inset services-hero-link inset-arrow-link inset-arrow-surface"
                      data-services-hero-inset
                      to="/about"
                      :aria-label="aboutLabel"

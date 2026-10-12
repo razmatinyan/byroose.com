@@ -171,12 +171,17 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
                @pointerenter="showTooltip('', tooltipText, 'compact')"
                @pointerleave="hideTooltip"
             >
-               <span class="service-link-content" data-service-link-content>
-                  <Icon
-                     class="inset-arrow-icon"
-                     :name="appIcons.arrowUpRight"
-                     aria-hidden="true"
-                  />
+               <span class="service-link-surface inset-arrow-surface">
+                  <span
+                     class="service-link-content"
+                     data-service-link-content
+                  >
+                     <Icon
+                        class="inset-arrow-icon"
+                        :name="appIcons.arrowUpRight"
+                        aria-hidden="true"
+                     />
+                  </span>
                </span>
             </NuxtLink>
 
@@ -299,20 +304,23 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-link {
-   @apply relative mt-4 block shrink-0 self-start overflow-hidden rounded-[0.23em] text-2xl md:col-start-1 md:mt-8 md:text-4xl xl:mt-12 xl:text-6xl;
-   height: var(--service-link-size);
-   width: calc(var(--service-link-size) * var(--service-link-open));
+   @apply relative mt-4 block size-[3.06em] shrink-0 self-start rounded-[7.5%] text-2xl md:col-start-1 md:mt-8 md:ml-[0.5em] md:size-auto md:aspect-square md:self-stretch md:justify-self-start md:text-4xl xl:mt-12 xl:text-6xl;
    --service-link-open: 0;
-   --service-link-size: 3.06em;
 }
 
 .service-link:focus-visible {
    --service-link-open: 1;
 }
 
+.service-link-surface {
+   @apply absolute inset-0 overflow-hidden rounded-[inherit];
+   clip-path: inset(
+      0 calc((1 - var(--service-link-open)) * 100%) 0 0 round 7.5%
+   );
+}
+
 .service-link-content {
-   @apply absolute top-0 left-0 grid h-full place-items-center p-[0.53em];
-   width: var(--service-link-size);
+   @apply grid size-full place-items-center p-[17.5%];
 }
 
 .service-description {

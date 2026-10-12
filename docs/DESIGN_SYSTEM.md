@@ -1252,7 +1252,10 @@ sharp. Reduced motion removes the movement delay and clip transition.
 The tooltip also has a text-only form. Without an image it renders no
 thumbnail frame, switches to `px-5 py-3` padding, and can append an `icon`
 after the label at `0.8em`. The About team cards use it for "More Info" and the
-Services hero link for "About", both with an arrow up right glyph.
+Services hero link for "About", both with an arrow up right glyph. Passing an
+empty image drops every thumbnail layer, so a tooltip that switches from an
+image target to a text-only one, such as the home services image and its
+service link, never keeps the previous thumbnail.
 
 The open, close-delay, and loading state lives in `useTrailingTooltip`, which
 the services section, the About team section, and the Services hero share. Each consumer loads the component asynchronously
@@ -1427,19 +1430,28 @@ The left third holds a square service link, the Services hero's link frame
 repeated at a larger scale. It is a `NuxtLink` to the service's section on the
 `/services` route, named "Explore AI Content Creation" or "Explore Website
 Development" through `aria-label`, and it shares the hero link's
-`inset-arrow-link` surface and `inset-arrow-icon` glyph. It sets the
-description's font size and is `3.06em` square, the height of three
-description lines, with `0.23em` corners and `0.53em` of padding, the hero
-frame's proportions. Its top is level with the description's first line. On
-phones it sits between the title and the description on the left edge.
-Hovering it opens the services section's TrailingTooltip in its text-only form,
-"More Details" with an arrow up right glyph. The link's width is its size
-multiplied by `--service-link-open`, which rests at `0` in CSS, so the link
-takes no room until it reveals. It opens from its left edge with the
-description reveal, over `1.1s` on the swap timing's `power4.inOut` ease,
-while its content, held at full width against the left edge, settles from
-`1.3` scale, as the hero link frame does. Visible keyboard focus opens it
-instantly, so a keyboard user never lands on a closed link.
+`inset-arrow-link` focus ring, `inset-arrow-surface` grey, and
+`inset-arrow-icon` glyph. From `md` it is exactly as tall as the description:
+it stretches to the height of the grid row it shares with the description,
+`aspect-square` makes it as wide as it is tall, and `justify-self-start` keeps
+the column from stretching its width instead. It sits `0.5em` of the
+description's font size in from the left content edge, so it shifts right with
+the type. Its corners are `7.5%` of its size and its glyph sits inside
+`17.5%` of padding, the hero frame's proportions. Its top is level with the
+description's first line. On phones it is a fixed `3.06em` square, the height
+of three description lines, between the title and the description on the left
+edge. Hovering it opens the services section's TrailingTooltip in its
+text-only form, "More Details" with an arrow up right glyph and no thumbnail.
+
+The link keeps its full size from the start, so the layout never moves. Its
+grey `service-link-surface` is clipped from the right by
+`--service-link-open`, which rests at `0` in CSS, so the button stays hidden
+until it reveals. It opens from its left edge with the description reveal,
+over `1.1s` on the swap timing's `power4.inOut` ease, while its content settles
+from `1.3` scale, as the hero link frame does. The clip sits on the inner
+surface rather than the link, so it never cuts the link's focus ring. Visible
+keyboard focus opens it instantly, so a keyboard user never lands on a closed
+link.
 
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
@@ -2022,9 +2034,10 @@ brand orange `primary` arrow up right glyph that fills the frame inside
 `0.14em` of padding. Lucide draws that arrow across only ten of its
 twenty-four units, so the glyph scales to `2`, which brings the arrow itself
 most of the way to the padding. Its path strokes at `3px` in the icon's own
-units instead of Lucide's `2`. The surface and focus ring live in the global
-`inset-arrow-link` class group and the glyph's scale and stroke in
-`inset-arrow-icon`, which the home service links share. Hovering it opens the hero's text-only TrailingTooltip, "About"
+units instead of Lucide's `2`. The focus ring lives in the global
+`inset-arrow-link` class group, the grey in `inset-arrow-surface`, and the
+glyph's scale and stroke in `inset-arrow-icon`, which the home service links
+share. Hovering it opens the hero's text-only TrailingTooltip, "About"
 with an arrow up right glyph, and keyboard focus shows the standard ring.
 
 The image frame is 16:9 and shows an `ImageCycle` that cuts through four images
