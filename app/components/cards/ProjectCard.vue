@@ -65,7 +65,7 @@ const categoryLabel = computed(() => `(${categories.join(", ")})`);
 }
 
 .project-card-meta {
-   @apply flex items-baseline justify-between gap-x-6 text-xl leading-tight tracking-[-0.03em] md:text-2xl xl:text-3xl;
+   @apply flex items-baseline justify-between gap-x-6 px-3 text-xl leading-tight tracking-[-0.03em] md:px-4 md:text-2xl xl:px-5 xl:text-3xl;
 }
 
 .project-card-title {
