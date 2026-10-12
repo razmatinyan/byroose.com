@@ -11,6 +11,7 @@ import { surfaceTones } from '@/lib/surfaces'
 import { cn, formatPublishDate } from '@/lib/utils'
 
 type BlogCardTone = 'green' | 'pink' | 'yellow'
+type BlogCardSurface = 'neutral' | 'tinted'
 
 const {
 	category,
@@ -18,6 +19,7 @@ const {
 	href,
 	image,
 	publishedAt,
+	surface = 'tinted',
 	title,
 	tone = 'pink',
 } = defineProps<{
@@ -26,6 +28,7 @@ const {
 	href: string
 	image: string
 	publishedAt: string
+	surface?: BlogCardSurface
 	title: string
 	tone?: BlogCardTone
 }>()
@@ -35,6 +38,9 @@ const emit = defineEmits<{
 }>()
 
 const publishedLabel = computed(() => formatPublishDate(publishedAt))
+const surfaceClass = computed(() =>
+	surface === 'tinted' ? surfaceTones[tone] : 'bg-card text-card-foreground',
+)
 </script>
 
 <template>
@@ -43,7 +49,7 @@ const publishedLabel = computed(() => formatPublishDate(publishedAt))
 		:to="href"
 		variant="plain"
 		data-blog-card
-		:class="cn('blog-card', surfaceTones[tone], className)"
+		:class="cn('blog-card', surfaceClass, className)"
 	>
 		<div class="blog-card-media">
 			<NuxtImg

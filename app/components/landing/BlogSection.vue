@@ -4,39 +4,16 @@ import { NuxtLink } from '#components'
 import BlogCard from '@/components/cards/BlogCard.vue'
 import SplitText from '@/components/shared/SplitText.vue'
 import { Button, ButtonIcon } from '@/components/ui/button'
+import { blogArticles } from '@/lib/blog-articles'
 import type { SplitTextResult } from '@/lib/split-text'
 
 const blogRoute = '/blog'
 const blogTitle = 'More Than a Blog'
 
-const articles = [
-	{
-		title: 'What we learned shipping 400 AI-generated assets',
-		category: 'AI content creation',
-		publishedAt: '2026-09-22',
-		image: '/images/hero/3.png',
-		tone: 'pink' as const,
-	},
-	{
-		title: 'Why AI video still looks stock, and how we fix it',
-		category: 'AI content creation',
-		publishedAt: '2026-09-08',
-		image: '/images/hero/4.png',
-		tone: 'yellow' as const,
-	},
-	{
-		title: 'How we ship a website in five weeks',
-		category: 'Web development',
-		publishedAt: '2026-08-25',
-		image: '/images/hero/6.png',
-		tone: 'green' as const,
-	},
-]
-
 const blogRoot = useTemplateRef<HTMLElement>('blogRoot')
 const titleSplit = shallowRef<SplitTextResult>()
 const cardTitleSplits = shallowRef<(SplitTextResult | undefined)[]>(
-	articles.map(() => undefined),
+	blogArticles.map(() => undefined),
 )
 
 useBlogMotion(blogRoot, { cardTitleSplits, titleSplit })
@@ -76,7 +53,7 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 
 			<div class="blog-grid">
 				<BlogCard
-					v-for="(article, index) in articles"
+					v-for="(article, index) in blogArticles"
 					:key="article.title"
 					v-bind="article"
 					:href="blogRoute"

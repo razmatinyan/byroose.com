@@ -1787,8 +1787,9 @@ for its weight and tracking but sets its own size,
 `text-section`, at `0.92` leading.
 
 Three `BlogCard`s follow in one column below `md` and three columns from `md`.
-Each card is a `NuxtLink` painted with a `surface-*` utility through its
-`tone` prop, which accepts `pink`, `yellow`, and `green`, used in that order.
+Each card is a `NuxtLink`. Its default `tinted` surface is painted with a
+`surface-*` utility through its `tone` prop, which accepts `pink`, `yellow`,
+and `green`, used in that order.
 The card is `rounded-2xl` with `p-3`, so its `rounded-xl` image sits inset in
 the tint. It carries a soft `shadow-xl` in `foreground` at 10 percent, at the
 user's request, so the tinted cards lift off the sand panel. This is a
@@ -1853,6 +1854,13 @@ moves onto it. The hover state applies only to `(hover: hover)` pointers, so a
 tap on a touch screen opens the article without blurring first. Visible
 keyboard focus shows the same state, and reduced motion switches between the
 two states without the transition.
+
+The Blog route reuses the Work route's fitted listing hero and rounded grey
+listing section. Its article heading shows the live article count, and its
+cards use the same responsive BlogCard grid and interaction as the home section:
+one column below `md` and three columns from `md`. It passes the `neutral`
+surface, which uses the card background and foreground tokens instead of a
+brand tone. The home section keeps the default tinted surface.
 
 The articles, dates, and images are placeholders until real posts exist, and
 every card links to `/blog`.

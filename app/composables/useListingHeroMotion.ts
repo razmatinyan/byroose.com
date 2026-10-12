@@ -15,10 +15,10 @@ type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
 const selectors = {
-   content: "[data-work-hero-content]",
-   reveal: "[data-work-hero-reveal]",
-   titleChar: "[data-work-hero-title-char]",
-   titleMask: "[data-work-hero-title-mask]",
+   content: "[data-listing-hero-content]",
+   reveal: "[data-listing-hero-reveal]",
+   titleChar: "[data-listing-hero-title-char]",
+   titleMask: "[data-listing-hero-title-mask]",
 } as const;
 
 const descriptionLineStagger = 0.06;
@@ -30,7 +30,7 @@ function queryAll(root: HTMLElement, selector: string) {
    return Array.from(root.querySelectorAll<HTMLElement>(selector));
 }
 
-export function useWorkHeroMotion(
+export function useListingHeroMotion(
    scope: MotionScope,
    descriptionSplit: SplitSource,
 ) {
