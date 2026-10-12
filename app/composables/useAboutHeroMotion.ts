@@ -61,7 +61,7 @@ export function useAboutHeroMotion(
          ...insetContents,
       ];
 
-      gsap.set(titleMasks, { overflow: "clip" });
+      gsap.set(titleMasks, { overflowX: "visible", overflowY: "clip" });
       gsap.set(titleLines, {
          position: "relative",
          top: (_index: number, line: HTMLElement) =>

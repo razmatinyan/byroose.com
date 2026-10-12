@@ -11,6 +11,7 @@ import { addStackReveal } from "@/lib/stack-reveal";
 import {
    addWordReveal,
    navRevealStagger,
+   revealMaskClip,
    wordRevealOffset,
 } from "@/lib/word-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
@@ -188,7 +189,7 @@ export function useHomeIntroMotion(
       const { items, masks } = getHeaderRevealParts(headers);
       const context = createContext(() => {
          gsap.set(headers, { pointerEvents: "none", visibility: "inherit" });
-         gsap.set(masks, { clipPath: "inset(0)" });
+         gsap.set(masks, { clipPath: revealMaskClip });
       });
 
       gsap.ticker.add(() => {
@@ -321,10 +322,10 @@ export function useHomeIntroMotion(
             }
 
             gsap.set(headers, { pointerEvents: "none", visibility: "inherit" });
-            gsap.set(headerMasks, { clipPath: "inset(0)" });
+            gsap.set(headerMasks, { clipPath: revealMaskClip });
             gsap.set(titleLines, { yPercent: 150 });
             gsap.set([...descriptionLines, action], { yPercent: 115 });
-            gsap.set(actionMask, { clipPath: "inset(0)" });
+            gsap.set(actionMask, { clipPath: revealMaskClip });
             gsap.set([title, ...copyElements], { visibility: "inherit" });
 
             const tl = gsap.timeline({

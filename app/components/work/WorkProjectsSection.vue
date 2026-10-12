@@ -3,7 +3,6 @@ import { computed, defineAsyncComponent, shallowRef, useTemplateRef } from "vue"
 import ProjectCard from "@/components/cards/ProjectCard.vue";
 import type { ProjectImage } from "@/components/cards/ProjectCard.vue";
 import { appIcons } from "@/lib/icons";
-import type { SplitTextResult } from "@/lib/split-text";
 import WorkFilters from "./WorkFilters.vue";
 import type { WorkFilterOption } from "./WorkFilters.vue";
 
@@ -100,10 +99,9 @@ const projects: readonly Project[] = [
 const tooltipLabel = "View Project";
 
 const sectionRoot = useTemplateRef<HTMLElement>("sectionRoot");
-const filtersSplit = shallowRef<SplitTextResult>();
 const selectedFilter = shallowRef<WorkFilter>("all");
 const shownFilter = shallowRef<WorkFilter>("all");
-const { swapProjects } = useWorkProjectsMotion(sectionRoot, filtersSplit);
+const { swapProjects } = useWorkProjectsMotion(sectionRoot);
 const {
    active: tooltipActive,
    hide: hideTooltip,
@@ -113,6 +111,9 @@ const {
 
 const shownCount = computed(
    () => projects.filter((project) => isShown(project)).length,
+);
+const shownSummary = computed(() =>
+   shownCount.value === 1 ? "1 project" : `${shownCount.value} projects`,
 );
 const shownStatus = computed(() =>
    shownCount.value === 1 ? "Showing 1 project" : `Showing ${shownCount.value} projects`,
@@ -124,10 +125,6 @@ function isShown({ categories }: Project) {
    return categories.some(
       (category) => categoryServices[category] === shownFilter.value,
    );
-}
-
-function setFiltersSplit(parts: SplitTextResult) {
-   filtersSplit.value = parts;
 }
 
 async function selectFilter(filter: WorkFilter) {
@@ -150,8 +147,8 @@ function activateTooltip() {
       <WorkFilters
          :options="filters"
          :selected="selectedFilter"
+         :summary="shownSummary"
          @select="selectFilter"
-         @split="setFiltersSplit"
       />
       <p class="sr-only" aria-live="polite">{{ shownStatus }}</p>
       <ul class="work-projects-grid">

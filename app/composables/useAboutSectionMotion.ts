@@ -12,6 +12,7 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   revealMaskClip,
    titleLineRevealOffset,
    titleLineRevealStagger,
    wordRevealDuration,
@@ -69,7 +70,7 @@ export function useAboutSectionMotion(
          return;
       }
 
-      gsap.set(masks, { clipPath: "inset(0)" });
+      gsap.set(masks, { clipPath: revealMaskClip });
       gsap.set(lines, { yPercent: titleLineRevealOffset });
       gsap
          .timeline({
@@ -135,7 +136,7 @@ export function useAboutSectionMotion(
       const masks = queryAll(group, selectors.riseMask);
       if (!items.length) return;
 
-      gsap.set(masks, { clipPath: "inset(0)" });
+      gsap.set(masks, { clipPath: revealMaskClip });
       gsap.set(items, { yPercent: wordRevealOffset });
       gsap
          .timeline({

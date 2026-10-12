@@ -1,7 +1,11 @@
 import { onMounted, readonly, shallowRef, useTemplateRef, watch } from 'vue'
 import { unrefElement } from '@vueuse/core'
 import type { MaybeComputedElementRef } from '@vueuse/core'
-import { addWordReveal, navRevealStagger } from '@/lib/word-reveal'
+import {
+	addWordReveal,
+	navRevealStagger,
+	revealMaskClip,
+} from '@/lib/word-reveal'
 
 type HeaderMode = 'compact' | 'full'
 
@@ -67,7 +71,7 @@ export function useSiteHeaderMotion() {
 		}
 
 		createContext(() => {
-			gsap.set(masks, { clipPath: 'inset(0)' })
+			gsap.set(masks, { clipPath: revealMaskClip })
 			const timeline = gsap.timeline({
 				onComplete: () => {
 					navRevealed.value = true

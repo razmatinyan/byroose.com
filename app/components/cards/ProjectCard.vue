@@ -29,7 +29,7 @@ const categoryLabel = computed(() => `(${categories.join(", ")})`);
       @pointerenter="emit('activate')"
       @pointerleave="emit('deactivate')"
    >
-      <div class="project-card-media" data-work-project-media>
+      <div class="project-card-media">
          <NuxtImg
             class="project-card-image"
             :src="image.src"
@@ -42,11 +42,9 @@ const categoryLabel = computed(() => `(${categories.join(", ")})`);
             draggable="false"
          />
       </div>
-      <div class="project-card-meta-mask">
-         <div class="project-card-meta" data-work-project-meta>
-            <h3 class="project-card-title">{{ name }}</h3>
-            <p class="project-card-categories">{{ categoryLabel }}</p>
-         </div>
+      <div class="project-card-meta">
+         <h3 class="project-card-title">{{ name }}</h3>
+         <p class="project-card-categories">{{ categoryLabel }}</p>
       </div>
    </article>
 </template>
@@ -66,14 +64,8 @@ const categoryLabel = computed(() => `(${categories.join(", ")})`);
    @apply absolute inset-0 size-full object-cover select-none;
 }
 
-.project-card-meta-mask {
-   @apply overflow-clip;
-   margin-block: -0.15em;
-   padding-block: 0.15em;
-}
-
 .project-card-meta {
-   @apply flex items-baseline justify-between gap-x-6 text-lg leading-tight tracking-[-0.02em] md:text-xl;
+   @apply flex items-baseline justify-between gap-x-6 text-xl leading-tight tracking-[-0.03em] md:text-2xl xl:text-3xl;
 }
 
 .project-card-title {

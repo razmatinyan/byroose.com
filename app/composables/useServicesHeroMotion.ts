@@ -7,6 +7,7 @@ import {
 } from "@/lib/services-hero";
 import { swapEase } from "@/lib/swap-timing";
 import {
+   revealMaskClip,
    titleLineRevealOffset,
    titleLineRevealStagger,
    wordRevealDuration,
@@ -78,7 +79,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
          ...insetContents,
       ];
 
-      gsap.set(titleMasks, { clipPath: "inset(0)" });
+      gsap.set(titleMasks, { clipPath: revealMaskClip });
       gsap.set(titleLines, { yPercent: titleLineRevealOffset });
       gsap.set(insets, { [servicesHeroInsetOpenProperty]: 0 });
       gsap.set(insetContents, { scale: servicesHeroInsetContentScale });

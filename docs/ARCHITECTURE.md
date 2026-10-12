@@ -190,9 +190,11 @@ the server output always holds every project. A project matches a service
 filter when any of its categories maps to that service, so one project can
 appear under both. The section also owns the polite live status that counts
 the shown projects and the shared TrailingTooltip the cards drive. WorkFilters
-renders the "Filters" label split, which it emits, and one toggle Button per
-option, with `aria-pressed` and a `select` emit, inside a group labelled by
-that split. ProjectCard renders one project's image frame, name, and
+renders the `summary` it receives, the project count for the shown filter,
+split into `data-work-filters-count-char` characters in its template and keyed
+by its text, so a changed count mounts new characters. It also renders one
+toggle Button per option, with `rollover` off, `aria-pressed`, and a `select`
+emit, inside a group named "Filter projects". ProjectCard renders one project's image frame, name, and
 categories and emits `activate` and `deactivate` on pointer enter and leave.
 The sections own their copy and do not depend on landing, About, or Services
 components.
@@ -430,16 +432,14 @@ timing, and scrubs the hero content down at half the scroll speed while it
 fades out, as the Services hero does. It returns `revealed`, which lifts the
 hero's hidden CSS rest state.
 
-useWorkProjectsMotion owns the Work projects section's motion. It waits for
-the filter label's character split, then reveals the `data-work-filters`
-block once: the label characters with the shared character rise and the
-`data-work-filter-rise` buttons from their `data-work-filter-mask` wrappers.
-Each shown `data-work-project-item` opens its `data-work-project-media` frame
-with the Studio portrait clip and rises its `data-work-project-meta` row from
-its own trigger, staggered with the other cards in its layout row. It returns
-`swapProjects`, which receives the owner's state update. It settles every
-pending card reveal, fades the shown items out, applies the update, refreshes
-the scroll measurements, and rises the newly shown items in. A newer swap
+useWorkProjectsMotion owns the Work projects section's motion. After mount
+it reveals the `data-work-filters` block once: the count characters with the
+shared character rise and the `data-work-filter-rise` buttons from their
+`data-work-filter-mask` wrappers. The project cards have no scroll reveal. It
+returns `swapProjects`, which receives the owner's state update. It fades the
+shown items out, applies the update, rises the new count's characters when the
+count text changed, refreshes the scroll measurements, and rises the newly
+shown items in. A newer swap
 interrupts an older one, which then stops without applying its update. Reduced
 motion applies the update at once and shows everything at rest.
 
@@ -626,7 +626,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   `lineRevealEase`, and `lineRevealStagger`, which the services descriptions
   and the journey step cards share. `titleLineRevealOffset` and
   `titleLineRevealStagger` hold the padded title line rise, `150` percent
-  with a `0.1s` stagger, which the About titles use.
+  with a `0.1s` stagger, which the About titles use. `revealMaskClip`,
+  `inset(0 -0.5em)`, is the clip every reveal mask takes while it rises, so
+  the mask cuts only above and below and never the last letter's overhang.
 - utils.ts contains pure class and value helpers. `formatPublishDate` formats
   an ISO date in fixed `en-US` long style at UTC, so the server and the client
   render the same blog card date.

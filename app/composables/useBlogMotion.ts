@@ -7,6 +7,7 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   revealMaskClip,
    wordRevealDuration,
    wordRevealEase,
    wordRevealOffset,
@@ -82,7 +83,7 @@ export function useBlogMotion(
       const cta = heading.querySelector<HTMLElement>(selectors.cta);
       if (!ctaMask || !cta) return;
 
-      gsap.set(ctaMask, { clipPath: "inset(0)" });
+      gsap.set(ctaMask, { clipPath: revealMaskClip });
       gsap.set(cta, { yPercent: wordRevealOffset });
       timeline
          .to(

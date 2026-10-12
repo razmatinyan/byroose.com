@@ -8,6 +8,7 @@ import {
 } from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
+   revealMaskClip,
    titleLineRevealOffset,
    wordRevealDuration,
    wordRevealEase,
@@ -53,7 +54,7 @@ export function useWorkHeroMotion(
          ...revealTargets,
       ];
 
-      gsap.set(titleMasks, { clipPath: "inset(0)" });
+      gsap.set(titleMasks, { clipPath: revealMaskClip });
       gsap.set(titleChars, { yPercent: titleLineRevealOffset });
       gsap.set(descriptionLines, { yPercent: wordRevealOffset });
       gsap.set(revealTargets, { visibility: "inherit" });

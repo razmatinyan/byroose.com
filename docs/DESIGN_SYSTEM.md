@@ -943,6 +943,14 @@ the layout, the word spacing, and the justification stay exactly as before.
 The rule lives in the global `@layer components`, so every word mask on the
 site gets it.
 
+The same overhang would cut the last letter of a title line while it rises,
+because a line mask ends where the tracked text ends. Every reveal mask that a
+composable clips therefore uses `revealMaskClip` from `app/lib/word-reveal.ts`,
+`inset(0 -0.5em)`, which clips only above and below and leaves half an em of
+room on both sides. A mask that clips through `overflow` sets only
+`overflow-y: clip`, as the About hero title does. Never clip a reveal mask on
+its sides.
+
 The founder photo is a landscape 4:3 image. It fills the full width of its
 column in a 4:3 frame with `rounded-2xl` corners, so the frame matches the
 source and nothing is cropped at rest. The frame is a wrapper around the
@@ -2195,21 +2203,26 @@ covers it, as the Services hero does.
 The projects section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, like the Services statement
 section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
-names it. It opens with the filters: a bold "Filters" label at `text-3xl`,
-`text-4xl` from `md`, and `text-5xl` from `xl`, with the `split-title` group
-at `-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
-AI Content, and Website Development, `0.5rem` apart. From `md` the label and
-the buttons share one row, the label on the left and the buttons aligned to
+names it. It opens with the filters: a bold project count, such as "8
+projects", at `text-3xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, with
+`-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
+AI Content, and Website Development, `0.5rem` apart. The count follows the
+shown filter and reads "1 project" in the singular. It is split into
+characters in the template and sits in a mask that clips only vertically. It
+is hidden from assistive technology, because the polite live status already
+reads the count. From `md` the count and
+the buttons share one row, the count on the left and the buttons aligned to
 the right edge, both resting on the row's bottom. Below `md` the buttons wrap
-under the label. The buttons are pills: a `9999px` radius, set inside the
+under the count. The buttons are pills: a `9999px` radius, set inside the
 utilities layer so it overrides the size's important `radius-action`. They
-pass `rollover` as `false`, so they skip the CTA rollover and keep their
-variant's plain color hover, and they carry no icon, so each is exactly as
-wide as its label and padding. The pressed button uses
-the `dark` variant and the others use `outline`, and each carries
-`aria-pressed` inside a group labelled by "Filters". When the filters reach 82
-percent of the viewport, the label characters rise with the shared character
-reveal, and `0.3s` in the buttons rise from `115` percent of their masks over
+pass `rollover` as `false`, so they skip the CTA rollover, and they carry no
+icon, so each is exactly as wide as its label and padding. The pressed button
+uses the `dark` variant and the others use `outline`. On `(hover: hover)`
+pointers every button turns the `foreground` black with a `foreground` border
+and white `primary-foreground` text, replacing the variants' orange and white
+hovers, so the pressed button stays dark. Each carries `aria-pressed` inside a
+group named "Filter projects". When the filters reach 82 percent of the
+viewport, the count characters rise with the shared character reveal, and `0.3s` in the buttons rise from `115` percent of their masks over
 `0.8s` on `power3.out` with the `0.08s` navigation stagger. The masks clip only
 during the rise, so the focus ring is never cut.
 
@@ -2217,8 +2230,8 @@ The project cards follow in one column below `md` and two columns from `md`,
 `1rem` apart, `1.25rem` from `md`, with `3rem` between rows, `4rem` from `md`,
 and `5rem` from `xl`. Each card is an article with a 4:3 `rounded-2xl` image
 frame, then a row with the project name on the left and its categories in
-parentheses on the right, semibold and medium `brand-subtle` at `text-lg`,
-`text-xl` from `md`, with `-0.02em` tracking. The categories are Reels, Video,
+parentheses on the right, semibold and medium `brand-subtle` at `text-xl`,
+`text-2xl` from `md`, and `text-3xl` from `xl`, with `-0.03em` tracking. The categories are Reels, Video,
 and Imagery for AI content, and Web Design, Development, and E-commerce for
 website development. The images are `object-cover` crops of the hero and work
 placeholders, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
@@ -2231,20 +2244,19 @@ Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
 the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
 TrailingTooltip in its text-only form, "View Project" with an arrow up right
 glyph. The scale applies only to `(hover: hover)` pointers and switches without
-the transition under reduced motion. When a card reaches 82 percent of the
-viewport, its frame opens with the Studio portrait clip, `1.2s` on
-`power3.inOut`, and `0.4s` later its name and category row rises from its
-mask with the line reveal timing. Cards that share a layout row start `0.15s`
-apart.
+the transition under reduced motion. The cards have no scroll reveal. They
+are always at rest and only move when a filter changes.
 
 Choosing a filter presses its button at once. The shown cards then fade out
 and drop `24px` over `0.35s` on `power2.in` with a `0.03s` stagger, the grid
 swaps to the matching projects, and those rise from `48px` while they fade in
-over `0.8s` on `power3.out` with a `0.08s` stagger. A project appears under a
+over `0.8s` on `power3.out` with a `0.08s` stagger. When the count changes
+with the swap, the new count's characters rise with the character reveal as
+the new cards come in. A project appears under a
 service when any of its categories belongs to that service, so a project with
 both kinds of work appears under both. A polite live status announces how many
 projects are shown. A newer choice interrupts a running swap. Reduced motion
-shows the label, the buttons, and every card at rest and swaps the cards
+shows the count, the buttons, and every card at rest and swaps the cards
 instantly.
 
 The call to action is `ProjectCtaSection`, the Services route's dark closing

@@ -6,6 +6,7 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   revealMaskClip,
    wordRevealOffset,
    wordRevealStart,
 } from "@/lib/word-reveal";
@@ -182,7 +183,7 @@ export function useJourneyMotion(
       const ctaMask = slide.querySelector<HTMLElement>(selectors.ctaMask);
       const cta = slide.querySelector<HTMLElement>(selectors.cta);
       if (ctaMask && cta) {
-         gsap.set(ctaMask, { clipPath: "inset(0)" });
+         gsap.set(ctaMask, { clipPath: revealMaskClip });
          gsap.set(cta, { yPercent: wordRevealOffset });
          timeline
             .to(

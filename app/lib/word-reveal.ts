@@ -10,6 +10,7 @@ export const lineRevealEase = "power3";
 export const lineRevealStagger = 0.1;
 export const titleLineRevealOffset = 150;
 export const titleLineRevealStagger = 0.1;
+export const revealMaskClip = "inset(0 -0.5em)";
 
 export interface WordRevealOptions {
 	duration?: number;
