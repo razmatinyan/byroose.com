@@ -151,10 +151,12 @@ export function usePageTransitionMotion(): TransitionProps {
          document.querySelectorAll<HTMLElement>(overlaySelector),
       ).filter(isVisible);
       const clones = [...overlays, ...headers].flatMap(cloneInPlace);
+      const canvasColor = getComputedStyle(document.body).backgroundColor;
 
       $pageTransition.deferCleanup(() => resumeScrollTriggers(triggers));
       anchorPinnedElements(page);
-      gsap.set([page, ...followers], { y: -window.scrollY });
+      gsap.set(page, { backgroundColor: canvasColor, y: -window.scrollY });
+      gsap.set(followers, { y: -window.scrollY });
       resetScroll();
       return { clones, followers, headers };
    }
