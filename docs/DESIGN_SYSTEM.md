@@ -32,31 +32,31 @@ visual and accessibility review.
 
 ### Current palette
 
-| Token | Visual role | Intended use |
-| --- | --- | --- |
-| `background` | Neutral off-white, `#FCFCFC` | Main page canvas |
-| `brand-cream` | Warm cream, `#F5EBDD` | Cream brand surfaces |
-| `foreground` | Near-black ink | Primary text and dark surfaces |
-| `card` | White | Elevated and contained content |
-| `panel` | Soft sand, `#F5E8D4` | Large panels that sit on the canvas, such as the blog section |
-| `paper` | Light cream, `#F5EEDE` | The site footer and the first working-process card |
-| `canvas-shade` | Neutral grey, `oklch(0.955 0 0)` | A grey band one step below the canvas, such as the About team section |
-| `primary` and `ring` | Orange-red, `#FF3C00` | Primary actions, emphasis, and high-energy sections |
-| `secondary` | Cobalt blue | Alternate brand surfaces and supporting emphasis |
-| `brand-green` | Saturated green, `#0B9E5A` | Positive editorial surfaces and varied content cards |
-| `brand-yellow` | Butter yellow, `#F8E5AA` | Warm editorial surfaces and selective highlights |
-| `brand-violet` | Vivid violet, `#7C3AED` | Expressive editorial surfaces and selective highlights |
-| `accent` and `brand-pink` | Soft pink | Playful highlights and alternate surfaces |
-| `brand-pink-tint`, `brand-blue-tint`, and `brand-green-tint` | Very light pink, blue, and green, near `oklch(0.955)` | Quiet tinted blocks that use the default `foreground` ink, such as the Services offer blocks |
+| Token                                                             | Visual role                                                     | Intended use                                                                                                                                    |
+| ----------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `background`                                                      | Neutral off-white, `#FCFCFC`                                    | Main page canvas                                                                                                                                |
+| `brand-cream`                                                     | Warm cream, `#F5EBDD`                                           | Cream brand surfaces                                                                                                                            |
+| `foreground`                                                      | Near-black ink                                                  | Primary text and dark surfaces                                                                                                                  |
+| `card`                                                            | White                                                           | Elevated and contained content                                                                                                                  |
+| `panel`                                                           | Soft sand, `#F5E8D4`                                            | Large panels that sit on the canvas, such as the blog section                                                                                   |
+| `paper`                                                           | Light cream, `#F5EEDE`                                          | The site footer and the first working-process card                                                                                              |
+| `canvas-shade`                                                    | Neutral grey, `oklch(0.955 0 0)`                                | A grey band one step below the canvas, such as the About team section                                                                           |
+| `primary` and `ring`                                              | Orange-red, `#FF3C00`                                           | Primary actions, emphasis, and high-energy sections                                                                                             |
+| `secondary`                                                       | Cobalt blue                                                     | Alternate brand surfaces and supporting emphasis                                                                                                |
+| `brand-green`                                                     | Saturated green, `#0B9E5A`                                      | Positive editorial surfaces and varied content cards                                                                                            |
+| `brand-yellow`                                                    | Butter yellow, `#F8E5AA`                                        | Warm editorial surfaces and selective highlights                                                                                                |
+| `brand-violet`                                                    | Vivid violet, `#7C3AED`                                         | Expressive editorial surfaces and selective highlights                                                                                          |
+| `accent` and `brand-pink`                                         | Soft pink                                                       | Playful highlights and alternate surfaces                                                                                                       |
+| `brand-pink-tint`, `brand-blue-tint`, and `brand-green-tint`      | Very light pink, blue, and green, near `oklch(0.955)`           | Quiet tinted blocks that use the default `foreground` ink, such as the Services offer blocks                                                    |
 | `brand-orange-deep`, `brand-violet-deep`, and `brand-yellow-deep` | Deep, low-chroma orange, violet, and yellow, near `oklch(0.27)` | Quiet tinted blocks on a `foreground` dark surface with `background` ink. They turn light in the dark theme, where that surface turns light too |
-| `muted` | Pale warm neutral, `#EEE3D5` | Quiet backgrounds and placeholders |
-| `brand-soft` | Mid neutral | Secondary labels and low-emphasis copy |
-| `brand-subtle` | Dark neutral | Editorial body copy below primary emphasis |
-| `ribbon` | Fresh green, `oklch(0.82 0.16 135)` | The decorative Studio ribbon stroke |
-| `ribbon-shade` | Deeper green, `oklch(0.66 0.15 142)` | The ribbon's shading where it passes under itself |
-| `ribbon-foreground` | Near-black ink | Text on a `ribbon` surface, such as the About call to action |
-| `destructive` | Alert red | Destructive and error actions only |
-| `border`, `input`, and `ring` | Semantic controls | Boundaries, fields, and focus indicators |
+| `muted`                                                           | Pale warm neutral, `#EEE3D5`                                    | Quiet backgrounds and placeholders                                                                                                              |
+| `brand-soft`                                                      | Mid neutral                                                     | Secondary labels and low-emphasis copy                                                                                                          |
+| `brand-subtle`                                                    | Dark neutral                                                    | Editorial body copy below primary emphasis                                                                                                      |
+| `ribbon`                                                          | Fresh green, `oklch(0.82 0.16 135)`                             | The decorative Studio ribbon stroke                                                                                                             |
+| `ribbon-shade`                                                    | Deeper green, `oklch(0.66 0.15 142)`                            | The ribbon's shading where it passes under itself                                                                                               |
+| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface, such as the About call to action                                                                                    |
+| `destructive`                                                     | Alert red                                                       | Destructive and error actions only                                                                                                              |
+| `border`, `input`, and `ring`                                     | Semantic controls                                               | Boundaries, fields, and focus indicators                                                                                                        |
 
 `brand-blue` and `brand-pink` are explicit brand aliases. Generic components
 should prefer `secondary` and `accent`. Brand aliases are appropriate when the
@@ -566,10 +566,10 @@ Use `useSmoothScroll()` in components:
 
 ```vue
 <script setup lang="ts">
-const { scrollTo } = useSmoothScroll()
+const { scrollTo } = useSmoothScroll();
 
 async function openContact() {
-	await scrollTo('#contact', { offset: -24 })
+   await scrollTo("#contact", { offset: -24 });
 }
 </script>
 ```
@@ -651,31 +651,31 @@ to own and clean up their individual animation contexts.
 
 ```vue
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from 'vue'
+import { onMounted, useTemplateRef } from "vue";
 
-const root = useTemplateRef<HTMLElement>('root')
-const { createMatchMedia, gsap } = useGsap()
+const root = useTemplateRef<HTMLElement>("root");
+const { createMatchMedia, gsap } = useGsap();
 
 onMounted(() => {
-	createMatchMedia(
-		{
-			desktop: '(min-width: 64rem)',
-			reduceMotion: '(prefers-reduced-motion: reduce)',
-		},
-		(context) => {
-			const { desktop, reduceMotion } = context.conditions ?? {}
-			if (reduceMotion) return
+   createMatchMedia(
+      {
+         desktop: "(min-width: 64rem)",
+         reduceMotion: "(prefers-reduced-motion: reduce)",
+      },
+      (context) => {
+         const { desktop, reduceMotion } = context.conditions ?? {};
+         if (reduceMotion) return;
 
-			gsap.from('[data-animate]', {
-				autoAlpha: 0,
-				duration: desktop ? 0.7 : 0.45,
-				stagger: 0.08,
-				y: desktop ? 24 : 12,
-			})
-		},
-		root,
-	)
-})
+         gsap.from("[data-animate]", {
+            autoAlpha: 0,
+            duration: desktop ? 0.7 : 0.45,
+            stagger: 0.08,
+            y: desktop ? 24 : 12,
+         });
+      },
+      root,
+   );
+});
 </script>
 ```
 
@@ -699,10 +699,10 @@ later without breaking the animation.
 Requests and reviews may use these short names instead of pointing at a
 component.
 
-| Name | Timing | Source and current users |
-| --- | --- | --- |
-| Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle. The Services hero link and image frames and the home service links use its ease over `1.1s` |
-| Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top |
+| Name               | Timing                                                                  | Source and current users                                                                                                                                                                                          |
+| ------------------ | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Swap timing        | `0.7s` on `power4.inOut`, a slow-fast-slow curve                        | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle. The Services hero link and image frames and the home service links use its ease over `1.1s` |
+| Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top                                                                                                                                                 |
 
 Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
 
@@ -2401,15 +2401,15 @@ Layer colors belong to the variant, not to the motion. `variantRolloverTones` in
 the button module maps each participating variant to a tuple of three semantic
 surface names:
 
-| Variant | Layer sequence |
-| --- | --- |
-| `default` | blue, green, dark |
-| `dark` | green, pink, primary |
-| `outline` | primary, green, dark |
-| `cream` | primary, green, dark |
-| `light` | blue, pink, primary |
-| `ribbon` | yellow, primary, dark |
-| `yellow` | green, primary, dark |
+| Variant   | Layer sequence        |
+| --------- | --------------------- |
+| `default` | blue, green, dark     |
+| `dark`    | green, pink, primary  |
+| `outline` | primary, green, dark  |
+| `cream`   | primary, green, dark  |
+| `light`   | blue, pink, primary   |
+| `ribbon`  | yellow, primary, dark |
+| `yellow`  | green, primary, dark  |
 
 `destructive`, `secondary`, `ghost`, `link`, and `inverse` are absent from that
 map on purpose. They keep their plain color hover at every size and render no
