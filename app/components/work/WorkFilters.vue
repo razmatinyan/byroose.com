@@ -46,9 +46,10 @@ function variantFor(id: FilterId) {
          >
             <span class="work-filters-rise" data-work-filter-rise>
                <Button
+                  class="work-filters-button"
                   type="button"
                   :variant="variantFor(option.id)"
-                  size="cta-sm"
+                  size="cta-lg"
                   :aria-pressed="option.id === selected"
                   @click="emit('select', option.id)"
                >
@@ -64,7 +65,7 @@ function variantFor(id: FilterId) {
 @reference '../../assets/css/tailwind.css';
 
 .work-filters {
-   @apply flex flex-col gap-5 md:gap-6;
+   @apply flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-8;
 }
 
 .work-filters-label {
@@ -73,7 +74,14 @@ function variantFor(id: FilterId) {
 }
 
 .work-filters-options {
-   @apply flex flex-wrap gap-2;
+   @apply flex flex-wrap gap-2 md:justify-end;
+}
+
+@layer utilities {
+   .work-filters-button {
+      --button-rollover-radius: 9999px;
+      border-radius: 9999px !important;
+   }
 }
 
 .work-filters-rise {

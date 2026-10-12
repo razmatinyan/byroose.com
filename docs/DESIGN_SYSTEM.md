@@ -2190,8 +2190,14 @@ The projects section paints the `canvas-shade` grey with
 section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
 names it. It opens with the filters: a bold "Filters" label at `text-3xl`,
 `text-4xl` from `md`, and `text-5xl` from `xl`, with the `split-title` group
-at `-0.05em` tracking, above a wrapping row of `cta-sm` toggle buttons, All,
-AI Content, and Website Development, `0.5rem` apart. The pressed button uses
+at `-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
+AI Content, and Website Development, `0.5rem` apart. From `md` the label and
+the buttons share one row, the label on the left and the buttons aligned to
+the right edge, both resting on the row's bottom. Below `md` the buttons wrap
+under the label. The buttons are pills: a `9999px` radius, set inside the
+utilities layer so it overrides the size's important `radius-action`, and the
+same `--button-rollover-radius` for the rollover clip. They carry no icon, so
+each is exactly as wide as its label and padding. The pressed button uses
 the `dark` variant and the others use `outline`, and each carries
 `aria-pressed` inside a group labelled by "Filters". When the filters reach 82
 percent of the viewport, the label characters rise with the shared character
@@ -2467,7 +2473,8 @@ such as a Work filter that becomes pressed, rests in its new variant's ink.
 
 The icon box stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above
-them. Only the glyph animates. `ButtonIcon` renders its glyph twice into the same
+them. The icon box renders only when that slot is filled, so a CTA without an
+icon, such as a Work filter, reserves no gap for one. Only the glyph animates. `ButtonIcon` renders its glyph twice into the same
 grid cell and parks the second copy below and to the left of the button. The
 rollover host clips both glyphs, so the swap travels across the whole button
 instead of being cut out around the icon: the original leaves along the arrow's

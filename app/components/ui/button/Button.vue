@@ -117,7 +117,11 @@ useHoverRollover(rolloverTarget);
                <slot />
             </span>
          </span>
-         <span class="button-rollover-icon" data-rollover-icon>
+         <span
+            v-if="$slots.icon"
+            class="button-rollover-icon"
+            data-rollover-icon
+         >
             <slot name="icon" />
          </span>
       </template>
