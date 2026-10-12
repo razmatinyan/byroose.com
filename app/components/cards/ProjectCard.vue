@@ -19,7 +19,7 @@ const emit = defineEmits<{
    deactivate: [];
 }>();
 
-const categoryLabel = computed(() => `(${categories.join(", ")})`);
+const categoryLabel = computed(() => categories.join(", "));
 </script>
 
 <template>

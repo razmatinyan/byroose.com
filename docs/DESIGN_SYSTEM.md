@@ -2205,8 +2205,8 @@ The projects section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, like the Services statement
 section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
 names it. It opens with the filters: a bold project count, such as
-"Projects - 8", at `text-3xl`, `text-4xl` from `md`, and `text-5xl` from `xl`, with
-`-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
+"Projects - 8", at display size, `clamp(2.75rem, 7.5vw, 8rem)`, about 108px at
+1440 wide, with `-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
 AI Content, and Website Development, `0.5rem` apart. The number follows the
 shown filter and uses tabular figures. "Projects -" is split into characters
 in the template and the number is one more character element, and the line
@@ -2231,8 +2231,8 @@ during the rise, so the focus ring is never cut.
 The project cards follow in one column below `md` and two columns from `md`,
 `1rem` apart, `1.25rem` from `md`, with `3rem` between rows, `4rem` from `md`,
 and `5rem` from `xl`. Each card is an article with a 4:3 image frame with
-subtle `rounded-md` corners, about `13px`, then a row with the project name on the left and its categories in
-parentheses on the right, semibold and medium `brand-subtle` at `text-xl`,
+subtle `rounded-md` corners, about `13px`, then a row with the project name on the left and its comma-separated
+categories on the right, semibold and medium `brand-subtle` at `text-xl`,
 `text-2xl` from `md`, and `text-3xl` from `xl`, with `-0.03em` tracking. The
 row is inset from the frame's edges by `0.75rem`, `1rem` from `md`, and
 `1.25rem` from `xl`, so the name and the categories sit inside the image's
