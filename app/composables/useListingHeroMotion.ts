@@ -1,4 +1,11 @@
-import { onMounted, onScopeDispose, readonly, shallowRef, toValue } from "vue";
+import {
+   nextTick,
+   onMounted,
+   onScopeDispose,
+   readonly,
+   shallowRef,
+   toValue,
+} from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import { until } from "@vueuse/core";
 import { charRevealDuration, charRevealEase } from "@/lib/char-reveal";
@@ -44,13 +51,6 @@ export function useListingHeroMotion(
       const titleChars = queryAll(root, selectors.titleChar);
       const titleMasks = queryAll(root, selectors.titleMask);
       const revealTargets = queryAll(root, selectors.reveal);
-      const animated = [
-         ...titleChars,
-         ...titleMasks,
-         ...descriptionLines,
-         ...revealTargets,
-      ];
-
       gsap.set(titleMasks, { clipPath: revealMaskClip });
       gsap.set(titleChars, { yPercent: titleLineRevealOffset });
       gsap.set(descriptionLines, { yPercent: wordRevealOffset });
@@ -59,9 +59,15 @@ export function useListingHeroMotion(
       gsap
          .timeline({
             defaults: { duration: wordRevealDuration, ease: wordRevealEase },
-            onComplete: () => {
+            onComplete: async () => {
                revealed.value = true;
-               gsap.set(animated, { clearProps: "all" });
+               await nextTick();
+               if (disposed) return;
+
+               gsap.set(titleChars, { clearProps: "transform" });
+               gsap.set(titleMasks, { clearProps: "clipPath" });
+               gsap.set(descriptionLines, { clearProps: "transform" });
+               gsap.set(revealTargets, { clearProps: "visibility" });
             },
          })
          .to(
