@@ -72,6 +72,7 @@ app/
     icons.ts
     image-parallax.ts
     ribbon-path.ts
+    services-anchors.ts
     services-hero.ts
     split-text.ts
     stack-reveal.ts
@@ -158,7 +159,8 @@ TrailingTooltip. A title line can carry one `data-services-hero-inset` frame
 placed inline in the line: the link frame, a NuxtLink to `/about`, or the
 media frame, which is the flight's `data-services-flight-origin` and holds only
 a still poster for reduced motion. ServicesStatementSection owns the statement
-copy and its split. ServicesOfferSection receives a title, a description, a
+copy and its split. ServicesOfferSection receives an `anchor` from
+app/lib/services-anchors.ts, which becomes its section id, a title, a description, a
 `surface` of `light` or `dark`, and a list of blocks, each with a title, a
 description, a tone, and either its own images or the `flight` flag that makes
 its media slot the flight's `data-services-flight-target`. The dark surface
@@ -166,8 +168,8 @@ adds a `data-services-reveal-backdrop` layer at `-z-10` without isolating
 the section, so the intro text can blend with it and the page behind it.
 ServicesCtaSection owns the closing call to action copy and its link to
 `/contact`. app/lib/services-hero.ts holds the hero images
-and the inset open property and content scale that the hero motion and the
-flight share. The sections own their copy and do not depend on landing or
+and the inset open property, content scale, and open duration that the hero
+motion, the flight, and the home service links share. The sections own their copy and do not depend on landing or
 About components.
 
 ### Layout components
@@ -295,8 +297,12 @@ exit that reaches down toward the journey title as the panel leaves. Because the
 scroll positions computed from untransformed layout rather than trigger
 elements. On touch devices its media context drops the slowed travel, the
 hold, and the backdrop rise, so the content stays in place, the dark backdrop
-is shown at rest, and each image scales in once from a trigger on its frame. ServicesSection owns the copy, the image links, and
-the tooltip handlers. The composable waits until the intro
+is shown at rest, and each image scales in once from a trigger on its frame.
+The same text timeline opens each panel's `data-service-link` by tweening its
+`--service-link-open` property and settles its `data-service-link-content`
+from the hero inset's content scale. ServicesSection owns the copy, the
+service links, the image links, and the tooltip handlers. Both links route to
+the service's section through `servicesSectionPath`. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
@@ -519,6 +525,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   the work title's timing from one definition. Like stack-reveal.ts, it never
   queries the DOM or creates its own timeline.
 - icons.ts is the canonical map for shared Lucide icon names.
+- services-anchors.ts owns the Services route's section ids, `servicesAnchors`,
+  and `servicesSectionPath`, which builds the `/services#id` path that the home
+  services section links to.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images
@@ -596,7 +605,7 @@ app/plugins contains Nuxt runtime integrations that must run as part of applicat
 
 lenis.ts owns the single application Lenis instance and its GSAP ScrollTrigger bridge. It disables browser scroll restoration and synchronizes the native and Lenis positions to the document top during client startup. After a page route navigation, usePageTransitionMotion resets them through the exposed `reset` when it freezes the leaving page, and the page transition plugin resets them again once the incoming page has replaced the outgoing one. Hash-only navigation remains available for Lenis section anchors. Its `scrollTo` and the Lenis anchor handling default to the swap scroll timing. `scrollTo` resolves the distance to a numeric, keyword, selector, or element target and passes it to `getSwapScrollDuration`, and a caller option such as `duration` or `immediate` still overrides the result. Lenis also owns touch scrolling through `syncTouch`, so touch scroll positions and scrubbed ScrollTrigger transforms update in the same GSAP ticker frame. The plugin initializes after the application mounts, drives Lenis from the GSAP ticker, updates ScrollTrigger from Lenis scroll events, refreshes measurements after mount and font loading, and tears everything down with the Vue application. While a refresh hold is active, `refresh` calls wait and resolve after one shared measurement when the last hold is released.
 
-page-transition.ts owns the page transition lifecycle. A successful navigation to a different path begins a transition: it takes a Lenis lock and a refresh hold, so nothing scrolls or remeasures while two pages overlap, and it blocks further page navigations until the transition finishes. Finishing runs the deferred cleanups of the leaving page, resets the scroll to the top, releases the lock, and releases the hold, which refreshes Lenis and ScrollTrigger once against the final layout. If no transition hook claims a navigation by `page:finish`, or the app errors, it finishes immediately so the lock can never stick. A link to the current location ends in a duplicated navigation failure, so the plugin replays the page instead: it begins a transition and increments a replay count. The `pageKey` it exposes through usePageTransition combines the route path with that count, and app.vue passes it to NuxtPage, so the current page remounts under a new key and runs the normal overlap transition against a fresh copy of itself.
+page-transition.ts owns the page transition lifecycle. A successful navigation to a different path begins a transition: it takes a Lenis lock and a refresh hold, so nothing scrolls or remeasures while two pages overlap, and it blocks further page navigations until the transition finishes. Finishing runs the deferred cleanups of the leaving page, resets the scroll to the top, releases the lock, and releases the hold, which refreshes Lenis and ScrollTrigger once against the final layout. If no transition hook claims a navigation by `page:finish`, or the app errors, it finishes immediately so the lock can never stick. A link to the current location ends in a duplicated navigation failure, so the plugin replays the page instead: it begins a transition and increments a replay count. The `pageKey` it exposes through usePageTransition combines the route path with that count, and app.vue passes it to NuxtPage, so the current page remounts under a new key and runs the normal overlap transition against a fresh copy of itself. When the route carries a hash that matches an element id, the plugin scrolls to that element through `scrollTo` once the finishing refresh resolves, and on `app:mounted` for a direct request, after the Lenis plugin's own startup refresh.
 
 app/router.options.ts disables the Nuxt router scroll behavior, because the router would otherwise scroll the window while the leaving page is still visible. The page transition owns the scroll position after every page change, so the browser back button also lands at the top of the page.
 

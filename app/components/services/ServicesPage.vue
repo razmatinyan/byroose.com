@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
+import { servicesAnchors } from "@/lib/services-anchors";
 import {
    servicesHeroImages,
    servicesOfferImageSizes,
@@ -88,11 +89,13 @@ useServicesMediaFlight(pageRoot);
       <ServicesHero />
       <ServicesStatementSection />
       <ServicesOfferSection
+         :anchor="servicesAnchors.aiContent"
          :blocks="aiContentBlocks"
          :description="aiContentDescription"
          :title="aiContentTitle"
       />
       <ServicesOfferSection
+         :anchor="servicesAnchors.web"
          :blocks="webBlocks"
          :description="webDescription"
          surface="dark"

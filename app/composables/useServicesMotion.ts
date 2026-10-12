@@ -1,6 +1,11 @@
 import { nextTick, onScopeDispose, shallowRef, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import {
+   servicesHeroInsetContentScale,
+   servicesHeroInsetDuration,
+} from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
+import { swapEase } from "@/lib/swap-timing";
 import {
    addWordReveal,
    lineRevealDuration,
@@ -51,6 +56,8 @@ const selectors = {
    content: "[data-service-content]",
    image: "[data-service-image]",
    intro: "[data-services-intro]",
+   link: "[data-service-link]",
+   linkContent: "[data-service-link-content]",
    media: "[data-service-media]",
    mediaExit: "[data-service-media-exit]",
    mediaFrame: "[data-service-media-frame]",
@@ -69,6 +76,7 @@ const introWordFrom = {
    scale: 0.6,
 };
 const textRevealAt = 0.6;
+const linkOpenProperty = "--service-link-open";
 const imageZoom = 1.3;
 const panelRunway = 1;
 const mediaPeakScale = 0.8;
@@ -345,7 +353,26 @@ export function useServicesMotion(
          ease: lineRevealEase,
          stagger: lineRevealStagger,
       });
+      openLink(timeline, panel);
       textTimelines.set(panel, timeline);
+   }
+
+   function openLink(timeline: gsap.core.Timeline, panel: HTMLElement) {
+      const link = panel.querySelector<HTMLElement>(selectors.link);
+      const content = panel.querySelector<HTMLElement>(selectors.linkContent);
+      if (!link) return;
+
+      const reveal = { duration: servicesHeroInsetDuration, ease: swapEase };
+      timeline.to(link, { ...reveal, [linkOpenProperty]: 1 }, 0);
+
+      if (content) {
+         timeline.fromTo(
+            content,
+            { scale: servicesHeroInsetContentScale },
+            { ...reveal, scale: 1 },
+            0,
+         );
+      }
    }
 
    function replaceDescriptionLines(index: number, lines: HTMLElement[]) {

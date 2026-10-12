@@ -6,6 +6,7 @@ export interface ServicesImage {
 
 export const servicesHeroInsetOpenProperty = "--services-hero-inset-open";
 export const servicesHeroInsetContentScale = 1.3;
+export const servicesHeroInsetDuration = 1.1;
 export const servicesOfferImageSizes =
    "sm:1024px md:640px lg:768px xl:1024px 2xl:1536px";
 

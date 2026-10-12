@@ -312,6 +312,18 @@
 		margin-inline-end: var(--split-title-tracking);
 	}
 
+	.inset-arrow-link {
+		@apply bg-canvas-shade text-primary outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+	}
+
+	.inset-arrow-icon {
+		@apply block size-full scale-[2];
+	}
+
+	.inset-arrow-icon path {
+		stroke-width: 3px;
+	}
+
 	.section-intro {
 		@apply m-0 max-w-[34ch] text-xl leading-normal text-muted-foreground;
 	}

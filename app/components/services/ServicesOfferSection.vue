@@ -2,6 +2,7 @@
 import { shallowRef, useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
+import type { ServicesAnchor } from "@/lib/services-anchors";
 import { servicesOfferImageSizes } from "@/lib/services-hero";
 import type { ServicesImage } from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
@@ -21,11 +22,13 @@ export interface ServicesOfferBlock {
 }
 
 const {
+   anchor,
    blocks,
    description,
    surface = "light",
    title,
 } = defineProps<{
+   anchor: ServicesAnchor;
    blocks: readonly ServicesOfferBlock[];
    description: string;
    surface?: "dark" | "light";
@@ -56,7 +59,12 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 </script>
 
 <template>
-   <section ref="offerRoot" class="services-offer" :data-surface="surface">
+   <section
+      :id="anchor"
+      ref="offerRoot"
+      class="services-offer"
+      :data-surface="surface"
+   >
       <div
          v-if="surface === 'dark'"
          class="services-offer-backdrop"

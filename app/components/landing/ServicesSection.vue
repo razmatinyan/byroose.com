@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
+import {
+   computed,
+   defineAsyncComponent,
+   shallowRef,
+   useTemplateRef,
+} from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import WaveUnderline from "@/components/shared/WaveUnderline.vue";
+import { appIcons } from "@/lib/icons";
+import { servicesAnchors, servicesSectionPath } from "@/lib/services-anchors";
+import type { ServicesAnchor } from "@/lib/services-anchors";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const TrailingTooltip = defineAsyncComponent(
@@ -9,6 +17,7 @@ const TrailingTooltip = defineAsyncComponent(
 );
 
 interface Service {
+   anchor: ServicesAnchor;
    description: string;
    image: string;
    surface: "canvas" | "dark";
@@ -20,11 +29,11 @@ const introUnderlinedWord = "You?";
 const introPhrases = [...introLines, introUnderlinedWord];
 const introTitle = introPhrases.join(" ");
 const lastIntroLineIndex = introLines.length - 1;
-const servicesRoute = "/services";
 const tooltipText = "More Details";
 
 const servicesData: Service[] = [
    {
+      anchor: servicesAnchors.aiContent,
       description:
          "Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
       image: "/images/hero/5.png",
@@ -32,6 +41,7 @@ const servicesData: Service[] = [
       title: "AI Content Creation",
    },
    {
+      anchor: servicesAnchors.web,
       description:
          "Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
       image: "/images/hero/6.png",
@@ -58,6 +68,10 @@ const {
    show: showTooltip,
    size: tooltipSize,
 } = useTrailingTooltip();
+
+const tooltipIcon = computed(() =>
+   tooltipImage.value ? undefined : appIcons.arrowUpRight,
+);
 
 const { introRevealed } = useServicesMotion(servicesRoot, {
    descriptionSplits,
@@ -148,6 +162,24 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
                {{ service.title }}
             </h3>
 
+            <NuxtLink
+               class="service-link inset-arrow-link"
+               data-service-link
+               :to="servicesSectionPath(service.anchor)"
+               :aria-label="`Explore ${service.title}`"
+               @click="hideTooltip"
+               @pointerenter="showTooltip('', tooltipText, 'compact')"
+               @pointerleave="hideTooltip"
+            >
+               <span class="service-link-content" data-service-link-content>
+                  <Icon
+                     class="inset-arrow-icon"
+                     :name="appIcons.arrowUpRight"
+                     aria-hidden="true"
+                  />
+               </span>
+            </NuxtLink>
+
             <SplitText
                class="service-description"
                as="p"
@@ -163,7 +195,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
                   <NuxtLink
                      class="service-media"
                      data-service-media
-                     :to="servicesRoute"
+                     :to="servicesSectionPath(service.anchor)"
                      :aria-label="`More details about ${service.title}`"
                      @pointerenter="
                         showTooltip(service.image, tooltipText, 'compact')
@@ -191,6 +223,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
+         :icon="tooltipIcon"
          :image="tooltipImage"
          :label="tooltipLabel"
          :preload="tooltipPreload"
@@ -258,15 +291,32 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-content {
-   @apply relative flex flex-col items-center gap-5 text-center md:gap-7;
+   @apply relative flex flex-col items-center gap-5 text-center md:grid md:grid-cols-3 md:items-start md:gap-x-0 md:gap-y-7;
 }
 
 .service-title {
-   @apply m-0 w-full text-left text-service font-bold tracking-[-0.045em] text-balance;
+   @apply m-0 w-full text-left text-service font-bold tracking-[-0.045em] text-balance md:col-span-3;
+}
+
+.service-link {
+   @apply relative mt-4 block shrink-0 self-start overflow-hidden rounded-[0.23em] text-2xl md:col-start-1 md:mt-8 md:text-4xl xl:mt-12 xl:text-6xl;
+   height: var(--service-link-size);
+   width: calc(var(--service-link-size) * var(--service-link-open));
+   --service-link-open: 0;
+   --service-link-size: 3.06em;
+}
+
+.service-link:focus-visible {
+   --service-link-open: 1;
+}
+
+.service-link-content {
+   @apply absolute top-0 left-0 grid h-full place-items-center p-[0.53em];
+   width: var(--service-link-size);
 }
 
 .service-description {
-   @apply m-0 mt-4 w-full text-left md:mt-8 md:w-2/3 md:self-end xl:mt-12 text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty text-foreground md:text-4xl xl:text-6xl;
+   @apply m-0 mt-4 w-full text-left md:col-span-2 md:col-start-2 md:mt-8 xl:mt-12 text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty text-foreground md:text-4xl xl:text-6xl;
 }
 
 .service-description :deep(.split-text-line),
@@ -292,7 +342,13 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-media-frame {
-   @apply mt-3 w-full;
+   @apply mt-3 w-full md:col-span-3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .service-link {
+      --service-link-open: 1;
+   }
 }
 
 .service-media-exit {

@@ -46,17 +46,27 @@ export default defineNuxtPlugin({
 			for (const resolve of revealWaiters.splice(0)) resolve()
 		}
 
+		function scrollToRouteHash() {
+			const { hash } = nuxtApp.$router.currentRoute.value
+			const target =
+				hash && document.getElementById(decodeURIComponent(hash.slice(1)))
+			if (!target) return
+
+			return nuxtApp.$smoothScroll.scrollTo(target)
+		}
+
 		function finish() {
 			if (!isActive.value) return
 
 			for (const cleanup of pendingCleanups.splice(0)) cleanup()
 			nuxtApp.$smoothScroll.reset()
 			releaseScroll?.()
-			releaseRefresh?.()
+			const refreshed = releaseRefresh?.()
 			releaseScroll = null
 			releaseRefresh = null
 			phase.value = 'idle'
 			reveal()
+			refreshed?.then(scrollToRouteHash)
 		}
 
 		function deferCleanup(cleanup: Cleanup) {
@@ -93,6 +103,7 @@ export default defineNuxtPlugin({
 
 				begin()
 			})
+			nuxtApp.hook('app:mounted', scrollToRouteHash)
 			nuxtApp.hook('page:finish', () => {
 				if (!isClaimed) finish()
 			})

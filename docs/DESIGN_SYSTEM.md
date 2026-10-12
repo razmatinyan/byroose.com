@@ -701,7 +701,7 @@ component.
 
 | Name | Timing | Source and current users |
 | --- | --- | --- |
-| Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle. The Services hero link and image frames use its ease over `1.1s` |
+| Swap timing | `0.7s` on `power4.inOut`, a slow-fast-slow curve | The More works action's arrow swap. Also the footer Back to Top arrow, the navigation link hover, and the FAQ toggle. The Services hero link and image frames and the home service links use its ease over `1.1s` |
 | Swap scroll timing | The same `power4.inOut` curve over `1.5s` to `2.5s`, scaled by distance | Every programmatic scroll and section anchor, such as Back to Top |
 
 Both live in `app/lib/swap-timing.ts`. Import them rather than repeating the values.
@@ -757,6 +757,13 @@ ScrollTrigger against the final layout. The incoming page's scroll reveals are
 built during the transition but are measured again at that point, so above-fold
 reveals play as soon as the page lands and later ones wait for their scroll
 position.
+
+When the destination carries a hash, such as `/services#website-development`,
+the page still lands at the top. Once that final refresh has measured it, the
+page scrolls to the element with that id on the swap scroll timing, so the
+reader sees where the section sits on the page. A direct request with a hash
+does the same after the first refresh. A hash with no matching element is
+ignored.
 
 `0.4s` into the movement the transition reports its reveal point. Time-based
 entrances on the incoming page, such as the home intro, start there rather than
@@ -1408,12 +1415,31 @@ of bottom padding, each cancelled by an equal negative margin, which keeps
 descenders inside the clip without moving the lines. Adjacent block masks
 collapse their negative margins into the larger one, so the line pitch stays at
 `1.02em`. On phones it
-spans the full column. From `md` it takes the right two thirds of the content
+spans the full column. From `md` the content is a three-column grid without a
+column gap, and the description takes the right two thirds of the content
 width and ends exactly on the right content edge, so it reads as an editorial
 column from just left of center to the right side. Its text is left-aligned,
 and it uses `text-pretty` so the last line never holds a single word. The
 image spans the full content width at the source's natural `1456 / 816`
 ratio, so it is never cropped to fit the viewport.
+
+The left third holds a square service link, the Services hero's link frame
+repeated at a larger scale. It is a `NuxtLink` to the service's section on the
+`/services` route, named "Explore AI Content Creation" or "Explore Website
+Development" through `aria-label`, and it shares the hero link's
+`inset-arrow-link` surface and `inset-arrow-icon` glyph. It sets the
+description's font size and is `3.06em` square, the height of three
+description lines, with `0.23em` corners and `0.53em` of padding, the hero
+frame's proportions. Its top is level with the description's first line. On
+phones it sits between the title and the description on the left edge.
+Hovering it opens the services section's TrailingTooltip in its text-only form,
+"More Details" with an arrow up right glyph. The link's width is its size
+multiplied by `--service-link-open`, which rests at `0` in CSS, so the link
+takes no room until it reveals. It opens from its left edge with the
+description reveal, over `1.1s` on the swap timing's `power4.inOut` ease,
+while its content, held at full width against the left edge, settles from
+`1.3` scale, as the hero link frame does. Visible keyboard focus opens it
+instantly, so a keyboard user never lands on a closed link.
 
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
@@ -1482,8 +1508,9 @@ The image never reaches its full layout size. Entry and exit live on two nested
 elements, the link for the bottom origin entry and its wrapper for the top
 origin exit, so the transform origins never fight.
 
-Each image is a `NuxtLink` to the `/services` route, named for its service
-through `aria-label`. Hovering it opens the services section's TrailingTooltip
+Each image is a `NuxtLink` to its service's section on the `/services` route,
+`/services#ai-content-creation` or `/services#website-development`, named for
+its service through `aria-label`. Hovering it opens the services section's TrailingTooltip
 at its `compact` size with the service image and the label "More Details". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
 media.
@@ -1556,8 +1583,8 @@ bottom reaches the viewport bottom.
 
 Reduced motion drops the intro pin, every reveal, the image scale, and the
 backdrop rise and curve. It displays the intro title words, the
-descriptions, and the images at rest, and the dark panel keeps a
-flat backdrop without the lead.
+descriptions, the open service links, and the images at rest, and the dark
+panel keeps a flat backdrop without the lead.
 
 ### Journey section
 
@@ -1994,7 +2021,10 @@ the statement section below, named "About" through `aria-label`. It holds a
 brand orange `primary` arrow up right glyph that fills the frame inside
 `0.14em` of padding. Lucide draws that arrow across only ten of its
 twenty-four units, so the glyph scales to `2`, which brings the arrow itself
-most of the way to the padding. Hovering it opens the hero's text-only TrailingTooltip, "About"
+most of the way to the padding. Its path strokes at `3px` in the icon's own
+units instead of Lucide's `2`. The surface and focus ring live in the global
+`inset-arrow-link` class group and the glyph's scale and stroke in
+`inset-arrow-icon`, which the home service links share. Hovering it opens the hero's text-only TrailingTooltip, "About"
 with an arrow up right glyph, and keyboard focus shows the standard ring.
 
 The image frame is 16:9 and shows an `ImageCycle` that cuts through four images
@@ -2030,7 +2060,8 @@ still first image in the image frame, and the statement at full opacity,
 without the rise, the drift, or the scrub.
 
 The AI Content Creation section sits on the white `background` canvas, like
-the hero. Its intro repeats the home services panel: the title in bold
+the hero. It carries the `ai-content-creation` id and the Website Development
+section the `website-development` id, so the home service links can open them. Its intro repeats the home services panel: the title in bold
 `text-service` with `-0.045em` tracking on the left, and the description below
 it in the home service description style, two thirds wide and aligned right
 from `md`. Three blocks follow, Reels, Videos, and Images with AI, stacked

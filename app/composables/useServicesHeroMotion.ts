@@ -2,6 +2,7 @@ import { onMounted, onScopeDispose, readonly, shallowRef, toValue } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import {
    servicesHeroInsetContentScale,
+   servicesHeroInsetDuration,
    servicesHeroInsetOpenProperty,
 } from "@/lib/services-hero";
 import { swapEase } from "@/lib/swap-timing";
@@ -25,7 +26,6 @@ const selectors = {
 
 const insetRevealStart = 0.3;
 const insetRevealGap = 0.3;
-const insetRevealDuration = 1.1;
 const heroDrift = 0.5;
 
 function queryAll(root: HTMLElement, selector: string) {
@@ -48,7 +48,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
          frame,
          {
             [servicesHeroInsetOpenProperty]: 1,
-            duration: insetRevealDuration,
+            duration: servicesHeroInsetDuration,
             ease: swapEase,
          },
          position,
@@ -59,7 +59,7 @@ export function useServicesHeroMotion(scope: MotionScope) {
 
       timeline.to(
          content,
-         { duration: insetRevealDuration, ease: swapEase, scale: 1 },
+         { duration: servicesHeroInsetDuration, ease: swapEase, scale: 1 },
          position,
       );
    }

@@ -63,7 +63,7 @@ function showAboutTooltip() {
                   ><span aria-hidden="true">{{ line.lead }}</span
                   ><NuxtLink
                      v-if="line.inset === 'link'"
-                     class="services-hero-inset services-hero-link"
+                     class="services-hero-inset services-hero-link inset-arrow-link"
                      data-services-hero-inset
                      to="/about"
                      :aria-label="aboutLabel"
@@ -74,7 +74,7 @@ function showAboutTooltip() {
                         class="services-hero-inset-content services-hero-link-content"
                         data-services-hero-inset-content
                         ><Icon
-                           class="services-hero-link-icon"
+                           class="inset-arrow-icon"
                            :name="appIcons.arrowUpRight"
                            aria-hidden="true" /></span></NuxtLink
                   ><span
@@ -171,16 +171,11 @@ function showAboutTooltip() {
 }
 
 .services-hero-link {
-   @apply bg-canvas-shade text-primary outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
    --services-hero-inset-width: var(--services-hero-inset-height);
 }
 
 .services-hero-link-content {
    @apply grid place-items-center p-[0.14em];
-}
-
-.services-hero-link-icon {
-   @apply block size-full scale-[2];
 }
 
 .services-hero:not([data-services-hero-revealed]) [data-services-hero-reveal] {
