@@ -152,7 +152,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-backdrop {
-   @apply absolute inset-x-0 bottom-0 -z-10 bg-foreground;
+   @apply absolute inset-x-0 -bottom-px -z-10 bg-foreground;
    top: calc(var(--services-reveal-backdrop-lead, 0) * -100svh);
 }
 

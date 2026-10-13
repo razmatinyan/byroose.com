@@ -2175,7 +2175,9 @@ are set in `background` with `mix-blend-difference`, so they read black over
 the light canvas and turn light where the dark surface has grown behind them.
 
 The site call to action follows on the same dark surface, so the two read as
-one dark block that ends in a straight edge above the footer.
+one dark block that ends in a straight edge above the footer. The dark surface
+extends one pixel below the section, under the call to action, so the
+fractional smooth scroll offset never opens a light hairline at the seam.
 
 ### Work page
 
