@@ -391,6 +391,21 @@ action rises one stagger step after the last word. The word masks carry
 vertically, so the hover bounce can grow the action past its sides without
 cutting its corners. Reduced motion shows the text and the action at rest.
 
+A Three.js smoke background fills the section behind the text. A full-section
+canvas at `-z-10` inside the now `isolate` section paints a slowly drifting
+value noise field with a fine per-frame grain, mixed from the section's own
+`foreground` surface toward its `background` ink by up to `0.3`, so the
+darkest smoke matches the surface and the effect follows both themes. Moving
+the mouse over the section leaves a smoke trail: every frame the pointer
+travels a pixel, a soft sprite cut from `public/images/smoke-noise.avif` spawns
+at it, turns, grows, and fades out over about two seconds, and the trail bends
+the noise field around the pointer. The trail renders at half resolution
+because it is only ever sampled as a soft distortion. The canvas fades in over
+`1s` once its first frame is drawn, renders only while the section is near the
+viewport, and never takes the pointer. Reduced motion shows one still frame
+without the trail or the fade. Without WebGL the plain `foreground` surface
+remains.
+
 The section follows the outgoing page during a page transition, and a fresh
 copy replaces it once the new page has landed, so it reveals again on every
 route. On short routes such as Contact it already sits in the first screen and

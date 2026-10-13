@@ -12,11 +12,13 @@ const contactRoute = "/contact";
 const actionLabel = "Start a project";
 
 const ctaRoot = useTemplateRef<HTMLElement>("ctaRoot");
+const ctaCanvas = useTemplateRef<HTMLCanvasElement>("ctaCanvas");
 const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
    titleLines.map(() => undefined),
 );
 
 useSiteCtaMotion(ctaRoot, titleSplits);
+const { ready: backgroundReady } = useSiteCtaBackground(ctaRoot, ctaCanvas);
 
 function setTitleSplit(index: number, parts: SplitTextResult) {
    titleSplits.value = titleSplits.value.map((entry, entryIndex) =>
@@ -31,6 +33,12 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
       class="site-cta section-gutter"
       data-header-surface="dark"
    >
+      <canvas
+         ref="ctaCanvas"
+         class="site-cta-canvas"
+         :data-ready="backgroundReady || undefined"
+         aria-hidden="true"
+      />
       <h2 class="site-cta-title" data-site-cta-title>
          <span class="sr-only">{{ title }}</span>
          <span aria-hidden="true">
@@ -70,7 +78,15 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .site-cta {
-   @apply flex min-h-svh flex-col items-center justify-center bg-foreground py-section text-center text-background;
+   @apply relative isolate flex min-h-svh flex-col items-center justify-center bg-foreground py-section text-center text-background;
+}
+
+.site-cta-canvas {
+   @apply pointer-events-none absolute inset-0 -z-10 size-full opacity-0 transition-opacity duration-1000 motion-reduce:transition-none;
+}
+
+.site-cta-canvas[data-ready] {
+   @apply opacity-100;
 }
 
 .site-cta-title {

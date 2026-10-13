@@ -77,6 +77,7 @@ export default defineNuxtConfig({
 				'gsap/SplitText',
 				'gsap/all',
 				'lenis',
+				'three',
 				'class-variance-authority',
 			],
 		},

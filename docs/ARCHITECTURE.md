@@ -59,6 +59,7 @@ app/
     useServicesMotion.ts
     useServicesRevealMotion.ts
     useServicesStatementMotion.ts
+    useSiteCtaBackground.ts
     useSiteCtaMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -80,6 +81,7 @@ app/
     services-anchors.ts
     blog-articles.ts
     services-hero.ts
+    site-cta-smoke.ts
     split-text.ts
     stack-reveal.ts
     surfaces.ts
@@ -220,7 +222,8 @@ section.
 SiteCtaSection is the dark "Have an idea? Let's build it." call to action
 that closes every route. The layout renders it inside the main landmark after
 the page, so no page owns a copy. It owns its copy and its link to `/contact`
-and reveals through useSiteCtaMotion. Like the footer, it carries
+and reveals through useSiteCtaMotion. Its `ctaCanvas` paints the smoke
+background that useSiteCtaBackground owns. Like the footer, it carries
 `data-page-transition-follow`, so it leaves with the outgoing page. Because the
 layout persists, the layout keys it and bumps that key through the page
 transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
@@ -468,6 +471,22 @@ order with the shared word reveal and a `0.12s` stagger, and rises the
 `data-site-cta-action` one stagger step after the last word. Reduced motion
 shows the words and the action at rest.
 
+useSiteCtaBackground owns the site call to action's Three.js smoke background.
+It imports `three` dynamically only once the section comes within a quarter of
+a viewport of the screen, so the library never reaches the server output or
+the main bundle. It reads the section's computed background and text colors,
+creates one WebGLRenderer on the section's canvas, and renders two passes: the
+mouse trail sprites into a half-resolution render target, then a full-section
+backdrop shader that the trail distorts. The frame loop is a GSAP ticker
+callback, so it adds no second animation frame loop, and it runs only while the
+section is near the viewport and motion is allowed. It measures the section
+through a resize observer and tracks pointer movement on the section. Reduced
+motion renders one still frame without the trail. It returns `ready`, which
+fades the canvas in, and releases the renderer, every material, geometry,
+texture, and render target, and the WebGL context through the page
+transition's `deferCleanup`, so a leaving copy keeps its background until it
+has been covered.
+
 useAboutSectionMotion owns the scroll reveals of one About section. Inside its
 scope it reveals the `data-about-title` lines, clip reveals and parallaxes
 every `data-about-media` frame through its `data-about-media-layer`, rises the
@@ -606,6 +625,10 @@ app/lib contains pure helpers, shared constants, and stable names.
 - services-anchors.ts owns the Services route's section ids, `servicesAnchors`,
   and `servicesSectionPath`, which builds the `/services#id` path that the home
   services section links to.
+- site-cta-smoke.ts holds the site call to action's smoke background: the
+  noise texture URL, the trail and pixel ratio values in `smokeTrail`, and the
+  GLSL for the trail sprites and the backdrop. It holds data only, so
+  useSiteCtaBackground stays the only module that imports `three`.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images
@@ -704,7 +727,9 @@ Give an updated image a new file name when it must appear immediately. SVG
 brand assets use the registered `none` provider so they bypass the optimizer,
 which does not process SVG. Repeating decorative textures such as the canvas
 grain tile are the exception. They are referenced by root-relative URL from the
-global stylesheet and do not pass through Nuxt Image.
+global stylesheet and do not pass through Nuxt Image. The smoke background's
+`public/images/smoke-noise.avif` is the other exception: it is a WebGL texture
+that Three.js loads by root-relative URL.
 
 ## Dependency direction
 
