@@ -397,8 +397,13 @@ noise field, mixed from the section's own `foreground` surface toward its
 `background` ink by up to `0.24`, so the darkest smoke matches the surface and
 the effect follows both themes. The field is cut with a smoothstep between
 `0.26` and `0.62` of its range, so most of the section stays dark and soft grey
-clouds move through it, crossing the section in roughly ten seconds. A light
-per-frame grain sits on top. Moving the mouse over the section leaves a smoke
+clouds move through it, crossing the section in roughly ten seconds. A
+film grain of `0.08` sits on the final color, one CSS pixel per grain cell, so
+it reads equally on the dark areas and the clouds. It changes about twelve
+times a second through `grainRate`, like the page grain, because a pattern
+that changed every frame would average out to a flat color. The page's own canvas grain
+multiplies a light tile and barely shows on this dark surface, so the section
+needs its own. Moving the mouse over the section leaves a smoke
 trail: every frame the pointer travels a pixel, a soft sprite cut from
 `public/images/smoke-noise.avif` spawns at it, turns, grows, and fades out over
 about two seconds. The trail pushes the noise coordinates themselves by up to

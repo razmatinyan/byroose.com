@@ -24,7 +24,8 @@ export const smokeField = {
    shadeEnd: 0.62,
    trailPush: 0.35,
    trailGlow: 0.3,
-   grain: 0.06,
+   grain: 0.08,
+   grainRate: 5,
 } as const;
 
 const fullUvVertex = `
@@ -63,6 +64,8 @@ uniform float shadeEnd;
 uniform float trailPush;
 uniform float trailGlow;
 uniform float grain;
+uniform float grainRate;
+uniform float pixelRatio;
 uniform sampler2D trail;
 uniform vec3 surfaceColor;
 uniform vec3 inkColor;
@@ -92,9 +95,12 @@ void main() {
    float smoke = valueNoise(vUv * centerDistance * 2.0 + vec2(time * 0.05, time * -0.05) + offset);
    smoke += valueNoise(vUv * cornerDistance * 2.5 + vec2(time * -0.075, time * 0.05) + offset);
    smoke = smoothstep(shadeStart, shadeEnd, smoke * 0.5);
-   float grainShift = (random(vUv + fract(time)) - 0.5) * grain;
-   float light = clamp(smoke + push * trailGlow + grainShift, 0.0, 1.0);
-   gl_FragColor = vec4(mix(surfaceColor, inkColor, light * inkMix), 1.0);
+   float light = clamp(smoke + push * trailGlow, 0.0, 1.0);
+   vec3 color = mix(surfaceColor, inkColor, light * inkMix);
+   vec2 grainCell = floor(gl_FragCoord.xy / pixelRatio);
+   float grainSeed = fract(floor(time * grainRate) * 0.137);
+   color += (random(grainCell * 0.01 + grainSeed) - 0.5) * grain;
+   gl_FragColor = vec4(color, 1.0);
 }
 `,
 } as const;

@@ -112,9 +112,11 @@ function createSmokeScene(
       uniforms: {
          inkColor: { value: new three.Vector3(...palette.ink) },
          grain: { value: smokeField.grain },
+         grainRate: { value: smokeField.grainRate },
          inkMix: { value: smokeField.inkMix },
          shadeEnd: { value: smokeField.shadeEnd },
          shadeStart: { value: smokeField.shadeStart },
+         pixelRatio: { value: renderer.getPixelRatio() },
          surfaceColor: { value: new three.Vector3(...palette.surface) },
          time,
          trail: { value: trailTarget.texture },
