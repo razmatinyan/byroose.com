@@ -626,7 +626,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   and `servicesSectionPath`, which builds the `/services#id` path that the home
   services section links to.
 - site-cta-smoke.ts holds the site call to action's smoke background: the
-  noise texture URL, the trail and pixel ratio values in `smokeTrail`, and the
+  noise texture URL, the trail and pixel ratio values in `smokeTrail`, the
+  field contrast, trail push, glow, and grain values in `smokeField`, and the
   GLSL for the trail sprites and the backdrop. It holds data only, so
   useSiteCtaBackground stays the only module that imports `three`.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.

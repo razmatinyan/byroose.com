@@ -13,10 +13,18 @@ export const smokeTrail = {
    minOpacity: 0.002,
    scaleEase: 0.98,
    scaleGrowth: 0.45,
-   timeStep: 0.016,
+   timeStep: 0.04,
    trailResolution: 0.5,
    maxPixelRatio: 2,
-   inkMix: 0.3,
+} as const;
+
+export const smokeField = {
+   inkMix: 0.24,
+   shadeStart: 0.26,
+   shadeEnd: 0.62,
+   trailPush: 0.35,
+   trailGlow: 0.3,
+   grain: 0.06,
 } as const;
 
 const fullUvVertex = `
@@ -50,6 +58,11 @@ export const smokeBackdropShader = {
 
 uniform float time;
 uniform float inkMix;
+uniform float shadeStart;
+uniform float shadeEnd;
+uniform float trailPush;
+uniform float trailGlow;
+uniform float grain;
 uniform sampler2D trail;
 uniform vec3 surfaceColor;
 uniform vec3 inkColor;
@@ -73,14 +86,15 @@ float valueNoise(vec2 point) {
 
 void main() {
    float push = texture2D(trail, vUv).r;
-   vec2 uv = vUv + vec2(sin(push * 2.0 * PI)) * push * 0.1;
-   float centerDistance = distance(uv, vec2(0.5));
-   float cornerDistance = distance(uv, vec2(0.0, 1.0));
-   float grain = mix(-0.2, 0.2, random(uv + sin(time)));
-   float smoke = valueNoise(uv * centerDistance * 2.0 + vec2(time * 0.05, time * -0.05));
-   smoke += valueNoise(uv * cornerDistance * 2.5 + vec2(time * -0.075, time * 0.05));
-   smoke = smoothstep(0.0, 2.0, smoke + grain);
-   gl_FragColor = vec4(mix(surfaceColor, inkColor, smoke * inkMix), 1.0);
+   vec2 offset = vec2(sin(push * 2.0 * PI)) * push * trailPush;
+   float centerDistance = distance(vUv, vec2(0.5));
+   float cornerDistance = distance(vUv, vec2(0.0, 1.0));
+   float smoke = valueNoise(vUv * centerDistance * 2.0 + vec2(time * 0.05, time * -0.05) + offset);
+   smoke += valueNoise(vUv * cornerDistance * 2.5 + vec2(time * -0.075, time * 0.05) + offset);
+   smoke = smoothstep(shadeStart, shadeEnd, smoke * 0.5);
+   float grainShift = (random(vUv + fract(time)) - 0.5) * grain;
+   float light = clamp(smoke + push * trailGlow + grainShift, 0.0, 1.0);
+   gl_FragColor = vec4(mix(surfaceColor, inkColor, light * inkMix), 1.0);
 }
 `,
 } as const;

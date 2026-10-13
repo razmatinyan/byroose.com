@@ -8,6 +8,7 @@ import {
 } from "@vueuse/core";
 import {
    smokeBackdropShader,
+   smokeField,
    smokeNoiseTexture,
    smokeSpriteShader,
    smokeTrail,
@@ -110,10 +111,15 @@ function createSmokeScene(
       fragmentShader: smokeBackdropShader.fragment,
       uniforms: {
          inkColor: { value: new three.Vector3(...palette.ink) },
-         inkMix: { value: smokeTrail.inkMix },
+         grain: { value: smokeField.grain },
+         inkMix: { value: smokeField.inkMix },
+         shadeEnd: { value: smokeField.shadeEnd },
+         shadeStart: { value: smokeField.shadeStart },
          surfaceColor: { value: new three.Vector3(...palette.surface) },
          time,
          trail: { value: trailTarget.texture },
+         trailGlow: { value: smokeField.trailGlow },
+         trailPush: { value: smokeField.trailPush },
       },
       vertexShader: smokeBackdropShader.vertex,
    });

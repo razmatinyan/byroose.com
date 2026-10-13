@@ -392,15 +392,21 @@ vertically, so the hover bounce can grow the action past its sides without
 cutting its corners. Reduced motion shows the text and the action at rest.
 
 A Three.js smoke background fills the section behind the text. A full-section
-canvas at `-z-10` inside the now `isolate` section paints a slowly drifting
-value noise field with a fine per-frame grain, mixed from the section's own
-`foreground` surface toward its `background` ink by up to `0.3`, so the
-darkest smoke matches the surface and the effect follows both themes. Moving
-the mouse over the section leaves a smoke trail: every frame the pointer
-travels a pixel, a soft sprite cut from `public/images/smoke-noise.avif` spawns
-at it, turns, grows, and fades out over about two seconds, and the trail bends
-the noise field around the pointer. The trail renders at half resolution
-because it is only ever sampled as a soft distortion. The canvas fades in over
+canvas at `-z-10` inside the now `isolate` section paints a drifting value
+noise field, mixed from the section's own `foreground` surface toward its
+`background` ink by up to `0.24`, so the darkest smoke matches the surface and
+the effect follows both themes. The field is cut with a smoothstep between
+`0.26` and `0.62` of its range, so most of the section stays dark and soft grey
+clouds move through it, crossing the section in roughly ten seconds. A light
+per-frame grain sits on top. Moving the mouse over the section leaves a smoke
+trail: every frame the pointer travels a pixel, a soft sprite cut from
+`public/images/smoke-noise.avif` spawns at it, turns, grows, and fades out over
+about two seconds. The trail pushes the noise coordinates themselves by up to
+`0.35` of a noise cell, so the push looks equally strong across the whole
+section, and it lifts the brightness by up to `0.3` of the cloud strength, so
+it still shows over the dark areas. The values live in `smokeField` in
+`app/lib/site-cta-smoke.ts`. The trail renders at half resolution because it
+is only ever sampled as a soft distortion. The canvas fades in over
 `1s` once its first frame is drawn, renders only while the section is near the
 viewport, and never takes the pointer. Reduced motion shows one still frame
 without the trail or the fade. Without WebGL the plain `foreground` surface
