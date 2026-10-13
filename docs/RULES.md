@@ -192,9 +192,20 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 
 ## Backend rules
 
-The project has no application backend yet. When server features are added:
+Server features follow these rules:
 
 - Use Nuxt Nitro routes in server/api for HTTP endpoints.
+- Access the database only through useDb(event) from server/utils/db.ts. Never import the database client or its URL into app code.
+- Change the schema through Drizzle schema edits and generated migrations. Never edit an applied migration or change the production schema by hand.
+- Place admin API routes under server/api/admin.
+- Protect every admin API route on the server with requireUserSession. The admin route middleware only hides pages and is never the access control.
+- Give every admin page the admin middleware, a noindex robots meta tag, and a noindex X-Robots-Tag route rule. Never link to /g or list admin paths in robots.txt.
+- Validate project slugs with projectSlugSchema. When a new static route is added under /work, add its segment to reservedProjectSlugs and ship a migration that updates the check constraint.
+- Validate project content with projectContentSchema from shared/schemas/project-content.ts on every write, and confirm that every asset id it references exists before saving.
+- The Neon HTTP driver has no interactive transactions. Group related writes that must succeed or fail together with db.batch.
+- Keep public routes from querying the database on every request. Serve public reads from a cache that the matching admin writes invalidate.
+- Access media storage only through server/utils/media-storage.ts. Upload files from the browser with a presigned URL. Do not stream file bodies through server routes.
+- Generate media object keys on the server and validate the content type and byte size before signing an upload. Confirm the stored object with findMediaObject before saving its key to the database.
 - Keep route handlers thin. Parse input, authenticate, authorize, call domain logic, and map the response.
 - Validate route parameters, query values, headers, and bodies at the boundary with Zod or an equivalent typed schema.
 - Use clear resource-oriented routes and correct HTTP methods and status codes.
@@ -204,7 +215,6 @@ The project has no application backend yet. When server features are added:
 - Keep private credentials and privileged API calls on the server.
 - Enforce authorization on every protected resource, not only in the interface.
 - Select only required database fields and prevent repeated per-item queries.
-- Use transactions for related writes that must succeed or fail together.
 - Use structured logs and request correlation where useful. Never log secrets, access tokens, payment data, or sensitive personal data.
 - Design mutation endpoints to handle retries safely when duplicate execution would be harmful.
 - Add rate limits and abuse protection to public forms, authentication, uploads, and expensive operations.

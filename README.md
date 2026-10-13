@@ -22,6 +22,9 @@ The current foundation is a responsive Nuxt landing page converted from the orig
 - GSAP
 - Three.js
 - Zod
+- Neon Postgres with Drizzle ORM
+- Cloudflare R2 media storage through aws4fetch
+- nuxt-auth-utils with Google sign in for admins
 
 ## Local development
 
@@ -39,6 +42,25 @@ npm run dev
 
 The application is available at http://localhost:3000 by default.
 
+Server features need a Neon database and a Cloudflare R2 bucket. Copy
+.env.example to .env and fill in:
+
+- NUXT_DATABASE_URL with the pooled connection string from the Neon dashboard
+- NUXT_R2_ACCOUNT_ID, NUXT_R2_ACCESS_KEY_ID, and NUXT_R2_SECRET_ACCESS_KEY from
+  an R2 API token with Object Read and Write access scoped to the bucket
+- NUXT_R2_BUCKET with the bucket name
+- NUXT_PUBLIC_MEDIA_BASE_URL with the bucket's public address, without a
+  trailing slash
+- NUXT_OAUTH_GOOGLE_CLIENT_ID and NUXT_OAUTH_GOOGLE_CLIENT_SECRET from a Google
+  Cloud OAuth client of type Web application whose authorized redirect URIs
+  include http://localhost:3000/auth/google
+- NUXT_SESSION_PASSWORD with at least 32 random characters
+
+Admins sign in at /g with a Google account whose email is in the admins table.
+
+The bucket's CORS policy must allow PUT requests with a Content-Type header
+from http://localhost:3000 for local uploads. Keep .env out of Git.
+
 ## Available commands
 
 ~~~bash
@@ -47,7 +69,13 @@ npm run typecheck
 npm run build
 npm run generate
 npm run preview
+npm run db:generate
+npm run db:migrate
+npm run db:studio
 ~~~
+
+The db commands generate SQL migrations from the Drizzle schema, apply them to
+the database in NUXT_DATABASE_URL, and open Drizzle Studio.
 
 ## Project structure
 
@@ -58,6 +86,8 @@ app/
   composables/      Reusable stateful and side-effect behavior
   lib/              Pure helpers, shared constants, and icon names
   plugins/          Nuxt runtime integrations
+server/             Nitro server code, database schema and migrations, and media storage
+shared/             Schemas shared by the app and the server
 docs/               Architecture, rules, design system, content, and workflow
 public/             Static public assets
 ~~~

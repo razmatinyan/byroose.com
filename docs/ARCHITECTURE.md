@@ -26,6 +26,7 @@ app/
     cards/
     landing/
     layout/
+    project-editor/
     services/
     shared/
     ui/
@@ -49,6 +50,8 @@ app/
     useHoverBounce.ts
     useHoverRollover.ts
     useJourneyMotion.ts
+    useMediaUpload.ts
+    useMediaUrl.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
     useNavLinkMotion.ts
@@ -91,16 +94,23 @@ app/
     work-line-path.ts
   layouts/
     default.vue
+  middleware/
+    admin.ts
   pages/
     about.vue
     blog.vue
     contact.vue
     courses.vue
+    g.vue
     index.vue
     privacy.vue
     services.vue
     terms.vue
-    work.vue
+    work/
+      index.vue
+      new.vue
+      [id]/
+        edit.vue
   plugins/
     lenis.ts
     page-transition.ts
@@ -108,7 +118,31 @@ app/
   router.options.ts
 docs/
 public/
+server/
+  api/
+    admin/
+      categories.get.ts
+      media/
+        index.post.ts
+        uploads.post.ts
+  database/
+    migrations/
+    schema.ts
+  routes/
+    auth/
+      google.get.ts
+  utils/
+    db.ts
+    media-storage.ts
+shared/
+  schemas/
+    media.ts
+    project-content.ts
+    project-slug.ts
+  types/
+    auth.d.ts
 nuxt.config.ts
+drizzle.config.ts
 components.json
 package.json
 ~~~
@@ -117,7 +151,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work.vue renders the Work experience from app/components/work, and app/pages/blog.vue renders the Blog experience from app/components/blog. The remaining page files own the Courses, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, and app/pages/blog.vue renders the Blog experience from app/components/blog. The remaining page files own the Courses, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -181,7 +215,7 @@ About components.
 
 app/components/work contains the Work route's sections. WorkPage composes
 WorkHero and WorkProjectsSection, and
-app/pages/work.vue renders it with the route metadata. WorkHero supplies the
+app/pages/work/index.vue renders it with the route metadata. WorkHero supplies the
 Work title and description to the shared ListingHero.
 WorkProjectsSection owns the project data, the category to service map, the
 filter options, and two filter states: `selectedFilter`, which presses its
@@ -508,8 +542,11 @@ to fade its actions and logo, so the header never queries footer markup.
 
 useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
-element, which the component's own font size must multiply. JourneySection
-uses it for its title, and WorkHero for its title.
+element, which the component's own font size must multiply. An optional
+`maxScale` caps the multiplier, so short text stops growing at the base size
+and only longer text shrinks to fit. JourneySection uses it for its title,
+WorkHero for its title, and ProjectEditorHero for the project name with a
+`maxScale` of `1`.
 
 useImagesLoaded reports through `loaded` whether every image inside a root
 has loaded. After mount it checks each image's completed state, so images that
@@ -795,13 +832,216 @@ Do not introduce global state for convenience.
 - Theme and viewport behavior must have a deterministic server fallback.
 - Heavy client-only modules should load lazily at the component that needs them.
 
+## Data layer
+
+The application data lives in a Neon Postgres database. Server code reaches it
+through Drizzle ORM over the Neon serverless HTTP driver, which needs no
+persistent connection and runs on both Node and Cloudflare Workers, the planned
+production runtime.
+
+- `server/utils/db.ts` exports `useDb(event)`. It reads the server-only
+  `databaseUrl` runtime value, set through `NUXT_DATABASE_URL`, from the
+  request's runtime config so Cloudflare environment bindings resolve per
+  request, and returns a Drizzle client. It throws when the value is missing.
+- Drizzle maps camelCase schema keys to snake_case columns on both the client
+  and the migration tool.
+- `drizzle.config.ts` points Drizzle Kit at `server/database/schema.ts` and
+  writes SQL migrations to `server/database/migrations`. It loads `.env` when
+  the file exists.
+- Schema changes flow through `npm run db:generate`, review of the generated
+  SQL, and `npm run db:migrate`. Seed data that every environment needs ships
+  as a custom SQL migration from `drizzle-kit generate --custom`. Applied
+  migrations are never edited.
+
+### Schema
+
+`server/database/schema.ts` owns these tables:
+
+- `projects` holds a Work project: name, unique slug, description, a `draft`,
+  `published`, or `archived` status, an optional cover asset, the `content`
+  layout blocks, optional client, client website URL, year, live URL, and
+  `results` label and value pairs, and the metadata tab's SEO description, keywords, and sharing image.
+  `showOnHome` and `position` serve the later project management view, and
+  `publishedAt` records the first publication. Published projects are listed
+  publicly. Archived projects stay reachable by their URL but are left out of
+  every listing and the sitemap. Drafts are visible only to admins.
+- `categories` holds the Work categories, each mapped to the `ai-content` or
+  `website-development` service that the Work filters group by. A seed
+  migration adds Development, E-commerce, Web Design, Imagery, Reels, and Video.
+- `project_categories` links projects to categories.
+- `media_assets` records every confirmed R2 upload with its key, image or video
+  kind, content type, byte size, intrinsic dimensions, optional duration, and
+  optional poster image. Projects and content blocks reference assets by id.
+- `admins` holds the lowercase email addresses that may sign in to the admin
+  area. Admin rows are data, not migrations, so the addresses never enter the
+  public repository. Every Neon branch needs the same rows, so add or remove an
+  admin on each branch.
+
+Slugs must match lowercase words joined by single hyphens, a constraint the
+database enforces alongside the year range and asset size and dimension checks.
+
+### Project content blocks
+
+`projects.content` is JSONB in the shape `{ version, blocks }`. Its contract
+lives in `shared/schemas/project-content.ts` so the admin editor and the server
+share one Zod schema and its inferred types. Every block has a stable UUID `id`
+and one of these types:
+
+- `text`: an optional subtitle and plain body text whose paragraphs are
+  separated by empty lines, placed `left`, `center`, or `right` on the page.
+  It needs a subtitle or body text.
+- `media`: one full width image or video asset with alt text
+- `grid`: two to twelve image assets in two or three columns, each with alt
+  text
+
+`version` changes only when a block shape changes incompatibly, together with
+a migration of the stored content. Asset ids inside blocks cannot carry foreign
+keys, so the server confirms they exist in `media_assets` before saving.
+
+The database scales to zero when idle and its free compute is limited, so
+public routes must not query it on every request. Public reads go through a
+cache that admin writes invalidate, and only admin work reads it directly.
+
+## Media storage
+
+Uploaded media lives in a Cloudflare R2 bucket. The database stores only each
+object's key and metadata, never file contents.
+
+- `server/utils/media-storage.ts` reaches the bucket through the R2 S3 API with
+  `aws4fetch`, which runs on both Node and Cloudflare Workers. It reads the
+  server-only `r2` runtime values, set through `NUXT_R2_ACCOUNT_ID`,
+  `NUXT_R2_ACCESS_KEY_ID`, `NUXT_R2_SECRET_ACCESS_KEY`, and `NUXT_R2_BUCKET`,
+  and throws when any of them is missing.
+- `createMediaUploadUrl` returns a presigned PUT URL that expires after ten
+  minutes and signs the object key, content type, and exact byte size, so R2
+  rejects any upload that differs from what the server approved.
+  `findMediaObject` reads an object's stored type and size, or returns null
+  when it does not exist. `deleteMediaObject` removes an object and treats a
+  missing object as already deleted.
+- Browsers upload files directly to R2 with the presigned URL, so file bodies
+  never pass through the server and stay clear of the Workers CPU and request
+  limits. The bucket's CORS policy must allow PUT with a Content-Type header
+  from every site origin that uploads.
+- Public pages build media URLs from the public `mediaBaseUrl` runtime value,
+  set through `NUXT_PUBLIC_MEDIA_BASE_URL`. It points at the bucket's `r2.dev`
+  address during development and moves to a custom media domain once the
+  site's DNS is managed by Cloudflare.
+
+## Admin authentication
+
+Admins sign in with Google through `nuxt-auth-utils`, which keeps the session
+in an encrypted cookie sealed with `NUXT_SESSION_PASSWORD` for seven days.
+Google credentials come from `NUXT_OAUTH_GOOGLE_CLIENT_ID` and
+`NUXT_OAUTH_GOOGLE_CLIENT_SECRET`, and the Google client must list
+`<origin>/auth/google` as an authorized redirect URI for every origin.
+
+- `/g` is the sign-in page. No link on the site points to it. It offers
+  Continue with Google, shows a signed-in admin their email with a sign out
+  action, and reads an `error` query of `unauthorized` or `failed`. It sets
+  `layout: false`, so it renders without the site header, call to action, and
+  footer, and its New project link uses a full page load because client-side
+  page transitions expect the default layout on both sides.
+- `server/routes/auth/google.get.ts` handles the Google redirect. It requires a
+  verified Google email, updates `lastLoginAt` on the matching `admins` row in
+  one query, and only then seals a session holding the admin's id, email, and
+  name. Any other account returns to `/g?error=unauthorized` without a session.
+- `shared/types/auth.d.ts` types the session user.
+- The `admin` route middleware in `app/middleware/admin.ts` answers 404 when no
+  session exists, so admin pages do not reveal themselves. `/work/new` and
+  `/work/[id]/edit` use it. It runs during server rendering and client
+  navigation.
+- `/g`, `/work/new`, `/work/*/edit`, and `/auth/**` send an
+  `X-Robots-Tag: noindex, nofollow` header through route rules, and the pages
+  also set a robots meta tag. robots.txt does not list them, because it is
+  public.
+
+The middleware only guards pages. Every admin API route must verify the
+session on the server.
+
+`work/new` is a static route beside the future `/work/[slug]` project pages,
+so `shared/schemas/project-slug.ts` reserves `new` as a project slug and the
+database enforces the reservation with a check constraint.
+
+## Admin API
+
+Every route under `server/api/admin` calls `requireUserSession` first, so a
+request without an admin session gets 401.
+
+- `GET /api/admin/categories` lists every category's id, name, and service,
+  ordered by name.
+- `POST /api/admin/media/uploads` takes a content type and byte size, validates
+  them against `shared/schemas/media.ts`, generates a `media/<uuid>.<ext>` key,
+  and returns it with a presigned upload URL. Images may be JPG, PNG, WebP,
+  AVIF, or GIF up to 25 MB, and videos MP4 or WebM up to 200 MB.
+- `POST /api/admin/media` takes the key with the intrinsic width, height, and
+  video duration the browser read from the file. It confirms the object in R2
+  through `findMediaObject`, rechecks its stored type and size, records it in
+  `media_assets`, and returns the asset. A missing or disallowed object answers
+  422, and a key that is already recorded answers 409.
+
+Replacing or removing an asset in the editor does not delete it from R2 yet.
+A later cleanup will remove assets that no project references.
+
+## Project editor
+
+`/work/new` renders `ProjectEditor` from `app/components/project-editor`, which
+mirrors the public project page so an admin sees the result while editing. It
+owns the draft in local state: name, description, service ids, live result
+link, cover asset, and content blocks. Saving the draft is not implemented
+yet, so the draft is lost on reload.
+
+- `ProjectEditorHero` repeats the Work hero frame. The project name is a
+  plain-text `contenteditable` line that `useFitText` shrinks to fit the full
+  width for long names, capped at the Work hero title size for short ones,
+  the description is an autosizing textarea in the right column, and the left
+  column holds `ProjectServicesPicker` and the live result link field. It
+  exposes each field through `defineModel`.
+- `ProjectServicesPicker` lists the categories from `/api/admin/categories` in
+  a checkbox dropdown that stays open while choosing, and lists the selected
+  services below it in category order.
+- `ProjectMediaUpload` is the shared upload field. It accepts the media kinds
+  it is given, by click anywhere on its frame or by drag and drop, uploads one
+  file or, with `multiple`, several in order, shows the progress bar, and
+  emits `uploaded` with each asset. `compact` turns it into a small add tile.
+  `ProjectMediaPreview` renders an asset as an image or a muted looping video.
+- `ProjectEditorCover` shows the cover with Replace and Remove actions, or the
+  upload field for an image or video. Replace shows the upload field with a
+  way back to the current cover.
+- `ProjectEditorBlocks` renders the content blocks below the cover. A
+  `ProjectBlockInserter` before each block appears on hover or focus, and one
+  at the end is always visible. Each opens a menu of Text, Image, Image grid,
+  and Video, and inserts the new block at its position. After the insert
+  renders, it resizes Lenis for the taller page and scrolls the new block to
+  `160px` below the viewport top through `useSmoothScroll`, so the whole block
+  is in view. `ProjectBlockFrame`
+  wraps each block with a hover toolbar to move it up or down and remove it,
+  plus the block's own options: the left, center, or right placement for text
+  and two or three columns for a grid.
+- `ProjectTextBlock` edits the subtitle and body in autosizing fields,
+  `ProjectMediaBlock` uploads one image or video and edits its description,
+  and `ProjectGridBlock` uploads images into the grid, removes them, and edits
+  each description.
+- `app/lib/project-editor-blocks.ts` holds the editor block types, which carry
+  whole assets for display, the insert menu choices, the placement and column
+  options, and the block factories. Saving will map them to the stored
+  `projectContentSchema` shape by asset id.
+- `useMediaUpload` validates the file type, its kind against the accepted
+  kinds, and its size in the browser, reads the
+  dimensions from the file, requests a presigned URL, uploads with
+  `XMLHttpRequest` so it can report progress, registers the asset, and exposes
+  `status`, `progress`, and `errorMessage`. The transfer fills the first 95
+  percent of the progress and registration the rest.
+- `useMediaUrl` builds a public media URL from an object key and
+  `mediaBaseUrl`.
+
 ## Planned backend structure
 
-No application backend exists yet. Add these directories only when the first server feature requires them:
+Add the remaining directories only when a server feature requires them:
 
 ~~~text
 server/
   api/              Nitro route handlers
+  database/         Drizzle schema and generated migrations
   services/         Shared business workflows
   repositories/     Persistence access when abstraction is justified
   utils/            Server-only helpers

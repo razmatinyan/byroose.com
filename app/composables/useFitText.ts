@@ -16,7 +16,14 @@ function contentWidthOf(element: HTMLElement) {
    );
 }
 
-export function useFitText(text: MaybeComputedElementRef) {
+interface FitTextOptions {
+   maxScale?: number;
+}
+
+export function useFitText(
+   text: MaybeComputedElementRef,
+   { maxScale = Number.POSITIVE_INFINITY }: FitTextOptions = {},
+) {
    let scale = 1;
 
    function fit() {
@@ -30,7 +37,10 @@ export function useFitText(text: MaybeComputedElementRef) {
       const ratio = available / width;
       if (Math.abs(ratio - 1) < fitTolerance) return;
 
-      scale *= ratio;
+      const nextScale = Math.min(scale * ratio, maxScale);
+      if (nextScale === scale) return;
+
+      scale = nextScale;
       element.style.setProperty(fitScaleProperty, String(scale));
    }
 

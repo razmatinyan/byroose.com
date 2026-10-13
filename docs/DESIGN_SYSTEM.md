@@ -512,6 +512,94 @@ links, and the action are always visible and focusable. Reduced motion shows
 the footer at rest without the travel or the tint. The same progress fades the
 header actions, as described under the site header.
 
+## Admin sign-in page
+
+The `/g` sign-in page stands alone on a dark `foreground` surface with
+`background` ink, without the site header, call to action, or footer. From `lg`
+it is a two-column grid with `gap-6` and `p-6`. The left column centers the
+content, capped at `max-w-md`. The right column holds `public/images/work/3.png`
+as a decorative `object-cover` image in a `rounded-2xl` frame that fills the
+viewport height. Below `lg` the image becomes a `h-56` band, `h-72` from `sm`,
+above the content, so the action stays in the first screen on phones.
+
+The content stacks the wordmark, painted in `background` through the same
+`/logo.svg` mask as the header logo, a bold `text-5xl`, `text-6xl` from `sm`,
+title with `-0.05em` tracking, a `background/70` lead, and a `rounded-2xl` card
+with a `background/15` border on a `background/5` fill. The card's actions are
+full-width `lg` buttons raised to `h-12`. Continue with Google and New project
+use the `light` variant, and Sign out uses `inverse`. The Google action carries
+the official multicolor Google mark from `public/icons/google.svg`, rendered
+with `provider="none"`, because Google's branding rules require it and Lucide
+has no brand marks. An error renders above the action as an alert with a
+`destructive/60` border on a `destructive/15` fill, and the notes use
+`background/60` small text.
+
+## Project editor
+
+The editor hero repeats the Work hero's frame, title recipe, and description
+recipe so a draft reads like the published page. The name stays on one
+line at the Work title's `0.76` leading. Its size is at most the Work title's
+`23.71cqi`, so a name as long as "Our Work" or shorter keeps that size, and a
+longer name shrinks until it fits the full width. An empty name shows "Project
+name" at `foreground/20` and an empty description shows its placeholder at
+`foreground/25`, both at full display size. Focused fields show the shared
+`ring/50` focus ring with a small radius. Below `lg` the description comes
+before the services and link, and from `lg` they sit in the left column beside
+it, side by side from `sm`.
+
+The services block has a semibold `text-xl`, `text-2xl` from `md`, "Services"
+heading in sentence case, an `outline` `lg` Choose services trigger with a
+chevron down, and the selected services as a `text-2xl`, `text-3xl` from `md`,
+medium list. The live result link shares the heading style for its label and
+is a borderless `text-2xl`, `text-3xl` from `md`, field with a
+`foreground/25` bottom rule that turns `foreground` on focus.
+
+Every upload field, for the cover and for the content blocks, is a full-width `rounded-2xl` 16:9 frame on `canvas-shade` with a
+dashed `foreground/15` border, an upload glyph, a `text-2xl` title, the file
+limits, and a Choose file label styled as a `dark` `lg` button. The whole
+frame is one button that opens the file picker, so the label is a span with
+`buttonVariants` rather than a nested button. Hovering darkens the border to
+`foreground/35`, keyboard focus adds the shared ring, and dragging a file over
+it darkens the border and switches the fill to `muted`. An upload error shows
+below the frame in `destructive` text. While uploading, the frame shows
+only a `h-1.5` rounded `foreground` bar on a `foreground/10` track, `max-w-sm`,
+with the percentage below, or "Uploading 2 of 5" when several files upload in
+order. The compact grid tile keeps the dashed frame at 4:3 with a plus glyph
+and a `text-base` title. A finished cover shows at its own aspect ratio in the
+same radius, with `light` `sm` Replace and Remove actions in its top right
+corner.
+
+Content blocks stack below the cover in the page gutter. Between blocks, a
+`h-16` insert row shows a `foreground/15` hairline with a round `dark` plus
+button at its center only on hover, keyboard focus, or while its menu is open.
+The last insert row is `h-24` and always visible. Its menu lists Text, Image,
+Image grid, and Video with their Lucide glyphs. A new block scrolls into view
+on the swap scroll timing, landing `160px` below the viewport top so it clears
+the header and its toolbar. A block shows a `foreground/15`
+outline offset by `8px` and a floating toolbar above its top right corner on
+hover or focus. The toolbar is a `bg-card` bordered group with `shadow-sm`,
+because it floats over content, holding `outline` `icon-sm` actions. Pressed
+options such as the text placement and the grid columns fill with `foreground`.
+
+A text block is at most `max-w-3xl` wide and sits on the left, center, or right
+of the page while its text stays left aligned. The subtitle is medium
+`text-2xl`, `text-3xl` from `md`, in `foreground`. The body is `text-xl`,
+`text-2xl` from `md`, in `brand-soft` with `leading-snug`, `1.5rem` below the
+subtitle. An image or video block fills the width at its own ratio in a
+`rounded-2xl` frame. A grid is one column on phones, two from `sm`, and three
+from `lg` when set to three, with a `1rem` gap and each image at its own ratio.
+Each image has a `light` remove action on hover. Below every media item a quiet
+`text-sm` `muted-foreground` description field edits the alt text, which only
+the editor shows.
+
+## Dropdown menu
+
+`components/ui/dropdown-menu` is the source-owned Shadcn Vue dropdown menu on
+Reka UI. Its check, radio, and submenu glyphs render through Nuxt Icon with the
+`check`, `circle`, and `chevronRight` names from `app/lib/icons.ts`. When the
+Shadcn CLI adds a component, replace any `@lucide/vue` import with Nuxt Icon
+and remove any font import or base layer it writes to the global stylesheet.
+
 ## Responsive rules
 
 Build mobile-first with Tailwind's standard `sm`, `md`, `lg`, and `xl`

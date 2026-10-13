@@ -43,19 +43,57 @@ export default defineNuxtConfig({
 		clientBundle: {
 			scan: true,
 			icons: [
+				'lucide:align-center',
+				'lucide:align-left',
+				'lucide:align-right',
 				'lucide:arrow-down',
 				'lucide:arrow-left',
 				'lucide:arrow-right',
 				'lucide:arrow-up',
 				'lucide:arrow-up-right',
+				'lucide:check',
+				'lucide:chevron-down',
+				'lucide:chevron-right',
+				'lucide:circle',
+				'lucide:columns-2',
+				'lucide:columns-3',
 				'lucide:github',
+				'lucide:image',
 				'lucide:instagram',
+				'lucide:layout-grid',
 				'lucide:linkedin',
 				'lucide:minus',
 				'lucide:plus',
+				'lucide:trash-2',
+				'lucide:type',
+				'lucide:upload',
+				'lucide:video',
 				'lucide:x',
 			],
 		},
+	},
+
+	runtimeConfig: {
+		databaseUrl: '',
+		r2: {
+			accountId: '',
+			accessKeyId: '',
+			secretAccessKey: '',
+			bucket: '',
+		},
+		public: {
+			mediaBaseUrl: '',
+		},
+		session: {
+			maxAge: 60 * 60 * 24 * 7,
+		},
+	},
+
+	routeRules: {
+		'/g': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+		'/work/new': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+		'/work/*/edit': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+		'/auth/**': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
 	},
 
 	nitro: {
@@ -89,6 +127,7 @@ export default defineNuxtConfig({
 		'@nuxt/image',
 		'@vueuse/nuxt',
 		'shadcn-nuxt',
+		'nuxt-auth-utils',
 	],
 
 	image: {

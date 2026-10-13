@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ADD CONSTRAINT "projects_slug_reserved_check" CHECK ("projects"."slug" not in ('new'));
