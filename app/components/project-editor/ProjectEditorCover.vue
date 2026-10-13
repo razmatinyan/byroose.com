@@ -7,6 +7,7 @@ import ProjectMediaUpload from "./ProjectMediaUpload.vue";
 
 const cover = defineModel<MediaAsset | null>({ required: true });
 
+const previewing = useProjectEditorPreview();
 const replacing = shallowRef(false);
 
 function setCover(asset: MediaAsset) {
@@ -24,13 +25,13 @@ function removeCover() {
    <section class="project-cover section-gutter" aria-label="Cover image or video">
       <figure v-if="cover && !replacing" class="project-cover-media">
          <ProjectMediaPreview :asset="cover" />
-         <div class="project-cover-actions">
+         <div v-if="!previewing" class="project-cover-actions">
             <Button variant="light" size="sm" @click="replacing = true">Replace</Button>
             <Button variant="light" size="sm" @click="removeCover">Remove</Button>
          </div>
       </figure>
 
-      <template v-else>
+      <template v-else-if="!previewing">
          <ProjectMediaUpload
             :kinds="['image', 'video']"
             title="Add the cover image or video"

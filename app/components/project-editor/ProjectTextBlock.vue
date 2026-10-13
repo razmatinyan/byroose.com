@@ -3,6 +3,7 @@ import { computed, useTemplateRef } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
 import type { EditorTextBlock } from "@/lib/project-editor-blocks";
 
+const previewing = useProjectEditorPreview();
 const block = defineModel<EditorTextBlock>({ required: true });
 
 const titleField = useTemplateRef<HTMLTextAreaElement>("titleField");
@@ -34,7 +35,8 @@ useTextareaAutosize({ element: bodyField, input: body });
             v-model="title"
             class="text-block-title"
             aria-label="Subtitle"
-            placeholder="Subtitle"
+            :placeholder="previewing ? undefined : 'Subtitle'"
+            :readonly="previewing"
             rows="1"
             maxlength="200"
          />
@@ -43,7 +45,8 @@ useTextareaAutosize({ element: bodyField, input: body });
             v-model="body"
             class="text-block-body"
             aria-label="Text"
-            placeholder="Write the text. Leave an empty line between paragraphs."
+            :placeholder="previewing ? undefined : 'Write the text. Leave an empty line between paragraphs.'"
+            :readonly="previewing"
             rows="3"
             maxlength="10000"
          />

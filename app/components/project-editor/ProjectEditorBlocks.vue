@@ -5,15 +5,20 @@ import { Button } from "@/components/ui/button";
 import {
    createEditorBlock,
    gridColumnOptions,
+   resultsToneOptions,
    textBlockAlignOptions,
 } from "@/lib/project-editor-blocks";
+import { surfaceTones } from "@/lib/surfaces";
+import { cn } from "@/lib/utils";
 import type { EditorBlock, EditorBlockChoice } from "@/lib/project-editor-blocks";
 import ProjectBlockFrame from "./ProjectBlockFrame.vue";
 import ProjectBlockInserter from "./ProjectBlockInserter.vue";
 import ProjectGridBlock from "./ProjectGridBlock.vue";
 import ProjectMediaBlock from "./ProjectMediaBlock.vue";
+import ProjectResultsBlock from "./ProjectResultsBlock.vue";
 import ProjectTextBlock from "./ProjectTextBlock.vue";
 
+const previewing = useProjectEditorPreview();
 const blocks = defineModel<EditorBlock[]>({ required: true });
 
 const insertedBlockOffset = 160;
@@ -24,6 +29,7 @@ const blockLabels: Record<EditorBlock["type"], string> = {
    text: "Text",
    media: "Media",
    grid: "Image grid",
+   results: "Results",
 };
 
 function setBlockElement(id: string, element: Element | ComponentPublicInstance | null) {
@@ -66,7 +72,7 @@ function removeBlock(index: number) {
 <template>
    <section class="project-blocks section-gutter" aria-label="Project content">
       <template v-for="(block, index) in blocks" :key="block.id">
-         <ProjectBlockInserter @add="insertBlock(index, $event)" />
+         <ProjectBlockInserter v-if="!previewing" @add="insertBlock(index, $event)" />
          <ProjectBlockFrame
             :ref="(element) => setBlockElement(block.id, element)"
             :label="blockLabels[block.type]"
@@ -106,6 +112,21 @@ function removeBlock(index: number) {
                   <Icon :name="option.icon" aria-hidden="true" />
                </Button>
             </template>
+            <template v-else-if="block.type === 'results'" #controls>
+               <Button
+                  v-for="option in resultsToneOptions"
+                  :key="option.id"
+                  variant="outline"
+                  size="icon-sm"
+                  :aria-label="`${option.label} results`"
+                  :aria-pressed="block.tone === option.id"
+                  :data-active="block.tone === option.id || undefined"
+                  class="project-blocks-option"
+                  @click="updateBlock(index, { ...block, tone: option.id })"
+               >
+                  <span :class="cn('project-blocks-swatch', surfaceTones[option.id])" aria-hidden="true" />
+               </Button>
+            </template>
 
             <ProjectTextBlock
                v-if="block.type === 'text'"
@@ -118,13 +139,18 @@ function removeBlock(index: number) {
                @update:model-value="updateBlock(index, $event)"
             />
             <ProjectGridBlock
+               v-else-if="block.type === 'grid'"
+               :model-value="block"
+               @update:model-value="updateBlock(index, $event)"
+            />
+            <ProjectResultsBlock
                v-else
                :model-value="block"
                @update:model-value="updateBlock(index, $event)"
             />
          </ProjectBlockFrame>
       </template>
-      <ProjectBlockInserter persistent @add="insertBlock(blocks.length, $event)" />
+      <ProjectBlockInserter v-if="!previewing" persistent @add="insertBlock(blocks.length, $event)" />
    </section>
 </template>
 
@@ -133,6 +159,10 @@ function removeBlock(index: number) {
 
 .project-blocks {
    @apply flex flex-col pb-24;
+}
+
+.project-blocks-swatch {
+   @apply size-4 rounded-full ring-1 ring-foreground/15;
 }
 
 .project-blocks-option[data-active] {

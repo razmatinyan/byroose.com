@@ -8,6 +8,7 @@ import type { MediaAsset } from "#shared/schemas/media";
 import ProjectMediaPreview from "./ProjectMediaPreview.vue";
 import ProjectMediaUpload from "./ProjectMediaUpload.vue";
 
+const previewing = useProjectEditorPreview();
 const block = defineModel<EditorGridBlock>({ required: true });
 
 const canAddItems = computed(() => block.value.items.length < gridBlockMaxItems);
@@ -39,6 +40,7 @@ function setAlt(id: string, event: Event) {
          <div class="grid-block-frame">
             <ProjectMediaPreview :asset="item.asset" :alt="item.alt" />
             <Button
+               v-if="!previewing"
                variant="light"
                size="icon-sm"
                class="grid-block-remove"
@@ -49,6 +51,7 @@ function setAlt(id: string, event: Event) {
             </Button>
          </div>
          <input
+            v-if="!previewing"
             class="grid-block-alt"
             :value="item.alt"
             :aria-label="`Image ${index + 1} description`"
@@ -58,7 +61,7 @@ function setAlt(id: string, event: Event) {
          />
       </figure>
       <ProjectMediaUpload
-         v-if="canAddItems"
+         v-if="canAddItems && !previewing"
          :kinds="['image']"
          :title="isEmpty ? 'Add images to the grid' : 'Add images'"
          multiple

@@ -19,6 +19,7 @@
     "@nuxt/icon": "^2.5.1",
     "@nuxt/image": "^2.1.0",
     "@vueuse/core": "^14.4.0",
+    "@vueuse/integrations": "^14.4.0",
     "@vueuse/nuxt": "^14.4.0",
     "aws4fetch": "^1.0.20",
     "class-variance-authority": "^0.7.1",
@@ -30,6 +31,7 @@
     "nuxt-auth-utils": "^0.5.31",
     "reka-ui": "^2.11.0",
     "shadcn-nuxt": "^2.8.2",
+    "sortablejs": "^1.15.7",
     "tailwind-merge": "^3.6.0",
     "three": "^0.186.1",
     "vue": "^3.5.42",
@@ -39,6 +41,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.129",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/sortablejs": "^1.15.9",
     "@types/three": "^0.186.0",
     "drizzle-kit": "^0.31.11",
     "tailwindcss": "^4.3.3",

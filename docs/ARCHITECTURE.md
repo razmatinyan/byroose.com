@@ -893,6 +893,10 @@ and one of these types:
 - `media`: one full width image or video asset with alt text
 - `grid`: two to twelve image assets in two or three columns, each with alt
   text
+- `results`: one to six results, each a value and a label, shown in one of
+  the `primary`, `blue`, `green`, `pink`, `yellow`, or `dark` surface tones
+  beside a Results title. Results live in the content flow, so the
+  `projects.results` column is unused and will be dropped when saving lands.
 
 `version` changes only when a block shape changes incompatibly, together with
 a migration of the stored content. Asset ids inside blocks cannot carry foreign
@@ -1017,10 +1021,56 @@ yet, so the draft is lost on reload.
   wraps each block with a hover toolbar to move it up or down and remove it,
   plus the block's own options: the left, center, or right placement for text
   and two or three columns for a grid.
+- `ProjectResultsBlock` shows the Results title beside the result items in
+  the home case study style. Each value and label is edited in place, a
+  result can be removed while more than one remains, and Add result appends
+  one up to six. Its toolbar options pick the value surface tone.
+- `ProjectBlockOrderDialog` lists the blocks with `describeBlock` summaries
+  and reorders them by dragging through `useSortable` from
+  `@vueuse/integrations` on SortableJS, with a 260 millisecond animation, a
+  fallback clone on the body so the dialog transform does not offset it, and
+  up and down actions on each row for keyboard use. The toolbar's reorder
+  action opens it when there are at least two blocks.
 - `ProjectTextBlock` edits the subtitle and body in autosizing fields,
   `ProjectMediaBlock` uploads one image or video and edits its description,
   and `ProjectGridBlock` uploads images into the grid, removes them, and edits
   each description.
+- `ProjectEditorToolbar` is fixed to the bottom of the viewport. It holds icon
+  actions for settings, preview, reorder, and save as draft, and a Publish split button
+  whose chevron opens a menu with Unpublish for a published project, Archive
+  for a project that is not archived, and Delete project behind a
+  confirmation dialog. It owns the `previewing` model and emits
+  `openSettings`, `openOrder`, `saveDraft`, `publish`, `unpublish`, `archive`, and
+  `delete`. Publish emits only when its `missing` list is empty. Otherwise it
+  opens a panel above the toolbar that lists what is missing until the list
+  empties or the panel is closed. A `busy` prop disables the actions while a
+  save runs, and `canReorder` enables reorder when there are at least two
+  blocks. The editor handles only `openSettings` and `openOrder` until saving
+  is implemented.
+- `ProjectEditor` derives that `missing` list: a name, a name that produces a
+  slug, a description, at least one service, a cover, and no incomplete block
+  as `isIncompleteBlock` defines it: an empty text block, a media block
+  without its asset, a grid with fewer than two images, or a result without a
+  value or a label.
+- The slug is never typed. `projectSlugFromName` in
+  `shared/schemas/project-slug.ts` lowercases the name, strips accents, turns
+  `&` into `and`, joins the remaining Latin letter and digit runs with single
+  hyphens, trims it to 80 characters at a word boundary, and appends
+  `-project` to a reserved slug. A name without Latin letters or digits gives
+  an empty slug, which blocks publishing.
+- `ProjectSettingsDialog` edits the search settings that have no place on the
+  page: the search description, which falls back to the project description,
+  and the comma separated keywords. The slug and the `Name | byroose` page
+  title are generated and never shown there. Client, client website, year,
+  and results will be edited in the page flow later.
+  `app/lib/project-editor-settings.ts` holds its draft shape and factory.
+- Preview mode is a `previewing` ref that `ProjectEditor` provides through
+  `provideProjectEditorPreview` in `app/composables/useProjectEditorPreview.ts`.
+  Every editor component reads it with `useProjectEditorPreview` and hides its
+  editing controls: placeholders, insert rows, block toolbars and outlines,
+  upload fields, description fields, the services trigger, and the cover
+  actions. Fields turn read-only, empty services hide, and the live result
+  field becomes the See Live Result link.
 - `app/lib/project-editor-blocks.ts` holds the editor block types, which carry
   whole assets for display, the insert menu choices, the placement and column
   options, and the block factories. Saving will map them to the stored

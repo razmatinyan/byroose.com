@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
+import { appIcons } from "@/lib/icons";
 import ProjectServicesPicker from "./ProjectServicesPicker.vue";
 import type { ServiceOption } from "./ProjectServicesPicker.vue";
 
@@ -13,6 +14,7 @@ const description = defineModel<string>("description", { required: true });
 const serviceIds = defineModel<string[]>("serviceIds", { required: true });
 const liveUrl = defineModel<string>("liveUrl", { required: true });
 
+const previewing = useProjectEditorPreview();
 const titleField = useTemplateRef<HTMLElement>("titleField");
 const descriptionField = useTemplateRef<HTMLTextAreaElement>("descriptionField");
 
@@ -34,10 +36,10 @@ function updateName(event: Event) {
             <span
                ref="titleField"
                class="project-hero-title-field"
-               contenteditable="plaintext-only"
+               :contenteditable="previewing ? 'false' : 'plaintext-only'"
                role="textbox"
                aria-label="Project name"
-               data-placeholder="Project name"
+               :data-placeholder="previewing ? undefined : 'Project name'"
                spellcheck="false"
                @input="updateName"
                @keydown.enter.prevent
@@ -45,12 +47,26 @@ function updateName(event: Event) {
          </div>
 
          <div class="project-hero-meta">
-            <section class="project-hero-meta-block" aria-labelledby="project-services-title">
+            <section
+               v-if="!previewing || serviceIds.length"
+               class="project-hero-meta-block"
+               aria-labelledby="project-services-title"
+            >
                <h2 id="project-services-title" class="project-hero-meta-title">Services</h2>
                <ProjectServicesPicker v-model="serviceIds" :options="serviceOptions" />
             </section>
 
-            <div class="project-hero-meta-block">
+            <a
+               v-if="previewing && liveUrl"
+               :href="liveUrl"
+               class="project-hero-live-link"
+               target="_blank"
+               rel="noopener"
+            >
+               See Live Result
+               <Icon :name="appIcons.arrowUpRight" aria-hidden="true" />
+            </a>
+            <div v-else-if="!previewing" class="project-hero-meta-block">
                <label for="project-live-url" class="project-hero-meta-title">Live result link</label>
                <input
                   id="project-live-url"
@@ -69,7 +85,8 @@ function updateName(event: Event) {
             v-model="description"
             class="project-hero-description"
             aria-label="Project description"
-            placeholder="Describe the project in a sentence or two."
+            :placeholder="previewing ? undefined : 'Describe the project in a sentence or two.'"
+            :readonly="previewing"
             rows="2"
             maxlength="300"
          />
@@ -124,6 +141,10 @@ function updateName(event: Event) {
 
 .project-hero-link-field {
    @apply w-full min-w-64 border-b border-foreground/25 bg-transparent py-2 text-2xl font-medium md:text-3xl tracking-[-0.02em] outline-none placeholder:text-foreground/30 focus-visible:border-foreground;
+}
+
+.project-hero-live-link {
+   @apply inline-flex items-center gap-2 self-end text-2xl font-medium tracking-[-0.02em] underline-offset-4 hover:underline md:text-3xl;
 }
 
 .project-hero-description {

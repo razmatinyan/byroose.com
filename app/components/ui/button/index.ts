@@ -6,7 +6,7 @@ export { default as Button } from "./Button.vue";
 export { default as ButtonIcon } from "./ButtonIcon.vue";
 
 export const buttonVariants = cva(
-	"inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+	"inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-action text-sm font-semibold transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
 	{
 		variants: {
 			variant: {
@@ -30,11 +30,11 @@ export const buttonVariants = cva(
 			},
 			size: {
 				default: "h-9 px-4 py-2 has-[>svg]:px-3",
-				xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-				sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-				lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+				xs: "h-6 gap-1 rounded-action px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
+				sm: "h-8 rounded-action gap-1.5 px-3 has-[>svg]:px-2.5",
+				lg: "h-10 rounded-action px-6 has-[>svg]:px-4",
 				icon: "size-9",
-				"icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
+				"icon-xs": "size-6 rounded-action [&_svg:not([class*='size-'])]:size-3",
 				"icon-sm": "size-8",
 				"icon-lg": "size-10",
 				"cta-sm":

@@ -5,6 +5,7 @@ import type { MediaAsset } from "#shared/schemas/media";
 import ProjectMediaPreview from "./ProjectMediaPreview.vue";
 import ProjectMediaUpload from "./ProjectMediaUpload.vue";
 
+const previewing = useProjectEditorPreview();
 const block = defineModel<EditorMediaBlock>({ required: true });
 
 const uploadTitle = computed(() =>
@@ -31,6 +32,7 @@ function setAlt(event: Event) {
          <ProjectMediaPreview :asset="block.asset" :alt="block.alt" />
       </div>
       <input
+         v-if="!previewing"
          class="media-block-alt"
          :value="block.alt"
          :aria-label="altLabel"
@@ -39,7 +41,7 @@ function setAlt(event: Event) {
          @input="setAlt"
       />
    </figure>
-   <ProjectMediaUpload v-else :kinds="[block.kind]" :title="uploadTitle" @uploaded="setAsset" />
+   <ProjectMediaUpload v-else-if="!previewing" :kinds="[block.kind]" :title="uploadTitle" @uploaded="setAsset" />
 </template>
 
 <style scoped>

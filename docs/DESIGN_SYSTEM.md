@@ -169,8 +169,12 @@ measure, not to force a fixed desktop canvas.
 ## Radius and surface hierarchy
 
 The base radius is `1rem`. Cards may use larger radius tokens to create editorial
-softness. Controls use `radius-action`, which maps to `radius-sm` so every CTA
-shares the compact control radius.
+softness. Controls use `radius-action`, which maps to `radius-sm`. Every
+Button size uses it, from `xs` and the icon sizes to the CTA sizes, so every
+action shares the header call to action's compact corner. Only the round
+`cta-icon` size, the editor's block insert plus button, and the editor toolbar actions are fully rounded. A container that groups buttons with a
+`p-1` inset, such as the editor block toolbar, adds that inset to the radius
+so the curves stay concentric.
 
 Filled action icon tiles use `radius-action-icon`, calculated from the action
 radius minus the shared inset. This keeps the outer and inner curves concentric.
@@ -592,13 +596,65 @@ Each image has a `light` remove action on hover. Below every media item a quiet
 `text-sm` `muted-foreground` description field edits the alt text, which only
 the editor shows.
 
+The editor toolbar floats at the bottom center of the viewport at `z-60`,
+above the page and level with the header. It is a fully rounded `bg-card`
+bordered pill with `p-2` padding and `shadow-xl`, because it floats over
+content, and every action inside it is fully rounded too. Publish is its only labelled
+action. Settings, preview, and save as draft are `ghost` `icon-lg` buttons
+with an accessible name and a matching `title`, and preview swaps its eye
+glyph for eye off while previewing. The Publish split button uses the default
+orange `primary` variant. Its two halves form one pill, the label half
+rounded on the left with `1.5rem` of start padding and the chevron half
+rounded on the right, separated by a `primary-foreground/30` hairline drawn
+as its own element,
+because filled variants carry no border. The chevron half opens its menu
+above the toolbar, aligned to its end, with Unpublish, Archive, a separator,
+and a `destructive` Delete project item. Delete asks for confirmation in a
+`max-w-md` dialog with an `outline` Cancel and a `destructive` Delete project
+action. When Publish is blocked, a `w-72` card with the same
+border and shadow opens above the toolbar's end, titled "Add these before
+publishing", with a close action and a `muted-foreground` bulleted list. The card uses `rounded-3xl` to match the pill.
+
+The settings dialog is `max-w-xl` and scrolls within `88svh`. It holds the
+search description and keywords. Each field stacks a semibold `text-sm`
+label, an `h-11` `rounded-action` input with an `input` border and the shared
+focus ring, and a `muted-foreground` hint.
+
+A results block puts a bold `text-4xl`, `text-5xl` from `md`, "Results" title
+with `-0.05em` tracking in the left third from `lg` and the results in the
+right two thirds, stacked below `lg`. The results wrap with a `2.5rem` column
+and `2rem` row gap and repeat the home case study recipe: the value is an
+extrabold `text-5xl`, `text-6xl` from `md`, `rounded-lg` pill in the block's
+surface tone, and the label sits `0.75rem` below it in semibold `text-lg`,
+`text-xl` from `md`, at `14ch`. The value field sizes itself to its content.
+Each result shows a `light` remove action at its top right corner on hover,
+and an `outline` `lg` Add result action follows the results. The block toolbar
+offers the tones as round `size-4` swatches.
+
+The reorder dialog is `max-w-lg`. Each block is a `rounded-action` bordered
+`bg-card` row with a grip glyph, the block glyph, a semibold title over a
+truncated `muted-foreground` detail, and ghost up and down actions. Rows show a
+grab cursor. While dragging, the lifted copy tilts by one degree with
+`shadow-xl`, the row's place shows as a dashed `canvas-shade` slot, and the
+other rows slide aside over 260 milliseconds on an ease out curve.
+
+Preview shows the page as published: every editing control is removed rather
+than dimmed, so the layout, spacing, and empty areas match the public page.
+
 ## Dropdown menu
 
 `components/ui/dropdown-menu` is the source-owned Shadcn Vue dropdown menu on
-Reka UI. Its check, radio, and submenu glyphs render through Nuxt Icon with the
+Reka UI. Its default scale is one step larger than Shadcn's, so every menu
+reads comfortably next to the site's large type: items, labels, and submenu
+triggers use `text-base` with `px-3 py-2.5` and a `gap-3`, item glyphs are
+`size-5`, checkbox and radio items reserve `pl-10` for a `size-5` indicator,
+shortcuts use `text-sm`, and the panel has `p-1.5` of padding. Consumers set
+only the menu width, such as `min-w-52` for the block insert menu and
+`min-w-64` for the services picker. Its check, radio, and submenu glyphs render through Nuxt Icon with the
 `check`, `circle`, and `chevronRight` names from `app/lib/icons.ts`. When the
-Shadcn CLI adds a component, replace any `@lucide/vue` import with Nuxt Icon
-and remove any font import or base layer it writes to the global stylesheet.
+Shadcn CLI adds a component, replace any `@lucide/vue` import with Nuxt Icon,
+replace any `withDefaults` with destructured prop defaults, and remove any font
+import or base layer it writes to the global stylesheet.
 
 ## Responsive rules
 

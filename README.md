@@ -25,6 +25,7 @@ The current foundation is a responsive Nuxt landing page converted from the orig
 - Neon Postgres with Drizzle ORM
 - Cloudflare R2 media storage through aws4fetch
 - nuxt-auth-utils with Google sign in for admins
+- SortableJS through VueUse integrations for drag reordering
 
 ## Local development
 

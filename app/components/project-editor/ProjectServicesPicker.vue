@@ -18,6 +18,7 @@ const { options } = defineProps<{
    options: readonly ServiceOption[];
 }>();
 
+const previewing = useProjectEditorPreview();
 const selectedIds = defineModel<string[]>({ required: true });
 
 const selectedOptions = computed(() =>
@@ -32,14 +33,14 @@ function setSelected(id: string, selected: boolean | "indeterminate") {
 
 <template>
    <div class="services-picker">
-      <DropdownMenu>
+      <DropdownMenu v-if="!previewing">
          <DropdownMenuTrigger as-child>
             <Button variant="outline" size="lg" class="services-picker-trigger">
                Choose services
                <Icon :name="appIcons.chevronDown" aria-hidden="true" />
             </Button>
          </DropdownMenuTrigger>
-         <DropdownMenuContent align="start" class="min-w-56">
+         <DropdownMenuContent align="start" class="min-w-64">
             <DropdownMenuCheckboxItem
                v-for="option in options"
                :key="option.id"
@@ -55,7 +56,7 @@ function setSelected(id: string, selected: boolean | "indeterminate") {
       <ul v-if="selectedOptions.length" class="services-list">
          <li v-for="option in selectedOptions" :key="option.id">{{ option.name }}</li>
       </ul>
-      <p v-else class="services-empty">No services selected yet.</p>
+      <p v-else-if="!previewing" class="services-empty">No services selected yet.</p>
    </div>
 </template>
 

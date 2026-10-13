@@ -28,7 +28,7 @@ const emit = defineEmits<{
                <Icon :name="appIcons.plus" aria-hidden="true" />
             </Button>
          </DropdownMenuTrigger>
-         <DropdownMenuContent align="center" class="min-w-44">
+         <DropdownMenuContent align="center" class="min-w-52">
             <DropdownMenuItem
                v-for="choice in editorBlockChoices"
                :key="choice.id"

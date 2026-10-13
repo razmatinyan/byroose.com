@@ -8,6 +8,8 @@ const { label, isFirst = false, isLast = false } = defineProps<{
    isLast?: boolean;
 }>();
 
+const previewing = useProjectEditorPreview();
+
 const emit = defineEmits<{
    moveUp: [];
    moveDown: [];
@@ -16,8 +18,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-   <div class="block-frame">
-      <div class="block-frame-toolbar" role="toolbar" :aria-label="`${label} block actions`">
+   <div class="block-frame" :data-previewing="previewing || undefined">
+      <div
+         v-if="!previewing"
+         class="block-frame-toolbar" role="toolbar" :aria-label="`${label} block actions`">
          <slot name="controls" />
          <Button
             variant="outline"
@@ -52,8 +56,12 @@ const emit = defineEmits<{
    @apply relative rounded-2xl outline-1 outline-offset-8 outline-transparent transition-[outline-color] duration-200 hover:outline-foreground/15 focus-within:outline-foreground/15;
 }
 
+.block-frame[data-previewing] {
+   @apply outline-transparent;
+}
+
 .block-frame-toolbar {
-   @apply absolute -top-5 right-0 z-10 flex gap-1 rounded-lg border border-border bg-card p-1 opacity-0 shadow-sm transition-opacity duration-200;
+   @apply absolute -top-5 right-0 z-10 flex gap-1 rounded-[calc(var(--radius-action)+0.25rem)] border border-border bg-card p-1 opacity-0 shadow-sm transition-opacity duration-200;
 }
 
 .block-frame:hover .block-frame-toolbar,
