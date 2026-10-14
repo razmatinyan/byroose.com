@@ -609,6 +609,23 @@ on the right that centers a "Next article" label, the title in semibold
 `text-3xl`, `text-4xl` from `md`, and a `dark` `cta-sm` "Read the article"
 button. Below `md` the cover stacks above the panel at 4:3.
 
+## Error page
+
+`SiteErrorView` renders the not-found and error page inside the default layout,
+so the header, call to action, and footer stay in place. The catch-all page
+`app/pages/[...slug].vue` and an unknown blog post render it as a normal page
+with a 404 status, so page transitions run into and out of it.
+`app/error.vue` renders it only for other errors. A section fills the first screen
+below the header and centers the status code as bold display type at
+`clamp(8rem, 30vw, 26rem)` with `-0.06em` tracking, a semibold `text-4xl`,
+`text-6xl` from `md`, heading, a medium `text-xl` `muted-foreground` line of
+copy, and the actions. A 404 reads "This page took a wrong turn" and offers a
+`dark` Back to home and an `outline` See our work `cta-lg` button. Any other
+error reads "Something went wrong on our side" and offers only Back to home.
+On `app/error.vue` both actions clear the error with `clearError` before
+navigating. The page is
+`noindex, nofollow`.
+
 ## Social sharing card
 
 `BrandCard` is the generated 1200 by 630 OG image for every page without its

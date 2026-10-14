@@ -1,6 +1,14 @@
+const found = data.value?.post;
+const post = found && (includeDrafts || !found.draft) ? found : null;
+
+if (!post) {
+   const event = useRequestEvent();
+   if (event) setResponseStatus(event, 404);
+}
 <script setup lang="ts">
 import BlogPostPage from "@/components/blog/BlogPostPage.vue";
 import type { BlogNextPostSummary } from "@/components/blog/BlogPostPage.vue";
+import SiteErrorView from "@/components/layout/SiteErrorView.vue";
 
 const route = useRoute();
 const includeDrafts = import.meta.dev;
@@ -14,10 +22,12 @@ const { data } = await useAsyncData(`blog-${route.path}`, async () => {
    return { post, posts: posts.filter((entry) => includeDrafts || !entry.draft) };
 });
 
-const post = data.value?.post;
+const found = data.value?.post;
+const post = found && (includeDrafts || !found.draft) ? found : null;
 
-if (!post || (post.draft && !includeDrafts)) {
-   throw createError({ statusCode: 404, statusMessage: "Article not found", fatal: true });
+if (!post) {
+   const event = useRequestEvent();
+   if (event) setResponseStatus(event, 404);
 }
 
 const nextPost = computed<BlogNextPostSummary | undefined>(() => {
@@ -30,5 +40,6 @@ const nextPost = computed<BlogNextPostSummary | undefined>(() => {
 </script>
 
 <template>
-   <BlogPostPage :post="post" :next-post="nextPost" />
+   <BlogPostPage v-if="post" :post="post" :next-post="nextPost" />
+   <SiteErrorView v-else />
 </template>

@@ -16,6 +16,7 @@ This document defines where code belongs, which layers may depend on each other,
 ~~~text
 app/
   app.vue
+  error.vue
   assets/
     css/
       lenis.css
@@ -113,6 +114,7 @@ app/
     contact.vue
     courses.vue
     index.vue
+    [...slug].vue
     privacy.vue
     services.vue
     terms.vue
@@ -144,7 +146,7 @@ package.json
 
 ### Application entry
 
-app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, and app/pages/blog.vue renders the Blog experience from app/components/blog. The remaining page files own the Courses, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, and app/pages/blog.vue renders the Blog experience from app/components/blog. The remaining page files own the Courses, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -927,7 +929,8 @@ a SQLite database at build time through Node's built-in `node:sqlite`
   text. An `author` with a name, optional role, and optional image, and a
   `draft` flag are optional. A missing or invalid field fails the build.
 - `app/pages/blog/[slug].vue` loads the post and the published posts by date,
-  answers 404 for an unknown post or, outside development, a draft, and
+  renders SiteErrorView with a 404 status for an unknown post or, outside
+  development, a draft, and otherwise
   renders `BlogPostPage` with the next older post, or the newest other post
   when it is the oldest.
 - `BlogPostPage` renders `BlogPostHero`, which holds the title and cover and

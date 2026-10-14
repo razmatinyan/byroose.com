@@ -43,16 +43,18 @@ useSchemaOrg([
 </script>
 
 <template>
-   <article class="post-page">
-      <BlogPostHero :title="post.title" :cover="post.cover" />
+   <div>
+      <article class="post-page">
+         <BlogPostHero :title="post.title" :cover="post.cover" />
 
-      <div class="post-layout section-gutter">
-         <BlogPostAside :title="post.title" :date="post.date" :author="post.author" class="post-layout-aside" />
-         <ContentRenderer :value="post" class="post-body" />
-      </div>
-   </article>
+         <div class="post-layout section-gutter">
+            <BlogPostAside :title="post.title" :date="post.date" :author="post.author" class="post-layout-aside" />
+            <ContentRenderer :value="post" class="post-body" />
+         </div>
+      </article>
 
-   <BlogNextPost v-if="nextPost" :title="nextPost.title" :path="nextPost.path" :cover="nextPost.cover" />
+      <BlogNextPost v-if="nextPost" :title="nextPost.title" :path="nextPost.path" :cover="nextPost.cover" />
+   </div>
 </template>
 
 <style scoped>

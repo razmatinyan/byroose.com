@@ -185,6 +185,8 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 - Register and load plugins only when needed.
 - Revert contexts and media queries when the Vue scope is disposed.
 - Route visual cleanup through useGsap or the deferCleanup of usePageTransition, so a leaving page keeps its state until the page transition has covered it.
+- Give every page and the component it renders a single root element. The page transition cannot animate a page with several root nodes, so it would skip it silently.
+- Render not-found states as a page with a 404 status through SiteErrorView instead of throwing, because app/error.vue renders outside the page transition.
 - Hold the scroll with the lock from useSmoothScroll and measure with its refresh. Do not call Lenis start or stop, or ScrollTrigger.refresh, directly.
 - Start a time-based entrance on a client-side route entry at the page transition's reveal point, not during mount.
 - Provide a reduced-motion outcome that preserves all information.
