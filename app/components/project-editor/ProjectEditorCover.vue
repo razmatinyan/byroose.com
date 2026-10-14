@@ -22,7 +22,7 @@ function removeCover() {
 </script>
 
 <template>
-   <section class="project-cover section-gutter" aria-label="Cover image or video">
+   <section class="section-gutter" aria-label="Cover image or video">
       <figure v-if="cover && !replacing" class="project-cover-media">
          <ProjectMediaPreview :asset="cover" />
          <div v-if="!previewing" class="project-cover-actions">
@@ -47,12 +47,8 @@ function removeCover() {
 <style scoped>
 @reference "../../assets/css/tailwind.css";
 
-.project-cover {
-   @apply pb-6;
-}
-
 .project-cover-media {
-   @apply relative overflow-hidden rounded-2xl;
+   @apply relative overflow-hidden rounded-lg;
 }
 
 .project-cover-actions {

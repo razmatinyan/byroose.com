@@ -174,11 +174,11 @@ function removeBlock(index: number) {
 }
 
 .project-blocks-gap {
-   @apply h-section;
+   @apply h-25;
 }
 
 .project-blocks-gap[data-close] {
-   @apply h-16;
+   @apply h-4;
 }
 
 .project-blocks-swatch {

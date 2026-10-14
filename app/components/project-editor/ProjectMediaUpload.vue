@@ -131,7 +131,7 @@ async function onDrop(event: DragEvent) {
 @reference "../../assets/css/tailwind.css";
 
 .media-upload-frame {
-   @apply flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-2xl bg-canvas-shade px-6 text-center;
+   @apply flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-lg bg-canvas-shade px-6 text-center;
 }
 
 .media-upload[data-compact] .media-upload-frame {

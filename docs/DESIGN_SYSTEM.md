@@ -571,7 +571,7 @@ through its right end and draws it back in from the left. Leaving runs the
 same sweep, and a sweep that is still running finishes instead of restarting.
 Every part rests in place for touch devices and reduced motion.
 
-Every upload field, for the cover and for the content blocks, is a full-width `rounded-2xl` 16:9 frame on `canvas-shade` with a
+Every upload field, for the cover and for the content blocks, is a full-width `rounded-lg` 16:9 frame on `canvas-shade` with a
 dashed `foreground/15` border, an upload glyph, a `text-2xl` title, the file
 limits, and a Choose file label styled as a `dark` `lg` button. The whole
 frame is one button that opens the file picker, so the label is a span with
@@ -584,13 +584,17 @@ with the percentage below, or "Uploading 2 of 5" when several files upload in
 order. The compact grid tile keeps the dashed frame at 4:3 with a plus glyph
 and a `text-base` title. A finished cover shows at its own aspect ratio in the
 same radius, with `light` `sm` Replace and Remove actions in its top right
-corner.
+corner, and adds no space below itself. Every image and video frame in the
+editor, from the cover to the grid items, uses `rounded-lg`, and the block
+outline follows the same radius.
 
-Content blocks stack below the cover in the page gutter. Each block follows a
-gap that is the same while editing and in preview: `h-16` between two image,
-video, or grid blocks, counting the cover as one, and `spacing-section` on
-both sides of every text or results block. The insert row fills that gap and
-shows a `foreground/15` hairline with a round `dark` plus
+Content blocks stack directly below the cover in the page gutter. Each block
+follows a gap that is the same while editing and in preview: `1rem` between
+two image, video, or grid blocks, counting the cover as one, which matches the
+gap between grid items, and `100px` on both sides of every text or results
+block. The insert row fills that gap and sits above the neighboring blocks,
+so its plus button can overlap them in the narrow image gap. It shows a
+`foreground/15` hairline with a round `dark` plus
 button at its center only on hover, keyboard focus, or while its menu is open.
 The last insert row is `h-24` and always visible. Its menu lists Text, Image,
 Image grid, and Video with their Lucide glyphs. A new block scrolls into view
@@ -608,7 +612,7 @@ the hero description. The subtitle is medium
 `text-2xl`, `text-3xl` from `md`, in `foreground`. The body is medium `text-xl`,
 `text-2xl` from `md`, in `brand-soft` with `leading-snug`, `1.5rem` below the
 subtitle. An image or video block fills the width at its own ratio in a
-`rounded-2xl` frame. A grid is one column on phones, two from `sm`, and three
+`rounded-lg` frame. A grid is one column on phones, two from `sm`, and three
 from `lg` when set to three, with a `1rem` gap and each image at its own ratio.
 Each image has a `light` remove action on hover. Below every media item a quiet
 `text-sm` `muted-foreground` description field edits the alt text, which only

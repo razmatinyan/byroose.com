@@ -46,7 +46,7 @@ const emit = defineEmits<{
 @reference "../../assets/css/tailwind.css";
 
 .block-inserter {
-   @apply relative flex h-full items-center justify-center opacity-0 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100 has-[[data-state=open]]:opacity-100;
+   @apply relative z-10 flex h-full items-center justify-center opacity-0 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100 has-[[data-state=open]]:opacity-100;
 }
 
 .block-inserter[data-persistent] {

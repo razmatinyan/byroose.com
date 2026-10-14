@@ -88,7 +88,7 @@ function setAlt(id: string, event: Event) {
 }
 
 .grid-block-frame {
-   @apply relative overflow-hidden rounded-2xl;
+   @apply relative overflow-hidden rounded-lg;
 }
 
 .grid-block-remove {

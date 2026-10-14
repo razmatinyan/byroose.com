@@ -53,7 +53,7 @@ const emit = defineEmits<{
 @reference "../../assets/css/tailwind.css";
 
 .block-frame {
-   @apply relative rounded-2xl outline-1 outline-offset-8 outline-transparent transition-[outline-color] duration-200 hover:outline-foreground/15 focus-within:outline-foreground/15;
+   @apply relative rounded-lg outline-1 outline-offset-8 outline-transparent transition-[outline-color] duration-200 hover:outline-foreground/15 focus-within:outline-foreground/15;
 }
 
 .block-frame[data-previewing] {

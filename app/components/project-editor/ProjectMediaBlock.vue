@@ -52,7 +52,7 @@ function setAlt(event: Event) {
 }
 
 .media-block-frame {
-   @apply overflow-hidden rounded-2xl;
+   @apply overflow-hidden rounded-lg;
 }
 
 .media-block-alt {
