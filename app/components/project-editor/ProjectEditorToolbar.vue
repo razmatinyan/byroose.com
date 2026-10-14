@@ -131,13 +131,14 @@ function confirmDelete() {
             </Button>
 
             <div class="editor-toolbar-split">
-               <Button size="lg" class="editor-toolbar-publish" :disabled="busy" @click="publish">
+               <Button variant="dark" size="lg" class="editor-toolbar-publish" :disabled="busy" @click="publish">
                   Publish
                </Button>
                <span class="editor-toolbar-divider" aria-hidden="true" />
                <DropdownMenu>
                   <DropdownMenuTrigger as-child>
                      <Button
+                        variant="dark"
                         size="lg"
                         class="editor-toolbar-more"
                         aria-label="More publishing options"
@@ -210,7 +211,7 @@ function confirmDelete() {
 }
 
 .editor-toolbar-split {
-   @apply ms-1 flex rounded-full bg-primary;
+   @apply ms-1 flex rounded-full bg-foreground;
 }
 
 .editor-toolbar-divider {

@@ -72,7 +72,7 @@ function setSelected(id: string, selected: boolean | "indeterminate") {
 }
 
 .services-list {
-   @apply flex flex-col gap-1.5 text-2xl leading-tight font-medium md:text-3xl tracking-[-0.02em];
+   @apply flex flex-col gap-0.5 text-2xl leading-tight font-medium tracking-[-0.05em] md:text-3xl;
 }
 
 .services-empty {

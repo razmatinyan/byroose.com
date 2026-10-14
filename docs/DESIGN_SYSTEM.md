@@ -541,7 +541,7 @@ has no brand marks. An error renders above the action as an alert with a
 ## Project editor
 
 The editor hero repeats the Work hero's frame, title recipe, and description
-recipe so a draft reads like the published page. The name stays on one
+recipe so a draft reads like the published page. The name is centered and stays on one
 line at the Work title's `0.76` leading. Its size is at most the Work title's
 `23.71cqi`, so a name as long as "Our Work" or shorter keeps that size, and a
 longer name shrinks until it fits the full width. An empty name shows "Project
@@ -552,11 +552,24 @@ before the services and link, and from `lg` they sit in the left column beside
 it, side by side from `sm`.
 
 The services block has a semibold `text-xl`, `text-2xl` from `md`, "Services"
-heading in sentence case, an `outline` `lg` Choose services trigger with a
-chevron down, and the selected services as a `text-2xl`, `text-3xl` from `md`,
-medium list. The live result link shares the heading style for its label and
-is a borderless `text-2xl`, `text-3xl` from `md`, field with a
+heading in sentence case with `-0.04em` tracking, an `outline` `lg` Choose
+services trigger with a chevron down, and the selected services as a
+`text-2xl`, `text-3xl` from `md`, medium list with `-0.05em` tracking and a
+`0.125rem` gap. From `sm` the live result link sits centered in the space
+between the services block and the description, bottom aligned with them.
+While editing it is a field with the heading style for its label and a
+borderless `w-80` `text-xl`, `text-2xl` from `md`, input with a
 `foreground/25` bottom rule that turns `foreground` on focus.
+
+In preview and on the published page, `ProjectLiveLink` renders "Visit Live
+Website" at the same width and size, with an arrow up right glyph at its end
+and a one pixel `foreground` line below. On hover or keyboard focus its label
+rolls over character by character through `useMenuLinkMotion`, like the site
+menu links, its glyph swaps diagonally through `useArrowSwapHover` without the
+scale, like the CTA buttons, and `useUnderlineSweep` sweeps the line out
+through its right end and draws it back in from the left. Leaving runs the
+same sweep, and a sweep that is still running finishes instead of restarting.
+Every part rests in place for touch devices and reduced motion.
 
 Every upload field, for the cover and for the content blocks, is a full-width `rounded-2xl` 16:9 frame on `canvas-shade` with a
 dashed `foreground/15` border, an upload glyph, a `text-2xl` title, the file
@@ -573,8 +586,11 @@ and a `text-base` title. A finished cover shows at its own aspect ratio in the
 same radius, with `light` `sm` Replace and Remove actions in its top right
 corner.
 
-Content blocks stack below the cover in the page gutter. Between blocks, a
-`h-16` insert row shows a `foreground/15` hairline with a round `dark` plus
+Content blocks stack below the cover in the page gutter. Each block follows a
+gap that is the same while editing and in preview: `h-16` between two image,
+video, or grid blocks, counting the cover as one, and `spacing-section` on
+both sides of every text or results block. The insert row fills that gap and
+shows a `foreground/15` hairline with a round `dark` plus
 button at its center only on hover, keyboard focus, or while its menu is open.
 The last insert row is `h-24` and always visible. Its menu lists Text, Image,
 Image grid, and Video with their Lucide glyphs. A new block scrolls into view
@@ -586,8 +602,10 @@ because it floats over content, holding `outline` `icon-sm` actions. Pressed
 options such as the text placement and the grid columns fill with `foreground`.
 
 A text block is at most `max-w-3xl` wide and sits on the left, center, or right
-of the page while its text stays left aligned. The subtitle is medium
-`text-2xl`, `text-3xl` from `md`, in `foreground`. The body is `text-xl`,
+of the page while its text stays left aligned. From `lg` a right placed block
+starts in the second column of the hero's two-column grid, so it lines up with
+the hero description. The subtitle is medium
+`text-2xl`, `text-3xl` from `md`, in `foreground`. The body is medium `text-xl`,
 `text-2xl` from `md`, in `brand-soft` with `leading-snug`, `1.5rem` below the
 subtitle. An image or video block fills the width at its own ratio in a
 `rounded-2xl` frame. A grid is one column on phones, two from `sm`, and three
@@ -602,8 +620,8 @@ bordered pill with `p-2` padding and `shadow-xl`, because it floats over
 content, and every action inside it is fully rounded too. Publish is its only labelled
 action. Settings, preview, and save as draft are `ghost` `icon-lg` buttons
 with an accessible name and a matching `title`, and preview swaps its eye
-glyph for eye off while previewing. The Publish split button uses the default
-orange `primary` variant. Its two halves form one pill, the label half
+glyph for eye off while previewing. The Publish split button uses the `dark`
+variant on a `foreground` pill. Its two halves form one pill, the label half
 rounded on the left with `1.5rem` of start padding and the chevron half
 rounded on the right, separated by a `primary-foreground/30` hairline drawn
 as its own element,

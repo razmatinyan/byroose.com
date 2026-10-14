@@ -70,6 +70,7 @@ app/
     useStudioMotion.ts
     useStudioRibbonMotion.ts
     useTrailingTooltip.ts
+    useUnderlineSweep.ts
     useListingHeroMotion.ts
     useWorkLineMotion.ts
     useWorkMotion.ts
@@ -635,7 +636,16 @@ an `up` swap, and can turn the scale off, as the footer Back to Top button does.
 tracks pointer and focus state together, scales only for hover-capable
 pointers with motion allowed, and resolves the swap instantly under reduced
 motion. It stays separate from useHoverBounce and useHoverRollover so the
-elastic CTA contract stays untouched.
+elastic CTA contract stays untouched. ProjectLiveLink also uses the diagonal
+swap without the scale.
+
+useUnderlineSweep owns a link's underline sweep. On each change between rest
+and hover or visible keyboard focus, the element marked `data-sweep-line`
+shrinks out through its right end and grows back from its left, each half
+taking half of `swapDuration`. A sweep that is still running finishes rather
+than restarting, so a quick pass never jumps the line. It runs only for
+hover-capable pointers with motion allowed and clears its transforms on
+cleanup.
 
 useCookieBannerMotion owns the cookie notice's entrance and exit. It returns the
 three Vue transition hooks that SiteCookieBanner binds, so the component keeps
@@ -700,7 +710,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   hovers and toggles, and the programmatic scroll bounds `swapScrollDuration`
   and `swapScrollMaxDuration` with `getSwapScrollDuration`, a pure function
   that turns a scroll distance and viewport height into a duration.
-  useArrowSwapHover, useNavLinkMotion, useFaqMotion, useServicesHeroMotion,
+  useArrowSwapHover, useNavLinkMotion, useUnderlineSweep, useFaqMotion,
+  useServicesHeroMotion,
   and the Lenis plugin import it instead of repeating the values.
 - word-reveal.ts owns the shared masked word rise recipe, its `top 82%` start,
   and its two staggers. Callers may override the stagger, the duration, and
@@ -999,7 +1010,9 @@ yet, so the draft is lost on reload.
   width for long names, capped at the Work hero title size for short ones,
   the description is an autosizing textarea in the right column, and the left
   column holds `ProjectServicesPicker` and the live result link field. It
-  exposes each field through `defineModel`.
+  exposes each field through `defineModel`. In preview the field becomes
+  `ProjectLiveLink`, which composes `useMenuLinkMotion`, `useArrowSwapHover`,
+  and `useUnderlineSweep` for its hover motion.
 - `ProjectServicesPicker` lists the categories from `/api/admin/categories` in
   a checkbox dropdown that stays open while choosing, and lists the selected
   services below it in category order.
@@ -1070,7 +1083,8 @@ yet, so the draft is lost on reload.
   editing controls: placeholders, insert rows, block toolbars and outlines,
   upload fields, description fields, the services trigger, and the cover
   actions. Fields turn read-only, empty services hide, and the live result
-  field becomes the See Live Result link.
+  field becomes the Visit Live Website link. Block gaps render as their own
+  spacers that hold the insert rows, so preview keeps the editing spacing.
 - `app/lib/project-editor-blocks.ts` holds the editor block types, which carry
   whole assets for display, the insert menu choices, the placement and column
   options, and the block factories. Saving will map them to the stored

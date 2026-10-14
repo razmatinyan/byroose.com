@@ -66,7 +66,11 @@ useTextareaAutosize({ element: bodyField, input: body });
 }
 
 .text-block[data-align="right"] {
-   @apply items-end;
+   @apply items-end lg:grid lg:grid-cols-2 lg:gap-x-16;
+}
+
+.text-block[data-align="right"] .text-block-content {
+   @apply lg:col-start-2;
 }
 
 .text-block-content {
@@ -83,6 +87,6 @@ useTextareaAutosize({ element: bodyField, input: body });
 }
 
 .text-block-body {
-   @apply text-xl leading-snug tracking-[-0.01em] text-brand-soft placeholder:text-brand-soft/50 md:text-2xl;
+   @apply text-xl leading-snug font-medium tracking-[-0.01em] text-brand-soft placeholder:text-brand-soft/50 md:text-2xl;
 }
 </style>

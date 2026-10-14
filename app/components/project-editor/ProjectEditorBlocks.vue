@@ -32,6 +32,16 @@ const blockLabels: Record<EditorBlock["type"], string> = {
    results: "Results",
 };
 
+const closeBlockTypes = new Set<EditorBlock["type"]>(["media", "grid"]);
+
+function isCloseGap(index: number) {
+   const block = blocks.value[index];
+   const previous = blocks.value[index - 1];
+   if (!block || !closeBlockTypes.has(block.type)) return false;
+
+   return !previous || closeBlockTypes.has(previous.type);
+}
+
 function setBlockElement(id: string, element: Element | ComponentPublicInstance | null) {
    const resolved = element instanceof Element ? element : element?.$el;
 
@@ -72,7 +82,9 @@ function removeBlock(index: number) {
 <template>
    <section class="project-blocks section-gutter" aria-label="Project content">
       <template v-for="(block, index) in blocks" :key="block.id">
-         <ProjectBlockInserter v-if="!previewing" @add="insertBlock(index, $event)" />
+         <div class="project-blocks-gap" :data-close="isCloseGap(index) || undefined">
+            <ProjectBlockInserter v-if="!previewing" @add="insertBlock(index, $event)" />
+         </div>
          <ProjectBlockFrame
             :ref="(element) => setBlockElement(block.id, element)"
             :label="blockLabels[block.type]"
@@ -159,6 +171,14 @@ function removeBlock(index: number) {
 
 .project-blocks {
    @apply flex flex-col pb-24;
+}
+
+.project-blocks-gap {
+   @apply h-section;
+}
+
+.project-blocks-gap[data-close] {
+   @apply h-16;
 }
 
 .project-blocks-swatch {

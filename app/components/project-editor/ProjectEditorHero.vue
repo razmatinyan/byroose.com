@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
-import { appIcons } from "@/lib/icons";
+import ProjectLiveLink from "./ProjectLiveLink.vue";
 import ProjectServicesPicker from "./ProjectServicesPicker.vue";
 import type { ServiceOption } from "./ProjectServicesPicker.vue";
 
@@ -56,27 +56,20 @@ function updateName(event: Event) {
                <ProjectServicesPicker v-model="serviceIds" :options="serviceOptions" />
             </section>
 
-            <a
-               v-if="previewing && liveUrl"
-               :href="liveUrl"
-               class="project-hero-live-link"
-               target="_blank"
-               rel="noopener"
-            >
-               See Live Result
-               <Icon :name="appIcons.arrowUpRight" aria-hidden="true" />
-            </a>
-            <div v-else-if="!previewing" class="project-hero-meta-block">
-               <label for="project-live-url" class="project-hero-meta-title">Live result link</label>
-               <input
-                  id="project-live-url"
-                  v-model.trim="liveUrl"
-                  class="project-hero-link-field"
-                  type="url"
-                  inputmode="url"
-                  placeholder="https://"
-                  autocomplete="off"
-               />
+            <div v-if="!previewing || liveUrl" class="project-hero-live">
+               <ProjectLiveLink v-if="previewing" :href="liveUrl" />
+               <div v-else class="project-hero-meta-block">
+                  <label for="project-live-url" class="project-hero-meta-title">Live result link</label>
+                  <input
+                     id="project-live-url"
+                     v-model.trim="liveUrl"
+                     class="project-hero-link-field"
+                     type="url"
+                     inputmode="url"
+                     placeholder="https://"
+                     autocomplete="off"
+                  />
+               </div>
             </div>
          </div>
 
@@ -108,7 +101,7 @@ function updateName(event: Event) {
 }
 
 .project-hero-title {
-   @apply col-span-full min-w-0;
+   @apply col-span-full min-w-0 text-center;
 }
 
 .project-hero-title-field {
@@ -128,7 +121,7 @@ function updateName(event: Event) {
 }
 
 .project-hero-meta {
-   @apply order-last flex flex-col gap-10 self-end sm:flex-row sm:gap-16 lg:order-none;
+   @apply order-last flex flex-col gap-10 self-end sm:flex-row sm:items-end sm:gap-16 lg:order-none;
 }
 
 .project-hero-meta-block {
@@ -136,15 +129,15 @@ function updateName(event: Event) {
 }
 
 .project-hero-meta-title {
-   @apply text-xl font-semibold md:text-2xl;
+   @apply text-xl font-semibold tracking-[-0.04em] md:text-2xl;
+}
+
+.project-hero-live {
+   @apply flex min-w-0 sm:flex-1 sm:justify-center;
 }
 
 .project-hero-link-field {
-   @apply w-full min-w-64 border-b border-foreground/25 bg-transparent py-2 text-2xl font-medium md:text-3xl tracking-[-0.02em] outline-none placeholder:text-foreground/30 focus-visible:border-foreground;
-}
-
-.project-hero-live-link {
-   @apply inline-flex items-center gap-2 self-end text-2xl font-medium tracking-[-0.02em] underline-offset-4 hover:underline md:text-3xl;
+   @apply w-80 max-w-full border-b border-foreground/25 bg-transparent pb-3 text-xl tracking-[-0.03em] outline-none placeholder:text-foreground/30 focus-visible:border-foreground md:text-2xl;
 }
 
 .project-hero-description {
