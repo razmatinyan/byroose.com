@@ -104,7 +104,7 @@ function variantFor(id: FilterId) {
 }
 
 .work-filters-button {
-   @apply border-2 border-foreground;
+   @apply h-15 min-h-15 border-2 border-foreground px-8 text-2xl;
    --radius-sm: 9999px;
 }
 

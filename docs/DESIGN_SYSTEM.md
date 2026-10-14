@@ -2395,7 +2395,10 @@ section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
 names it. It opens with the filters: a bold project count, such as
 "Projects - 8", at display size, `clamp(2.75rem, 7.5vw, 8rem)`, about 108px at
 1440 wide, with `-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
-AI Content, and Website Development, `0.5rem` apart. The number follows the
+AI Content, and Website Development, `0.5rem` apart. The buttons override the
+size's type, height, and inline padding at every breakpoint: `text-2xl`
+labels, a fixed `60px` height that includes the padding and border, and `2rem`
+of inline padding. The number follows the
 shown filter and uses tabular figures. "Projects -" is split into characters
 in the template and the number is one more character element, and the line
 sits in a mask that clips only vertically. It
