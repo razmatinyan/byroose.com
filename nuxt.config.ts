@@ -1,5 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
+import {
+	siteDescription,
+	siteEmail,
+	siteHeadquarters,
+	siteName,
+	siteUrl,
+} from './app/lib/site'
+
+const unlistedRoute = { robots: false, ogImage: false } as const
 
 export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
@@ -7,15 +16,60 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			title: 'byroose | Creative agency',
 			htmlAttrs: { lang: 'en' },
-			meta: [
-				{
-					name: 'description',
-					content:
-						'byroose is a creative agency for AI content creation and web development. Visuals, video and reels, plus websites designed to convert.',
-				},
-			],
+			meta: [{ name: 'theme-color', content: '#131110' }],
+			link: [{ rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
+		},
+	},
+
+	site: {
+		url: siteUrl,
+		name: siteName,
+		description: siteDescription,
+		defaultLocale: 'en',
+		trailingSlash: false,
+	},
+
+	seo: {
+		fallbackTitle: false,
+	},
+
+	schemaOrg: {
+		identity: {
+			type: 'Organization',
+			name: siteName,
+			url: siteUrl,
+			logo: `${siteUrl}/logo.svg`,
+			description: siteDescription,
+			email: siteEmail,
+			address: {
+				addressLocality: siteHeadquarters.locality,
+				addressCountry: siteHeadquarters.countryCode,
+			},
+		},
+	},
+
+	ogImage: {
+		zeroRuntime: true,
+		defaults: {
+			width: 1200,
+			height: 630,
+		},
+	},
+
+	routeRules: {
+		'/**': { prerender: true },
+		'/contact': unlistedRoute,
+		'/courses': unlistedRoute,
+		'/terms': unlistedRoute,
+		'/privacy': unlistedRoute,
+	},
+
+	nitro: {
+		prerender: {
+			crawlLinks: true,
+			routes: ['/', '/robots.txt', '/sitemap.xml', '/llms.txt'],
+			ignore: ['/_vercel'],
 		},
 	},
 
@@ -32,6 +86,7 @@ export default defineNuxtConfig({
 				weights: [400, 500, 600, 700, 800],
 				styles: ['normal'],
 				subsets: ['latin'],
+				global: true,
 			},
 		],
 	},
@@ -43,70 +98,19 @@ export default defineNuxtConfig({
 		clientBundle: {
 			scan: true,
 			icons: [
-				'lucide:align-center',
-				'lucide:align-left',
-				'lucide:align-right',
-				'lucide:archive',
 				'lucide:arrow-down',
 				'lucide:arrow-left',
 				'lucide:arrow-right',
 				'lucide:arrow-up',
-				'lucide:arrow-up-down',
 				'lucide:arrow-up-right',
-				'lucide:check',
-				'lucide:chevron-down',
-				'lucide:chevron-right',
-				'lucide:circle',
-				'lucide:columns-2',
-				'lucide:columns-3',
-				'lucide:eye',
-				'lucide:eye-off',
 				'lucide:github',
-				'lucide:grip-vertical',
-				'lucide:image',
 				'lucide:instagram',
-				'lucide:layout-grid',
 				'lucide:linkedin',
 				'lucide:minus',
 				'lucide:plus',
-				'lucide:save',
-				'lucide:settings-2',
-				'lucide:trash-2',
-				'lucide:trending-up',
-				'lucide:type',
-				'lucide:undo-2',
-				'lucide:upload',
-				'lucide:video',
 				'lucide:x',
 			],
 		},
-	},
-
-	runtimeConfig: {
-		databaseUrl: '',
-		r2: {
-			accountId: '',
-			accessKeyId: '',
-			secretAccessKey: '',
-			bucket: '',
-		},
-		public: {
-			mediaBaseUrl: '',
-		},
-		session: {
-			maxAge: 60 * 60 * 24 * 7,
-		},
-	},
-
-	routeRules: {
-		'/g': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
-		'/work/new': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
-		'/work/*/edit': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
-		'/auth/**': { headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
-	},
-
-	nitro: {
-		noExternals: true,
 	},
 
 	vite: {
@@ -136,7 +140,7 @@ export default defineNuxtConfig({
 		'@nuxt/image',
 		'@vueuse/nuxt',
 		'shadcn-nuxt',
-		'nuxt-auth-utils',
+		'@nuxtjs/seo',
 	],
 
 	image: {

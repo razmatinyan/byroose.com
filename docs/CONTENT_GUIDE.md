@@ -188,6 +188,14 @@ Label estimates and time ranges. Confirm metrics, dates, client names, and appro
 - Use meaningful social sharing titles and descriptions.
 - Use descriptive image alternative text when an image contributes information.
 
+Every page title gets ` | byroose` appended automatically, so write the page
+part without the brand suffix and keep it to about 50 characters, which keeps
+the full title near 60. The page part may still name byroose when it reads
+naturally, as the About title does. Edit static page titles and descriptions
+in `app/lib/page-seo.ts`, and a project's in its data file, where an optional
+`seo.description` replaces the visible description in search results.
+Placeholder pages stay out of search until their real content ships.
+
 ## AI-assisted writing
 
 AI can help with research, outlines, alternatives, editing, and quality checks. A human or responsible agent must still:

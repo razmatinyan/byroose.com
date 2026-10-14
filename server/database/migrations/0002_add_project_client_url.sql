@@ -1,1 +1,0 @@
-ALTER TABLE "projects" ADD COLUMN "client_url" text;

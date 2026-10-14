@@ -6,6 +6,7 @@ import SiteNavLink from "@/components/layout/SiteNavLink.vue";
 import WaveUnderline from "@/components/shared/WaveUnderline.vue";
 import { Button } from "@/components/ui/button";
 import { appIcons } from "@/lib/icons";
+import { siteEmail, siteHeadquartersLabel } from "@/lib/site";
 
 interface FooterLink {
    href: string;
@@ -19,8 +20,8 @@ interface SloganLine {
 }
 
 const contactRoute = "/contact";
-const email = "info@byroose.com";
-const headquarters = "Yerevan, Armenia";
+const email = siteEmail;
+const headquarters = siteHeadquartersLabel;
 const creditHref = "https://www.linkedin.com/in/razmatinyan/";
 const now = useNow({ interval: 60_000 });
 const armeniaTimeFormatter = new Intl.DateTimeFormat("en-US", {

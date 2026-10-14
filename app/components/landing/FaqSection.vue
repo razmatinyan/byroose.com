@@ -63,6 +63,13 @@ const openIndex = computed(() =>
 
 useFaqMotion(faqRoot, { answerSplits, openIndex, titleSplit })
 
+useSchemaOrg([
+	defineWebPage({ '@type': 'FAQPage' }),
+	...faqs.map(faq =>
+		defineQuestion({ name: faq.question, acceptedAnswer: faq.answer }),
+	),
+])
+
 function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts
 }

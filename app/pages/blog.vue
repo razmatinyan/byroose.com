@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import BlogPage from "@/components/blog/BlogPage.vue";
+import { pageSeo } from "@/lib/page-seo";
 
-const title = "Our blog | AI content and web development insights";
-const description =
-   "Read practical byroose articles about AI content creation, web development, and turning audience attention into action.";
-
-useSeoMeta({
-   description,
-   ogDescription: description,
-   ogTitle: title,
-   title,
-});
+usePageSeo(pageSeo.blog);
 </script>
 
 <template>

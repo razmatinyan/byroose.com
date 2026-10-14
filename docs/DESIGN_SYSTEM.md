@@ -172,9 +172,8 @@ The base radius is `1rem`. Cards may use larger radius tokens to create editoria
 softness. Controls use `radius-action`, which maps to `radius-sm`. Every
 Button size uses it, from `xs` and the icon sizes to the CTA sizes, so every
 action shares the header call to action's compact corner. Only the round
-`cta-icon` size, the editor's block insert plus button, and the editor toolbar actions are fully rounded. A container that groups buttons with a
-`p-1` inset, such as the editor block toolbar, adds that inset to the radius
-so the curves stay concentric.
+`cta-icon` size is fully rounded. A container that groups buttons with a
+`p-1` inset adds that inset to the radius so the curves stay concentric.
 
 Filled action icon tiles use `radius-action-icon`, calculated from the action
 radius minus the shared inset. This keeps the outer and inner curves concentric.
@@ -516,167 +515,74 @@ links, and the action are always visible and focusable. Reduced motion shows
 the footer at rest without the travel or the tint. The same progress fades the
 header actions, as described under the site header.
 
-## Admin sign-in page
+## Project page
 
-The `/g` sign-in page stands alone on a dark `foreground` surface with
-`background` ink, without the site header, call to action, or footer. From `lg`
-it is a two-column grid with `gap-6` and `p-6`. The left column centers the
-content, capped at `max-w-md`. The right column holds `public/images/work/3.png`
-as a decorative `object-cover` image in a `rounded-2xl` frame that fills the
-viewport height. Below `lg` the image becomes a `h-56` band, `h-72` from `sm`,
-above the content, so the action stays in the first screen on phones.
+Every Work project page shares one layout, so projects differ only in content.
 
-The content stacks the wordmark, painted in `background` through the same
-`/logo.svg` mask as the header logo, a bold `text-5xl`, `text-6xl` from `sm`,
-title with `-0.05em` tracking, a `background/70` lead, and a `rounded-2xl` card
-with a `background/15` border on a `background/5` fill. The card's actions are
-full-width `lg` buttons raised to `h-12`. Continue with Google and New project
-use the `light` variant, and Sign out uses `inverse`. The Google action carries
-the official multicolor Google mark from `public/icons/google.svg`, rendered
-with `provider="none"`, because Google's branding rules require it and Lucide
-has no brand marks. An error renders above the action as an alert with a
-`destructive/60` border on a `destructive/15` fill, and the notes use
-`background/60` small text.
-
-## Project editor
-
-The editor hero repeats the Work hero's frame, title recipe, and description
-recipe so a draft reads like the published page. The name is centered and stays on one
-line at the Work title's `0.76` leading. Its size is at most the Work title's
-`23.71cqi`, so a name as long as "Our Work" or shorter keeps that size, and a
-longer name shrinks until it fits the full width. An empty name shows "Project
-name" at `foreground/20` and an empty description shows its placeholder at
-`foreground/25`, both at full display size. Focused fields show the shared
-`ring/50` focus ring with a small radius. Below `lg` the description comes
-before the services and link, and from `lg` they sit in the left column beside
-it, side by side from `sm`.
+The hero repeats the Work hero's frame, title recipe, and description recipe.
+The project name is the H1, centered on one line at the Work title's `0.76`
+leading. Its size is at most the Work title's `23.71cqi`, so a name as long
+as "Our Work" or shorter keeps that size, and a longer name shrinks until it
+fits the full width. Below `lg` the description comes before the services and
+the live link. From `lg` they sit in the left column beside it.
 
 The services block has a semibold `text-xl`, `text-2xl` from `md`, "Services"
-heading in sentence case with `-0.04em` tracking, an `outline` `lg` Choose
-services trigger with a chevron down, and the selected services as a
-`text-2xl`, `text-3xl` from `md`, medium list with `-0.05em` tracking and a
-`0.125rem` gap. From `sm` the live result link sits centered in the space
-between the services block and the description, bottom aligned with them.
-While editing it is a field with the heading style for its label and a
-borderless `w-80` medium `text-xl`, `text-2xl` from `md`, input with a
-`foreground/25` bottom rule that turns `foreground` on focus.
+heading in sentence case with `-0.04em` tracking, and the project categories
+as a `text-2xl`, `text-3xl` from `md`, medium list with `-0.05em` tracking and
+a `0.125rem` gap. From `sm` the live link sits centered in the space between
+the services block and the description, bottom aligned with them.
 
-In preview and on the published page, `ProjectLiveLink` renders a medium "Visit Live
-Website" at the same width and size, with an arrow up right glyph at its end
-and a one pixel `foreground` line below. On hover or keyboard focus its label
-rolls over character by character through `useMenuLinkMotion`, like the site
-menu links, its glyph swaps diagonally through `useArrowSwapHover` without the
-scale, like the CTA buttons, and `useUnderlineSweep` sweeps the line out
-through its right end and draws it back in from the left. Leaving runs the
-same sweep, and a sweep that is still running finishes instead of restarting.
-Every part rests in place for touch devices and reduced motion.
+`ProjectLiveLink` renders a medium "Visit Live Website" label in `text-xl`,
+`text-2xl` from `md`, at most `w-80` wide, with an arrow up right glyph at its
+end and a one pixel `foreground` line below. On hover or keyboard focus its
+label rolls over character by character through `useMenuLinkMotion`, like the
+site menu links, its glyph swaps diagonally through `useArrowSwapHover`
+without the scale, like the CTA buttons, and `useUnderlineSweep` sweeps the
+line out through its right end and draws it back in from the left. Leaving
+runs the same sweep, and a sweep that is still running finishes instead of
+restarting. Every part rests in place for touch devices and reduced motion.
 
-Every upload field, for the cover and for the content blocks, is a full-width `rounded-lg` 16:9 frame on `canvas-shade` with a
-dashed `foreground/15` border, an upload glyph, a `text-2xl` title, the file
-limits, and a Choose file label styled as a `dark` `lg` button. The whole
-frame is one button that opens the file picker, so the label is a span with
-`buttonVariants` rather than a nested button. Hovering darkens the border to
-`foreground/35`, keyboard focus adds the shared ring, and dragging a file over
-it darkens the border and switches the fill to `muted`. An upload error shows
-below the frame in `destructive` text. While uploading, the frame shows
-only a `h-1.5` rounded `foreground` bar on a `foreground/10` track, `max-w-sm`,
-with the percentage below, or "Uploading 2 of 5" when several files upload in
-order. The compact grid tile keeps the dashed frame at 4:3 with a plus glyph
-and a `text-base` title. A finished cover shows at its own aspect ratio in the
-same radius, with `light` `sm` Replace and Remove actions in its top right
-corner, and adds no space below itself. Every image and video frame in the
-editor, from the cover to the grid items, uses `rounded-lg`, and the block
-outline follows the same radius.
-
-Content blocks stack directly below the cover in the page gutter. Each block
-follows a gap that is the same while editing and in preview: `1rem` between
-two image, video, or grid blocks, counting the cover as one, which matches the
-gap between grid items, and `100px` on both sides of every text or results
-block. The insert row fills that gap and sits above the neighboring blocks,
-so its plus button can overlap them in the narrow image gap. It shows a
-`foreground/15` hairline with a round `dark` plus
-button at its center only on hover, keyboard focus, or while its menu is open.
-The last insert row is `h-24` and always visible. Its menu lists Text, Image,
-Image grid, and Video with their Lucide glyphs. A new block scrolls into view
-on the swap scroll timing, landing `160px` below the viewport top so it clears
-the header and its toolbar. A block shows a `foreground/15`
-outline offset by `8px` and a floating toolbar above its top right corner on
-hover or focus. The toolbar is a `bg-card` bordered group with `shadow-sm`,
-because it floats over content, holding `outline` `icon-sm` actions. Pressed
-options such as the text placement and the grid columns fill with `foreground`.
+The cover follows the hero at its own aspect ratio in the page gutter, and the
+content blocks follow the cover with no extra space. Every image and video,
+from the cover to the grid items, uses `rounded-lg`. Each block follows a gap:
+`1rem` between two image, video, or grid blocks, counting the cover as one,
+which matches the gap between grid items, and `100px` on both sides of every
+text or results block. The page ends `100px` below its last block.
 
 A text block is at most `max-w-3xl` wide and sits on the left, center, or right
 of the page while its text stays left aligned. From `lg` a right placed block
 starts in the second column of the hero's two-column grid, so it lines up with
-the hero description. The subtitle is medium
-`text-2xl`, `text-3xl` from `md`, in `foreground`. The body is medium `text-xl`,
-`text-2xl` from `md`, in `brand-soft` with `leading-snug`, `1.5rem` below the
-subtitle. An image or video block fills the width at its own ratio in a
-`rounded-lg` frame. A grid is one column on phones, two from `sm`, and three
-from `lg` when set to three, with a `1rem` gap and each image at its own ratio.
-Each image has a `light` remove action on hover. Below every media item a quiet
-`text-sm` `muted-foreground` description field edits the alt text, which only
-the editor shows.
+the hero description. The subtitle is a medium `text-2xl`, `text-3xl` from
+`md`, H2 in `foreground`. The paragraphs are medium `text-xl`, `text-2xl`
+from `md`, in `brand-soft` with `leading-snug`, one line apart and `1.5rem`
+below the subtitle. An image or video block fills the width at its own ratio.
+A grid is one column on phones, two from `sm`, and three from `lg` when set to
+three, with a `1rem` gap and each image at its own ratio.
 
-The editor toolbar floats at the bottom center of the viewport at `z-60`,
-above the page and level with the header. It is a fully rounded `bg-card`
-bordered pill with `p-2` padding and `shadow-xl`, because it floats over
-content, and every action inside it is fully rounded too. Publish is its only labelled
-action. Settings, preview, and save as draft are `ghost` `icon-lg` buttons
-with an accessible name and a matching `title`, and preview swaps its eye
-glyph for eye off while previewing. The Publish split button uses the `dark`
-variant on a `foreground` pill. Its two halves form one pill, the label half
-rounded on the left with `1.5rem` of start padding and the chevron half
-rounded on the right, separated by a `primary-foreground/30` hairline drawn
-as its own element,
-because filled variants carry no border. The chevron half opens its menu
-above the toolbar, aligned to its end, with Unpublish, Archive, a separator,
-and a `destructive` Delete project item. Delete asks for confirmation in a
-`max-w-md` dialog with an `outline` Cancel and a `destructive` Delete project
-action. When Publish is blocked, a `w-72` card with the same
-border and shadow opens above the toolbar's end, titled "Add these before
-publishing", with a close action and a `muted-foreground` bulleted list. The card uses `rounded-3xl` to match the pill.
-
-The settings dialog is `max-w-xl` and scrolls within `88svh`. It holds the
-search description and keywords. Each field stacks a semibold `text-sm`
-label, an `h-11` `rounded-action` input with an `input` border and the shared
-focus ring, and a `muted-foreground` hint.
-
-A results block puts a bold `text-4xl`, `text-5xl` from `md`, "Results" title
+A results block puts a bold `text-4xl`, `text-5xl` from `md`, "Results" H2
 with `-0.05em` tracking in the left third from `lg` and the results in the
-right two thirds, stacked below `lg`. The results wrap with a `2.5rem` column
-and `2rem` row gap and repeat the home case study recipe: the value is an
-extrabold `text-5xl`, `text-6xl` from `md`, `rounded-lg` pill in the block's
-surface tone, and the label sits `0.75rem` below it in semibold `text-lg`,
-`text-xl` from `md`, at `14ch`. The value field sizes itself to its content.
-Each result shows a `light` remove action at its top right corner on hover,
-and an `outline` `lg` Add result action follows the results. The block toolbar
-offers the tones as round `size-4` swatches.
+right two thirds, stacked below `lg`. The results are a description list that
+wraps with a `2.5rem` column and `2rem` row gap and repeats the home case study
+recipe: the value is an extrabold `text-5xl`, `text-6xl` from `md`,
+`rounded-lg` pill in the block's surface tone, and the label sits `0.75rem`
+below it in semibold `text-lg`, `text-xl` from `md`, at `14ch`.
 
-The reorder dialog is `max-w-lg`. Each block is a `rounded-action` bordered
-`bg-card` row with a grip glyph, the block glyph, a semibold title over a
-truncated `muted-foreground` detail, and ghost up and down actions. Rows show a
-grab cursor. While dragging, the lifted copy tilts by one degree with
-`shadow-xl`, the row's place shows as a dashed `canvas-shade` slot, and the
-other rows slide aside over 260 milliseconds on an ease out curve.
+## Social sharing card
 
-Preview shows the page as published: every editing control is removed rather
-than dimmed, so the layout, spacing, and empty areas match the public page.
+`BrandCard` is the generated 1200 by 630 OG image for every page without its
+own sharing image. It is a dark `foreground` surface with `72px` of padding and
+three rows spread across the height. The top row holds the bold `byroose`
+wordmark text with `-0.05em` tracking on the left and the site host in muted ink
+on the right. The middle row holds an optional semibold page label in the
+`primary` orange above the bold title, set large with `-0.05em` tracking and
+`0.95` leading and clamped to three lines. The bottom row holds the slogan in
+muted ink on the left and a rounded `primary` bar on the right. Everything uses
+Switzer. The ink is the off-white `canvas-shade` value, never pure white.
 
-## Dropdown menu
-
-`components/ui/dropdown-menu` is the source-owned Shadcn Vue dropdown menu on
-Reka UI. Its default scale is one step larger than Shadcn's, so every menu
-reads comfortably next to the site's large type: items, labels, and submenu
-triggers use `text-base` with `px-3 py-2.5` and a `gap-3`, item glyphs are
-`size-5`, checkbox and radio items reserve `pl-10` for a `size-5` indicator,
-shortcuts use `text-sm`, and the panel has `p-1.5` of padding. Consumers set
-only the menu width, such as `min-w-52` for the block insert menu and
-`min-w-64` for the services picker. Its check, radio, and submenu glyphs render through Nuxt Icon with the
-`check`, `circle`, and `chevronRight` names from `app/lib/icons.ts`. When the
-Shadcn CLI adds a component, replace any `@lucide/vue` import with Nuxt Icon,
-replace any `withDefaults` with destructured prop defaults, and remove any font
-import or base layer it writes to the global stylesheet.
+The renderer cannot read CSS variables, so the card's colors live as hex values
+in `app/lib/og-image-theme.ts`, converted from the `foreground`, `canvas-shade`,
+and `primary` tokens. It is the one documented exception to the no raw colors
+rule. Update it whenever those tokens change.
 
 ## Responsive rules
 
