@@ -24,6 +24,7 @@ The current foundation is a responsive Nuxt landing page converted from the orig
 - Zod
 - Nuxt SEO: site config, sitemap, robots, Schema.org, SEO utilities, OG images, and link checker
 - Takumi for rendering OG images
+- Nuxt Content for Markdown blog posts
 
 ## Local development
 
@@ -68,6 +69,24 @@ See [Architecture](docs/ARCHITECTURE.md#work-projects) for the block types.
 The project appears in the sitemap and in `llms.txt` automatically, and its
 cover becomes its social sharing image when the cover is an image.
 
+## Adding a blog post
+
+1. Put the cover and inline images in `public/images/blog/<slug>/`.
+2. Create `content/blog/<slug>.md`. The file name is the address,
+   `/blog/<slug>`. Start it with frontmatter for `title`, `description`,
+   `date` as `YYYY-MM-DD`, `category` (`AI content creation` or
+   `Web development`), and `cover` with `src`, `width`, `height`, and `alt`.
+   `author` with a `name` and optional `role` and `image` is optional.
+3. Write the article in Markdown. Use `## Heading` for sections, add an inline
+   image's size as `![Alt text](/images/blog/slug/photo.jpg){width="1600" height="900"}`,
+   and use `::cta{href="/contact"}`, `::callout`, and `::divider` blocks,
+   each closed with `::`.
+4. Add `draft: true` to see the post only in the dev server while writing.
+   Remove it to publish.
+
+`content/blog/layout-sample.md` shows every element. The post appears in the
+sitemap and `llms.txt` automatically.
+
 ## SEO
 
 Search and sharing metadata is configured in `nuxt.config.ts` and set per page
@@ -98,6 +117,7 @@ app/
   lib/              Pure helpers, shared constants, types, and icon names
   pages/            Routes, including one page per Work project
   plugins/          Nuxt runtime integrations
+content/blog/       One Markdown file per blog post
 docs/               Architecture, rules, design system, content, and workflow
 public/             Static public assets
 server/routes/      Generated text routes such as llms.txt

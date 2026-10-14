@@ -1,3 +1,4 @@
+import { queryCollection } from '@nuxt/content/server'
 import { projects } from '../../app/data/projects'
 import { pageSeo } from '../../app/lib/page-seo'
 import {
@@ -17,8 +18,13 @@ function section(title: string, lines: readonly string[]) {
 	return lines.length ? [`## ${title}`, '', ...lines, ''] : []
 }
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
 	setHeader(event, 'Content-Type', 'text/plain; charset=utf-8')
+
+	const posts = await queryCollection(event, 'blog')
+		.select('path', 'title', 'description', 'date', 'draft')
+		.order('date', 'DESC')
+		.all()
 
 	return [
 		`# ${siteName}`,
@@ -34,6 +40,12 @@ export default defineEventHandler((event) => {
 		...section(
 			'Work',
 			projects.map((project) => link(project.name, `/work/${project.slug}`, project.description)),
+		),
+		...section(
+			'Blog',
+			posts
+				.filter((post) => !post.draft)
+				.map((post) => link(post.title, post.path, post.description)),
 		),
 		...section('Contact', [`- Email: ${siteEmail}`, `- Headquarters: ${siteHeadquartersLabel}`]),
 	].join('\n')

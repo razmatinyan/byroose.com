@@ -10,6 +10,7 @@ export const appIcons = {
 	linkedin: 'lucide:linkedin',
 	minus: 'lucide:minus',
 	plus: 'lucide:plus',
+	share: 'lucide:share-2',
 } as const
 
 export type AppIcon = (typeof appIcons)[keyof typeof appIcons]

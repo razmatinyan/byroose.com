@@ -209,6 +209,12 @@ The site currently has no server code, database, or media storage. Future server
 - Add rate limits and abuse protection to public forms, authentication, uploads, and expensive operations.
 - Do not introduce service, repository, queue, or cache layers until the actual requirement justifies them.
 
+## Blog post rules
+
+- Write each post as content/blog/<slug>.md with the frontmatter that content.config.ts requires. Keep its images in public/images/blog/<slug>/ with their sizes and alternative text.
+- Use the ::cta, ::callout, and ::divider blocks instead of raw HTML, and add new reusable article elements as components in app/components/content.
+- Publish only finished, accurate posts. Keep work in progress marked draft: true.
+
 ## Work project rules
 
 - Keep each Work project in its own typed data file, app/data/projects/<slug>.ts, built with defineProject from app/lib/projects.ts, and list it in app/data/projects/index.ts.

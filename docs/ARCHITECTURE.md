@@ -23,6 +23,7 @@ app/
   components/
     about/
     blog/
+    content/
     cards/
     landing/
     layout/
@@ -38,6 +39,7 @@ app/
     useAboutSectionMotion.ts
     useArrowSwapHover.ts
     useBlogMotion.ts
+    useBlogPostHeroMotion.ts
     useCookieBannerMotion.ts
     useDrawnLineMotion.ts
     useFaqMotion.ts
@@ -105,7 +107,9 @@ app/
     default.vue
   pages/
     about.vue
-    blog.vue
+    blog/
+      index.vue
+      [slug].vue
     contact.vue
     courses.vue
     index.vue
@@ -125,6 +129,12 @@ public/
 server/
   routes/
     llms.txt.get.ts
+content/
+  blog/
+    <slug>.md
+content.config.ts
+config/
+  blog-posts.ts
 nuxt.config.ts
 components.json
 package.json
@@ -904,6 +914,47 @@ only and own no data.
 The Work listing still shows placeholder cards that do not link to project
 pages. It will read `app/data/projects/index.ts` once real projects exist.
 
+## Blog posts
+
+Blog posts are Markdown files managed by Nuxt Content v3, which reads them into
+a SQLite database at build time through Node's built-in `node:sqlite`
+(`sqliteConnector: 'native'`), so no native database package is installed.
+
+- `content.config.ts` defines the `blog` page collection from
+  `content/blog/*.md`. Its schema requires the title and description, a
+  `YYYY-MM-DD` `date`, a `category` of `AI content creation` or
+  `Web development`, and a `cover` with its source, size, and alternative
+  text. An `author` with a name, optional role, and optional image, and a
+  `draft` flag are optional. A missing or invalid field fails the build.
+- `app/pages/blog/[slug].vue` loads the post and the published posts by date,
+  answers 404 for an unknown post or, outside development, a draft, and
+  renders `BlogPostPage` with the next older post, or the newest other post
+  when it is the oldest.
+- `BlogPostPage` renders `BlogPostHero`, which holds the title and cover and
+  reveals them through `useBlogPostHeroMotion`, then `BlogPostAside` and the Markdown
+  body through `ContentRenderer`, and owns the body typography. It sets the
+  page metadata with the cover as the sharing image, a Home, Blog, and post
+  `BreadcrumbList`, and a `BlogPosting` with the author only when the post has
+  one. `BlogPostAside` shows the author, title, date, and a share action that
+  uses the native share sheet when available and otherwise copies the link.
+  `BlogNextPost` renders the next article card.
+- `app/components/content` holds the Markdown components: `::cta{href}`
+  for a call to action button, `::callout` for a highlighted takeaway, and
+  `::divider` for a grey line across the text column, plus `ProseImg`, which renders inline
+  images through NuxtImg, and `ProseTable`, which wraps tables so they scroll
+  on narrow screens.
+- `config/blog-posts.ts` lists published posts from the files at config time.
+  `nuxt.config.ts` adds them to the prerender routes and the sitemap with
+  their date as `lastmod`, because a dynamic route is not discovered from
+  page files. `llms.txt` lists them through `queryCollection`.
+- A post with `draft: true` renders only in the dev server. It is never
+  prerendered, listed in the sitemap or `llms.txt`, or served in production.
+  `content/blog/layout-sample.md` is a draft that shows every element and
+  serves as the authoring reference.
+
+The `/blog` listing still shows the placeholder cards from
+`app/lib/blog-articles.ts`. It will read the collection once real posts exist.
+
 ## SEO
 
 `@nuxtjs/seo` installs the Nuxt SEO modules: site config, sitemap, robots,
@@ -961,6 +1012,10 @@ internal links during development and builds.
   Cloudflare Pages.
 - Nuxt Image uses the `vercel` provider, which works only on Vercel. Choose a
   Cloudflare provider or build-time optimization before the move.
+- On Cloudflare Pages, a blog URL that was not prerendered reaches the Worker,
+  where Nuxt Content needs a D1 database binding. Without one an unknown post
+  likely errors instead of answering 404. Add a D1 binding or a 404 fallback
+  for unknown `/blog/` paths before the move.
 
 ## Planned backend structure
 

@@ -567,6 +567,48 @@ recipe: the value is an extrabold `text-5xl`, `text-6xl` from `md`,
 `rounded-lg` pill in the block's surface tone, and the label sits `0.75rem`
 below it in semibold `text-lg`, `text-xl` from `md`, at `14ch`.
 
+## Blog article
+
+An article page sits on the site `background`. The hero fills the first screen
+minus a peek of `clamp(4rem, 14svh, 9rem)`, so the top of the cover shows
+below it. It centers a semibold `text-5xl`, `text-7xl` from `md` and
+`text-8xl` from `xl`, title with `-0.045em` tracking, at most `16em` wide and
+balanced. On page entry, after the page transition's reveal point, each title
+word rises from its mask on the shared word reveal timing with a `0.06s`
+stagger. The split words and their masks are `inline-block`, because transforms
+do not apply to inline elements and SplitText leaves words inline. From `0.35s` the cover, in a `rounded-lg` frame, opens upward from a
+bottom clip over `1.4s` on `power4.out` while the image settles from `1.15`
+scale. Both stay hidden until the reveal starts, and reduced motion shows them
+at once.
+
+From `lg` the article is a twelve column grid. The text column spans columns
+four to nine, so it is centered on the page. The aside spans the first three
+columns and stays `7rem` below the viewport top while the article scrolls. It
+stacks the author, with a `size-10` round photo or a `foreground` initial, the
+semibold `text-lg` title and the date, and a round `outline` share action
+whose status appears beside it. Below `lg` only the author and share action
+show, in a row above the text. The body is medium `text-xl` relaxed
+`foreground` text, the same color as the headings, with `1.5rem` between
+paragraphs. Section headings are semibold `text-4xl`, `text-5xl` from `md`,
+with `-0.03em` tracking. A one pixel `foreground/15` grey line across the full text
+column separates each section from the one above, except right after a
+divider. Links in text are underlined `foreground` and turn `primary` on
+hover. Lists, `brand-green` bordered `text-2xl` quotes, inline images with
+`rounded-lg`, and `text-lg` tables with a `canvas-shade` header row and
+`foreground/10` row lines follow the same column.
+
+The `::divider` block is the same grey line across the full
+text column, with generous space around it. The `::callout` block is a
+`rounded-lg` `canvas-shade` panel with a `brand-green` dot and medium
+`foreground` text. The `::cta` block is a `dark` `cta-lg` button with the arrow
+glyph and the CTA rollover.
+
+The next article block follows the article in the page gutter: two equal
+`rounded-lg` halves from `md`, the cover on the left and a `canvas-shade` panel
+on the right that centers a "Next article" label, the title in semibold
+`text-3xl`, `text-4xl` from `md`, and a `dark` `cta-sm` "Read the article"
+button. Below `md` the cover stacks above the panel at 4:3.
+
 ## Social sharing card
 
 `BrandCard` is the generated 1200 by 630 OG image for every page without its

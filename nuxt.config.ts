@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
+import { listPublishedPosts } from './config/blog-posts'
 import {
 	siteDescription,
 	siteEmail,
@@ -8,6 +9,7 @@ import {
 	siteUrl,
 } from './app/lib/site'
 
+const publishedPosts = listPublishedPosts()
 const unlistedRoute = { robots: false, ogImage: false } as const
 
 export default defineNuxtConfig({
@@ -32,6 +34,16 @@ export default defineNuxtConfig({
 
 	seo: {
 		fallbackTitle: false,
+	},
+
+	sitemap: {
+		urls: publishedPosts.map(post => ({ loc: post.path, lastmod: post.date })),
+	},
+
+	content: {
+		experimental: {
+			sqliteConnector: 'native',
+		},
 	},
 
 	schemaOrg: {
@@ -68,7 +80,13 @@ export default defineNuxtConfig({
 	nitro: {
 		prerender: {
 			crawlLinks: true,
-			routes: ['/', '/robots.txt', '/sitemap.xml', '/llms.txt'],
+			routes: [
+				'/',
+				'/robots.txt',
+				'/sitemap.xml',
+				'/llms.txt',
+				...publishedPosts.map(post => post.path),
+			],
 			ignore: ['/_vercel'],
 		},
 	},
@@ -108,6 +126,7 @@ export default defineNuxtConfig({
 				'lucide:linkedin',
 				'lucide:minus',
 				'lucide:plus',
+				'lucide:share-2',
 				'lucide:x',
 			],
 		},
@@ -135,6 +154,7 @@ export default defineNuxtConfig({
 	},
 
 	modules: [
+		'@nuxt/content',
 		'@nuxt/fonts',
 		'@nuxt/icon',
 		'@nuxt/image',
