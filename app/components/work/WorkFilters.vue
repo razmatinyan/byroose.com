@@ -108,6 +108,10 @@ function variantFor(id: FilterId) {
    --radius-sm: 9999px;
 }
 
+.work-filters-button[aria-pressed="false"] {
+   @apply bg-transparent;
+}
+
 @media (hover: hover) {
    .work-filters-button:hover {
       @apply bg-foreground text-primary-foreground;

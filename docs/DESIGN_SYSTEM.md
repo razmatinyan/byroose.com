@@ -2414,7 +2414,8 @@ put `utilities` first in the layer order, and the base reset would then beat
 every utility, such as the button colors. They
 pass `rollover` as `false`, so they skip the CTA rollover, and they carry no
 icon, so each is exactly as wide as its label and padding. The pressed button
-uses the `dark` variant and the others use `outline`. Every button carries a
+uses the `dark` variant and the others use `outline` with a transparent
+background, so the grey section shows through them. Every button carries a
 `2px` `foreground` border, the same black as the outline buttons' text, in
 place of the outline variant's faint `1px` border, so the pressed button's
 border blends into its fill and the buttons keep one size whichever is
