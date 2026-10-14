@@ -137,7 +137,7 @@ function updateName(event: Event) {
 }
 
 .project-hero-link-field {
-   @apply w-80 max-w-full border-b border-foreground/25 bg-transparent pb-3 text-xl tracking-[-0.03em] outline-none placeholder:text-foreground/30 focus-visible:border-foreground md:text-2xl;
+   @apply w-80 max-w-full border-b border-foreground/25 bg-transparent pb-3 text-xl font-medium tracking-[-0.03em] outline-none placeholder:text-foreground/30 focus-visible:border-foreground md:text-2xl;
 }
 
 .project-hero-description {

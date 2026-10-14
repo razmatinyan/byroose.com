@@ -36,7 +36,7 @@ useUnderlineSweep(link);
 @reference "../../assets/css/tailwind.css";
 
 .live-link {
-   @apply relative flex w-full max-w-80 items-center justify-between gap-6 rounded-sm pb-3 text-xl tracking-[-0.03em] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:text-2xl;
+   @apply relative flex w-full max-w-80 items-center justify-between gap-6 rounded-sm pb-3 text-xl font-medium tracking-[-0.03em] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:text-2xl;
 }
 
 .live-link-texts {

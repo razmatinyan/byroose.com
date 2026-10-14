@@ -558,10 +558,10 @@ services trigger with a chevron down, and the selected services as a
 `0.125rem` gap. From `sm` the live result link sits centered in the space
 between the services block and the description, bottom aligned with them.
 While editing it is a field with the heading style for its label and a
-borderless `w-80` `text-xl`, `text-2xl` from `md`, input with a
+borderless `w-80` medium `text-xl`, `text-2xl` from `md`, input with a
 `foreground/25` bottom rule that turns `foreground` on focus.
 
-In preview and on the published page, `ProjectLiveLink` renders "Visit Live
+In preview and on the published page, `ProjectLiveLink` renders a medium "Visit Live
 Website" at the same width and size, with an arrow up right glyph at its end
 and a one pixel `foreground` line below. On hover or keyboard focus its label
 rolls over character by character through `useMenuLinkMotion`, like the site
