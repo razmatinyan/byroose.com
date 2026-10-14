@@ -466,9 +466,9 @@ center, and writes them to the flight layer. While the hero frame is still
 opening, it also matches the frame's content scale from its
 `--services-hero-inset-open` value. Reduced motion keeps the layer in the slot.
 
-useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` line split,
-then rises each text's lines once with the shared line reveal timing when it
-enters, and rises every `data-services-reveal-rise` item once with the word
+useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` split,
+then rises each text's lines, or its words when it is split into words only,
+once with the shared line reveal timing when it enters, and rises every `data-services-reveal-rise` item once with the word
 reveal timing. When the scope has a `data-services-reveal-backdrop` layer, it
 extends the layer one viewport above the section and scrubs its clip path from
 a rounded point at the bottom center of the viewport to the full width, over

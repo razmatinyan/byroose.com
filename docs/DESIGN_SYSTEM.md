@@ -2300,9 +2300,10 @@ title at `0.88` leading at the top, then the description, semibold
 `brand-subtle`, darker than `muted-foreground` for contrast on the tints, at `text-lg` and `text-xl` from `md` with `1.15` leading and `-0.02em` tracking, `2rem`
 below the title and `3rem` from `md`. The right holds a 4:3 media slot with
 `rounded-2xl` corners. Below `md` the media follows the text. The Videos block
-shows one image and the Images block cycles four work images. Every title and
-description rises line by line from its line masks with the services
-description timing when it reaches 82 percent of the viewport.
+shows one image and the Images block cycles four work images. When a block
+reaches 82 percent of the viewport, its title rises word by word from its word
+masks and its description rises line by line from its line masks, both with
+the services description timing, `1.5s`, `power3`, and a `0.1s` stagger.
 
 The Reels block has no image of its own. Its slot receives the hero slider,
 which flies there with the scroll: from the top of the page until the slot's

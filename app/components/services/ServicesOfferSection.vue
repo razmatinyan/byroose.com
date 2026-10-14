@@ -106,9 +106,9 @@ function setTextSplit(index: number, parts: SplitTextResult) {
                      class="services-offer-block-title section-title"
                      data-services-reveal-text
                      as="h3"
-                     mask="lines"
+                     mask="words"
                      :text="block.title"
-                     type="lines"
+                     type="words"
                      @split="setTextSplit(2 + index * 2, $event)"
                   />
                   <SplitText
@@ -220,6 +220,20 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer :deep(.split-text-line) {
+   visibility: hidden;
+}
+
+.services-offer-block-title :deep(.split-text-word),
+.services-offer-block-title :deep(.split-text-word-mask) {
+   display: inline-block;
+}
+
+.services-offer-block-title :deep(.split-text-word-mask) {
+   margin-block: -0.12em -0.18em;
+   padding-block: 0.12em 0.18em;
+}
+
+.services-offer-block-title :deep(.split-text-word) {
    visibility: hidden;
 }
 </style>

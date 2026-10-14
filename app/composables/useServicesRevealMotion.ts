@@ -31,6 +31,12 @@ function queryAll(root: HTMLElement, selector: string) {
    return Array.from(root.querySelectorAll<HTMLElement>(selector));
 }
 
+function getRevealParts(parts: SplitTextResult | undefined) {
+   if (!parts) return [];
+
+   return parts.lines.length ? parts.lines : parts.words;
+}
+
 export function useServicesRevealMotion(
    scope: MotionScope,
    textSplits: SplitListSource,
@@ -40,8 +46,8 @@ export function useServicesRevealMotion(
    let disposed = false;
    let initialized = false;
 
-   function revealLines(text: HTMLElement, lines: HTMLElement[]) {
-      if (!lines.length) return;
+   function revealText(text: HTMLElement, parts: HTMLElement[]) {
+      if (!parts.length) return;
 
       const timeline = gsap.timeline({
          scrollTrigger: {
@@ -51,7 +57,7 @@ export function useServicesRevealMotion(
          },
       });
 
-      addWordReveal(timeline, lines, {
+      addWordReveal(timeline, parts, {
          duration: lineRevealDuration,
          ease: lineRevealEase,
          stagger: lineRevealStagger,
@@ -102,7 +108,7 @@ export function useServicesRevealMotion(
       );
    }
 
-   async function initialize(textLines: HTMLElement[][]) {
+   async function initialize(textParts: HTMLElement[][]) {
       if (initialized || disposed) return;
 
       initialized = true;
@@ -122,14 +128,14 @@ export function useServicesRevealMotion(
          },
          (context) => {
             if (context.conditions?.reduceMotion) {
-               const shown = [...textLines.flat(), ...rises];
+               const shown = [...textParts.flat(), ...rises];
                if (shown.length) gsap.set(shown, { visibility: "inherit" });
                return;
             }
 
             if (backdrop) riseBackdrop(root, backdrop);
             texts.forEach((text, index) =>
-               revealLines(text, textLines[index] ?? []),
+               revealText(text, textParts[index] ?? []),
             );
             rises.forEach(revealRise);
          },
@@ -144,7 +150,7 @@ export function useServicesRevealMotion(
       (splits) => {
          if (splits.includes(undefined)) return;
 
-         return initialize(splits.map((parts) => parts?.lines ?? []));
+         return initialize(splits.map(getRevealParts));
       },
       { flush: "post", immediate: true },
    );
