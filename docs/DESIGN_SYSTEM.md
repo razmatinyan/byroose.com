@@ -2411,10 +2411,13 @@ put `utilities` first in the layer order, and the base reset would then beat
 every utility, such as the button colors. They
 pass `rollover` as `false`, so they skip the CTA rollover, and they carry no
 icon, so each is exactly as wide as its label and padding. The pressed button
-uses the `dark` variant and the others use `outline`. On `(hover: hover)`
-pointers every button turns the `foreground` black with a `foreground` border
-and white `primary-foreground` text, replacing the variants' orange and white
-hovers, so the pressed button stays dark. Each carries `aria-pressed` inside a
+uses the `dark` variant and the others use `outline`. Every button carries a
+`2px` `foreground` border, the same black as the outline buttons' text, in
+place of the outline variant's faint `1px` border, so the pressed button's
+border blends into its fill and the buttons keep one size whichever is
+pressed. On `(hover: hover)` pointers every button turns the `foreground`
+black with white `primary-foreground` text, replacing the variants' orange and
+white hovers, so the pressed button stays dark. Each carries `aria-pressed` inside a
 group named "Filter projects". When the filters reach 82 percent of the
 viewport, the count characters rise with the shared character reveal, and `0.3s` in the buttons rise from `115` percent of their masks over
 `0.8s` on `power3.out` with the `0.08s` navigation stagger. The masks clip only

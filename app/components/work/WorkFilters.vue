@@ -104,12 +104,13 @@ function variantFor(id: FilterId) {
 }
 
 .work-filters-button {
+   @apply border-2 border-foreground;
    --radius-sm: 9999px;
 }
 
 @media (hover: hover) {
    .work-filters-button:hover {
-      @apply border-foreground bg-foreground text-primary-foreground;
+      @apply bg-foreground text-primary-foreground;
    }
 }
 
