@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 
-type CookieConsent = 'accepted' | 'declined'
+type CookieConsent = "accepted" | "declined";
 
-const consentMaxAge = 60 * 60 * 24 * 365
+const consentMaxAge = 60 * 60 * 24 * 365;
 
-const consent = useCookie<CookieConsent | null>('byroose-cookie-consent', {
+const consent = useCookie<CookieConsent | null>("byroose-cookie-consent", {
 	default: () => null,
 	maxAge: consentMaxAge,
-	path: '/',
-	sameSite: 'lax',
-})
+	path: "/",
+	sameSite: "lax",
+});
 
-const { enter, leave, prepare } = useCookieBannerMotion()
+const { enter, leave, prepare } = useCookieBannerMotion();
 
 function answerCookies(answer: CookieConsent) {
-	consent.value = answer
+	consent.value = answer;
 }
 </script>
 
@@ -66,7 +66,7 @@ function answerCookies(answer: CookieConsent) {
 }
 
 .cookie-banner-copy {
-	@apply m-0 px-4 py-3 text-sm leading-snug text-foreground;
+	@apply m-0 px-4 py-3 text-base leading-snug text-foreground;
 }
 
 .cookie-banner-actions {
