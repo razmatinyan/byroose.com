@@ -4,7 +4,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 import BlogSection from "./BlogSection.vue";
 import BrandGrid from "./BrandGrid.vue";
 import CoursesSection from "./CoursesSection.vue";
-import FaqSection from "./FaqSection.vue";
+import FaqSection from "@/components/shared/FaqSection.vue";
 import HeroSection from "./HeroSection.vue";
 import JourneySection from "./JourneySection.vue";
 import ReviewsSection from "./ReviewsSection.vue";

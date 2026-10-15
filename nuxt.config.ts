@@ -69,9 +69,13 @@ export default defineNuxtConfig({
 		},
 	},
 
+	runtimeConfig: {
+		resendApiKey: process.env.RESEND_API_KEY ?? '',
+		contactInboxEmail: process.env.CONTACT_INBOX_EMAIL ?? '',
+	},
+
 	routeRules: {
 		'/**': { prerender: true },
-		'/contact': unlistedRoute,
 		'/courses': unlistedRoute,
 		'/terms': unlistedRoute,
 		'/privacy': unlistedRoute,

@@ -47,4 +47,12 @@ export const pageSeo = {
          "Read practical byroose articles about AI content creation, web development, and turning audience attention into action.",
       label: "Blog",
    },
+   contact: {
+      path: "/contact",
+      name: "Contact",
+      title: "Contact byroose: start an AI content or web project",
+      description:
+         "Tell byroose about your project. Share your name, email, and idea, and we'll reply with clear next steps for AI content creation or web development.",
+      label: "Contact",
+   },
 } as const satisfies Record<string, PageSeoCopy>;

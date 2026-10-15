@@ -422,7 +422,7 @@ remains.
 
 The section follows the outgoing page during a page transition, and a fresh
 copy replaces it once the new page has landed, so it reveals again on every
-route. On short routes such as Contact it already sits in the first screen and
+route. On short routes such as Courses it already sits in the first screen and
 reveals at once. Its action links to `/contact` everywhere, so on the Contact
 route it scrolls that page back to the top.
 
@@ -465,7 +465,7 @@ are all in `em`, so the button scales with the title.
 
 Below the title, a semibold `muted-foreground` "Or write directly to" label at
 `text-base`, `text-lg` from `md`, with `-0.03em` tracking sits tightly above the
-`info@byroose.com` mail link.
+`contact@hello.byroose.com` mail link.
 The lead column uses the larger `gap-16`, `gap-20` from `md`, rhythm.
 
 Column titles are bold `h2` labels in the ink `paper-foreground` at `text-xl`,
@@ -2064,7 +2064,46 @@ item closes the previous one on the same timing. Reduced motion shows every
 reveal at rest and switches items instantly.
 
 The questions and answers are placeholder copy until the real policies are
-confirmed.
+confirmed. FaqSection is a shared component, and the Contact route renders the
+same section below its hero.
+
+### Contact page
+
+The Contact route stacks a two-column hero, the shared FAQ section, and the
+site call to action. The hero is a grid with a `4rem` column gap from `lg`,
+`pt-10`, `pt-14` from `md`, and `spacing-section` below. The left column holds
+the `h1`, "Tell us what you want to build", bold at
+`clamp(3rem, 7.5vw, 8rem)` with `0.86` leading, `-0.05em` tracking, and a
+`7.5em` measure, in the FAQ title's padded line masks. Below it sit a
+semibold description at `text-xl`, `text-2xl` from `md`, and a muted
+"Prefer email?" line whose underlined link opens the site email. Below `lg`
+the form stacks under the intro.
+
+The form follows the reference contact form: labels above the controls,
+`text-lg` and `text-xl` from `md`, `font-medium`, with a muted "(optional)"
+note on the idea field. The form is one column at every width, so Name,
+Email address, the idea textarea, and the footer each take their own row,
+`2rem` apart and `2.5rem` from `md`. The controls are the
+source-owned Shadcn `Input` and `Textarea` with the `border` color, `md`
+corners, no shadow, `1.25rem` of inline padding, and `text-xl` copy,
+`text-lg` from `md`. Inputs
+are `h-14`, `h-16` from `md`. The textarea is at least `10rem` tall, `12rem`
+from `md`, and resizes vertically. Errors sit under their control in
+`destructive` text, and the control takes the primitive's `aria-invalid`
+ring. The submit action is a `dark` `cta-lg` Button with the arrow up right
+glyph pushed to the far edge, full width below `sm` and half the form from
+`sm`. It reads "Sending" and is disabled while a submit runs. A polite status
+line under it confirms a sent message or offers the site email after a
+failure.
+
+At the page transition's reveal point, or once both splits exist on a direct
+request, the title lines rise from `150` percent with a `0.1s` stagger, the
+description lines rise from `115` percent `0.3s` in with a `0.06s` stagger,
+and from `0.45s` the email line and each form group fade in while rising
+`48px`, `0.08s` apart, all over `0.8s` on `power3.out`. Reduced motion shows
+the hero at rest. The FAQ section below already sits in the first screen on
+larger viewports, so it waits for the hero reveal to finish before its own
+scroll reveal can play.
 
 ### About page
 

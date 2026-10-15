@@ -24,6 +24,7 @@ app/
   components/
     about/
     blog/
+    contact/
     content/
     cards/
     landing/
@@ -41,6 +42,7 @@ app/
     useArrowSwapHover.ts
     useBlogMotion.ts
     useBlogPostHeroMotion.ts
+    useContactHeroMotion.ts
     useCookieBannerMotion.ts
     useDrawnLineMotion.ts
     useFaqMotion.ts
@@ -81,6 +83,7 @@ app/
   lib/
     about-line-path.ts
     char-reveal.ts
+    contact-form.ts
     drawn-line-path.ts
     icons.ts
     image-parallax.ts
@@ -129,8 +132,13 @@ app/
 docs/
 public/
 server/
+  api/
+    contact.post.ts
   routes/
     llms.txt.get.ts
+  utils/
+    contact-mail.ts
+    rate-limit.ts
 content/
   blog/
     <slug>.md
@@ -146,7 +154,7 @@ package.json
 
 ### Application entry
 
-app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, and app/pages/blog.vue renders the Blog experience from app/components/blog. The remaining page files own the Courses, Contact, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog.vue renders the Blog experience from app/components/blog, and app/pages/contact.vue renders the Contact experience from app/components/contact. The remaining page files own the Courses, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -246,6 +254,51 @@ shared article content from app/lib/blog-articles.ts in a three-column grid from
 `md`, and requests the neutral BlogCard surface. The home BlogSection consumes
 the same article content with the default tinted BlogCard surface.
 
+### Contact components
+
+app/components/contact contains the Contact route's sections. ContactPage
+composes ContactHero and the shared FaqSection, and app/pages/contact.vue
+renders it. ContactHero emits `revealed` once its reveal completes, and
+ContactPage passes that state to FaqSection's `revealReady`, so the FAQ never
+reveals before the hero. app/pages/contact.vue sets the metadata from
+`pageSeo.contact`, and ContactPage adds the `ContactPage` Schema.org node. ContactHero owns the title, the description, the email fallback
+link, and the title and description splits that useContactHeroMotion reveals,
+and places ContactForm in its right column from `lg`. ContactForm owns the
+field list, the form values, the submit status, and the field errors. It
+validates with `contactFormSchema` from app/lib/contact-form.ts, which also
+exports the value and payload types, so `/api/contact` validates the same
+contract on the server. Errors appear only after the first submit attempt,
+then follow every change, and a failed attempt focuses the first invalid
+field. A valid submit posts the trimmed payload and the hidden `website`
+honeypot to `/api/contact`, and any failure points the reader to the site
+email.
+
+### Contact email
+
+`server/api/contact.post.ts` handles the Contact form. It reads the body,
+answers a filled `website` honeypot with the normal success response without
+sending anything, validates the rest with `contactFormSchema` and answers
+`400` with the field errors when it fails, then allows five messages per
+client IP in ten minutes and answers `429` past that. Without a Resend key
+it answers `503`. Otherwise `sendContactMail` from
+`server/utils/contact-mail.ts` sends a plain text email through the Resend
+REST API with `$fetch`, so no SDK is installed. It goes from
+`byroose website <contact@hello.byroose.com>` to the site email and, when
+`runtimeConfig.contactInboxEmail` is set, to that private inbox too, with the
+sender's address as `reply_to`, so replying in the inbox answers the person
+directly. The `Idempotency-Key` is a SHA-256 hash of the payload, so Resend
+sends a resubmitted identical message only once within its 24 hour window.
+A Resend failure is logged with its status and error name, never the
+message or the address, and answers `502`. A success answers `{ sent: true }`.
+
+The Resend key lives in the server-only `runtimeConfig.resendApiKey`, which
+`nuxt.config.ts` fills from `RESEND_API_KEY` at build time.
+`NUXT_RESEND_API_KEY` overrides it at runtime. The private inbox comes from
+`CONTACT_INBOX_EMAIL` the same way and stays out of the repository, which is
+public. The site email is `contact@hello.byroose.com` until a
+`hello@byroose.com` inbox exists. The sending domain,
+`hello.byroose.com`, must be verified in Resend before mail is delivered.
+
 ### Layout components
 
 app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
@@ -280,11 +333,11 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work and Blog. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work and Blog. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
-app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain byroose page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`.
+app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain byroose page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label.
 
 Preserve Reka UI integration, attribute forwarding, data-slot values, keyboard behavior, focus behavior, and CVA contracts when modifying this layer.
 
@@ -422,10 +475,19 @@ the staggered rise of each `data-faq-item`'s `data-faq-rise` question and icon
 with its `data-faq-divider` draw, and the accordion toggle. It watches the
 open item index and tweens the force-mounted `data-faq-content` region's
 height and the `data-faq-icon-cross` bar's rotation, then reveals that item's
-answer lines. It waits for the title's line split, rebuilds the title reveal
+answer lines. It waits for the title's line split and an optional
+`revealReady` signal, which FaqSection receives as a prop that defaults to
+`true`, so an owner can hold the reveal until an earlier section has finished.
+It rebuilds the title reveal
 when the lines re-split before it plays, and resolves every reveal and toggle
 instantly under reduced motion. FaqSection owns the copy, the controlled
 accordion value, and the title and answer splits.
+
+useContactHeroMotion owns the Contact hero reveal. It waits for the title and
+description splits and the page transition's reveal point, then rises the
+title lines, the description lines, and each `data-contact-hero-field` group
+in one timeline. Every `data-contact-hero-reveal` element stays hidden in CSS
+until the reveal starts, and reduced motion shows everything at rest.
 
 useAboutHeroMotion owns the About hero. It waits for the description split
 and the page transition's reveal point, then rises the title lines through
@@ -992,13 +1054,16 @@ internal links during development and builds.
 - The sitemap lists every indexable route, including each Work project page
   as soon as its page file exists. robots.txt allows every crawler and links
   the sitemap.
-- The Contact, Courses, Terms, and Privacy placeholders set `robots: false`
+- The Courses, Terms, and Privacy placeholders set `robots: false`
   and `ogImage: false` through route rules, so they send `noindex, nofollow`
   in a meta tag and an `X-Robots-Tag` header, stay out of the sitemap, and get
   no OG image. Remove a route's rule when its real page ships.
 - Schema.org identity is an `Organization` with the logo, email, and address.
   Every page gets `WebSite` and `WebPage` nodes. FaqSection turns the home page
-  into an `FAQPage` with one `Question` per visible FAQ item. `ProjectPage`
+  into an `FAQPage` with one `Question` per visible FAQ item. ContactPage
+  marks the Contact page as a `ContactPage` and passes `structuredData` as
+  `false` to its FaqSection, so the shared questions are marked up only once
+  across the site. `ProjectPage`
   adds a Home, Work, and project `BreadcrumbList` and a `CreativeWork` with the
   project's absolute URL, cover, categories as its genre, and the organization
   as its creator. Raw nodes such as `CreativeWork` are not resolved by the
@@ -1019,6 +1084,9 @@ internal links during development and builds.
   where Nuxt Content needs a D1 database binding. Without one an unknown post
   likely errors instead of answering 404. Add a D1 binding or a 404 fallback
   for unknown `/blog/` paths before the move.
+- The Contact rate limit is an in-memory map, so each server instance counts
+  on its own and a cold start resets it. Move it to shared storage if abuse
+  gets past it.
 
 ## Planned backend structure
 

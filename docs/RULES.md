@@ -194,7 +194,7 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 
 ## Backend rules
 
-The site currently has no server code, database, or media storage. Future server features follow these rules:
+The site has no database or media storage. Its only API route is the Contact form endpoint, which sends mail through Resend. Server features follow these rules:
 
 - Use Nuxt Nitro routes in server/api for HTTP endpoints.
 - Keep route handlers thin. Parse input, authenticate, authorize, call domain logic, and map the response.

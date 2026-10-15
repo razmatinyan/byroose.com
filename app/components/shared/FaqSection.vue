@@ -10,6 +10,11 @@ import {
 import { appIcons } from '@/lib/icons'
 import type { SplitTextResult } from '@/lib/split-text'
 
+const { revealReady = true, structuredData = true } = defineProps<{
+	revealReady?: boolean
+	structuredData?: boolean
+}>()
+
 const faqTitle = 'Frequently Asked Questions'
 
 const faqs = [
@@ -61,14 +66,21 @@ const openIndex = computed(() =>
 	faqs.findIndex(faq => faq.id === openItem.value),
 )
 
-useFaqMotion(faqRoot, { answerSplits, openIndex, titleSplit })
+useFaqMotion(faqRoot, {
+	answerSplits,
+	openIndex,
+	revealReady: () => revealReady,
+	titleSplit,
+})
 
-useSchemaOrg([
-	defineWebPage({ '@type': 'FAQPage' }),
-	...faqs.map(faq =>
-		defineQuestion({ name: faq.question, acceptedAnswer: faq.answer }),
-	),
-])
+if (structuredData) {
+	useSchemaOrg([
+		defineWebPage({ '@type': 'FAQPage' }),
+		...faqs.map(faq =>
+			defineQuestion({ name: faq.question, acceptedAnswer: faq.answer }),
+		),
+	])
+}
 
 function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts

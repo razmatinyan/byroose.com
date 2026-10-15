@@ -1,6 +1,6 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
-import { usePreferredReducedMotion } from "@vueuse/core";
+import { until, usePreferredReducedMotion } from "@vueuse/core";
 import type { SplitTextResult } from "@/lib/split-text";
 import { swapDuration, swapEase } from "@/lib/swap-timing";
 import {
@@ -20,6 +20,7 @@ type SplitListSource = MaybeRefOrGetter<
 interface FaqMotionTargets {
    answerSplits: SplitListSource;
    openIndex: MaybeRefOrGetter<number>;
+   revealReady?: MaybeRefOrGetter<boolean>;
    titleSplit: SplitSource;
 }
 
@@ -46,7 +47,7 @@ const crossClosedRotation = 90;
 
 export function useFaqMotion(
    scope: MotionScope,
-   { answerSplits, openIndex, titleSplit }: FaqMotionTargets,
+   { answerSplits, openIndex, revealReady = true, titleSplit }: FaqMotionTargets,
 ) {
    const { createContext, createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
@@ -158,17 +159,21 @@ export function useFaqMotion(
       context.add(() => revealTitle(root, lines));
    }
 
-   async function initialize(titleLines: HTMLElement[]) {
+   async function initialize() {
       if (initialized || disposed) return;
 
       initialized = true;
       await nextTick();
-      const scrollTriggerPlugin = await loadPlugin("ScrollTrigger");
+      const [scrollTriggerPlugin] = await Promise.all([
+         loadPlugin("ScrollTrigger"),
+         until(() => toValue(revealReady)).toBe(true),
+      ]);
       if (!scrollTriggerPlugin || disposed) return;
 
       const root = toValue(scope);
       if (!root) return;
 
+      const titleLines = toValue(titleSplit)?.lines ?? [];
       const items = getItems();
 
       createMatchMedia(
@@ -282,7 +287,7 @@ export function useFaqMotion(
       () => toValue(titleSplit),
       (next, previous) => {
          if (next === undefined) return;
-         if (!initialized) return initialize(next?.lines ?? []);
+         if (!initialized) return initialize();
          if (ready && next && next !== previous) replaceTitleLines(next.lines);
       },
       { flush: "post", immediate: true },

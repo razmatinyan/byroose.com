@@ -1,10 +1,10 @@
 <script setup lang="ts">
-useSeoMeta({
-	title: 'Contact',
-	description: 'Contact byroose about an AI content or web development project.',
-})
+import ContactPage from "@/components/contact/ContactPage.vue";
+import { pageSeo } from "@/lib/page-seo";
+
+usePageSeo(pageSeo.contact);
 </script>
 
 <template>
-	<h1>Contact</h1>
+	<ContactPage />
 </template>
