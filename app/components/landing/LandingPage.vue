@@ -6,10 +6,10 @@ import BrandGrid from "./BrandGrid.vue";
 import CoursesSection from "./CoursesSection.vue";
 import FaqSection from "@/components/shared/FaqSection.vue";
 import HeroSection from "./HeroSection.vue";
-import JourneySection from "./JourneySection.vue";
 import ReviewsSection from "./ReviewsSection.vue";
 import ServicesSection from "./ServicesSection.vue";
 import StudioSection from "./StudioSection.vue";
+import WhyChooseSection from "./WhyChooseSection.vue";
 import WorkSection from "./WorkSection.vue";
 
 const landingRoot = useTemplateRef<HTMLElement>("landingRoot");
@@ -50,7 +50,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 		<!-- <BrandGrid /> -->
 		<WorkSection />
 		<ServicesSection />
-		<JourneySection />
+		<WhyChooseSection />
 		<!-- <ReviewsSection /> -->
 		<!-- <CoursesSection /> -->
 		<BlogSection />

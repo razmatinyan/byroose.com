@@ -137,10 +137,8 @@ changes.
   name still holds one line. Its leading of `1.08` leaves room for the
   descender of "Development". The titles are plain headings without a reveal
   or a mask.
-- `text-step` sets the journey step card titles at
-  `clamp(4rem, 9vw, 9rem)` with a leading of `0.85`, capped by the card
-  column's width. The journey section
-  title has no size token, because it fits its container. See Journey section.
+- The Why Choose Us title has no size token, because it fits its
+  container. See Why Choose Us section.
 - Standard Tailwind sizes cover body copy, labels, metadata, and controls.
 
 Use sentence case for small interface text and card metadata. Do not use expanded
@@ -1693,7 +1691,7 @@ reaches 60 percent of the viewport, the description rises line by line from
 `SplitText` line masks with a `0.1s` stagger set through
 `lineRevealStagger` in `app/lib/word-reveal.ts`. Each description line takes
 `1.5s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
-through `lineRevealDuration` and `lineRevealEase`. The journey step cards share
+through `lineRevealDuration` and `lineRevealEase`. The blog card titles share
 the same three values. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest.
 Anchoring to the title keeps the reveal and the dark backdrop rise on the same
@@ -1740,8 +1738,8 @@ fragments, but not its image frame, use `mix-blend-mode: difference`, so they
 read dark over the canvas and off-white over the backdrop, including the moment the
 rising edge crosses a line. The backdrop covers the panel's full width and
 height, including its runway, and ends at the panel's bottom edge, so the
-section's closing `spacing-section` stays on the canvas before the journey
-section. The backdrop sits at `-z-10`, so the previous panel's content still
+section's closing `spacing-section` stays on the canvas before the Why Choose
+Us section. The backdrop sits at `-z-10`, so the previous panel's content still
 paints above the dark surface while the two overlap.
 
 The blend only works while nothing between the text and the canvas forms an
@@ -1781,10 +1779,10 @@ to full height and moves the whole wrapper so the curve's tip travels down
 through the section's closing `spacing-section`. The wrapper's offset is the
 closing space times `backdropExitReach` minus the curve's height, so the tip
 reaches that share of the closing space by the end. At `1` the tip ends at the
-services section's bottom edge, just the journey section's top padding above
-the journey title, which keeps the dark panel close to the title it spawns.
+services section's bottom edge, one `spacing-section` above the Why Choose Us
+title it spawns.
 Lower the reach to leave more canvas between them. The tip never passes the
-section's bottom edge, so it never covers the journey section. The landing wrapper's horizontal clip hides the
+section's bottom edge, so it never covers the Why Choose Us section. The landing wrapper's horizontal clip hides the
 curve where it runs past the viewport. The timeline starts at the image's
 peak, the shared `mediaCenteredAt` position where the image begins to scale
 down, so the curve and the image exit begin together. It ends when the panel's
@@ -1807,127 +1805,98 @@ backdrop rise and curve. It displays the intro title words, the
 descriptions, the open service links, and the images at rest, and the dark
 panel keeps a flat backdrop without the lead.
 
-### Journey section
+### Why Choose Us section
 
-The journey section opens with its title, currently "Working process", set in
-uppercase on one line that always spans the full width of the section gutter.
-The gutter is an inline-size container, and the title sets
-`calc(var(--journey-title-size) * var(--fit-text-scale, 1))`. The
-`--journey-title-size` of `11.2cqi` is measured from Switzer bold at `-0.05em`
-tracking, so the server render and the first paint already sit within about a
-percent of the edge. `useFitText` then compares the title's rendered width with
-its parent's content width and writes the correcting `--fit-text-scale` on the
-title whenever its box resizes, which covers font loading, the character split,
-and viewport changes. The title is `w-max` with `0.05em` of end padding, so its
-box includes the last letter's ink instead of ending at the trailing negative
-tracking. If the title copy changes, measure the new phrase and update
-`--journey-title-size` so the first paint stays close to the fitted size.
+The Why Choose Us section opens with its title, "Why Choose Us", written in
+title case at the user's request, without uppercase, on one line that always
+spans the full width of the section gutter. The gutter is an inline-size
+container, and the title sets
+`calc(var(--why-title-size) * var(--fit-text-scale, 1))`. The
+`--why-title-size` of `15cqi` is estimated from Switzer bold at `-0.05em`
+tracking, and `useFitText` compares the
+title's rendered width with its parent's content width and writes the
+correcting `--fit-text-scale` whenever the title's box resizes, which covers
+font loading, the character split, and viewport changes. The title is `w-max`
+with `0.05em` of end padding, so its box includes the last letter's ink. If the
+title copy changes, measure the new phrase and update `--why-title-size` so the
+first paint stays close to the fitted size. The title has no underline.
+
+The section takes `spacing-section` above the title. The services section's
+dark curve grows into that section's own closing space and its tip ends at the
+section's bottom edge, so this top padding is what keeps a full section gap
+between the curve and the title.
 
 The title is spawned by the services section's dark curve. As the dark panel
-above bows into its arc and reaches toward it, the title's characters appear
-beneath it one after another in reading order. Each character drops from `-110`
-percent of its height above its resting place, grows from `0` scale from its
-top edge, and turns from `-24` degrees to upright over `1.1` seconds with a
-`power3.out` ease and a `0.045` stagger. The reveal is not scrubbed. It plays
-once when the title's top reaches 85 percent of the viewport, which falls
-inside the curve's exit, and then runs on its own timing so the characters
-settle smoothly whatever the scroll speed. The arc's tip stops at the services
-section's bottom edge, so the characters always settle on the canvas. The
-trigger uses a `refreshPriority` of `-2`, so it measures after the services
-section's pin and triggers above it.
+above bows into its arc, the title's characters appear one after another in
+reading order. Each character drops from `-110` percent of its height above
+its resting place, grows from `0` scale from its top edge, and turns from `-24`
+degrees to upright over `1.1` seconds with a `power3.out` ease and a `0.045`
+stagger. The reveal is not scrubbed. It plays once when the title's top reaches
+85 percent of the viewport and then runs on its own timing, so the characters
+settle smoothly whatever the scroll speed. The triggers use a `refreshPriority` of `-2`, so
+they measure after the services section's pin.
 
-The steps follow the title as a stack of full-height cards. Each step is a
-`data-journey-slide` exactly one `100svh` tall, holding a
-`data-journey-slide-frame` with `clamp(1rem, 2vw, 1.5rem)` of padding, the
-panel inset the services section uses, and `perspective-distant`, which is
-`1200px`. The JourneyStepCard fills the frame with a `rounded-2xl` corner and
-its theme surface. From `md` it is a two-column grid
-with two rows, packed to the top. The first row pairs the title on the left
-with an uppercase "STEP" label and the step number on the right, aligned to the
-column's right edge and to the bottom of the row. The label shares the title's
-weight and tracking at `0.75` of its size, through the card's
-`--journey-step-display` and `--journey-step-label` variables. It is a dimmed
-copy of the card's own text color, `text-current/25` on the paper card and
-`text-current/40` on the blue and orange cards, so it reads as a quieter
-companion to the title rather than a second black heading. The second row pairs
-the description on the left with the image on the right. The rows sit
-`--journey-step-row-gap` apart: `2rem` below `md`, `3rem` from `md`, and `4rem`
-from `xl`, which keeps the description clearly apart from the title. The image
-pulls up by that gap plus `0.3` of the label size, so it overlaps the bottom of
-the step label, and it is `relative`, so it paints over the label. Below `md`
-the card stacks the title, the description, the step label, and the image,
-which fills the remaining height, with the same overlap.
+Six reasons follow in a grid, each a ReasonCard inside a `data-reason`
+wrapper that holds its place in the grid. Below `md` they stack in one column
+with `gap-4`. From `md` the grid is a two-column staggered masonry. Odd cards
+fill the left column and even cards the right, every card spans two grid rows,
+and each card starts one row after the previous one, so the right column begins
+at the first left card's midpoint. Cards in the same column sit only the
+`gap-5` apart, with no other spacing between them. `md:auto-rows-fr` makes
+every row the same height, half of the tallest card, so all cards share one
+size and the offset is always one row plus the gap. Each wrapper receives its
+starting row through `--reason-row`, its index plus one, and its column
+through `--reason-column`. The grid keeps the `section-gutter`, so the cards
+align with the title, and sits `mt-12` below it, `mt-20` from `md`, and
+`mt-24` from `xl`. The section closes with `spacing-section` before the blog
+section.
 
-Each card ends its text column with a `cta-lg` call to action under the
-description, `gap-8` below it, `gap-10` from `md`, and `gap-14` from `xl`, that
-routes to `/services`. Every step has its own label, set through the step's `action`
-field: "Explore the diagnosis", "See what we build", and "See how we scale".
-The light cream `paper` card uses the `dark` variant, and the blue and orange cards use
-`light`, a white `bg-card` button with `card-foreground` text, so the action
-reads as a clean white pill on the saturated surface rather than the beige
-`cream`. The orange card's light action overrides its rollover tones to
-`blue`, `green`, and `dark`, because the variant's final `primary` tone would
-match the orange card.
+The stagger leaves one empty row cell beside the first card and one beside the
+last, and two short notes fill them so the grid never reads as unfinished. The
+intro, "Two services, one team, and a process you can watch every week...",
+sits in the right column's first row, aligned to the top of the first card. The
+outro, "Still comparing agencies?...", sits in the left column's last row,
+`--why-outro-row`, aligned to the bottom of the last card. Both are semibold
+at `text-2xl` and `text-4xl` from `xl`, with `1.05` leading, `-0.04em`
+tracking, and a `30ch` measure. Below `md` the intro sits above the cards and
+the outro below them, each with `1.5rem` of extra space.
 
-The description is set at `text-xl`, `text-2xl` from `sm`, and `text-3xl` from
-`xl`, with a `1.05` leading, `-0.045em` tracking, `font-medium`, and a `32ch`
-measure. It inherits the surface's text color, so it matches the title. The
-image takes the right column at a `16/11` ratio from `md`. The images are
-`object-cover` NuxtImg crops of the 1456 by 816 hero placeholders in
-`public/images/hero`, `1.png`, `5.png`, and `2.png` in step order, lazy
-loaded with the services panel's `sm:1024px md:1280px lg:1536px` sizes, which cover a roughly square crop on
-phones and the `16/11` crop of a half-width column up to a 2560px viewport.
-Replace them with real process imagery when it exists.
+ReasonCard is a plain `rounded-2xl` Card painted with a `surface-*` utility
+through its `tone` prop, which accepts every `surfaceTones` key. The reasons use
+`primary`, `dark`, `yellow`, `blue`, `pink`, and `green` in order, so the colors
+alternate between the columns. The card is at least `18rem` tall, `24rem`
+from `md`, and `28rem` from `xl`, with `p-6`, `p-10` from `md`, and `p-12`
+from `xl`. A large two-digit number in `text-current/30` sits at the top and is
+hidden from assistive technology, and the title and description sit at the
+bottom. The title is bold at `text-3xl`, `text-4xl` from `md`, and `text-5xl`
+from `xl`, with `0.95` leading and `-0.045em` tracking. The description is
+`font-medium` at `text-lg`, `text-xl` from `md`, and `text-2xl` from `xl`,
+with `1.2` leading and a `34ch` measure. The copy restates what the services
+panels already promise: one team for content and code, a human editor on every
+asset, measurement, weekly demos, a maintainable handover, and a quarterly
+content slate. Keep new reasons and notes to claims the site can support.
 
-The title and the step label must never clip at their column's right edge. The
-card is an inline-size container, and `--journey-step-display` is
-`min(var(--text-step), 20cqi)` below `md` and `min(var(--text-step), 9.5cqi)`
-from `md`, where a column is just under half the card. The title uses it
-directly and the label uses `0.75` of it. They hold `text-step` until the
-column gets too narrow and then shrink with it, which keeps a word of about
-nine letters on one line. Longer titles wrap between words, and a single word that is still too
-wide breaks through `overflow-wrap: break-word` instead of overflowing. The
-title's line masks span its full column rather than the text, and every mask,
-including the step label's, extends `0.15em` past its end with a matching
-negative margin, so the last letter's ink, which overhangs the line box under
-negative tracking, is never cut.
+Each card reveals once when its wrapper's top reaches 82 percent of the
+viewport. The card rises `160px` to rest over `1.2s` on `power3.out`, without
+a fade or a clip, and its transform is cleared at the end. The wrapper is the
+trigger, so the card's own movement never shifts its start. `0.2s` into the
+rise, the text follows with the shared line reveal timing, `1.5s`, `power3`,
+and a `0.1s` stagger: the number rises as one line from its clipping
+paragraph, the title rises word by word from its `SplitText` word masks, and
+the description rises line by line from its line masks, starting one stagger
+step per title word later. The two notes rise line by line the same way from
+their own triggers. The description and the notes re-split their lines on
+resize. A re-split before its reveal rebuilds that reveal with the new lines,
+and a later one shows them at rest. Every card has its own trigger, so the
+staggered layout also staggers the reveals.
 
-Every card but the last pins its frame for one viewport of scroll once the
-slide's top reaches the viewport top, with `pinSpacing` off, so the next slide,
-which is `relative` and later in the document, scrolls up over the pinned card.
-While it is covered, one scrubbed timeline scales the card to `0.7`, tilts it
-back `40` degrees around its horizontal axis, and turns it a random amount up
-to `5` degrees either way with `power1.in`, then fades it out with
-`power1.inOut` over the last quarter of the pin. The last card does not pin, so
-the section ends on it.
-
-Each card's text reveals as it arrives, all at once. When the card title
-reaches 82 percent of the viewport, the title, the step label, the description,
-and the call to action start rising together from their own masks: the title
-and the description line by line from their `SplitText` line masks, and the
-step label as one line from its clipping paragraph. All of them share that one
-trigger and use the shared line reveal timing: `1.5s`, `power3`, and a `0.1s`
-stagger between lines. The call to action belongs to the description's reveal
-and rises the way the hero action does, without any fade. Its `data-journey-step-cta-mask`
-wrapper is clipped to `inset(0)` and the inner `data-journey-step-cta` block
-starts `115` percent below it, the shared `wordRevealOffset`, then rises to rest
-with the same duration and ease, starting with the first description line
-rather than after the last one. The transform and the clip are cleared at the end, so the button's focus
-ring and hover rollover are never cut by the mask. The title and the description re-split their lines on resize. A
-re-split before its reveal rebuilds that reveal with the new lines, and a later
-one shows them at rest. The line masks carry `0.12em` above and `0.2em` below with matching
-negative margins, so the tight leading never clips a descender. The image
-wrapper reveals at the same 82 percent point with the Studio portrait's clip:
-an inset that opens from the bottom over `1.2s` with `power3.inOut`, cleared at
-the end.
-
-Reduced motion shows the title and every card at rest, without the reveals and
-without the pin, so the cards simply follow one another.
+Reduced motion shows the title characters, the notes, and every card and its
+text at rest.
 
 ### Blog section
 
 The blog section is a warm sand panel on the canvas. The section takes the
-journey slide inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
+services panel inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
 `spacing-section` below it before the FAQ. Inside, a `bg-panel` panel with
 `text-panel-foreground` and
 `rounded-2xl` corners holds the `section-gutter` and `py-16`, `py-20` from
@@ -1966,7 +1935,7 @@ than the shared `0.03s`, because a four word title would otherwise read as one
 movement. The word
 masks carry `0.15em` of block padding cancelled by an equal negative margin for
 the tight leading. The action follows one stagger step after the last word,
-rising the same way as the journey call to action: its `data-blog-cta-mask`
+rising the way the hero action does: its `data-blog-cta-mask`
 wrapper is clipped to `inset(0)` while the inner `data-blog-cta` block rises
 from `115` percent, and both the clip and the transform are cleared at the end
 so the focus ring and the rollover are never cut.
@@ -1974,7 +1943,7 @@ so the focus ring and the rollover are never cut.
 The cards themselves do not animate, so the tinted surfaces and the images are
 always at rest. Only their text reveals, from each card's own trigger at the
 same 82 percent line. The title rises line by line from its `SplitText` line
-masks with the journey card timing, `1.5s`, `power3`, and a `0.1s` stagger, and
+masks with the services description timing, `1.5s`, `power3`, and a `0.1s` stagger, and
 the meta row rises as one line from its clipping wrapper one stagger step after
 the last title line. Cards that share a layout row, measured by their
 `offsetTop` when they enter, start their text `0.15s` apart, so the desktop row
@@ -2391,7 +2360,7 @@ measured size accounts for. The content is an inline-size container, and the tit
 `calc(var(--work-hero-title-size) * var(--fit-text-scale, 1))`. The
 `--work-hero-title-size` of `23.71cqi` is measured from the phrase, so the
 first paint already sits at the edge, and `useFitText` corrects the scale
-whenever the title's box resizes, as it does for the journey title. The title
+whenever the title's box resizes, as it does for the Why Choose Us title. The title
 is `w-max` with `0.05em` of end padding, so its box includes the last letter's
 ink. If the phrase changes, measure it again and update the size. A `0.2em`
 bottom margin cancels the mask's negative margin, so the description never

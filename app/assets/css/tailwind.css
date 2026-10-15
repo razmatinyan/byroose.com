@@ -92,8 +92,6 @@
 	--text-statement--line-height: 1.06;
 	--text-service: clamp(3.25rem, 8.5vw, 10rem);
 	--text-service--line-height: 1.08;
-	--text-step: clamp(4rem, 9vw, 9rem);
-	--text-step--line-height: 0.85;
 }
 
 :root {

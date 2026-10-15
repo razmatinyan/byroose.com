@@ -55,7 +55,6 @@ app/
     useHeaderSurface.ts
     useHoverBounce.ts
     useHoverRollover.ts
-    useJourneyMotion.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
     useNavLinkMotion.ts
@@ -77,6 +76,7 @@ app/
     useTrailingTooltip.ts
     useUnderlineSweep.ts
     useListingHeroMotion.ts
+    useWhyChooseMotion.ts
     useWorkLineMotion.ts
     useWorkMotion.ts
     useWorkProjectsMotion.ts
@@ -330,7 +330,7 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, journey steps, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. Cards do not fetch their own page data.
 
 ### Shared components
 
@@ -436,7 +436,7 @@ the scrubbed intro reaches the end of its last word and false again above that
 point, and ServicesSection feeds it to the `drawn` prop of the WaveUnderline
 under "You?". It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved
-exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
+exit that reaches down toward the Why Choose Us title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. On touch devices its media context drops the slowed travel, the
 scrubbed image scale, and the backdrop rise, so the content stays in place, the dark backdrop
@@ -453,18 +453,17 @@ the service's section through `servicesSectionPath`. The composable waits until 
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
-useJourneyMotion owns the journey section's motion: the one-time character
-spawn of the `data-journey-title` heading beneath the services section's
-exiting dark curve, the stacking pin that scales, tilts, and fades each
-`data-journey-slide` card except the last while the next one covers it, and
-each card's number, title line, description line, call to action, and image
-reveals. It waits for the title's character split and every card's title and
-description splits, rebuilds a card title or description reveal when its lines
-re-split before it plays, and shows everything at rest without the pin under
-reduced motion.
-JourneySection owns the step content and the slide wrappers, and
-JourneyStepCard owns the card layout and emits its title and description
-splits.
+useWhyChooseMotion owns the Why Choose Us section's motion: the one-time
+character spawn of the `data-why-title` heading beneath the services
+section's exiting dark curve, the line rise of each `data-why-note`, and for
+each `data-reason` wrapper the rise of its `data-reason-card` followed by the
+card's number, title word, and description line reveals. It waits for the
+title's character split and every note, card title, and card description
+split, rebuilds a note or card reveal when its lines re-split before it plays,
+and shows everything at rest under reduced motion.
+WhyChooseSection owns the reasons, the notes, the title, and the staggered
+masonry placement, and ReasonCard owns the card layout and its surface tone
+and emits its title and description splits.
 
 useBlogMotion owns the blog section's reveal: the heading's title words and
 the `data-blog-cta` action rising from its `data-blog-cta-mask`, and for each
@@ -613,7 +612,7 @@ useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
 element, which the component's own font size must multiply. An optional
 `maxScale` caps the multiplier, so short text stops growing at the base size
-and only longer text shrinks to fit. JourneySection uses it for its title,
+and only longer text shrinks to fit. WhyChooseSection uses it for its title,
 WorkHero for its title, and ProjectHero for the project name with a
 `maxScale` of `1`.
 
@@ -797,7 +796,7 @@ app/lib contains pure helpers, shared constants, and stable names.
   `navRevealStagger`, which the home intro and the site header share for the
   navigation link rise, and the line reveal timing, `lineRevealDuration`,
   `lineRevealEase`, and `lineRevealStagger`, which the services descriptions
-  and the journey step cards share. `titleLineRevealOffset` and
+  and the blog card titles share. `titleLineRevealOffset` and
   `titleLineRevealStagger` hold the padded title line rise, `150` percent
   with a `0.1s` stagger, which the About titles use. `revealMaskClip`,
   `inset(0 -0.5em)`, is the clip every reveal mask takes while it rises, so
