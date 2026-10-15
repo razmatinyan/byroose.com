@@ -324,7 +324,8 @@ shared 4px vertical inset and their minimum heights.
 
 The `cta-icon` size is a round `size-13` icon-only action that keeps the CTA
 rollover. It renders no text grid, so it needs an `aria-label`, and its host
-clip uses a fully round radius instead of `radius-action`. The `ribbon` variant
+clip uses a fully round radius instead of `radius-action`. A consumer may
+resize it, as the home blog section does to match its title. The `ribbon` variant
 fills it with the `ribbon` green and the `yellow` variant with butter yellow.
 
 The `light`, `dark`, and `soft` tones render a filled tile, `size-11` or
@@ -1900,13 +1901,19 @@ services panel inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
 `spacing-section` below it before the FAQ. Inside, a `bg-panel` panel with
 `text-panel-foreground` and
 `rounded-2xl` corners holds the `section-gutter` and `py-16`, `py-20` from
-`md`, and `py-24` from `xl`. The heading row pairs the "More Than a Blog" title,
-set in title case at the user's request, with a `dark` `cta-lg` "All articles"
-action that routes to `/blog`, aligned to the row's bottom edge. The row wraps,
-so on phones the action sits below the title. The title keeps `section-title`
-for its weight and tracking but sets its own size,
-`clamp(2.75rem, 9vw, 9rem)`, about 130px at 1440 wide, larger than
-`text-section`, at `0.92` leading.
+`md`, and `py-24` from `xl`. The heading row pairs the "Our Blog" title,
+set in title case at the user's request, with a round `dark` `cta-icon` action
+that routes to `/blog`, aligned to the row's bottom edge. The action holds only
+the arrow up right glyph and keeps the CTA rollover, and its `aria-label`,
+"All articles", names the link. It is as tall as the title: the heading sets
+`--blog-title-size` and `--blog-title-leading`, the title uses both, and the
+action takes the title size as its font size and a diameter of
+`calc(var(--blog-title-leading) * 1em)`, the title's line height, with the
+glyph at `0.4em`. The font size sits on the button itself because the base
+button classes set `text-sm`. The row wraps, so on narrow screens the action
+can drop below the title. The title keeps `section-title` for its weight and
+tracking but sets its own size, `clamp(2.75rem, 9vw, 9rem)`, about 130px at
+1440 wide, larger than `text-section`, at `0.92` leading.
 
 Three `BlogCard`s follow in one column below `md` and three columns from `md`.
 Each card is a `NuxtLink`. Its default `tinted` surface is painted with a
@@ -1929,12 +1936,13 @@ is `text-xs` from `md` until `xl`, which keeps the date beside the pill from
 1024 wide. On narrower three-column cards the date wraps below the pill.
 
 `useBlogMotion` reveals the section. When the heading row reaches 82 percent of
-the viewport, the title words rise from their `SplitText` word masks with the
-shared word reveal, `0.8s` on `power3.out`, but with a wider `0.12s` stagger
-than the shared `0.03s`, because a four word title would otherwise read as one
-movement. The word
-masks carry `0.15em` of block padding cancelled by an equal negative margin for
-the tight leading. The action follows one stagger step after the last word,
+the viewport, the title rises character by character from its `SplitText` word
+masks with the shared character rise from `app/lib/char-reveal.ts`: each
+character rises from 115 percent below its mask over `0.9s` with
+`power3.out` and a `0.035s` stagger, so the title types itself in from left
+to right. The word masks carry `0.15em` of block padding cancelled by an equal
+negative margin for the tight leading. The action follows one stagger step
+after the last character,
 rising the way the hero action does: its `data-blog-cta-mask`
 wrapper is clipped to `inset(0)` while the inner `data-blog-cta` block rises
 from `115` percent, and both the clip and the transform are cleared at the end
@@ -1978,7 +1986,9 @@ keyboard focus shows the same state, and reduced motion switches between the
 two states without the transition.
 
 The Blog route reuses the Work route's fitted listing hero and rounded grey
-listing section. Its article heading shows the live article count, and its
+listing section. Its article heading shows the live article count and, because
+it shares `useBlogMotion` with the home section, it must split into characters
+and rises character by character like the home title. Its
 cards use the same responsive BlogCard grid and interaction as the home section:
 one column below `md` and three columns from `md`. It passes the `neutral`
 surface, which uses the card background and foreground tokens instead of a

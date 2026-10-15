@@ -1,6 +1,7 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import type { ScrollTrigger } from "gsap/ScrollTrigger";
+import { addCharReveal, charRevealStagger } from "@/lib/char-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
    addWordReveal,
@@ -46,7 +47,6 @@ const selectors = {
 
 const refreshPriority = -3;
 const cardRevealStagger = 0.15;
-const titleWordStagger = 0.12;
 
 export function useBlogMotion(
    scope: MotionScope,
@@ -64,7 +64,7 @@ export function useBlogMotion(
    const cardTimelines = new Map<HTMLElement, CardReveal>();
    const revealedCards = new WeakSet<HTMLElement>();
 
-   function revealHeading(root: HTMLElement, titleWords: HTMLElement[]) {
+   function revealHeading(root: HTMLElement, titleChars: HTMLElement[]) {
       const heading = root.querySelector<HTMLElement>(selectors.heading);
       if (!heading) return;
 
@@ -77,7 +77,7 @@ export function useBlogMotion(
          },
       });
 
-      addWordReveal(timeline, titleWords, { stagger: titleWordStagger });
+      addCharReveal(timeline, titleChars);
 
       const ctaMask = heading.querySelector<HTMLElement>(selectors.ctaMask);
       const cta = heading.querySelector<HTMLElement>(selectors.cta);
@@ -94,7 +94,7 @@ export function useBlogMotion(
                ease: wordRevealEase,
                yPercent: 0,
             },
-            titleWords.length * titleWordStagger,
+            titleChars.length * charRevealStagger,
          )
          .set(ctaMask, { clearProps: "clipPath" });
    }
@@ -176,7 +176,7 @@ export function useBlogMotion(
    }
 
    async function initialize(
-      titleWords: HTMLElement[],
+      titleChars: HTMLElement[],
       titleParts: readonly SplitTextResult[],
    ) {
       if (initialized || disposed) return;
@@ -207,13 +207,13 @@ export function useBlogMotion(
 
             if (reducedMotion) {
                showAll([
-                  ...titleWords,
+                  ...titleChars,
                   ...cards.flatMap(({ titleLines }) => titleLines),
                ]);
                return;
             }
 
-            revealHeading(root, titleWords);
+            revealHeading(root, titleChars);
             cards.forEach(revealCard);
          },
          scope,
@@ -229,7 +229,7 @@ export function useBlogMotion(
          if (title === undefined || cardTitles.includes(undefined)) return;
 
          return initialize(
-            title?.words ?? [],
+            title?.chars ?? [],
             cardTitles.filter((parts) => parts !== undefined),
          );
       },

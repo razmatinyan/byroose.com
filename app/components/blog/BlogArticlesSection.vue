@@ -31,7 +31,7 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
             as="h2"
             mask="words"
             :text="sectionTitle"
-            type="words"
+            type="words,chars"
             @split="setTitleSplit"
          />
       </div>
@@ -67,7 +67,8 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
    display: inline-block;
 }
 
-.blog-articles-title :deep(.split-text-word) {
+.blog-articles-title :deep(.split-text-char) {
+   display: inline-block;
    visibility: hidden;
 }
 

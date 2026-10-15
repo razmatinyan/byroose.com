@@ -465,11 +465,11 @@ WhyChooseSection owns the reasons, the notes, the title, and the staggered
 masonry placement, and ReasonCard owns the card layout and its surface tone
 and emits its title and description splits.
 
-useBlogMotion owns the blog section's reveal: the heading's title words and
+useBlogMotion owns the blog section's reveal: the heading's title characters and
 the `data-blog-cta` action rising from its `data-blog-cta-mask`, and for each
 `data-blog-card` the title line rise and the `data-blog-card-meta` rise. The
 cards themselves stay at rest. Cards that share a layout row are staggered from
-their measured `offsetTop` when they enter. It waits for the title's word split
+their measured `offsetTop` when they enter. It waits for the title's character split
 and every card title's line split, rebuilds a card's reveal when its title
 re-splits before it plays, and shows everything at rest under reduced motion.
 BlogSection owns the article content and collects the card title splits, and

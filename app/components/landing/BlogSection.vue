@@ -8,7 +8,7 @@ import { blogArticles } from '@/lib/blog-articles'
 import type { SplitTextResult } from '@/lib/split-text'
 
 const blogRoute = '/blog'
-const blogTitle = 'More Than a Blog'
+const blogTitle = 'Our Blog'
 
 const blogRoot = useTemplateRef<HTMLElement>('blogRoot')
 const titleSplit = shallowRef<SplitTextResult>()
@@ -36,13 +36,19 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 					as="h2"
 					mask="words"
 					:text="blogTitle"
-					type="words"
+					type="words,chars"
 					@split="setTitleSplit"
 				/>
 				<div data-blog-cta-mask>
 					<span class="blog-action" data-blog-cta>
-						<Button :as="NuxtLink" :to="blogRoute" variant="dark" size="cta-lg">
-							All articles
+						<Button
+							:as="NuxtLink"
+							:to="blogRoute"
+							class="blog-action-button"
+							variant="dark"
+							size="cta-icon"
+							aria-label="All articles"
+						>
 							<template #icon>
 								<ButtonIcon />
 							</template>
@@ -76,11 +82,13 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .blog-heading {
+	--blog-title-size: clamp(2.75rem, 9vw, 9rem);
+	--blog-title-leading: 0.92;
 	@apply flex flex-wrap items-end justify-between gap-6;
 }
 
 .blog-title {
-	@apply text-[clamp(2.75rem,9vw,9rem)] leading-[0.92];
+	@apply text-(length:--blog-title-size) leading-(--blog-title-leading);
 }
 
 .blog-title :deep(.split-text-word),
@@ -88,7 +96,8 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 	display: inline-block;
 }
 
-.blog-title :deep(.split-text-word) {
+.blog-title :deep(.split-text-char) {
+	display: inline-block;
 	visibility: hidden;
 }
 
@@ -99,6 +108,14 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 
 .blog-action {
 	@apply block;
+}
+
+.blog-action-button {
+	@apply size-[calc(var(--blog-title-leading)*1em)] text-(length:--blog-title-size);
+}
+
+.blog-action-button :deep(.button-icon-glyph > *) {
+	@apply size-[0.4em];
 }
 
 .blog-grid {
