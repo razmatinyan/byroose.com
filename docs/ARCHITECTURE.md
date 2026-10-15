@@ -91,6 +91,7 @@ app/
     page-seo.ts
     projects.ts
     ribbon-path.ts
+    scroll-curve.ts
     services-anchors.ts
     site.ts
     blog-articles.ts
@@ -358,10 +359,14 @@ useHomeIntroMotion owns the home route's entry sequence, geometry measurements, 
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
 and Studio section. It waits for the intro to complete and lets the hero leave
-through normal document scrolling. Once the featured retained card's center
-reaches the viewport center, the card moves to the viewport center and
-expands until the transition space ends. The transition runs only from `lg` upward, where
-LandingPage supplies a full-viewport empty scroll space before Studio. Below `lg`
+through normal document scrolling. From the first scroll, one scrubbed
+timeline slows the featured retained card from page speed into a hold at the
+viewport center, moves it to the horizontal center, expands it until the
+transition space ends, and releases it back to page speed. Every property
+follows a velocity matched curve from app/lib/scroll-curve.ts, so nothing
+stops or changes speed abruptly. The card's resting offset from the home intro
+is part of the measured path. The transition runs only from `lg` upward, where
+LandingPage supplies an empty scroll space one and a half viewports tall before Studio. Below `lg`
 the space collapses and the composable creates no animation. Responsive
 measurements, the reduced-motion outcome, ScrollTrigger lifecycle, and route
 cleanup remain inside the composable.
@@ -424,8 +429,9 @@ useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the slowed travel of
 the children of its `data-service-content` block, the description line rise
 anchored to the static service title, and the scrubbed bottom origin image entry
-and top origin image exit with the scroll hold between them that keeps the image
-near the viewport center. It returns `introRevealed`, which turns true once
+and top origin image exit, which meet when the image frame crosses the viewport
+center. The content keeps one constant slowed speed throughout, so the section
+never slows down further while its image scales. It returns `introRevealed`, which turns true once
 the scrubbed intro reaches the end of its last word and false again above that
 point, and ServicesSection feeds it to the `drawn` prop of the WaveUnderline
 under "You?". It also owns the scrubbed rise of a dark panel's
@@ -433,7 +439,7 @@ under "You?". It also owns the scrubbed rise of a dark panel's
 exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. On touch devices its media context drops the slowed travel, the
-hold, and the backdrop rise, so the content stays in place, the dark backdrop
+scrubbed image scale, and the backdrop rise, so the content stays in place, the dark backdrop
 is shown at rest, and each image scales in once from a trigger on its frame.
 The same text timeline opens each panel's `data-service-title-inset` and
 `data-service-link` by tweening their `--service-title-inset-open` and
@@ -767,6 +773,13 @@ app/lib contains pure helpers, shared constants, and stable names.
   work section's media reveal keep identical timing from one definition. It
   never queries the DOM or creates its own timeline, which keeps trigger and
   lifecycle ownership with the calling composable.
+- scroll-curve.ts owns `sampleCurve` and `curveEase`. They read cubic Hermite
+  curves through keys of position, value, and slope, so a scrubbed property can
+  change speed gradually without a velocity jump. `curveEase` turns a key
+  getter into a GSAP compatible ease and rereads the keys on every call, so
+  curves built from measurements follow each ScrollTrigger refresh.
+  useHomeHeroScrollMotion builds its scrubbed motion on it. It takes numbers
+  only and never queries the DOM.
 - projects.ts owns the Work project types, the category to service map, and
   `defineProject`. See Work projects.
 - surfaces.ts is the canonical map for semantic surface and foreground tone names.

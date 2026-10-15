@@ -1059,27 +1059,29 @@ and focus ring are not cut off afterwards.
 ### Home hero scroll transition
 
 From the `lg` breakpoint upward, after the home intro completes, the third of
-the four retained hero cards becomes the featured transition image. It stays
-in the grid and scrolls with the page until the card row's center reaches the
-viewport's center, and only then starts its transition, which runs until the
-end of the transition space. The hero
+the four retained hero cards becomes the featured transition image. Its
+transition starts with the first scroll and runs as one continuous scrubbed
+timeline, so nothing about it ever stops or changes speed abruptly. The hero
 leaves through normal document scrolling while LandingPage's empty transition
-space, one full small viewport tall, keeps Studio below the viewport. Below `lg`
+space, one and a half small viewports tall, keeps Studio below the viewport. Below `lg`
 the transition is disabled: the space collapses to zero, the featured card
 stays in its grid position, and the hero scrolls straight into Studio. The featured card offsets that
 document movement as it leaves its rotated grid position, reaches the viewport
 center, and expands to fit within 92 percent of the viewport width and 82 percent
-of its height. The movement and scale are scrubbed directly to scroll progress,
-and the existing Lenis instance
-supplies the wheel smoothing. When the transition space ends, the card does not
-switch straight from holding at center to moving with the page. Over the next
-thirty percent of a viewport, it eases from holding into full scroll speed with
-`power1.out`, which offsets it upward by half that distance. The handoff is
-velocity matched, so the card never looks like it stops and restarts. Its scale
-never freezes either: a separate scrubbed tween keeps it growing very slowly
-for 1.3 viewport heights after the transition space ends, by ten percent in
-total with `power1.out`, so it is still growing as it leaves the top of the
-viewport. The window stays short so the card never covers the
+of its height by the end of the transition space. Every property follows a
+velocity matched curve from `app/lib/scroll-curve.ts` rather than a linear
+segment. The card starts at full scroll speed and slows down gradually until it
+holds at the viewport center. That slowdown is centered on the moment the
+card's center would naturally pass the viewport center, so it always settles
+exactly there. The horizontal move and the rotation ease in and out over the
+same stretch. The existing Lenis instance supplies the wheel smoothing. When the
+transition space ends, the card speeds back up from holding to full scroll
+speed over thirty percent of a viewport, so it never looks like it stops and
+restarts. Its scale is one curve from its resting grid scale to ten percent
+beyond its fitted size, 1.3 viewport heights after the transition space ends.
+It starts at rest, reaches the fitted size at the end of the transition space,
+keeps a slow matching growth across that point, and settles as the card leaves the top of
+the viewport. The growth window stays short so the card never covers the
 Studio statement entering below it. All hero cards remain 4:3 in the grid. The featured
 card alone transitions to the source image's native 16:9 ratio while it expands.
 
@@ -1646,8 +1648,7 @@ link.
 Each service panel scrolls slower than the page, so the title, the
 description, and a future video stay on screen together while the video
 grows. While motion is enabled, the panel adds runway below its content
-through `--service-runway`: one viewport height for the slowed travel plus the
-image hold described below. The title, the description, and the image frame
+through `--service-runway`: one viewport height for the slowed travel. The title, the description, and the image frame
 slide down together through that runway as the panel crosses the viewport. The shared offset is applied to each child of
 `data-service-content` rather than to the block itself, because a transform on
 the block would make it an isolated group and stop its text from blending with
@@ -1658,15 +1659,16 @@ it does for the About hero title. Both offsets take the same value on the same
 scrubbed timeline, so the title and the rest of the content never drift apart.
 At 1440 by
 900 the content moves about 0.7 times as fast as the scroll, and the text
-reveal and the image scale stretch across the longer distance. Reduced motion
-drops the runway.
+reveal and the image scale stretch across the longer distance. That speed is
+constant across the whole panel. The content never slows down further while
+the image scales, because a slowdown under a scaling image reads as the page
+dragging. Reduced motion drops the runway.
 
 Because the content moves, its own elements cannot serve as ScrollTrigger
 triggers. Every text and image trigger is therefore a scroll position computed
 from untransformed layout: `scrollWhen` takes an element's offset inside the
 panel and a viewport line, and returns the scroll position at which that
-element reaches that line once the slowed travel and the image hold are
-accounted for. The panel itself is never transformed, so it stays a reliable
+element reaches that line once the slowed travel is accounted for. The panel itself is never transformed, so it stays a reliable
 reference.
 
 The service title text does not animate. Each is a plain `h3` that is visible
@@ -1711,21 +1713,15 @@ started revealing, the new lines are shown at rest. Otherwise the panel's text
 timeline is killed and rebuilt with the new lines inside the same GSAP media
 context, so it is still reverted with the rest of the section.
 
-The image is scrubbed with the scroll in three phases, so a future video gets
-time on screen. It scales up from zero around its bottom center from the moment
-it enters the viewport until it is centered in the viewport, easing out with
-`sine.out` to `0.75`, set through `mediaHoldScale`. It then holds for two
-viewport heights of scroll, set through `mediaHoldLength`. During the hold the
-content travels with the scroll, so the image stays near the viewport center
-and only drifts up by `0.1` of the scrolled distance, set through
-`mediaHoldDrift`. Across the first half of the hold the image keeps growing
-slowly and linearly to its peak of `0.8`, while the picture inside finishes
-easing from `1.3` scale to rest. Across the second half it shrinks just as
-slowly back to `0.75` around its top center. When the hold ends the content
-returns to its slowed travel, and the image drops quickly to zero with
-`sine.in`, finishing as it leaves the top over the same scroll distance as
-before the hold existed. The two halves of the hold use custom eases built from
-the trigger's measured span, because the hold length depends on the viewport.
+The image is scrubbed with the scroll in two phases that meet at the viewport
+center, with no hold between them. It scales up from zero around its bottom
+center from the moment its frame enters the viewport until the frame's center
+reaches the viewport center, easing out with `sine.out` to its peak of `0.8`,
+set through `mediaPeakScale`, while the picture inside settles from `1.3`
+scale to rest. From that same point it scales back down to zero around its top
+center with `sine.in`, finishing as the frame's bottom leaves the top of the
+viewport. Both eases have zero speed at the peak, so the turn from growing to
+shrinking is rounded rather than a sharp corner.
 The image never reaches its full layout size. Entry and exit live on two nested
 elements, the link for the bottom origin entry and its wrapper for the top
 origin exit, so the transform origins never fight.
@@ -1789,14 +1785,14 @@ services section's bottom edge, just the journey section's top padding above
 the journey title, which keeps the dark panel close to the title it spawns.
 Lower the reach to leave more canvas between them. The tip never passes the
 section's bottom edge, so it never covers the journey section. The landing wrapper's horizontal clip hides the
-curve where it runs past the viewport. The timeline starts at the end of the
-image hold, the shared `holdPoint` position where the image begins its quick
-exit, so the curve and the quick exit begin together. It ends when the panel's
+curve where it runs past the viewport. The timeline starts at the image's
+peak, the shared `mediaCenteredAt` position where the image begins to scale
+down, so the curve and the image exit begin together. It ends when the panel's
 bottom edge reaches the viewport top.
 
 Touch devices, matched by `(hover: none) and (pointer: coarse)`, keep the
 intro pin, the description reveal, and the backdrop curve, but drop the slowed
-travel, the runway, the image hold, and the backdrop rise. The content scrolls
+travel, the runway, the scrubbed image scale, and the backdrop rise. The content scrolls
 at page speed like normal content. Each image scales up once from zero around
 its bottom center, with the picture inside settling from `1.3` to rest, over
 `1.2s` on `power3.out` when its frame top reaches 85 percent of the viewport. It

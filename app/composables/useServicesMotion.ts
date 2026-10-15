@@ -36,23 +36,13 @@ interface PanelLayout {
 
 interface PanelTravel {
    entry: number;
-   holdAt: number;
-   holdLength: number;
-   holdShift: number;
-   range: number;
    rate: number;
-   runway: number;
 }
 
 interface PanelInset {
    content: string;
    frame: string;
    property: string;
-}
-
-interface ScrollSpan {
-   end: number;
-   start: number;
 }
 
 const selectors = {
@@ -89,10 +79,6 @@ const titleInsetOpenProperty = "--service-title-inset-open";
 const imageZoom = 1.3;
 const panelRunway = 1;
 const mediaPeakScale = 0.8;
-const mediaHoldScale = 0.75;
-const mediaHoldLength = 2;
-const mediaHoldDrift = 0.1;
-const mediaHeldEntry = mediaHoldScale / mediaPeakScale;
 const mediaEntryEase = "sine.out";
 const mediaExitEase = "sine.in";
 const backdropLead = 1;
@@ -120,65 +106,6 @@ function offsetWithin(element: HTMLElement, ancestor: HTMLElement) {
    }
 
    return offset;
-}
-
-function holdShareOf(span: ScrollSpan | undefined, holdLength: number) {
-   const length = span ? span.end - span.start : 0;
-   return length > 0 ? Math.min(1, holdLength / length) : 0;
-}
-
-function progressWithin(from: number, to: number, progress: number) {
-   return to > from ? (progress - from) / (to - from) : 1;
-}
-
-function easeIntoHold(
-   ease: gsap.EaseFunction,
-   heldProgress: number,
-   holdShare: () => number,
-): gsap.EaseFunction {
-   return (progress) => {
-      const holdStart = 1 - holdShare();
-      if (progress < holdStart)
-         return ease(progress / holdStart) * heldProgress;
-
-      return (
-         heldProgress +
-         progressWithin(holdStart, 1, progress) * (1 - heldProgress)
-      );
-   };
-}
-
-function easeOutOfHold(
-   ease: gsap.EaseFunction,
-   heldProgress: number,
-   holdShare: () => number,
-): gsap.EaseFunction {
-   return (progress) => {
-      const holdEnd = holdShare();
-      if (progress < holdEnd) return (progress / holdEnd) * heldProgress;
-
-      return (
-         heldProgress +
-         ease(progressWithin(holdEnd, 1, progress)) * (1 - heldProgress)
-      );
-   };
-}
-
-function contentShareAt(travel: PanelTravel, progress: number) {
-   if (travel.runway <= 0) return progress;
-
-   const scrolled = progress * travel.range;
-   const held = scrolled - travel.holdAt;
-   if (held <= 0) return (travel.rate * scrolled) / travel.runway;
-
-   if (held <= travel.holdLength) {
-      return (
-         (travel.rate * travel.holdAt + held * (1 - mediaHoldDrift)) /
-         travel.runway
-      );
-   }
-
-   return 1 - (travel.rate * (travel.range - scrolled)) / travel.runway;
 }
 
 export function useServicesMotion(
@@ -246,27 +173,13 @@ export function useServicesMotion(
       return content && frame ? { content, frame, panel } : null;
    }
 
-   function holdLengthOf() {
-      return window.innerHeight * mediaHoldLength;
-   }
-
-   function travelOf({ content, frame, panel }: PanelLayout): PanelTravel {
+   function travelOf({ content, panel }: PanelLayout): PanelTravel {
       const viewport = window.innerHeight;
       const range = viewport + panel.offsetHeight;
-      const runway = runwayOf(panel, content);
-      const holdLength = holdLengthOf();
-      const holdTravel = holdLength * (1 - mediaHoldDrift);
-      const rate = (runway - holdTravel) / (range - holdLength);
-      const frameCenter = offsetWithin(frame, panel) + frame.offsetHeight / 2;
 
       return {
          entry: panel.getBoundingClientRect().top + window.scrollY - viewport,
-         holdAt: (viewport / 2 + frameCenter) / (1 - rate),
-         holdLength,
-         holdShift: (holdTravel - rate * holdLength) / (1 - rate),
-         range,
-         rate,
-         runway,
+         rate: runwayOf(panel, content) / range,
       };
    }
 
@@ -281,27 +194,25 @@ export function useServicesMotion(
          const scrolled =
             (viewport + offset() - viewportRatio * viewport) /
             (1 - travel.rate);
-         const shift = scrolled > travel.holdAt ? travel.holdShift : 0;
 
-         return travel.entry + scrolled + shift;
+         return travel.entry + scrolled;
       };
    }
 
-   function holdPoint(layout: PanelLayout, share: number) {
-      return () => {
-         const travel = travelOf(layout);
-         return travel.entry + travel.holdAt + travel.holdLength * share;
-      };
+   function mediaCenteredAt(layout: PanelLayout) {
+      const { frame, panel } = layout;
+
+      return scrollWhen(
+         layout,
+         () => offsetWithin(frame, panel) + frame.offsetHeight / 2,
+         0.5,
+      );
    }
 
    function slowContent(layout: PanelLayout) {
       const { content, panel } = layout;
-      let travel: PanelTravel | null = null;
 
-      gsap.set(panel, {
-         "--service-runway":
-            panelRunway + mediaHoldLength * (1 - mediaHoldDrift),
-      });
+      gsap.set(panel, { "--service-runway": panelRunway });
 
       const children = [...content.children];
       const titles = children.filter((child) =>
@@ -310,16 +221,10 @@ export function useServicesMotion(
       const others = children.filter(
          (child) => !child.matches(selectors.title),
       );
-      const runway = () => {
-         travel = travelOf(layout);
-         return travel.runway;
-      };
+      const runway = () => runwayOf(panel, content);
 
       const timeline = gsap.timeline({
-         defaults: {
-            ease: (progress: number) =>
-               travel ? contentShareAt(travel, progress) : progress,
-         },
+         defaults: { ease: "none" },
          scrollTrigger: {
             end: "bottom top",
             invalidateOnRefresh: true,
@@ -441,20 +346,13 @@ export function useServicesMotion(
 
       const frameAt = (share: number) => () =>
          offsetWithin(frame, panel) + frame.offsetHeight * share;
-      const holdMiddle = holdPoint(layout, 0.5);
-      const halfHold = () => holdLengthOf() / 2;
+      const centered = mediaCenteredAt(layout);
 
-      const entry: gsap.core.Timeline = gsap
+      const entry = gsap
          .timeline({
-            defaults: {
-               ease: easeIntoHold(
-                  gsap.parseEase(mediaEntryEase),
-                  mediaHeldEntry,
-                  () => holdShareOf(entry.scrollTrigger, halfHold()),
-               ),
-            },
+            defaults: { ease: mediaEntryEase },
             scrollTrigger: {
-               end: holdMiddle,
+               end: centered,
                invalidateOnRefresh: true,
                refreshPriority,
                scrub: true,
@@ -465,15 +363,11 @@ export function useServicesMotion(
 
       if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
 
-      const exit: gsap.core.Tween = gsap.fromTo(
+      gsap.fromTo(
          mediaExit,
          { scale: 1 },
          {
-            ease: easeOutOfHold(
-               gsap.parseEase(mediaExitEase),
-               1 - mediaHeldEntry,
-               () => holdShareOf(exit.scrollTrigger, halfHold()),
-            ),
+            ease: mediaExitEase,
             immediateRender: false,
             scale: 0,
             scrollTrigger: {
@@ -481,7 +375,7 @@ export function useServicesMotion(
                invalidateOnRefresh: true,
                refreshPriority,
                scrub: true,
-               start: holdMiddle,
+               start: centered,
             },
          },
       );
@@ -575,7 +469,7 @@ export function useServicesMotion(
                invalidateOnRefresh: true,
                refreshPriority,
                scrub: true,
-               start: touchMotion ? "bottom bottom" : holdPoint(layout, 1),
+               start: touchMotion ? "bottom bottom" : mediaCenteredAt(layout),
                trigger: panel,
             },
          })

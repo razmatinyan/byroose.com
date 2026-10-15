@@ -1,21 +1,26 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import { curveEase } from "@/lib/scroll-curve";
+import type { CurveKey } from "@/lib/scroll-curve";
 import type { HomeIntroState } from "./useHomeIntroMotion";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type IntroStateSource = MaybeRefOrGetter<HomeIntroState>;
 
-interface FeaturedCardTransform {
-	scale: number;
+interface FeaturedCardPath {
+	end: number;
+	fitScale: number;
+	release: number;
+	rejoin: number;
+	settled: number;
+	start: number;
 	x: number;
-	yAtCenter: number;
-	yAtEnd: number;
 }
 
-const centerArrivalProgress = 0.38;
 const releaseLength = 0.3;
 const releaseGrowth = 1.1;
 const releaseGrowthLength = 1.3;
+const releaseGrowthLead = 1.5;
 const featuredAspectRatio = 16 / 9;
 
 const selectors = {
@@ -44,39 +49,82 @@ function getCardDocumentCenterY(hero: HTMLElement, card: HTMLElement) {
 	return heroDocumentTop + getCardOffset(hero, card).top + card.offsetHeight / 2;
 }
 
-function getTransitionStart(hero: HTMLElement, card: HTMLElement) {
+function getCenterArrival(
+	hero: HTMLElement,
+	card: HTMLElement,
+	restY: number,
+) {
 	return Math.max(
 		0,
-		getCardDocumentCenterY(hero, card) - window.innerHeight / 2,
+		getCardDocumentCenterY(hero, card) + restY - window.innerHeight / 2,
 	);
 }
 
-function getFeaturedCardTransform(
+function measureCardPath(
 	hero: HTMLElement,
 	card: HTMLElement,
-	transitionEnd: number,
-): FeaturedCardTransform {
-	const availableWidth = window.innerWidth * 0.92;
-	const availableHeight = window.innerHeight * 0.82;
-	const finalCardHeight = card.offsetWidth / featuredAspectRatio;
-	const heroRect = hero.getBoundingClientRect();
-	const cardDocumentCenterY = getCardDocumentCenterY(hero, card);
-	const transitionStart = getTransitionStart(hero, card);
-	const centerArrival =
-		transitionStart + (transitionEnd - transitionStart) * centerArrivalProgress;
-	const scale = Math.min(
-		availableWidth / card.offsetWidth,
-		availableHeight / finalCardHeight,
+	transitionSpace: HTMLElement,
+	restY: number,
+): FeaturedCardPath {
+	const viewport = window.innerHeight;
+	const release = transitionSpace.offsetHeight;
+	const centerArrival = getCenterArrival(hero, card, restY);
+	const settleReach = Math.max(
+		0,
+		Math.min(centerArrival, release - centerArrival),
 	);
+	const finalCardHeight = card.offsetWidth / featuredAspectRatio;
+	const heroLeft = hero.getBoundingClientRect().left;
 
 	return {
-		scale,
+		end: release + viewport * releaseGrowthLength,
+		fitScale: Math.min(
+			(window.innerWidth * 0.92) / card.offsetWidth,
+			(viewport * 0.82) / finalCardHeight,
+		),
+		release,
+		rejoin: release + viewport * releaseLength,
+		settled: centerArrival + settleReach,
+		start: centerArrival - settleReach,
 		x:
 			window.innerWidth / 2 -
-			(heroRect.left + getCardOffset(hero, card).left + card.offsetWidth / 2),
-		yAtCenter: window.innerHeight / 2 + centerArrival - cardDocumentCenterY,
-		yAtEnd: window.innerHeight / 2 + transitionEnd - cardDocumentCenterY,
+			(heroLeft + getCardOffset(hero, card).left + card.offsetWidth / 2),
 	};
+}
+
+function liftKeys(path: FeaturedCardPath): CurveKey[] {
+	const settleLift = (path.settled - path.start) / 2;
+	const heldLift = settleLift + path.release - path.settled;
+	const releasedLift = heldLift + (path.rejoin - path.release) / 2;
+
+	return [
+		{ at: path.start, slope: 0, value: 0 },
+		{ at: path.settled, slope: 1, value: settleLift },
+		{ at: path.release, slope: 1, value: heldLift },
+		{ at: path.rejoin, slope: 0, value: releasedLift },
+		{ at: path.end, slope: 0, value: releasedLift },
+	];
+}
+
+function scaleKeys(path: FeaturedCardPath, restScale: number): CurveKey[] {
+	const grownScale = path.fitScale * releaseGrowth;
+	const growthSpeed =
+		(releaseGrowthLead * (grownScale - path.fitScale)) /
+		Math.max(1, path.end - path.release);
+
+	return [
+		{ at: path.start, slope: 0, value: restScale },
+		{ at: path.release, slope: growthSpeed, value: path.fitScale },
+		{ at: path.end, slope: 0, value: grownScale },
+	];
+}
+
+function settleKeys(path: FeaturedCardPath, settledAt: number): CurveKey[] {
+	return [
+		{ at: path.start, slope: 0, value: 0 },
+		{ at: settledAt, slope: 0, value: 1 },
+		{ at: path.end, slope: 0, value: 1 },
+	];
 }
 
 export function useHomeHeroScrollMotion(
@@ -105,6 +153,24 @@ export function useHomeHeroScrollMotion(
 		createMatchMedia(
 			"(min-width: 64rem) and (prefers-reduced-motion: no-preference)",
 			() => {
+				const restScale = Number(gsap.getProperty(featuredCard, "scale"));
+				const restY = Number(gsap.getProperty(featuredCard, "y"));
+				let path = measureCardPath(
+					hero,
+					featuredCard,
+					transitionSpace,
+					restY,
+				);
+				const remeasure = () => {
+					path = measureCardPath(
+						hero,
+						featuredCard,
+						transitionSpace,
+						restY,
+					);
+					return path.start;
+				};
+
 				gsap.set(featuredCard, {
 					alignSelf: "center",
 					force3D: false,
@@ -112,112 +178,49 @@ export function useHomeHeroScrollMotion(
 					zIndex: 50,
 				});
 
-				const timeline = gsap.timeline({
-					scrollTrigger: {
-						end: () => transitionSpace.offsetHeight,
-						invalidateOnRefresh: true,
-						scrub: true,
-						start: () => getTransitionStart(hero, featuredCard),
-					},
-				});
-
-				timeline.to(
-					featuredCard,
-					{
-						duration: centerArrivalProgress,
-						ease: "none",
-						force3D: false,
-						rotation: 0,
-						x: () =>
-							getFeaturedCardTransform(
-								hero,
-								featuredCard,
-								transitionSpace.offsetHeight,
-							).x,
-						y: () =>
-							getFeaturedCardTransform(
-								hero,
-								featuredCard,
-								transitionSpace.offsetHeight,
-							).yAtCenter,
-					},
-					0,
-				);
-				timeline.to(
-					featuredCard,
-					{
-						duration: 1 - centerArrivalProgress,
-						ease: "none",
-						force3D: false,
-						y: () =>
-							getFeaturedCardTransform(
-								hero,
-								featuredCard,
-								transitionSpace.offsetHeight,
-							).yAtEnd,
-					},
-					centerArrivalProgress,
-				);
-				timeline.to(
-					featuredCard,
-					{
-						aspectRatio: "16 / 9",
-						duration: 0.88,
-						ease: "none",
-						force3D: false,
-						scale: () =>
-							getFeaturedCardTransform(
-								hero,
-								featuredCard,
-								transitionSpace.offsetHeight,
-							).scale,
-					},
-					0.12,
-				);
-
-				const release = () => window.innerHeight * releaseLength;
-				const featured = () =>
-					getFeaturedCardTransform(
-						hero,
+				gsap
+					.timeline({
+						defaults: { duration: 1, force3D: false },
+						scrollTrigger: {
+							end: () => path.end,
+							invalidateOnRefresh: true,
+							scrub: true,
+							start: remeasure,
+						},
+					})
+					.to(
 						featuredCard,
-						transitionSpace.offsetHeight,
+						{
+							ease: curveEase(() => liftKeys(path)),
+							y: () => restY + (liftKeys(path).at(-1)?.value ?? 0),
+						},
+						0,
+					)
+					.to(
+						featuredCard,
+						{
+							ease: curveEase(() => settleKeys(path, path.settled)),
+							rotation: 0,
+							x: () => path.x,
+						},
+						0,
+					)
+					.to(
+						featuredCard,
+						{
+							ease: curveEase(() => scaleKeys(path, restScale)),
+							scale: () => path.fitScale * releaseGrowth,
+						},
+						0,
+					)
+					.to(
+						featuredCard,
+						{
+							aspectRatio: "16 / 9",
+							ease: curveEase(() => settleKeys(path, path.release)),
+						},
+						0,
 					);
-
-				gsap.fromTo(
-					featuredCard,
-					{ y: () => featured().yAtEnd },
-					{
-						ease: "power1.out",
-						force3D: false,
-						immediateRender: false,
-						scrollTrigger: {
-							end: () => transitionSpace.offsetHeight + release(),
-							invalidateOnRefresh: true,
-							scrub: true,
-							start: () => transitionSpace.offsetHeight,
-						},
-						y: () => featured().yAtEnd + release() / 2,
-					},
-				);
-
-				gsap.fromTo(
-					featuredCard,
-					{ scale: () => featured().scale },
-					{
-						ease: "power1.out",
-						force3D: false,
-						immediateRender: false,
-						scale: () => featured().scale * releaseGrowth,
-						scrollTrigger: {
-							end: () =>
-								transitionSpace.offsetHeight +
-								window.innerHeight * releaseGrowthLength,
-							invalidateOnRefresh: true,
-							scrub: true,
-							start: () => transitionSpace.offsetHeight,
-						},
-					},
-				);
 			},
 			scope,
 		);
