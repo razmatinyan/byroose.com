@@ -267,7 +267,8 @@ link, the explicit title lines with the image inset after "build", and the
 description split that useContactHeroMotion reveals,
 and places ContactForm in its right column from `lg`. ContactForm owns the
 field list, the form values, the submit status, and the field errors. It
-validates with `contactFormSchema` from app/lib/contact-form.ts, which also
+validates with `contactFormSchema` from app/lib/contact-form.ts, which requires
+a name, a valid email, and an idea of up to 2000 characters and also
 exports the value and payload types, so `/api/contact` validates the same
 contract on the server. Errors appear only after the first submit attempt,
 then follow every change, and a failed attempt focuses the first invalid

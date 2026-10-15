@@ -2066,8 +2066,8 @@ semibold description at `text-xl`, `text-2xl` from `md`, and a muted
 the form stacks under the intro.
 
 The form follows the reference contact form: labels above the controls,
-`text-lg` and `text-xl` from `md`, `font-medium`, with a muted "(optional)"
-note on the idea field. The form is one column at every width, so Name,
+`text-lg` and `text-xl` from `md`, `font-medium`. Every field is
+required, including the idea field, so no label carries an optional note. The form is one column at every width, so Name,
 Email address, the idea textarea, and the footer each take their own row,
 `2rem` apart and `2.5rem` from `md`. The controls are the
 source-owned Shadcn `Input` and `Textarea` with the `border` color, `md`

@@ -17,7 +17,7 @@ function contactMailText({ name, email, idea }: ContactFormPayload) {
 		`Email: ${email}`,
 		'',
 		'Idea:',
-		idea || 'No idea shared.',
+		idea,
 	].join('\n')
 }
 

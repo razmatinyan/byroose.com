@@ -20,6 +20,7 @@ export const contactFormSchema = z.object({
    idea: z
       .string()
       .trim()
+      .min(1, "Tell us about your idea")
       .max(
          contactIdeaMaxLength,
          `Keep your idea under ${contactIdeaMaxLength} characters`,

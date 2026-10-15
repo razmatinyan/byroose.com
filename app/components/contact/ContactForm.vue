@@ -23,7 +23,6 @@ interface ContactFieldConfig {
 	placeholder: string;
 	autocomplete?: string;
 	type?: "email" | "text";
-	optional?: boolean;
 	multiline?: boolean;
 }
 
@@ -50,7 +49,6 @@ const fields: readonly ContactFieldConfig[] = [
 		name: "idea",
 		label: "Tell us your idea",
 		placeholder: "What are you building, and what should it achieve?",
-		optional: true,
 		multiline: true,
 	},
 ];
@@ -128,9 +126,6 @@ async function submit() {
 		>
 			<Label class="contact-field-label" :for="fieldId(field.name)">
 				{{ field.label }}
-				<span v-if="field.optional" class="contact-field-optional">
-					(optional)
-				</span>
 			</Label>
 			<Textarea
 				v-if="field.multiline"
@@ -145,6 +140,7 @@ async function submit() {
 					errors[field.name] ? errorId(field.name) : undefined
 				"
 				:disabled="sending"
+				required
 				data-lenis-prevent
 			/>
 			<Input
@@ -232,10 +228,6 @@ async function submit() {
 
 .contact-field-label {
 	@apply text-lg leading-tight font-medium tracking-[-0.02em] md:text-xl;
-}
-
-.contact-field-optional {
-	@apply font-normal text-muted-foreground;
 }
 
 .contact-field-control {
