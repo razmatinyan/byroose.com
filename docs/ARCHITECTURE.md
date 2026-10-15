@@ -263,7 +263,8 @@ renders it. ContactHero emits `revealed` once its reveal completes, and
 ContactPage passes that state to FaqSection's `revealReady`, so the FAQ never
 reveals before the hero. app/pages/contact.vue sets the metadata from
 `pageSeo.contact`, and ContactPage adds the `ContactPage` Schema.org node. ContactHero owns the title, the description, the email fallback
-link, and the title and description splits that useContactHeroMotion reveals,
+link, the explicit title lines with the image inset after "build", and the
+description split that useContactHeroMotion reveals,
 and places ContactForm in its right column from `lg`. ContactForm owns the
 field list, the form values, the submit status, and the field errors. It
 validates with `contactFormSchema` from app/lib/contact-form.ts, which also
@@ -488,10 +489,12 @@ when the lines re-split before it plays, and resolves every reveal and toggle
 instantly under reduced motion. FaqSection owns the copy, the controlled
 accordion value, and the title and answer splits.
 
-useContactHeroMotion owns the Contact hero reveal. It waits for the title and
-description splits and the page transition's reveal point, then rises the
-title lines, the description lines, and each `data-contact-hero-field` group
-in one timeline. Every `data-contact-hero-reveal` element stays hidden in CSS
+useContactHeroMotion owns the Contact hero reveal. It waits for the
+description split, the fonts, and the page transition's reveal point, then
+rises the `data-contact-hero-title-line` lines from their clipped masks, the
+description lines, and each `data-contact-hero-field` group, and opens the
+`data-contact-hero-inset` with its content settling from the Services hero
+scale, in one timeline. Every `data-contact-hero-reveal` element stays hidden in CSS
 until the reveal starts, and reduced motion shows everything at rest.
 
 useAboutHeroMotion owns the About hero. It waits for the description split

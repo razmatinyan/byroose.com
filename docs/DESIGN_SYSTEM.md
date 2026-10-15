@@ -2047,9 +2047,20 @@ same section below its hero.
 The Contact route stacks a two-column hero, the shared FAQ section, and the
 site call to action. The hero is a grid with a `4rem` column gap from `lg`,
 `pt-10`, `pt-14` from `md`, and `spacing-section` below. The left column holds
-the `h1`, "Tell us what you want to build", bold at
+the title, "Tell us what you want to build", bold at
 `clamp(3rem, 7.5vw, 8rem)` with `0.86` leading, `-0.05em` tracking, and a
-`7.5em` measure, in the FAQ title's padded line masks. Below it sit a
+`7.5em` measure. Like the Services hero, it is an `sr-only` `h1` beside a
+visual copy hidden from assistive technology, set in three explicit lines,
+"Tell us what", "you want to", and "build" on its own with the image inset,
+each in a mask with `0.16em` of top and
+`0.2em` of bottom padding and a `-0.36em` bottom margin. A line may still wrap
+inside its mask on a narrow phone. "build" and the inset that follows it never
+separate. The inset is a `0.8em` tall, 16:9 frame with a `0.06em` radius,
+`0.12em` after the word and dropped `0.06em` like the Services hero insets.
+It holds an eager ImageCycle of four hero placeholders, `5.png`, `6.png`,
+`3.png`, and `4.png`, that cycles every `750ms`, and its width follows
+`--contact-hero-inset-open`, which rests at `0` before the reveal and `1`
+after it and under reduced motion. Below it sit a
 semibold description at `text-xl`, `text-2xl` from `md`, and a muted
 "Prefer email?" line whose underlined link opens the site email. Below `lg`
 the form stacks under the intro.
@@ -2071,12 +2082,15 @@ glyph pushed to the far edge, full width below `sm` and half the form from
 line under it confirms a sent message or offers the site email after a
 failure.
 
-At the page transition's reveal point, or once both splits exist on a direct
-request, the title lines rise from `150` percent with a `0.1s` stagger, the
+At the page transition's reveal point, or once the fonts and the description
+split are ready on a direct request, the title lines rise from `150` percent
+with a `0.1s` stagger inside masks clipped only while they rise, the
 description lines rise from `115` percent `0.3s` in with a `0.06s` stagger,
 and from `0.45s` the email line and each form group fade in while rising
-`48px`, `0.08s` apart, all over `0.8s` on `power3.out`. Reduced motion shows
-the hero at rest. The FAQ section below already sits in the first screen on
+`48px`, `0.08s` apart, all over `0.8s` on `power3.out`. At `0.4s` the inset
+after "build" opens with the Services hero timing: its frame grows from zero
+width over `1.1s` on the swap ease while the picture inside settles from
+`1.3` scale. Reduced motion shows the hero at rest with the inset open. The FAQ section below already sits in the first screen on
 larger viewports, so it waits for the hero reveal to finish before its own
 scroll reveal can play.
 
