@@ -198,7 +198,6 @@ onKeyStroke(
 				ref="menuPanel"
 				class="site-menu-panel"
 				aria-label="Expanded navigation"
-				:aria-hidden="!open"
 				:inert="!open"
 				data-lenis-prevent
 				data-page-transition-overlay

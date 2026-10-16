@@ -15,7 +15,7 @@ const {
 	imageAlt,
 	liveUrl,
 	results,
-	revealTones = ["primary", "yellow", "blue", "green"],
+	revealTones = ["yellow", "primary"],
 	tone = "primary",
 } = defineProps<{
 	class?: HTMLAttributes["class"]
@@ -61,18 +61,20 @@ const emit = defineEmits<{
 			/>
 
 			<div data-work-case-layer class="case-image-layer">
-				<NuxtImg
-					data-work-case-image
-					class="case-image"
-					:src="image"
-					:alt="imageAlt"
-					width="1456"
-					height="816"
-					sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
-					densities="x1"
-					loading="lazy"
-					draggable="false"
-				/>
+				<span class="case-image-zoom">
+					<NuxtImg
+						data-work-case-image
+						class="case-image"
+						:src="image"
+						:alt="imageAlt"
+						width="1456"
+						height="816"
+						sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
+						densities="x1"
+						loading="lazy"
+						draggable="false"
+					/>
+				</span>
 			</div>
 		</div>
 
@@ -151,6 +153,28 @@ const emit = defineEmits<{
 
 .case-layer {
 	transform: scale(0);
+}
+
+.case-image-zoom {
+	@apply absolute inset-0 block;
+}
+
+@media (hover: hover) {
+	.case-image-zoom {
+		scale: 1.06;
+		transition: scale 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+	}
+
+	.case:hover .case-image-zoom,
+	.case:has(.case-link:focus-visible) .case-image-zoom {
+		scale: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.case-image-zoom {
+		transition: none;
+	}
 }
 
 .case-image {

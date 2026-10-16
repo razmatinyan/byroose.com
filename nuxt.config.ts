@@ -34,6 +34,7 @@ export default defineNuxtConfig({
 
 	seo: {
 		fallbackTitle: false,
+		automaticTwitterTags: false,
 	},
 
 	sitemap: {
@@ -63,6 +64,7 @@ export default defineNuxtConfig({
 
 	ogImage: {
 		zeroRuntime: true,
+		includeTwitter: false,
 		defaults: {
 			width: 1200,
 			height: 630,

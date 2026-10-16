@@ -577,7 +577,13 @@ action title size: bold `text-display` type with `-0.05em` tracking, in
 a section that has no body copy. An image or video block fills the width at
 its own ratio.
 A grid is one column on phones, two from `sm`, and three from `lg` when set to
-three, with a `1rem` gap and each image at its own ratio.
+three, with a `1rem` gap and each image at its own ratio. Grid images request
+`sm:640px md:640px lg:640px xl:768px 2xl:1024px` in two columns and
+`sm:640px md:640px lg:448px xl:640px 2xl:768px` in three, with
+`densities="x1"`. Each value is the nearest `screens` width at or above the
+widest column its breakpoint range produces: a two-column image is about 463px
+wide at a 1023px viewport, so `md` asks for 640px, not 384px, which is not a
+screen and only triggered a rounding warning.
 
 A results block has no heading of its own. Put a title block, such as
 "Results", before it. The results are a description list with a `1rem` column
@@ -1399,15 +1405,15 @@ title types itself in from left to right. That recipe lives in
 `app/lib/char-reveal.ts`.
 
 Each case study reveals from its own trigger at the same line. The media frame
-fills with the preloader's stack reveal: five elements stacked on the frame all
-scale up from zero around their own center, four of them empty brand-color
-layers, with the image arriving as the fifth and last. Both the preloader and
+fills with the preloader's stack reveal: three elements stacked on the frame all
+scale up from zero around their own center, two of them empty brand-color
+layers, with the image arriving as the third and last. Both the preloader and
 this section run that recipe through `addStackReveal` in
 `app/lib/stack-reveal.ts`, so the lead element scales over one second with
 `power3.out`, the rest start a third of a second later, and the group carries a
 `0.12s` stagger. Change the timing there and both reveals move together.
 
-Each case study gets its own four-color sequence through the card's
+Each case study gets its own two-color sequence through the card's
 `revealTones` prop, resolved through the same `surface-*` map as the result
 highlights. The sequences are all different, and each one ends on the card's own
 `tone`, so the color that lands immediately before the image is the color the
@@ -1440,6 +1446,14 @@ raising the travel without raising the scale exposes the frame.
 Card content is not hidden before the motion initializes, because it is part of
 the server output. Reduced motion therefore needs no exit state for the cards:
 it resolves the title words and leaves every card at rest with no parallax.
+
+A case study card's image rests at `1.06` scale inside its frame and settles
+to its actual size on hover over `0.8s` on the tooltip's
+`cubic-bezier(0.19, 1, 0.22, 1)` curve, while the frame keeps its size. A
+linked card does the same while its link has keyboard focus. The scale sits on
+a `case-image-zoom` wrapper around the image, because GSAP owns the image's
+parallax transform and writes an inline `scale: none` on it. It applies only to `(hover: hover)` pointers and switches without
+the transition under reduced motion.
 
 The complete case study card is the hover surface for one shared trailing
 tooltip. WorkSection owns the active image and keeps one TrailingTooltip mounted
@@ -2731,8 +2745,11 @@ SplitText instances during cleanup, and skip character splitting for touch-only
 pointers or reduced-motion preferences.
 
 Escape closes the panel and restores focus to the control. Outside clicks and
-navigation selection also close it. Keep the panel inert and absent from the
-accessibility tree while closed, and let short viewports scroll its content
+navigation selection also close it. Keep the panel inert while closed. `inert`
+already removes it from the accessibility tree, so do not add `aria-hidden`:
+choosing a link closes the panel while that link still has focus, and the
+browser blocks and warns about `aria-hidden` on an ancestor of the focused
+element. Let short viewports scroll its content
 without handing those gestures to the page's Lenis instance.
 
 The Start a project action and the navigation control share one slot on desktop,

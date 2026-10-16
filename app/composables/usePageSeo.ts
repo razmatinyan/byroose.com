@@ -24,8 +24,6 @@ export function usePageSeo({ title, description, label, image }: PageSeo) {
       description,
       ogTitle: title,
       ogDescription: description,
-      twitterTitle: title,
-      twitterDescription: description,
    });
 
    if (!image) {
@@ -37,7 +35,5 @@ export function usePageSeo({ title, description, label, image }: PageSeo) {
 
    useSeoMeta({
       ogImage: { url: imageUrl, width: image.width, height: image.height, alt: image.alt },
-      twitterCard: "summary_large_image",
-      twitterImage: { url: imageUrl, alt: image.alt },
    });
 }

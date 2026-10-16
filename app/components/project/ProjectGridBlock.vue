@@ -9,7 +9,9 @@ const { block } = defineProps<{
 
 const columns = computed(() => block.columns ?? 2);
 const imageSizes = computed(() =>
-   columns.value === 3 ? "sm:640px md:384px lg:512px xl:640px" : "sm:640px md:384px lg:640px xl:768px",
+   columns.value === 3
+      ? "sm:640px md:640px lg:448px xl:640px 2xl:768px"
+      : "sm:640px md:640px lg:640px xl:768px 2xl:1024px",
 );
 </script>
 

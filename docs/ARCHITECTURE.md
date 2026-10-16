@@ -1083,13 +1083,16 @@ internal links during development and builds.
   trailing slash. `NUXT_SITE_URL` overrides the URL, and `NUXT_SITE_ENV` other
   than `production` makes the deployment not indexable.
 - The SEO utilities add the canonical link, `og:url`, `og:site_name`,
-  `og:type`, the `summary_large_image` Twitter card, and a `max-image-preview`
-  robots tag to every page, and append ` | byroose` to every title. Page titles
-  are therefore written without the brand.
+  `og:type`, and a `max-image-preview` robots tag to every page, and append
+  ` | byroose` to every title. Page titles are therefore written without the
+  brand. The site emits no `twitter:*` tags: X builds link previews from Open
+  Graph, and unhead flags those tags as deprecated. `seo.automaticTwitterTags:
+  false` stops the SEO utilities from inferring them, and
+  `ogImage.includeTwitter: false` stops the OG image module from adding them.
 - `app/lib/page-seo.ts` holds the title, description, and OG label of each
   indexable static page, so the pages and `llms.txt` share one copy.
 - `usePageSeo` in `app/composables/usePageSeo.ts` sets the title, description,
-  and Open Graph and Twitter title and description. Given an image, it shares
+  and Open Graph title and description. Given an image, it shares
   that image with its absolute URL, size, and alternative text. Otherwise it
   renders the `BrandCard` OG image with the title and an optional label. Every
   indexable page calls it, and `ProjectPage` passes the project cover when the

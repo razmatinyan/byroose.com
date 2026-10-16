@@ -38,7 +38,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Views earned across the launch", value: "11M" },
 			{ label: "Cutdowns delivered in one sprint", value: "60" },
 		],
-		revealTones: ["blue", "green", "yellow", "primary"],
+		revealTones: ["yellow", "primary"],
 		tone: "primary",
 	},
 	{
@@ -53,7 +53,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Users in the first two months", value: "4,000+" },
 			{ label: "Images generated in three months", value: "10,000+" },
 		],
-		revealTones: ["pink", "primary", "blue", "yellow"],
+		revealTones: ["blue", "yellow"],
 		tone: "yellow",
 	},
 	{
@@ -66,7 +66,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Increase in completed bookings", value: "+38%" },
 			{ label: "From brief to a live booking flow", value: "5 wks" },
 		],
-		revealTones: ["green", "yellow", "primary", "pink"],
+		revealTones: ["primary", "pink"],
 		tone: "pink",
 	},
 	{
@@ -79,7 +79,7 @@ const caseStudies: CaseStudy[] = [
 			{ label: "Conversion rate, up from 3.1%", value: "4.7%" },
 			{ label: "Lower bounce rate on the offer page", value: "-24%" },
 		],
-		revealTones: ["yellow", "blue", "pink", "green"],
+		revealTones: ["pink", "green"],
 		tone: "green",
 	},
 ];
