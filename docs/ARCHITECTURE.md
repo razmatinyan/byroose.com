@@ -552,12 +552,16 @@ statement's line and word split, rises the lines once with the shared line
 reveal timing, and scrubs every word from a dimmed opacity to full with the
 scroll. Reduced motion shows the lines at rest at full opacity.
 
-useListingHeroMotion owns the shared Work and Blog listing hero. It waits for the description split and
+useListingHeroMotion owns the shared Work and Blog listing hero and the Work
+project hero. It waits for the description split and
 the page transition's reveal point, then rises the `data-listing-hero-title-char`
 characters one by one inside their clipped mask with the shared character
 reveal duration and ease at a wider `0.07s` stagger and, `0.35s` later, the description lines with the About hero
-timing, and scrubs the hero content down at half the scroll speed while it
-fades out, as the Services hero does. It returns `revealed`, which lifts the
+timing. At the same point every `data-listing-hero-rise` element rises from
+`115` percent with a `0.06s` stagger inside its `data-listing-hero-mask`,
+which is clipped only while the reveal runs. It scrubs the hero content down
+at half the scroll speed while it fades out, as the Services hero does, unless
+it is called with `drift: false`. It returns `revealed`, which lifts the
 hero's hidden CSS rest state.
 
 useWorkProjectsMotion owns the Work projects section's motion. After mount
@@ -708,7 +712,7 @@ an `up` swap, and can turn the scale off, as the footer Back to Top button does.
 tracks pointer and focus state together, scales only for hover-capable
 pointers with motion allowed, and resolves the swap instantly under reduced
 motion. It stays separate from useHoverBounce and useHoverRollover so the
-elastic CTA contract stays untouched. ProjectLiveLink also uses the diagonal
+elastic CTA contract stays untouched. LiveLink also uses the diagonal
 swap without the scale.
 
 useUnderlineSweep owns a link's underline sweep. On each change between rest
@@ -946,12 +950,14 @@ storage, admin area, or editor. Adding or changing a project is a code change.
 - `app/lib/projects.ts` owns the `Project` type, its block types, the
   `ProjectCategory` names with `projectCategoryServices`, which maps each
   category to the `ai-content` or `website-development` service that the Work
-  filters group by, and `defineProject`, an identity helper that type-checks a
+  filters group by. Imagery, Reels, and Video are AI content, and Development,
+  E-commerce, UI/UX Design, Web Design, and Web Development are website
+  development. It also owns `defineProject`, an identity helper that type-checks a
   project file.
 - `app/data/projects/<slug>.ts` holds one project as the default export of
   `defineProject`: its slug, name, description, categories, optional live link,
-  cover, content blocks, and an optional search description that falls back
-  to the description.
+  cover, content blocks, and an optional search title and description that
+  fall back to the name and the description.
 - `app/data/projects/index.ts` lists every project, so listings can read them
   without a request.
 - `app/pages/work/<slug>.vue` imports one data file and renders `ProjectPage`.
@@ -967,10 +973,12 @@ The content blocks are:
 - `text`: an optional subtitle and one or more paragraphs, placed `left`,
   `center`, or `right`, which defaults to `left`.
 - `media`: one full width image or video.
+- `title`: one large centered section heading with no body copy.
 - `grid`: two or more images in two or three columns, which defaults to two.
 - `results`: one or more results, each a value and a label, shown in one of
   the `primary`, `blue`, `green`, `pink`, `yellow`, or `dark` surface tones,
-  which defaults to `primary`.
+  which defaults to `primary`. It carries no heading, so a `title` block
+  normally precedes it.
 
 `app/components/project` renders a project. Its components read typed props
 only and own no data.
@@ -980,16 +988,20 @@ only and own no data.
 - `ProjectHero` repeats the Work hero frame. The name is the page H1, centered
   on one line, and `useFitText` shrinks a long name to the full width, capped at
   the Work hero title size. The services list, the live link, and the
-  description follow.
-- `ProjectLiveLink` renders the Visit Live Website link, opening in a new tab.
-  It composes `useMenuLinkMotion`, `useArrowSwapHover`, and
+  description follow. It reveals through `useListingHeroMotion` with
+  `drift: false`.
+- The shared `LiveLink` in `app/components/shared` renders the Visit Live
+  Website link, opening in a new tab with `rel="noopener noreferrer"`. The
+  project hero and the home case study cards use it. It composes `useMenuLinkMotion`, `useArrowSwapHover`, and
   `useUnderlineSweep` for its hover motion.
 - `ProjectMedia` renders an image through NuxtImg or a muted, looping,
   autoplaying video, with the given responsive sizes and loading intent. The
-  cover loads eagerly and every other media item lazily.
+  cover loads eagerly and every other media item lazily. The cover and media
+  blocks span the page gutter and use its default per-breakpoint sizes, which
+  top out at the 1536px screen, and only grid images pass their own.
 - `ProjectBlocks` renders the blocks in order and places a spacer before each
   one, so the spacing is owned by the list rather than by the blocks.
-  `ProjectTextBlock`, `ProjectGridBlock`, and `ProjectResultsBlock` render their
+  `ProjectTextBlock`, `ProjectTitleBlock`, `ProjectGridBlock`, and `ProjectResultsBlock` render their
   block types, and a media block renders `ProjectMedia` directly.
 
 The Work listing still shows placeholder cards that do not link to project

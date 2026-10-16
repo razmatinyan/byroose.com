@@ -7,16 +7,20 @@ export type ProjectCategory =
    | "E-commerce"
    | "Imagery"
    | "Reels"
+   | "UI/UX Design"
    | "Video"
-   | "Web Design";
+   | "Web Design"
+   | "Web Development";
 
 export const projectCategoryServices: Readonly<Record<ProjectCategory, ProjectService>> = {
    Development: "website-development",
    "E-commerce": "website-development",
    Imagery: "ai-content",
    Reels: "ai-content",
+   "UI/UX Design": "website-development",
    Video: "ai-content",
    "Web Design": "website-development",
+   "Web Development": "website-development",
 };
 
 export interface ProjectImage {
@@ -45,6 +49,11 @@ export interface ProjectTextBlock {
    align?: "left" | "center" | "right";
 }
 
+export interface ProjectTitleBlock {
+   type: "title";
+   title: string;
+}
+
 export interface ProjectMediaBlock {
    type: "media";
    media: ProjectMedia;
@@ -67,7 +76,12 @@ export interface ProjectResultsBlock {
    results: readonly ProjectResult[];
 }
 
-export type ProjectBlock = ProjectTextBlock | ProjectMediaBlock | ProjectGridBlock | ProjectResultsBlock;
+export type ProjectBlock =
+   | ProjectTextBlock
+   | ProjectTitleBlock
+   | ProjectMediaBlock
+   | ProjectGridBlock
+   | ProjectResultsBlock;
 
 export interface Project {
    slug: string;
@@ -78,6 +92,7 @@ export interface Project {
    cover: ProjectMedia;
    blocks: readonly ProjectBlock[];
    seo?: {
+      title?: string;
       description?: string;
    };
 }

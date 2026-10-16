@@ -21,9 +21,15 @@ import {
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
+interface ListingHeroMotionOptions {
+   drift?: boolean;
+}
+
 const selectors = {
    content: "[data-listing-hero-content]",
+   mask: "[data-listing-hero-mask]",
    reveal: "[data-listing-hero-reveal]",
+   rise: "[data-listing-hero-rise]",
    titleChar: "[data-listing-hero-title-char]",
    titleMask: "[data-listing-hero-title-mask]",
 } as const;
@@ -31,6 +37,7 @@ const selectors = {
 const descriptionLineStagger = 0.06;
 const descriptionStart = 0.35;
 const heroDrift = 0.5;
+const riseStagger = 0.06;
 const titleCharStagger = 0.07;
 
 function queryAll(root: HTMLElement, selector: string) {
@@ -40,6 +47,7 @@ function queryAll(root: HTMLElement, selector: string) {
 export function useListingHeroMotion(
    scope: MotionScope,
    descriptionSplit: SplitSource,
+   { drift = true }: ListingHeroMotionOptions = {},
 ) {
    const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
@@ -49,14 +57,19 @@ export function useListingHeroMotion(
 
    function revealHero(root: HTMLElement, descriptionLines: HTMLElement[]) {
       const titleChars = queryAll(root, selectors.titleChar);
-      const titleMasks = queryAll(root, selectors.titleMask);
+      const masks = [
+         ...queryAll(root, selectors.titleMask),
+         ...queryAll(root, selectors.mask),
+      ];
+      const riseTargets = queryAll(root, selectors.rise);
+      const riseLines = [...descriptionLines, ...riseTargets];
       const revealTargets = queryAll(root, selectors.reveal);
-      gsap.set(titleMasks, { clipPath: revealMaskClip });
+      gsap.set(masks, { clipPath: revealMaskClip });
       gsap.set(titleChars, { yPercent: titleLineRevealOffset });
-      gsap.set(descriptionLines, { yPercent: wordRevealOffset });
+      gsap.set(riseLines, { yPercent: wordRevealOffset });
       gsap.set(revealTargets, { visibility: "inherit" });
 
-      gsap
+      const timeline = gsap
          .timeline({
             defaults: { duration: wordRevealDuration, ease: wordRevealEase },
             onComplete: async () => {
@@ -65,8 +78,8 @@ export function useListingHeroMotion(
                if (disposed) return;
 
                gsap.set(titleChars, { clearProps: "transform" });
-               gsap.set(titleMasks, { clearProps: "clipPath" });
-               gsap.set(descriptionLines, { clearProps: "transform" });
+               gsap.set(masks, { clearProps: "clipPath" });
+               gsap.set(riseLines, { clearProps: "transform" });
                gsap.set(revealTargets, { clearProps: "visibility" });
             },
          })
@@ -85,6 +98,14 @@ export function useListingHeroMotion(
             { stagger: descriptionLineStagger, yPercent: 0 },
             descriptionStart,
          );
+
+      if (riseTargets.length) {
+         timeline.to(
+            riseTargets,
+            { stagger: riseStagger, yPercent: 0 },
+            descriptionStart,
+         );
+      }
    }
 
    function driftHero(root: HTMLElement) {
@@ -135,7 +156,7 @@ export function useListingHeroMotion(
             }
 
             if (!revealed.value) revealHero(root, split?.lines ?? []);
-            driftHero(root);
+            if (drift) driftHero(root);
          },
          scope,
       );

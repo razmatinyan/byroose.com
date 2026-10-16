@@ -193,7 +193,10 @@ part without the brand suffix and keep it to about 50 characters, which keeps
 the full title near 60. The page part may still name byroose when it reads
 naturally, as the About title does. Edit static page titles and descriptions
 in `app/lib/page-seo.ts`, and a project's in its data file, where an optional
-`seo.description` replaces the visible description in search results.
+`seo.title` replaces the visible name and an optional `seo.description` replaces
+the visible description in the page title, search results, and sharing cards.
+Lead a project's search title with the client's full product name, even when
+the page H1 is shorter.
 Placeholder pages stay out of search until their real content ships.
 
 ## AI-assisted writing

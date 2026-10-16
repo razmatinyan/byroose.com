@@ -41,10 +41,10 @@ const { block } = defineProps<{
 }
 
 .text-block-title {
-   @apply text-2xl leading-snug font-medium tracking-[-0.02em] text-foreground md:text-3xl;
+   @apply text-2xl leading-snug font-semibold tracking-[-0.02em] text-foreground md:text-3xl;
 }
 
 .text-block-body {
-   @apply flex flex-col gap-[1lh] text-xl leading-snug font-medium tracking-[-0.01em] text-brand-soft md:text-2xl;
+   @apply flex flex-col gap-[1lh] text-xl leading-[1.1] font-medium tracking-[-0.01em] text-brand-soft md:text-2xl;
 }
 </style>

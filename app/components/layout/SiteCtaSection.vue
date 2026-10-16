@@ -90,8 +90,7 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .site-cta-title {
-   @apply m-0 leading-[0.88] font-bold tracking-[-0.05em];
-   font-size: min(clamp(3.5rem, 11vw, 12rem), 12vw);
+   @apply m-0 text-display font-bold tracking-[-0.05em];
 }
 
 .site-cta-title-line {

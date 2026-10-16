@@ -130,6 +130,9 @@ changes.
 - `text-hero` is reserved for the primary landing statement. It sets
   `clamp(2.875rem, 8.8vw, 9.5rem)`, about 127px at 1440 wide. See Home hero
   layout for how the hero title uses it.
+- `text-display` is the largest title size. It sets
+  `min(clamp(3.5rem, 11vw, 12rem), 12vw)` at `0.88` leading, about 158px at
+  1440 wide. The site call to action title and the project title block use it.
 - `text-section` is the default major section heading.
 - `text-statement` supports large editorial body statements.
 - `text-service` sets the service panel titles at
@@ -382,8 +385,8 @@ flashes during hydration.
 `SiteCtaSection` closes every route, between the page and the footer. It is a
 dark `foreground` section with `background` text that fills at least the
 viewport, centered, with "Have an idea?" and "Let's build it." on two bold
-lines at `min(clamp(3.5rem, 11vw, 12rem), 12vw)`, `-0.05em` tracking, and
-`0.88` leading, and a large `light` Start a project action to `/contact` with
+lines in `text-display`, `min(clamp(3.5rem, 11vw, 12rem), 12vw)` at `0.88`
+leading, with `-0.05em` tracking, and a large `light` Start a project action to `/contact` with
 an arrow right glyph and the hover bounce. It marks the header as dark. When
 the title reaches 82 percent of the viewport, its words rise one by one from
 their word masks in reading order across both lines, with the shared word
@@ -523,7 +526,19 @@ The project name is the H1, centered on one line at the Work title's `0.76`
 leading. Its size is at most the Work title's `23.71cqi`, so a name as long
 as "Our Work" or shorter keeps that size, and a longer name shrinks until it
 fits the full width. Below `lg` the description comes before the services and
-the live link. From `lg` they sit in the left column beside it.
+the live link. From `lg` they sit in the left column beside it. As on the
+Work hero, the `h1` is an `sr-only` copy of the name, and the visual title is
+split into characters and hidden from assistive technology.
+
+The hero reveals like the Work hero. At the page transition's reveal point the
+title characters rise one by one inside the shared mask, and `0.35s` later the
+description lines rise from `115` percent with a `0.06s` stagger. At the same
+moment the "Services" heading, each service, and the live link rise from `115`
+percent with their own `0.06s` stagger, each in a line mask that clips only
+while the reveal runs, so the live link's focus ring is never cut off. Until
+then all of it stays hidden in CSS, and reduced motion shows it at rest. The
+project hero does not drift or fade on scroll, because the cover follows it
+in the page flow instead of sliding over it.
 
 The services block has a semibold `text-xl`, `text-2xl` from `md`, "Services"
 heading in sentence case with `-0.04em` tracking, and the project categories
@@ -531,7 +546,7 @@ as a `text-2xl`, `text-3xl` from `md`, medium list with `-0.05em` tracking and
 a `0.125rem` gap. From `sm` the live link sits centered in the space between
 the services block and the description, bottom aligned with them.
 
-`ProjectLiveLink` renders a medium "Visit Live Website" label in `text-xl`,
+The shared `LiveLink` renders a medium "Visit Live Website" label in `text-xl`,
 `text-2xl` from `md`, at most `w-80` wide, with an arrow up right glyph at its
 end and a one pixel `foreground` line below. On hover or keyboard focus its
 label rolls over character by character through `useMenuLinkMotion`, like the
@@ -546,25 +561,33 @@ content blocks follow the cover with no extra space. Every image and video,
 from the cover to the grid items, uses `rounded-lg`. Each block follows a gap:
 `1rem` between two image, video, or grid blocks, counting the cover as one,
 which matches the gap between grid items, and `100px` on both sides of every
-text or results block. The page ends `100px` below its last block.
+text, title, or results block. A title block opens a new section, so the gap
+above it is `200px` unless it is the first block. The page ends `100px` below
+its last block.
 
 A text block is at most `max-w-3xl` wide and sits on the left, center, or right
 of the page while its text stays left aligned. From `lg` a right placed block
 starts in the second column of the hero's two-column grid, so it lines up with
-the hero description. The subtitle is a medium `text-2xl`, `text-3xl` from
+the hero description. The subtitle is a semibold `text-2xl`, `text-3xl` from
 `md`, H2 in `foreground`. The paragraphs are medium `text-xl`, `text-2xl`
-from `md`, in `brand-soft` with `leading-snug`, one line apart and `1.5rem`
-below the subtitle. An image or video block fills the width at its own ratio.
+from `md`, in `brand-soft` with a tight `1.1` leading, one line apart and `1.5rem`
+below the subtitle. A title block is a centered, balanced H2 at the call to
+action title size: bold `text-display` type with `-0.05em` tracking, in
+`foreground`. It gets the same `100px` gaps as a text block. Use it to open
+a section that has no body copy. An image or video block fills the width at
+its own ratio.
 A grid is one column on phones, two from `sm`, and three from `lg` when set to
 three, with a `1rem` gap and each image at its own ratio.
 
-A results block puts a bold `text-4xl`, `text-5xl` from `md`, "Results" H2
-with `-0.05em` tracking in the left third from `lg` and the results in the
-right two thirds, stacked below `lg`. The results are a description list that
-wraps with a `2.5rem` column and `2rem` row gap and repeats the home case study
-recipe: the value is an extrabold `text-5xl`, `text-6xl` from `md`,
-`rounded-lg` pill in the block's surface tone, and the label sits `0.75rem`
-below it in semibold `text-lg`, `text-xl` from `md`, at `14ch`.
+A results block has no heading of its own. Put a title block, such as
+"Results", before it. The results are a description list with a `1rem` column
+gap and a `3.5rem` row gap: one column on phones, two from `md`, and three from `lg` when there are more
+than two results. Each result has no surface of its own and centers its
+content. It scales up the home case study recipe: the value is an extrabold
+`rounded-lg` pill in the block's surface tone at
+`clamp(3.5rem, 6.5vw, 7.5rem)` with `-0.05em` tracking, and the label sits
+`1.5rem` below it in balanced semibold `text-4xl`, `text-5xl` from `md`, at
+most `16ch` wide. Labels start with a capital letter.
 
 ## Blog article
 

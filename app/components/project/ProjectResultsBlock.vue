@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useId } from "vue";
+import { computed } from "vue";
 import type { ProjectResultsBlock } from "@/lib/projects";
 import { surfaceTones } from "@/lib/surfaces";
 import { cn } from "@/lib/utils";
@@ -8,46 +8,40 @@ const { block } = defineProps<{
    block: ProjectResultsBlock;
 }>();
 
-const titleId = useId();
 const valueTone = computed(() => surfaceTones[block.tone ?? "primary"]);
+const columns = computed(() => (block.results.length > 2 ? 3 : 2));
 </script>
 
 <template>
-   <section class="results-block" :aria-labelledby="titleId">
-      <h2 :id="titleId" class="results-block-title">Results</h2>
-      <dl class="results-block-items">
-         <div v-for="result in block.results" :key="result.label" class="results-block-item">
-            <dt class="results-block-label">{{ result.label }}</dt>
-            <dd :class="cn('results-block-value', valueTone)">{{ result.value }}</dd>
-         </div>
-      </dl>
-   </section>
+   <dl class="results-block" :data-columns="columns">
+      <div v-for="result in block.results" :key="result.label" class="results-block-item">
+         <dt class="results-block-label">{{ result.label }}</dt>
+         <dd :class="cn('results-block-value', valueTone)">{{ result.value }}</dd>
+      </div>
+   </dl>
 </template>
 
 <style scoped>
 @reference "../../assets/css/tailwind.css";
 
 .results-block {
-   @apply grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16;
+   @apply m-0 grid grid-cols-1 gap-x-4 gap-y-14 md:grid-cols-2;
 }
 
-.results-block-title {
-   @apply text-4xl leading-none font-bold tracking-[-0.05em] md:text-5xl;
-}
-
-.results-block-items {
-   @apply flex flex-wrap items-start gap-x-10 gap-y-8;
+.results-block[data-columns="3"] {
+   @apply lg:grid-cols-3;
 }
 
 .results-block-item {
-   @apply flex min-w-0 flex-col-reverse items-start gap-3;
+   @apply flex min-w-0 flex-col-reverse items-center gap-6 text-center;
 }
 
 .results-block-value {
-   @apply m-0 max-w-full rounded-lg px-3 py-1.5 text-5xl leading-none font-extrabold tracking-[-0.05em] md:text-6xl;
+   @apply m-0 max-w-full rounded-lg px-[0.2em] py-[0.1em] leading-none font-extrabold tracking-[-0.05em];
+   font-size: clamp(3.5rem, 6.5vw, 7.5rem);
 }
 
 .results-block-label {
-   @apply w-[14ch] pb-[0.1em] text-lg leading-[1.05] font-semibold tracking-[-0.02em] md:text-xl;
+   @apply max-w-[16ch] text-4xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance md:text-5xl;
 }
 </style>

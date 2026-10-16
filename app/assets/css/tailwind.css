@@ -84,6 +84,8 @@
 	--spacing-page: clamp(1.25rem, 4vw, 3.5rem);
 	--spacing-section: clamp(6rem, 10vw, 11rem);
 
+	--text-display: min(clamp(3.5rem, 11vw, 12rem), 12vw);
+	--text-display--line-height: 0.88;
 	--text-hero: clamp(2.875rem, 8.8vw, 9.5rem);
 	--text-hero--line-height: 0.9;
 	--text-section: clamp(2.375rem, 6vw, 5.25rem);

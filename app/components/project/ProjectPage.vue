@@ -9,13 +9,14 @@ const { project } = defineProps<{
    project: Project;
 }>();
 
+const title = project.seo?.title ?? project.name;
 const description = project.seo?.description ?? project.description;
 const projectPath = `/work/${project.slug}`;
 const projectUrl = new URL(projectPath, siteUrl).href;
 const coverUrl = project.cover.kind === "image" ? new URL(project.cover.src, siteUrl).href : undefined;
 
 usePageSeo({
-   title: project.name,
+   title,
    description,
    label: "Case study",
    image: project.cover.kind === "image" ? project.cover : undefined,
@@ -50,7 +51,7 @@ useSchemaOrg([
          :live-url="project.liveUrl"
       />
       <div class="section-gutter">
-         <ProjectMedia :media="project.cover" loading="eager" sizes="100vw" />
+         <ProjectMedia :media="project.cover" loading="eager" />
       </div>
       <ProjectBlocks :blocks="project.blocks" />
    </article>

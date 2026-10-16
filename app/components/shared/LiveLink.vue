@@ -15,7 +15,7 @@ useUnderlineSweep(link);
 </script>
 
 <template>
-   <a ref="link" :href="href" class="live-link" target="_blank" rel="noopener" :aria-label="label">
+   <a ref="link" :href="href" class="live-link" target="_blank" rel="noopener noreferrer" :aria-label="label">
       <span class="live-link-texts" data-menu-texts aria-hidden="true">
          <span class="live-link-label" data-menu-label>{{ label }}</span>
          <span class="live-link-label live-link-label-copy" data-menu-label-copy>{{ label }}</span>
