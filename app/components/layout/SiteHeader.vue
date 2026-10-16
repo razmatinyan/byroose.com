@@ -2,6 +2,7 @@
 import { computed, shallowRef, useTemplateRef, watch } from "vue";
 import type { CSSProperties } from "vue";
 import { useMediaQuery } from "@vueuse/core";
+import { NuxtLink } from "#components";
 import SiteMenu from "@/components/layout/SiteMenu.vue";
 import SiteNavLink from "@/components/layout/SiteNavLink.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
@@ -107,8 +108,8 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
                   <span class="site-header-rise" data-header-rise>
                      <Button
                         class="site-header-cta"
-                        as="a"
-                        :href="ctaHref"
+                        :as="NuxtLink"
+                        :to="ctaHref"
                         size="cta-sm"
                         :variant="headerCtaVariant"
                         :data-bordered="onDarkSurface || undefined"
