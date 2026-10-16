@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, shallowRef, useTemplateRef } from "vue";
+import ContactSentDialog from "@/components/contact/ContactSentDialog.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,9 +14,10 @@ import {
 	getContactFormErrors,
 } from "@/lib/contact-form";
 import type { ContactFormErrors, ContactFormField } from "@/lib/contact-form";
+import { appIcons } from "@/lib/icons";
 import { siteEmail } from "@/lib/site";
 
-type ContactFormStatus = "idle" | "sending" | "sent" | "failed";
+type ContactFormStatus = "idle" | "sending" | "failed";
 
 interface ContactFieldConfig {
 	name: ContactFormField;
@@ -58,6 +60,7 @@ const values = reactive(createEmptyContactForm());
 const attempted = shallowRef(false);
 const status = shallowRef<ContactFormStatus>("idle");
 const honeypot = shallowRef("");
+const sentDialogOpen = shallowRef(false);
 
 const validation = computed(() => contactFormSchema.safeParse(values));
 const errors = computed<ContactFormErrors>(() => {
@@ -102,7 +105,8 @@ async function submit() {
 		});
 		Object.assign(values, createEmptyContactForm());
 		attempted.value = false;
-		status.value = "sent";
+		status.value = "idle";
+		sentDialogOpen.value = true;
 	} catch {
 		status.value = "failed";
 	}
@@ -194,14 +198,14 @@ async function submit() {
 			>
 				{{ sending ? sendingLabel : submitLabel }}
 				<template #icon>
-					<ButtonIcon />
+					<ButtonIcon v-show="!sending" />
+					<ButtonIcon v-if="sending">
+						<Icon :name="appIcons.spinner" class="contact-submit-spinner" />
+					</ButtonIcon>
 				</template>
 			</Button>
 			<p class="contact-form-status" role="status">
-				<template v-if="status === 'sent'">
-					Thanks, your message is on its way. We'll reply with next steps.
-				</template>
-				<template v-else-if="status === 'failed'">
+				<template v-if="status === 'failed'">
 					We couldn't send your message. Email us at
 					<a
 						class="contact-form-status-link"
@@ -212,6 +216,8 @@ async function submit() {
 				</template>
 			</p>
 		</div>
+
+		<ContactSentDialog v-model:open="sentDialogOpen" />
 	</form>
 </template>
 
@@ -251,8 +257,12 @@ async function submit() {
 }
 
 .contact-submit {
-	@apply w-full justify-between px-6 sm:w-1/2;
+	@apply w-full justify-between px-6 disabled:opacity-100 sm:w-1/2;
 	min-height: 3.75rem;
+}
+
+.contact-submit-spinner {
+	@apply size-5 motion-safe:animate-spin;
 }
 
 .contact-form-status {

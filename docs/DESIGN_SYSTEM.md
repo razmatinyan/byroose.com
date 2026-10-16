@@ -2081,9 +2081,22 @@ from `md`, and resizes vertically. Errors sit under their control in
 `destructive` text, and the control takes the primitive's `aria-invalid`
 ring. The submit action is a `dark` `cta-lg` Button with the arrow up right
 glyph pushed to the far edge, full width below `sm` and half the form from
-`sm`. It reads "Sending" and is disabled while a submit runs. A polite status
-line under it confirms a sent message or offers the site email after a
-failure.
+`sm`. While a submit runs it reads "Sending", stays disabled at full opacity,
+and swaps its arrow for the Lucide `loader-circle` spinner, which turns with
+`animate-spin` and holds still under reduced motion. The arrow stays mounted
+and only hides, so the rollover keeps its glyphs after a submit. A polite
+status line under the action offers the site email after a failure.
+
+A successful submit clears the form and opens the sent dialog instead of an
+inline message. The dialog is the shared Dialog primitive without its close
+glyph: a `max-w-xl` panel with `clamp(1.5rem, 3vw, 2.5rem)` corners, no
+border, and a large shadow. A round `yellow` `cta-icon` close action named
+"Close" sits in its top right corner, as in the About member dialog. Below
+it, centered, are a round `ribbon` green mark with a Lucide `check`, the
+"Message sent" title, bold at `text-4xl` and `text-5xl` from `md`, and a
+muted description. Escape, the overlay, and the close action close it, and
+focus returns to the submit action. It locks the smooth scroll while open and skips its zoom and
+fade under reduced motion.
 
 At the page transition's reveal point, or once the fonts and the description
 split are ready on a direct request, the title lines rise from `150` percent

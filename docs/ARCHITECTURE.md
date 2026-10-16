@@ -274,7 +274,8 @@ contract on the server. Errors appear only after the first submit attempt,
 then follow every change, and a failed attempt focuses the first invalid
 field. A valid submit posts the trimmed payload and the hidden `website`
 honeypot to `/api/contact`, and any failure points the reader to the site
-email.
+email. A success clears the form and opens ContactSentDialog, which binds its
+open state through `defineModel` and locks the smooth scroll while it is open.
 
 ### Contact email
 
