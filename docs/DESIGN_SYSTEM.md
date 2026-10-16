@@ -2409,7 +2409,13 @@ the visual line is hidden from assistive technology. The description, "Reels tha
 directed like a shoot. Websites designed and coded from scratch. The proof is
 in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
 `text-5xl` from `xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
-measure, in line masks that carry `0.12em` above and `0.18em` below.
+measure, in line masks that carry `0.12em` above and `0.18em` below. Each mask
+cancels that padding with negative margins, and the description becomes a flex
+column once it holds the masks, so the margins of adjacent masks never
+collapse into each other. The split lines then keep the height of the unsplit
+paragraph, and nothing below the hero moves when the description splits. It
+stays a block while SplitText measures, because a flex container would put
+every word on its own line.
 
 The hero reveals like the home hero. At the page transition's reveal point, or
 once the description is split on a direct request, the title characters rise
