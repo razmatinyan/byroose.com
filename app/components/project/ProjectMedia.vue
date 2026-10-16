@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { ProjectMedia } from "@/lib/projects";
 
 const {
@@ -10,11 +11,36 @@ const {
    sizes?: string;
    loading?: "lazy" | "eager";
 }>();
+
+const openImage = useProjectGallery();
+const viewLabel = computed(() => (media.alt ? `View full size: ${media.alt}` : "View full size image"));
+
+function viewImage() {
+   if (media.kind === "image") openImage?.(media);
+}
 </script>
 
 <template>
+   <button
+      v-if="media.kind === 'image' && openImage"
+      type="button"
+      class="project-media-trigger"
+      :aria-label="viewLabel"
+      @click="viewImage"
+   >
+      <NuxtImg
+         :src="media.src"
+         alt=""
+         :width="media.width"
+         :height="media.height"
+         :sizes="sizes"
+         densities="x1"
+         :loading="loading"
+         class="project-media"
+      />
+   </button>
    <NuxtImg
-      v-if="media.kind === 'image'"
+      v-else-if="media.kind === 'image'"
       :src="media.src"
       :alt="media.alt"
       :width="media.width"
@@ -45,5 +71,9 @@ const {
 
 .project-media {
    @apply block h-auto w-full rounded-lg;
+}
+
+.project-media-trigger {
+   @apply block w-full cursor-pointer rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
 }
 </style>

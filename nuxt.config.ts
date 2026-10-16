@@ -184,6 +184,7 @@ export default defineNuxtConfig({
 			'2xl': 1536,
 			'portrait': 448,
 			'portrait-2x': 896,
+			'viewer': 2560,
 		},
 		// format: ['webp'],
 		// ipx: {

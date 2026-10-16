@@ -100,3 +100,14 @@ export interface Project {
 export function defineProject(project: Project): Project {
    return project;
 }
+
+export function getProjectImages({ cover, blocks }: Project): ProjectImage[] {
+   const images: ProjectImage[] = cover.kind === "image" ? [cover] : [];
+
+   for (const block of blocks) {
+      if (block.type === "media" && block.media.kind === "image") images.push(block.media);
+      if (block.type === "grid") images.push(...block.images);
+   }
+
+   return images;
+}

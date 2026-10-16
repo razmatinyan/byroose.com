@@ -61,6 +61,7 @@ app/
     usePageTransition.ts
     usePageSeo.ts
     usePageTransitionMotion.ts
+    useProjectGallery.ts
     useServicesHeroMotion.ts
     useServicesMediaFlight.ts
     useServicesMotion.ts
@@ -954,7 +955,8 @@ storage, admin area, or editor. Adding or changing a project is a code change.
   filters group by. Imagery, Reels, and Video are AI content, and Development,
   E-commerce, UI/UX Design, Web Design, and Web Development are website
   development. It also owns `defineProject`, an identity helper that type-checks a
-  project file.
+  project file, and `getProjectImages`, which lists the cover, media block, and
+  grid images of a project in page order for the image viewer.
 - `app/data/projects/<slug>.ts` holds one project as the default export of
   `defineProject`: its slug, name, description, categories, optional live link,
   cover, content blocks, and an optional search title and description that
@@ -999,7 +1001,19 @@ only and own no data.
   autoplaying video, with the given responsive sizes and loading intent. The
   cover loads eagerly and every other media item lazily. The cover and media
   blocks span the page gutter and use its default per-breakpoint sizes, which
-  top out at the 1536px screen, and only grid images pass their own.
+  top out at the 1536px screen, and only grid images pass their own. When a
+  project gallery is provided, an image renders inside a button that opens it
+  in the viewer.
+- `ProjectPage` collects the images with `getProjectImages`, owns the viewer
+  index, and provides an `openImage` function through `provideProjectGallery`.
+  `ProjectMedia` reads it with `useProjectGallery`, so the blocks between them
+  pass nothing down. An image that appears twice opens at the position it was
+  clicked, because the lookup compares the image object before its source.
+- `ProjectImageViewer` renders the gallery in a full-screen Dialog with close,
+  previous, and next actions, arrow key and touch swipe navigation, and a
+  counter. It holds the smooth scroll lock while open. It sizes its frame from
+  the image's intrinsic width and height, so it never waits for the file to
+  measure, and GSAP tweens the frame to each new size.
 - `ProjectBlocks` renders the blocks in order and places a spacer before each
   one, so the spacing is owned by the list rather than by the blocks.
   `ProjectTextBlock`, `ProjectTitleBlock`, `ProjectGridBlock`, and `ProjectResultsBlock` render their

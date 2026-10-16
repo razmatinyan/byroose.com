@@ -589,6 +589,40 @@ content. It scales up the home case study recipe: the value is an extrabold
 `1.5rem` below it in balanced semibold `text-4xl`, `text-5xl` from `md`, at
 most `16ch` wide. Labels start with a capital letter.
 
+Every project image, from the cover to the grid items, opens in the image
+viewer on click or keyboard activation. The image sits in a full-width button
+with a pointer cursor, a `rounded-lg` focus ring, and the label "View full
+size" followed by its alt text. Videos do not open.
+
+The viewer is a full-screen Dialog over a `foreground/90` overlay. The image
+shows at its intrinsic size and only shrinks to fit the viewport, never grows,
+inside a `rounded-lg` `foreground` frame with a large shadow. The frame keeps
+only `24px` free on every side from `md` and `16px` below it, so a large
+image fills as much of the screen as it can: a 2560 by 1440 image shows at about
+1835 by 1032 on a 1920 by 1080 screen. The controls float over the frame's
+edges. The round `light` `cta-icon` previous and next actions sit centered on
+the viewport's left and right edges from `md` and in the bottom corners below
+it, the close action sits in the top right corner, and a semibold
+`background` "3 / 13" counter sits centered at the bottom on a
+`foreground/70` pill, so it stays readable over light images. The arrow keys and a horizontal touch
+swipe also step through the images, and stepping wraps from the last image to
+the first. Clicking outside the frame or pressing Escape closes it. Closing
+returns focus to the image that opened the viewer with `preventScroll`, so the
+page stays exactly where the reader left it instead of scrolling that image
+into view.
+
+Changing images never jumps. The frame tweens its width and height to the next
+image's fitted size over `0.7s` on `power3.inOut`, and a new step during a
+resize retargets from the current size instead of restarting. Each image is an
+`object-cover` layer, so it fills the frame while the ratio changes and fits
+exactly once the frame settles. The next image waits until it has loaded, then
+fades in over the previous one in `0.45s` on `power2.out`, and the older layers
+are removed. The two neighbors of the current image load in the background.
+Window resizes refit the frame at once. Reduced motion swaps the size and the
+image without tweens and keeps the Dialog still. The images request
+`sm:1024px md:1536px xl:2560px` with `densities="x1"`, so a large screen gets
+the full source.
+
 ## Blog article
 
 An article page sits on the site `background`. The hero fills the first screen
@@ -699,7 +733,8 @@ Every width an image requests, including its 2x density, must be a value in
 `100vw` is resolved against a 1px screen and produces a useless 1px candidate.
 When a fixed slot needs a width that is not a breakpoint, add it to `screens`
 under a descriptive key, as the 448px slots of the trailing tooltip and the more
-works frame do with `portrait` and `portrait-2x`. Repeating CSS background textures are the exception and are
+works frame do with `portrait` and `portrait-2x`, and the project image viewer does
+with `viewer` at 2560px. Repeating CSS background textures are the exception and are
 described in Canvas grain.
 
 The browser picks a candidate once, from the `sizes` value multiplied by the
