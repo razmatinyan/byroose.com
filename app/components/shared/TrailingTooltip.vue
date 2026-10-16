@@ -271,6 +271,10 @@ onScopeDispose(() => {
 	@apply gap-3 p-1.5 pr-5;
 }
 
+.trailing-tooltip[data-size="compact"][data-media="false"] {
+	@apply px-3.5 py-2;
+}
+
 .trailing-tooltip[data-size="compact"] .trailing-tooltip-media {
 	@apply size-16;
 	border-radius: calc(0.75rem - 0.375rem);

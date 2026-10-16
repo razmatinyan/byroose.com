@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { NuxtLink } from "#components";
 
 export interface ProjectImage {
    height: number;
@@ -7,8 +8,9 @@ export interface ProjectImage {
    width: number;
 }
 
-const { categories, image, imageAlt, name } = defineProps<{
+const { categories, href, image, imageAlt, name } = defineProps<{
    categories: readonly string[];
+   href?: string;
    image: ProjectImage;
    imageAlt: string;
    name: string;
@@ -23,7 +25,9 @@ const categoryLabel = computed(() => categories.join(", "));
 </script>
 
 <template>
-   <article
+   <component
+      :is="href ? NuxtLink : 'article'"
+      :to="href"
       class="project-card"
       data-work-project
       @pointerenter="emit('activate')"
@@ -46,14 +50,14 @@ const categoryLabel = computed(() => categories.join(", "));
          <h3 class="project-card-title">{{ name }}</h3>
          <p class="project-card-categories">{{ categoryLabel }}</p>
       </div>
-   </article>
+   </component>
 </template>
 
 <style scoped>
 @reference '../../assets/css/tailwind.css';
 
 .project-card {
-   @apply flex cursor-pointer flex-col gap-4 md:gap-5;
+   @apply flex cursor-pointer flex-col gap-4 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:gap-5;
 }
 
 .project-card-media {
@@ -81,7 +85,8 @@ const categoryLabel = computed(() => categories.join(", "));
       transition: scale 0.8s cubic-bezier(0.19, 1, 0.22, 1);
    }
 
-   .project-card:hover .project-card-image {
+   .project-card:hover .project-card-image,
+   .project-card:focus-visible .project-card-image {
       scale: 1.06;
    }
 }

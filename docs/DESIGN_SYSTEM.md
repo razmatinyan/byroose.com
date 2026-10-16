@@ -1337,7 +1337,7 @@ brand color from `app/lib/surfaces.ts` rather than defining one. The highlight
 keeps a surface behind the number because yellow and pink would not be
 readable as text on the canvas. The label below it is `font-semibold`
 `foreground` text at `text-lg`, `text-xl` from `md`, with `1.05` leading, held
-to `14ch` so it wraps into a short stack under its number. Its `0.1em` of
+to `18ch` so it wraps into at most two lines under its number. Its `0.1em` of
 bottom padding keeps the last line's descenders inside its reveal mask. The
 color belongs to the number and not to the sentence that explains it.
 
@@ -1409,16 +1409,28 @@ it resolves the title words and leaves every card at rest with no parallax.
 The complete case study card is the hover surface for one shared trailing
 tooltip. WorkSection owns the active image and keeps one TrailingTooltip mounted
 through Nuxt's shared teleport target, so the follower is not clipped by the
-landing wrapper or card media. The card stays an article until a real case study
-destination exists. Its pointer cursor communicates the intended future link
-surface without introducing a no-op control or fake URL.
+landing wrapper or card media. The card is always an article. A card with an
+`href`, such as ZEEL AI Studio, adds a NuxtLink that covers the whole card,
+named by the client in `sr-only` text, and the card shows the focus ring while
+that link has keyboard focus. A card with a `liveUrl` adds the shared
+`LiveLink` `2rem` below the description, revealed with the other lines in a
+mask with `0.25rem` of padding so its focus ring is not clipped. It sits above
+the covering link, so both links stay separate and never nest. Hovering it
+switches the tooltip to its compact text-only form, "Visit Live" with an arrow
+up right glyph and no image, and leaving it for the rest of the card brings
+back the card image and "See Full Project". A placeholder card has neither and
+stays a plain article. Its pointer cursor
+communicates the intended future link surface without introducing a no-op
+control or fake URL.
 
 The tooltip uses the hovered card image in a large 104-pixel thumbnail, the
 label "See Full Project" at `text-3xl`, and a fixed card surface outlined by a
 one-pixel light grey `border-border` hairline, which keeps its edge visible on
 the light canvas. Its `size`
 prop also accepts `compact`, a 64-pixel thumbnail with a `text-xl` label and
-tighter padding, which the more works panel and the services images use. When
+tighter padding, which the more works panel and the services images use.
+Without an image the compact tooltip is text only, with `0.875rem` inline and
+`0.5rem` block padding. When
 the size changes while the tooltip is already open, such as moving from the
 last case card onto the more works panel, the padding, gap, thumbnail size and
 radius, and label size transition over `0.5s` on the tooltip's
@@ -2496,14 +2508,16 @@ categories on the right, semibold and medium `brand-subtle` at `text-xl`,
 `text-2xl` from `md`, and `text-3xl` from `xl`, with `-0.03em` tracking. The
 row is inset from the frame's edges by `0.75rem`, `1rem` from `md`, and
 `1.25rem` from `xl`, so the name and the categories sit inside the image's
-edges rather than flush with them. The categories are Reels, Video,
-and Imagery for AI content, and Web Design, Development, and E-commerce for
-website development. The images are `object-cover` crops of the hero and work
-placeholders, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
-with `densities="x1"`, which covers the 4:3 crop and the hover scale. The
-projects, their names, and their images are placeholders, so the cards stay
-articles without a link until real case study routes exist. The pointer
-cursor marks the future link surface, as the home case study cards do.
+edges rather than flush with them. The categories and their services come
+from `app/lib/projects.ts`. The images are `object-cover` crops of 16:9 or
+portrait sources, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
+with `densities="x1"`, which covers the 4:3 crop and the hover scale. ZEEL AI
+Studio is the first real project: its card takes an `href`, so the whole card
+renders as a NuxtLink to its project page. The other projects, their names,
+and their images are placeholders, so their cards stay articles without a link
+until their project pages exist. The pointer cursor marks the link surface on
+both, as on the home case study cards. A linked card shows the focus ring and
+the hover image scale on keyboard focus.
 
 Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
 the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's

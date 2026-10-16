@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { Card } from "@/components/ui/card"
+import LiveLink from "@/components/shared/LiveLink.vue"
 import { surfaceTones } from "@/lib/surfaces"
 import type { SurfaceTone } from "@/lib/surfaces"
 import { cn } from "@/lib/utils"
@@ -9,8 +10,10 @@ const {
 	class: className,
 	client,
 	description,
+	href,
 	image,
 	imageAlt,
+	liveUrl,
 	results,
 	revealTones = ["primary", "yellow", "blue", "green"],
 	tone = "primary",
@@ -18,8 +21,10 @@ const {
 	class?: HTMLAttributes["class"]
 	client: string
 	description: string
+	href?: string
 	image: string
 	imageAlt: string
+	liveUrl?: string
 	results: readonly { label: string, value: string }[]
 	revealTones?: readonly SurfaceTone[]
 	tone?: SurfaceTone
@@ -28,6 +33,8 @@ const {
 const emit = defineEmits<{
 	activate: []
 	deactivate: []
+	liveActivate: []
+	liveDeactivate: []
 }>()
 </script>
 
@@ -40,6 +47,10 @@ const emit = defineEmits<{
 		@pointerenter="emit('activate')"
 		@pointerleave="emit('deactivate')"
 	>
+		<NuxtLink v-if="href" :to="href" class="case-link">
+			<span class="sr-only">{{ client }}</span>
+		</NuxtLink>
+
 		<div class="case-media">
 			<span
 				v-for="revealTone in revealTones"
@@ -76,6 +87,16 @@ const emit = defineEmits<{
 				</p>
 			</div>
 
+			<div v-if="liveUrl" class="case-line case-live">
+				<div data-work-case-reveal>
+					<LiveLink
+						:href="liveUrl"
+						@pointerenter="emit('liveActivate')"
+						@pointerleave="emit('liveDeactivate')"
+					/>
+				</div>
+			</div>
+
 			<div class="case-results">
 				<div v-for="result in results" :key="result.label" class="case-result">
 					<div class="case-line">
@@ -102,7 +123,19 @@ const emit = defineEmits<{
 @reference '../../assets/css/tailwind.css';
 
 .case {
-	@apply grid cursor-pointer grid-cols-1 items-start gap-8 md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
+	@apply relative grid cursor-pointer grid-cols-1 items-start gap-8 rounded-2xl md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
+}
+
+.case:has(.case-link:focus-visible) {
+	@apply ring-3 ring-ring/50;
+}
+
+.case-link {
+	@apply absolute inset-0 z-1 rounded-2xl outline-none;
+}
+
+.case-live {
+	@apply relative z-2 -m-1 mt-7 p-1;
 }
 
 .case-media {
@@ -153,6 +186,6 @@ const emit = defineEmits<{
 }
 
 .case-result-label {
-	@apply m-0 max-w-[14ch] pb-[0.1em] text-lg leading-[1.05] font-semibold tracking-[-0.02em] md:text-xl;
+	@apply m-0 max-w-[18ch] pb-[0.1em] text-lg leading-[1.05] font-semibold tracking-[-0.02em] md:text-xl;
 }
 </style>

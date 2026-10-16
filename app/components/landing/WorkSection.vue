@@ -3,6 +3,7 @@ import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import CaseStudyCard from "@/components/cards/CaseStudyCard.vue";
 import MoreWorksPanel from "./MoreWorksPanel.vue";
 import WorkLine from "./WorkLine.vue";
+import { appIcons } from "@/lib/icons";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 import type { SurfaceTone } from "@/lib/surfaces";
@@ -14,14 +15,17 @@ const TrailingTooltip = defineAsyncComponent(
 interface CaseStudy {
 	client: string;
 	description: string;
+	href?: string;
 	image: string;
 	imageAlt: string;
+	liveUrl?: string;
 	results: readonly { label: string; value: string }[];
 	revealTones: readonly SurfaceTone[];
 	tone: SurfaceTone;
 }
 
 const workTitle = "What we've done";
+const liveTooltipLabel = "Visit Live";
 
 const caseStudies: CaseStudy[] = [
 	{
@@ -38,14 +42,16 @@ const caseStudies: CaseStudy[] = [
 		tone: "primary",
 	},
 	{
-		client: "Kessler Tools",
+		client: "ZEEL AI Studio",
 		description:
-			"A product site rebuilt around how buyers actually search, from the category pages down to the specs they compare.",
-		image: "/images/hero/2.png",
-		imageAlt: "Kessler Tools project visual",
+			"An AI design platform for ZEEL Project that turns a room description and real 3D models into photorealistic renders.",
+		href: "/work/zeel-ai-studio",
+		image: "/images/work/zeel-ai-studio/cover.jpg",
+		imageAlt: "ZEEL AI Studio home screen on a laptop resting on a textured stone block",
+		liveUrl: "https://ai.zeelproject.com/",
 		results: [
-			{ label: "More qualified enquiries", value: "41%" },
-			{ label: "Organic traffic to category pages", value: "3.2x" },
+			{ label: "Users in the first two months", value: "4,000+" },
+			{ label: "Images generated in three months", value: "10,000+" },
 		],
 		revealTones: ["pink", "primary", "blue", "yellow"],
 		tone: "yellow",
@@ -85,6 +91,7 @@ const titleSplit = shallowRef<SplitTextResult>();
 const {
 	active: tooltipActive,
 	hide: deactivateTooltip,
+	icon: tooltipIcon,
 	image: tooltipImage,
 	label: tooltipLabel,
 	shouldLoad: shouldLoadTooltip,
@@ -101,6 +108,10 @@ function setTitleSplit(parts: SplitTextResult) {
 
 function activateTooltip(item: CaseStudy) {
 	showTooltip(item.image);
+}
+
+function activateLiveTooltip() {
+	showTooltip("", liveTooltipLabel, "compact", appIcons.arrowUpRight);
 }
 
 function activatePanelTooltip(image: string, label: string) {
@@ -129,6 +140,8 @@ function activatePanelTooltip(image: string, label: string) {
 					v-bind="item"
 					@activate="activateTooltip(item)"
 					@deactivate="deactivateTooltip"
+					@live-activate="activateLiveTooltip"
+					@live-deactivate="activateTooltip(item)"
 				/>
 			</div>
 		</div>
@@ -141,6 +154,7 @@ function activatePanelTooltip(image: string, label: string) {
 		<TrailingTooltip
 			v-if="shouldLoadTooltip"
 			:active="tooltipActive"
+			:icon="tooltipIcon"
 			:image="tooltipImage"
 			:label="tooltipLabel"
 			:preload="tooltipPreload"

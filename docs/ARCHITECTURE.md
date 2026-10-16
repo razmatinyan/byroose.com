@@ -634,10 +634,11 @@ and MoreWorksPanel gate their cycling on `loaded`, and TrailingTooltip waits
 on `whenImageLoaded` before showing a new thumbnail layer.
 
 useTrailingTooltip owns the shared TrailingTooltip state: the active flag, the
-image, label, and size, the 200ms close delay, and whether the fine-pointer tooltip
+image, label, size, and optional icon, the 200ms close delay, and whether the fine-pointer tooltip
 should load. WorkSection, ServicesSection, AboutTeamSection, ServicesHero, and WorkProjectsSection compose it and
 keep their own TrailingTooltip instance. `show` takes an optional image, so a
-text-only tooltip opens without one.
+text-only tooltip opens without one, and an optional fourth argument sets
+the icon after the label.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 the top-of-page scroll thresholds, and responsive animation states. It also
@@ -972,8 +973,8 @@ The content blocks are:
 
 - `text`: an optional subtitle and one or more paragraphs, placed `left`,
   `center`, or `right`, which defaults to `left`.
-- `media`: one full width image or video.
 - `title`: one large centered section heading with no body copy.
+- `media`: one full width image or video.
 - `grid`: two or more images in two or three columns, which defaults to two.
 - `results`: one or more results, each a value and a label, shown in one of
   the `primary`, `blue`, `green`, `pink`, `yellow`, or `dark` surface tones,
@@ -1004,8 +1005,14 @@ only and own no data.
   `ProjectTextBlock`, `ProjectTitleBlock`, `ProjectGridBlock`, and `ProjectResultsBlock` render their
   block types, and a media block renders `ProjectMedia` directly.
 
-The Work listing still shows placeholder cards that do not link to project
-pages. It will read `app/data/projects/index.ts` once real projects exist.
+The Work listing and the home case studies still keep their cards as local
+data in `WorkProjectsSection` and `WorkSection`. ZEEL AI Studio replaces one
+placeholder in each and passes an `href` to its project page, which turns
+`ProjectCard` into a NuxtLink and adds a NuxtLink covering `CaseStudyCard`, so
+the case card's `liveUrl` link can sit above it without nesting. The remaining cards are
+placeholders without a link. Both lists will read `app/data/projects/index.ts`
+once every card is a real project. The Work listing reads its category names
+and the category to service map from `app/lib/projects.ts`.
 
 ## Blog posts
 

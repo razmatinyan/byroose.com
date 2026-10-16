@@ -3,6 +3,8 @@ import { computed, defineAsyncComponent, shallowRef, useTemplateRef } from "vue"
 import ProjectCard from "@/components/cards/ProjectCard.vue";
 import type { ProjectImage } from "@/components/cards/ProjectCard.vue";
 import { appIcons } from "@/lib/icons";
+import { projectCategoryServices } from "@/lib/projects";
+import type { ProjectCategory, ProjectService } from "@/lib/projects";
 import WorkFilters from "./WorkFilters.vue";
 import type { WorkFilterOption } from "./WorkFilters.vue";
 
@@ -10,31 +12,15 @@ const TrailingTooltip = defineAsyncComponent(
    () => import("@/components/shared/TrailingTooltip.vue"),
 );
 
-type WorkService = "ai-content" | "website-development";
-type WorkFilter = "all" | WorkService;
-type ProjectCategory =
-   | "Development"
-   | "E-commerce"
-   | "Imagery"
-   | "Reels"
-   | "Video"
-   | "Web Design";
+type WorkFilter = "all" | ProjectService;
 
 interface Project {
    categories: readonly ProjectCategory[];
+   href?: string;
    image: ProjectImage;
    imageAlt: string;
    name: string;
 }
-
-const categoryServices: Record<ProjectCategory, WorkService> = {
-   Development: "website-development",
-   "E-commerce": "website-development",
-   Imagery: "ai-content",
-   Reels: "ai-content",
-   Video: "ai-content",
-   "Web Design": "website-development",
-};
 
 const filters: readonly WorkFilterOption<WorkFilter>[] = [
    { id: "all", label: "All" },
@@ -53,10 +39,11 @@ const projects: readonly Project[] = [
       name: "Nova Dairy",
    },
    {
-      categories: ["Web Design", "Development"],
-      image: { ...wideImage, src: "/images/hero/2.png" },
-      imageAlt: "Kessler Tools project visual",
-      name: "Kessler Tools",
+      categories: ["Web Development", "UI/UX Design"],
+      href: "/work/zeel-ai-studio",
+      image: { height: 1440, src: "/images/work/zeel-ai-studio/cover.jpg", width: 2560 },
+      imageAlt: "ZEEL AI Studio home screen on a laptop resting on a textured stone block",
+      name: "ZEEL AI Studio",
    },
    {
       categories: ["Imagery", "Reels"],
@@ -120,7 +107,7 @@ function isShown({ categories }: Project) {
    if (shownFilter.value === "all") return true;
 
    return categories.some(
-      (category) => categoryServices[category] === shownFilter.value,
+      (category) => projectCategoryServices[category] === shownFilter.value,
    );
 }
 

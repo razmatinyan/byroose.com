@@ -9,6 +9,7 @@ export function useTrailingTooltip() {
 	const active = shallowRef(false);
 	const image = shallowRef("");
 	const label = shallowRef<string>();
+	const icon = shallowRef<string>();
 	const size = shallowRef<TrailingTooltipSize>("default");
 	const mounted = useMounted();
 	const supportsFinePointer = useMediaQuery(
@@ -29,10 +30,12 @@ export function useTrailingTooltip() {
 		nextImage = "",
 		nextLabel?: string,
 		nextSize: TrailingTooltipSize = "default",
+		nextIcon?: string,
 	) {
 		cancelClose();
 		image.value = nextImage;
 		label.value = nextLabel;
+		icon.value = nextIcon;
 		size.value = nextSize;
 		active.value = true;
 	}
@@ -41,5 +44,5 @@ export function useTrailingTooltip() {
 		scheduleClose();
 	}
 
-	return { active, hide, image, label, shouldLoad, show, size };
+	return { active, hide, icon, image, label, shouldLoad, show, size };
 }
