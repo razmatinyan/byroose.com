@@ -119,7 +119,8 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 				data-faq-item
 			>
 				<AccordionTrigger class="faq-trigger">
-					<span class="faq-mask">
+					<span class="sr-only">{{ faq.question }}</span>
+					<span class="faq-mask" aria-hidden="true">
 						<span class="faq-question" data-faq-rise>{{ faq.question }}</span>
 					</span>
 					<template #icon>

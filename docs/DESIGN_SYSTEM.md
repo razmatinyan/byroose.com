@@ -2017,7 +2017,10 @@ with `-0.03em` tracking, and the row's block padding grows from `py-7` to
 `py-9` at `md` and `py-11` at `xl`. The answer is muted copy at `text-lg`,
 `text-xl` from `md`, and `text-2xl` from `xl`, with `1.2` leading and a `44ch`
 measure. A one-pixel `border` divider sits between items, never after the
-last one. The icon is a bare glyph with no tile: two Lucide `minus` bars in
+last one. The visual question is hidden from assistive technology and an
+`sr-only` copy names the trigger, because the visual question stays hidden
+until the items reveal and would otherwise leave the button without a name.
+The icon is a bare glyph with no tile: two Lucide `minus` bars in
 one grid cell, one of them rotated `90` degrees to form a plus. Opening an item
 turns that bar back to the left, so the plus becomes a minus.
 
