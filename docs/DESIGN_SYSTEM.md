@@ -546,10 +546,19 @@ as a `text-2xl`, `text-3xl` from `md`, medium list with `-0.05em` tracking and
 a `0.125rem` gap. From `sm` the live link sits centered in the space between
 the services block and the description, bottom aligned with them.
 
-The shared `LiveLink` renders a medium "Visit Live Website" label in `text-xl`,
-`text-2xl` from `md`, at most `w-80` wide, with an arrow up right glyph at its
-end and a one pixel `foreground` line below. On hover or keyboard focus its
-label rolls over character by character through `useMenuLinkMotion`, like the
+The shared `ArrowLink` is the underlined arrow link, and `LiveLink` renders it
+as the external "Visit Live Website" link. Its `md` size, the default, is a
+medium label in `text-xl`, `text-2xl` from `md`, at most `w-80` wide. The `sm`
+size is a `text-lg`, `text-xl` from `md`, label as wide as its text, and the
+`lg` size is a full-width semibold `text-5xl`, `text-6xl` from `md`,
+`text-7xl` from `lg`, `text-8xl` from `xl`, and `text-9xl` from `2xl`, label with `-0.05em` tracking and `1.25` leading, so
+descenders stay inside the rollover mask. The mask carries `0.08em` of end
+padding, because the last letter's ink can pass its tracked box and was cut
+off on the right. Every size has an arrow up right glyph at its end and a one
+pixel line below in the current text color, so it follows a dark or light
+surface. Without a `to` it renders a span instead of a link, for use inside a
+larger link marked `data-arrow-link-trigger`, which then drives its motion. On
+hover or keyboard focus its label rolls over character by character through `useMenuLinkMotion`, like the
 site menu links, its glyph swaps diagonally through `useArrowSwapHover`
 without the scale, like the CTA buttons, and `useUnderlineSweep` sweeps the
 line out through its right end and draws it back in from the left. Leaving
@@ -562,15 +571,42 @@ from the cover to the grid items, uses `rounded-lg`. Each block follows a gap:
 `1rem` between two image, video, or grid blocks, counting the cover as one,
 which matches the gap between grid items, and `100px` on both sides of every
 text, title, or results block. A title block opens a new section, so the gap
-above it is `200px` unless it is the first block. The page ends `100px` below
-its last block.
+above it is `200px` unless it is the first block.
+
+The Next Project block follows the last block after a `200px` gap. It is a
+full-width section with the page gutter and `py-section` padding, filled with
+the next project's own `surface` color, and it ends the page with no bottom
+space, so the site call to action follows it directly. The surface's `ink`
+sets the text: `dark` uses `foreground`, and `light` uses `background` and marks
+the section `data-header-surface="dark"` for the header. A project's surface
+color is sampled from its own cover and lives in its data file as an OKLCH
+value, applied through the `--project-next-surface` variable. It is project
+content, not a site token, and is the one place a raw color reaches a
+component.
+
+The whole block is one link to the next project. Hovering it shows the shared
+TrailingTooltip in its text-only form, "Next Project" with an arrow up right
+glyph. From `md` it is a `9fr` and `11fr` grid with a `2.5rem` column gap, so
+the next project's cover takes about 45 percent of the width as a `4/3`
+`object-cover` crop in a `rounded-lg` frame. A 16:9 cover needs about 1.33
+times the frame width, so it requests
+`sm:1024px md:1024px lg:640px xl:768px 2xl:1280px` with `densities="x1"`. The
+right column puts a semibold `text-3xl`, `text-4xl` from `md` and `text-5xl`
+from `xl`, "Next Project" H2 at the top and an `lg` `ArrowLink` with the next
+project's name across its full width at the bottom, its arrow on the page's
+right edge. The name is not a link of its own: the block's link is its
+trigger, so hovering or focusing anywhere in the block rolls the name over,
+swaps its arrow, and sweeps its line. An `sm` "All Works" `ArrowLink` to
+`/work` sits outside the block's link, absolutely placed in the top right
+corner and centered on the heading's line, because links cannot nest. Below
+`md` the heading comes first, then the cover, then the name.
 
 A text block is at most `max-w-3xl` wide and sits on the left, center, or right
 of the page while its text stays left aligned. From `lg` a right placed block
 starts in the second column of the hero's two-column grid, so it lines up with
-the hero description. The subtitle is a semibold `text-2xl`, `text-3xl` from
+the hero description. The subtitle is a semibold `text-3xl`, `text-4xl` from
 `md`, H2 in `foreground`. The paragraphs are medium `text-xl`, `text-2xl`
-from `md`, in `brand-soft` with a tight `1.1` leading, one line apart and `1.5rem`
+from `md`, in the same `foreground` with a tight `1.1` leading, one line apart and `1.5rem`
 below the subtitle. A title block is a centered, balanced H2 at the call to
 action title size: bold `text-display` type with `-0.05em` tracking, in
 `foreground`. It gets the same `100px` gaps as a text block. Use it to open
@@ -1366,8 +1402,9 @@ Its `0.12em` of bottom padding keeps descenders inside its reveal mask. The
 description is `font-medium` `brand-subtle` copy at `text-xl`, `text-2xl` from
 `md`, with `leading-tight`, `-0.03em` tracking, and a `36ch` measure.
 
-The card's `results` prop takes a list of value and label pairs, currently two
-per case study. They sit side by side in a wrapping row with `gap-x-10`. From
+The card's optional `results` prop takes a list of value and label pairs,
+currently two per case study that has them. A card without results, such as
+Sygen, renders no results row. They sit side by side in a wrapping row with `gap-x-10`. From
 `md` the copy column stretches to the height of the media and the row takes
 `mt-auto`, so the results sit on the bottom edge of the image while the title
 and description stay at the top. Below `md` the row follows the description
@@ -1442,6 +1479,10 @@ different elements: the image's layer wrapper owns the entry scale and the image
 inside it owns the parallax, so neither fights the other. Keep the scale ahead
 of the shift: the image only has `(scale - 1) / 2` of overflow on each edge, so
 raising the travel without raising the scale exposes the frame.
+A card can lower its scale through the optional `imageScale` prop when the
+default crops its image too tightly, as Sygen's wide monitor shot does at
+`1.1`. The travel then shrinks in proportion through `imageParallaxShiftFor`,
+to about `4.7` percent at `1.1`, so the overflow still covers it.
 
 Card content is not hidden before the motion initializes, because it is part of
 the server output. Reduced motion therefore needs no exit state for the cards:
@@ -1459,7 +1500,7 @@ The complete case study card is the hover surface for one shared trailing
 tooltip. WorkSection owns the active image and keeps one TrailingTooltip mounted
 through Nuxt's shared teleport target, so the follower is not clipped by the
 landing wrapper or card media. The card is always an article. A card with an
-`href`, such as ZEEL AI Studio, adds a NuxtLink that covers the whole card,
+`href`, such as ZEEL AI Studio or Sygen, adds a NuxtLink that covers the whole card,
 named by the client in `sr-only` text, and the card shows the focus ring while
 that link has keyboard focus. A card with a `liveUrl` adds the shared
 `LiveLink` `2rem` below the description, revealed with the other lines in a
@@ -2486,7 +2527,11 @@ measured size accounts for. The content is an inline-size container, and the tit
 first paint already sits at the edge, and `useFitText` corrects the scale
 whenever the title's box resizes, as it does for the Why Choose Us title. The title
 is `w-max` with `0.05em` of end padding, so its box includes the last letter's
-ink. If the phrase changes, measure it again and update the size. A `0.2em`
+ink. If the phrase changes, measure it again and update the size. The title
+mask carries `0.2em` above and `0.3em` below, because at `0.76` leading a
+Switzer Bold descender such as the "g" in "Our Blog" hangs about `0.22em` below
+the line box, and `0.2em` cut it off while the reveal clip was on. The project
+hero title mask uses the same padding. A `0.2em`
 bottom margin cancels the mask's negative margin, so the description never
 crowds the letters on phones. The `h1` is an `sr-only` copy of the phrase and
 the visual line is hidden from assistive technology. The description, "Reels that stop the scroll. Visuals
@@ -2561,8 +2606,8 @@ edges rather than flush with them. The categories and their services come
 from `app/lib/projects.ts`. The images are `object-cover` crops of 16:9 or
 portrait sources, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
 with `densities="x1"`, which covers the 4:3 crop and the hover scale. ZEEL AI
-Studio is the first real project: its card takes an `href`, so the whole card
-renders as a NuxtLink to its project page. The other projects, their names,
+Studio and Sygen are real projects: their cards take an `href`, so the whole
+card renders as a NuxtLink to its project page. The other projects, their names,
 and their images are placeholders, so their cards stay articles without a link
 until their project pages exist. The pointer cursor marks the link surface on
 both, as on the home case study cards. A linked card shows the focus ring and

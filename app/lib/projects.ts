@@ -83,12 +83,18 @@ export type ProjectBlock =
    | ProjectGridBlock
    | ProjectResultsBlock;
 
+export interface ProjectSurface {
+   color: string;
+   ink: "dark" | "light";
+}
+
 export interface Project {
    slug: string;
    name: string;
    description: string;
    categories: readonly ProjectCategory[];
    liveUrl?: string;
+   surface: ProjectSurface;
    cover: ProjectMedia;
    blocks: readonly ProjectBlock[];
    seo?: {

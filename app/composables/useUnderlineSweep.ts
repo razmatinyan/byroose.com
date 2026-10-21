@@ -6,7 +6,14 @@ import { swapDuration } from "@/lib/swap-timing";
 const lineSelector = "[data-sweep-line]";
 const sweepHalfDuration = swapDuration / 2;
 
-export function useUnderlineSweep(target: MaybeComputedElementRef) {
+interface UnderlineSweepOptions {
+   trigger?: MaybeComputedElementRef;
+}
+
+export function useUnderlineSweep(
+   target: MaybeComputedElementRef,
+   { trigger = target }: UnderlineSweepOptions = {},
+) {
    const { createMatchMedia, gsap } = useGsap();
 
    onMounted(() => {
@@ -19,7 +26,9 @@ export function useUnderlineSweep(target: MaybeComputedElementRef) {
             if (!context.conditions?.hover || !context.conditions?.motion) return;
 
             const element = unrefElement(target);
+            const triggerElement = unrefElement(trigger);
             if (!(element instanceof HTMLElement)) return;
+            if (!(triggerElement instanceof HTMLElement)) return;
 
             const line = element.querySelector<HTMLElement>(lineSelector);
             if (!line) return;
@@ -69,7 +78,7 @@ export function useUnderlineSweep(target: MaybeComputedElementRef) {
             };
 
             const handleFocus = () => {
-               focusVisible = element.matches(":focus-visible");
+               focusVisible = triggerElement.matches(":focus-visible");
                sync();
             };
 
@@ -78,16 +87,16 @@ export function useUnderlineSweep(target: MaybeComputedElementRef) {
                sync();
             };
 
-            element.addEventListener("blur", handleBlur);
-            element.addEventListener("focus", handleFocus);
-            element.addEventListener("pointerenter", handlePointerEnter);
-            element.addEventListener("pointerleave", handlePointerLeave);
+            triggerElement.addEventListener("blur", handleBlur);
+            triggerElement.addEventListener("focus", handleFocus);
+            triggerElement.addEventListener("pointerenter", handlePointerEnter);
+            triggerElement.addEventListener("pointerleave", handlePointerLeave);
 
             return () => {
-               element.removeEventListener("blur", handleBlur);
-               element.removeEventListener("focus", handleFocus);
-               element.removeEventListener("pointerenter", handlePointerEnter);
-               element.removeEventListener("pointerleave", handlePointerLeave);
+               triggerElement.removeEventListener("blur", handleBlur);
+               triggerElement.removeEventListener("focus", handleFocus);
+               triggerElement.removeEventListener("pointerenter", handlePointerEnter);
+               triggerElement.removeEventListener("pointerleave", handlePointerLeave);
                sweep?.kill();
                gsap.set(line, { clearProps: "transform,transformOrigin" });
             };

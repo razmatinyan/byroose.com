@@ -7,9 +7,11 @@ import ProjectBlocks from "./ProjectBlocks.vue";
 import ProjectHero from "./ProjectHero.vue";
 import ProjectImageViewer from "./ProjectImageViewer.vue";
 import ProjectMedia from "./ProjectMedia.vue";
+import ProjectNext from "./ProjectNext.vue";
 
-const { project } = defineProps<{
+const { project, nextProject } = defineProps<{
    project: Project;
+   nextProject?: Project;
 }>();
 
 const title = project.seo?.title ?? project.name;
@@ -57,7 +59,7 @@ useSchemaOrg([
 </script>
 
 <template>
-   <article class="project-page">
+   <article class="project-page" :data-next-project="nextProject ? '' : undefined">
       <ProjectHero
          :name="project.name"
          :description="project.description"
@@ -68,6 +70,7 @@ useSchemaOrg([
          <ProjectMedia :media="project.cover" loading="eager" />
       </div>
       <ProjectBlocks :blocks="project.blocks" />
+      <ProjectNext v-if="nextProject" :project="nextProject" />
       <ProjectImageViewer v-model:index="viewerIndex" :images="images" />
    </article>
 </template>
@@ -75,7 +78,7 @@ useSchemaOrg([
 <style scoped>
 @reference "../../assets/css/tailwind.css";
 
-.project-page {
+.project-page:not([data-next-project]) {
    @apply pb-25;
 }
 </style>

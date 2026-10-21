@@ -99,8 +99,8 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .listing-hero-title-mask {
-   margin-bottom: -0.4em;
-   padding-block: 0.2em;
+   margin-bottom: -0.5em;
+   padding-block: 0.2em 0.3em;
 }
 
 .listing-hero-title-line {

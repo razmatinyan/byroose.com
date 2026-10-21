@@ -4,7 +4,7 @@ import { addCharReveal } from "@/lib/char-reveal";
 import {
    imageParallaxEnd,
    imageParallaxScale,
-   imageParallaxShift,
+   imageParallaxShiftFor,
    imageParallaxStart,
 } from "@/lib/image-parallax";
 import { addStackReveal } from "@/lib/stack-reveal";
@@ -78,12 +78,20 @@ export function useWorkMotion(
       });
    }
 
+   function readImageScale(image: HTMLElement) {
+      const scale = Number(image.dataset.workCaseImageScale);
+      return scale > 1 ? scale : imageParallaxScale;
+   }
+
    function parallaxImage(image: HTMLElement, trigger: HTMLElement) {
-      gsap.set(image, { scale: imageParallaxScale });
+      const scale = readImageScale(image);
+      const shift = imageParallaxShiftFor(scale);
+
+      gsap.set(image, { scale });
 
       gsap.fromTo(
          image,
-         { yPercent: -imageParallaxShift },
+         { yPercent: -shift },
          {
             ease: "none",
             scrollTrigger: {
@@ -92,7 +100,7 @@ export function useWorkMotion(
                start: imageParallaxStart,
                trigger,
             },
-            yPercent: imageParallaxShift,
+            yPercent: shift,
          },
       );
    }

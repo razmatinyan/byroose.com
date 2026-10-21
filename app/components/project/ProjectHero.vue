@@ -120,7 +120,8 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .project-hero-title-mask {
-   padding-block: 0.2em;
+   margin-bottom: -0.1em;
+   padding-block: 0.2em 0.3em;
 }
 
 .project-hero-title-line {

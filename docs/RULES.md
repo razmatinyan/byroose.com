@@ -220,7 +220,7 @@ The site has no database or media storage. Its only API route is the Contact for
 ## Work project rules
 
 - Keep each Work project in its own typed data file, app/data/projects/<slug>.ts, built with defineProject from app/lib/projects.ts, and list it in app/data/projects/index.ts.
-- Give each project a page at app/pages/work/<slug>.vue that renders ProjectPage with its data. The file name, the slug field, and the media folder name must match.
+- Give each project a page at app/pages/work/<slug>.vue that renders ProjectPage with its data and getNextProject of it. The file name, the slug field, and the media folder name must match.
 - Store project media under public/images/work/<slug>/ and give every image and video its intrinsic width and height and accurate alternative text.
 - Do not add per-project layout or styles. Change the shared project components so every project page stays consistent.
 - Publish real client names, results, and links only with approval, following CONTENT_GUIDE.md.

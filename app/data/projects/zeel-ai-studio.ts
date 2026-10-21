@@ -7,6 +7,7 @@ export default defineProject({
       "A web platform for ZEEL Project that turns a room description and 3D model references into photorealistic interior renders in seconds.",
    categories: ["Web Development", "UI/UX Design"],
    liveUrl: "https://ai.zeelproject.com/",
+   surface: { color: "oklch(0.2797 0.0046 325.7)", ink: "light" },
    cover: {
       kind: "image",
       src: "/images/work/zeel-ai-studio/cover.jpg",

@@ -65,10 +65,12 @@ shared project layout:
 1. Put the project's images and videos in `public/images/work/<slug>/`.
 2. Create `app/data/projects/<slug>.ts` that exports
    `defineProject({ ... })` from `app/lib/projects.ts`, with the name,
-   description, categories, optional live link, cover, and content blocks.
+   description, categories, optional live link, surface color sampled from
+   the cover with a `dark` or `light` ink, cover, and content blocks.
 3. Add the project to the list in `app/data/projects/index.ts`.
 4. Create `app/pages/work/<slug>.vue`, which imports the data file and renders
-   `ProjectPage`. The file name is the project's address, `/work/<slug>`.
+   `ProjectPage` with it and `getNextProject` of it, which links the Next
+   Project block. The file name is the project's address, `/work/<slug>`.
 
 See [Architecture](docs/ARCHITECTURE.md#work-projects) for the block types.
 The project appears in the sitemap and in `llms.txt` automatically, and its

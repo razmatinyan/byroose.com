@@ -714,8 +714,8 @@ an `up` swap, and can turn the scale off, as the footer Back to Top button does.
 tracks pointer and focus state together, scales only for hover-capable
 pointers with motion allowed, and resolves the swap instantly under reduced
 motion. It stays separate from useHoverBounce and useHoverRollover so the
-elastic CTA contract stays untouched. LiveLink also uses the diagonal
-swap without the scale.
+elastic CTA contract stays untouched. ArrowLink, and LiveLink through it,
+also uses the diagonal swap without the scale.
 
 useUnderlineSweep owns a link's underline sweep. On each change between rest
 and hover or visible keyboard focus, the element marked `data-sweep-line`
@@ -724,6 +724,12 @@ taking half of `swapDuration`. A sweep that is still running finishes rather
 than restarting, so a quick pass never jumps the line. It runs only for
 hover-capable pointers with motion allowed and clears its transforms on
 cleanup.
+
+useMenuLinkMotion, useArrowSwapHover, and useUnderlineSweep each take an
+optional `trigger` element. They animate the parts inside their target but
+listen for pointer and focus changes on the trigger, which defaults to the
+target. ArrowLink uses it when it renders inside a larger link, so the whole
+link drives its motion.
 
 useCookieBannerMotion owns the cookie notice's entrance and exit. It returns the
 three Vue transition hooks that SiteCookieBanner binds, so the component keeps
@@ -959,11 +965,14 @@ storage, admin area, or editor. Adding or changing a project is a code change.
   grid images of a project in page order for the image viewer.
 - `app/data/projects/<slug>.ts` holds one project as the default export of
   `defineProject`: its slug, name, description, categories, optional live link,
-  cover, content blocks, and an optional search title and description that
+  surface, cover, content blocks, and an optional search title and description that
   fall back to the name and the description.
 - `app/data/projects/index.ts` lists every project, so listings can read them
-  without a request.
-- `app/pages/work/<slug>.vue` imports one data file and renders `ProjectPage`.
+  without a request. Its `getNextProject` returns the project after a given
+  one in that list, wrapping from the last to the first, or nothing when the
+  list holds a single project.
+- `app/pages/work/<slug>.vue` imports one data file and renders `ProjectPage`
+  with it and `getNextProject` of it as `nextProject`.
   The page file name is the route, so a project is reachable at
   `/work/<slug>` as soon as its page exists. The file name, the `slug` field,
   and the media folder must match.
@@ -986,17 +995,31 @@ The content blocks are:
 `app/components/project` renders a project. Its components read typed props
 only and own no data.
 
-- `ProjectPage` composes the hero, the cover, and the blocks, and sets the
-  page title, description, and social metadata from the project.
+- `ProjectPage` composes the hero, the cover, the blocks, and, when it
+  receives a `nextProject`, `ProjectNext`, and sets the page title,
+  description, and social metadata from the project.
+- `ProjectNext` renders the Next Project block from the next project's slug,
+  name, surface, and cover as one NuxtLink marked `data-arrow-link-trigger`,
+  with an "All Works" link to `/work` placed beside it, and owns a
+  TrailingTooltip through `useTrailingTooltip`. It renders the cover itself
+  instead of through `ProjectMedia`, so the next project's cover never opens
+  the current page's image viewer. When it is present, `ProjectPage` drops
+  its bottom padding so the block meets the site call to action.
 - `ProjectHero` repeats the Work hero frame. The name is the page H1, centered
   on one line, and `useFitText` shrinks a long name to the full width, capped at
   the Work hero title size. The services list, the live link, and the
   description follow. It reveals through `useListingHeroMotion` with
   `drift: false`.
-- The shared `LiveLink` in `app/components/shared` renders the Visit Live
-  Website link, opening in a new tab with `rel="noopener noreferrer"`. The
-  project hero and the home case study cards use it. It composes `useMenuLinkMotion`, `useArrowSwapHover`, and
-  `useUnderlineSweep` for its hover motion.
+- The shared `ArrowLink` in `app/components/shared` renders the underlined
+  arrow link in an `sm`, `md`, or `lg` size through NuxtLink. It composes
+  `useMenuLinkMotion`, `useArrowSwapHover`, and `useUnderlineSweep` for its
+  hover motion. With `external` it opens in a new tab with
+  `rel="noopener noreferrer"`. Without a `to` it renders a span with an
+  `sr-only` label for use inside a larger link, and its motion listens on the
+  closest `data-arrow-link-trigger` ancestor. The shared `LiveLink` renders it
+  as the external Visit Live Website link, which the project hero and the home
+  case study cards use, and `ProjectNext` uses it for the next project's name
+  and the All Works link.
 - `ProjectMedia` renders an image through NuxtImg or a muted, looping,
   autoplaying video, with the given responsive sizes and loading intent. The
   cover loads eagerly and every other media item lazily. The cover and media
@@ -1020,8 +1043,8 @@ only and own no data.
   block types, and a media block renders `ProjectMedia` directly.
 
 The Work listing and the home case studies still keep their cards as local
-data in `WorkProjectsSection` and `WorkSection`. ZEEL AI Studio replaces one
-placeholder in each and passes an `href` to its project page, which turns
+data in `WorkProjectsSection` and `WorkSection`. ZEEL AI Studio and Sygen each
+replace one placeholder in both and pass an `href` to their project page, which turns
 `ProjectCard` into a NuxtLink and adds a NuxtLink covering `CaseStudyCard`, so
 the case card's `liveUrl` link can sit above it without nesting. The remaining cards are
 placeholders without a link. Both lists will read `app/data/projects/index.ts`

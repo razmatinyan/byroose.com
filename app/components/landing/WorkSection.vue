@@ -18,8 +18,9 @@ interface CaseStudy {
 	href?: string;
 	image: string;
 	imageAlt: string;
+	imageScale?: number;
 	liveUrl?: string;
-	results: readonly { label: string; value: string }[];
+	results?: readonly { label: string; value: string }[];
 	revealTones: readonly SurfaceTone[];
 	tone: SurfaceTone;
 }
@@ -28,6 +29,35 @@ const workTitle = "What we've done";
 const liveTooltipLabel = "Visit Live";
 
 const caseStudies: CaseStudy[] = [
+	{
+		client: "Sygen",
+		description:
+			"A free color tool that turns one brand color into an accessible light and dark color system, ready for code or Figma.",
+		href: "/work/sygen",
+		image: "/images/work/sygen/cover.jpg",
+		imageAlt:
+			"Sygen home page on a desktop monitor, turning the brand color #2F5BEA into brand, neutral, and status scales",
+		imageScale: 1.1,
+		liveUrl: "https://sygenn.vercel.app/",
+		revealTones: ["primary", "pink"],
+		tone: "pink",
+	},
+	{
+		client: "ZEEL AI Studio",
+		description:
+			"An AI design platform for ZEEL Project that turns a room description and real 3D models into photorealistic renders.",
+		href: "/work/zeel-ai-studio",
+		image: "/images/work/zeel-ai-studio/cover.jpg",
+		imageAlt:
+			"ZEEL AI Studio home screen on a laptop resting on a textured stone block",
+		liveUrl: "https://ai.zeelproject.com/",
+		results: [
+			{ label: "Users in the first two months", value: "4,000+" },
+			{ label: "Images generated in three months", value: "10,000+" },
+		],
+		revealTones: ["blue", "yellow"],
+		tone: "yellow",
+	},
 	{
 		client: "Nova Dairy",
 		description:
@@ -40,34 +70,6 @@ const caseStudies: CaseStudy[] = [
 		],
 		revealTones: ["yellow", "primary"],
 		tone: "primary",
-	},
-	{
-		client: "ZEEL AI Studio",
-		description:
-			"An AI design platform for ZEEL Project that turns a room description and real 3D models into photorealistic renders.",
-		href: "/work/zeel-ai-studio",
-		image: "/images/work/zeel-ai-studio/cover.jpg",
-		imageAlt: "ZEEL AI Studio home screen on a laptop resting on a textured stone block",
-		liveUrl: "https://ai.zeelproject.com/",
-		results: [
-			{ label: "Users in the first two months", value: "4,000+" },
-			{ label: "Images generated in three months", value: "10,000+" },
-		],
-		revealTones: ["blue", "yellow"],
-		tone: "yellow",
-	},
-	{
-		client: "Halden Clinics",
-		description:
-			"A booking flow rebuilt in five weeks, with the questions patients could not answer taken out of the way.",
-		image: "/images/hero/3.png",
-		imageAlt: "Halden Clinics project visual",
-		results: [
-			{ label: "Increase in completed bookings", value: "+38%" },
-			{ label: "From brief to a live booking flow", value: "5 wks" },
-		],
-		revealTones: ["primary", "pink"],
-		tone: "pink",
 	},
 	{
 		client: "Marrow & Co",

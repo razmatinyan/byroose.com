@@ -23,11 +23,12 @@ type ArrowSwapDirection = keyof typeof glyphOffsets;
 interface ArrowSwapOptions {
    direction?: ArrowSwapDirection;
    scale?: boolean;
+   trigger?: MaybeComputedElementRef;
 }
 
 export function useArrowSwapHover(
    target: MaybeComputedElementRef,
-   { direction = "diagonal", scale = true }: ArrowSwapOptions = {},
+   { direction = "diagonal", scale = true, trigger = target }: ArrowSwapOptions = {},
 ) {
    const { entry: glyphEntry, exit: glyphExit } = glyphOffsets[direction];
    const { createMatchMedia, gsap } = useGsap();
@@ -40,7 +41,9 @@ export function useArrowSwapHover(
          },
          (context) => {
             const element = unrefElement(target);
+            const triggerElement = unrefElement(trigger);
             if (!(element instanceof HTMLElement)) return;
+            if (!(triggerElement instanceof HTMLElement)) return;
 
             const glyph = element.querySelector<HTMLElement>(glyphSelector);
             const glyphCopy =
@@ -97,7 +100,7 @@ export function useArrowSwapHover(
             };
 
             const handleFocus = () => {
-               focusVisible = element.matches(":focus-visible");
+               focusVisible = triggerElement.matches(":focus-visible");
                sync();
             };
 
@@ -106,16 +109,16 @@ export function useArrowSwapHover(
                sync();
             };
 
-            element.addEventListener("blur", handleBlur);
-            element.addEventListener("focus", handleFocus);
-            element.addEventListener("pointerenter", handlePointerEnter);
-            element.addEventListener("pointerleave", handlePointerLeave);
+            triggerElement.addEventListener("blur", handleBlur);
+            triggerElement.addEventListener("focus", handleFocus);
+            triggerElement.addEventListener("pointerenter", handlePointerEnter);
+            triggerElement.addEventListener("pointerleave", handlePointerLeave);
 
             return () => {
-               element.removeEventListener("blur", handleBlur);
-               element.removeEventListener("focus", handleFocus);
-               element.removeEventListener("pointerenter", handlePointerEnter);
-               element.removeEventListener("pointerleave", handlePointerLeave);
+               triggerElement.removeEventListener("blur", handleBlur);
+               triggerElement.removeEventListener("focus", handleFocus);
+               triggerElement.removeEventListener("pointerenter", handlePointerEnter);
+               triggerElement.removeEventListener("pointerleave", handlePointerLeave);
 
                const targets = [element, glyph, glyphCopy].filter(
                   (entry): entry is HTMLElement => entry instanceof HTMLElement,

@@ -13,6 +13,7 @@ const {
 	href,
 	image,
 	imageAlt,
+	imageScale,
 	liveUrl,
 	results,
 	revealTones = ["yellow", "primary"],
@@ -24,8 +25,9 @@ const {
 	href?: string
 	image: string
 	imageAlt: string
+	imageScale?: number
 	liveUrl?: string
-	results: readonly { label: string, value: string }[]
+	results?: readonly { label: string, value: string }[]
 	revealTones?: readonly SurfaceTone[]
 	tone?: SurfaceTone
 }>()
@@ -64,6 +66,7 @@ const emit = defineEmits<{
 				<span class="case-image-zoom">
 					<NuxtImg
 						data-work-case-image
+						:data-work-case-image-scale="imageScale"
 						class="case-image"
 						:src="image"
 						:alt="imageAlt"
@@ -99,7 +102,7 @@ const emit = defineEmits<{
 				</div>
 			</div>
 
-			<div class="case-results">
+			<div v-if="results?.length" class="case-results">
 				<div v-for="result in results" :key="result.label" class="case-result">
 					<div class="case-line">
 						<p

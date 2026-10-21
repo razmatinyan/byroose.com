@@ -14,7 +14,14 @@ const menuLinkRolloverTween = {
 	stagger: 0.02,
 } satisfies gsap.TweenVars;
 
-export function useMenuLinkMotion(target: MaybeComputedElementRef) {
+interface MenuLinkMotionOptions {
+	trigger?: MaybeComputedElementRef
+}
+
+export function useMenuLinkMotion(
+	target: MaybeComputedElementRef,
+	{ trigger = target }: MenuLinkMotionOptions = {},
+) {
 	const { createMatchMedia, gsap, loadPlugin } = useGsap();
 	let active = true;
 
@@ -30,7 +37,9 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 			if (!context.conditions?.hover || !context.conditions?.motion) return;
 
 			const element = unrefElement(target);
+			const triggerElement = unrefElement(trigger);
 			if (!(element instanceof HTMLElement)) return;
+			if (!(triggerElement instanceof HTMLElement)) return;
 
 			const textContainer = element.querySelector(
 				":scope > [data-menu-texts]",
@@ -116,7 +125,7 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 			};
 
 			const handleFocus = () => {
-				focusVisible = element.matches(":focus-visible");
+				focusVisible = triggerElement.matches(":focus-visible");
 				sync();
 			};
 
@@ -125,16 +134,16 @@ export function useMenuLinkMotion(target: MaybeComputedElementRef) {
 				sync();
 			};
 
-			element.addEventListener("blur", handleBlur);
-			element.addEventListener("focus", handleFocus);
-			element.addEventListener("pointerenter", handlePointerEnter);
-			element.addEventListener("pointerleave", handlePointerLeave);
+			triggerElement.addEventListener("blur", handleBlur);
+			triggerElement.addEventListener("focus", handleFocus);
+			triggerElement.addEventListener("pointerenter", handlePointerEnter);
+			triggerElement.addEventListener("pointerleave", handlePointerLeave);
 
 			return () => {
-				element.removeEventListener("blur", handleBlur);
-				element.removeEventListener("focus", handleFocus);
-				element.removeEventListener("pointerenter", handlePointerEnter);
-				element.removeEventListener("pointerleave", handlePointerLeave);
+				triggerElement.removeEventListener("blur", handleBlur);
+				triggerElement.removeEventListener("focus", handleFocus);
+				triggerElement.removeEventListener("pointerenter", handlePointerEnter);
+				triggerElement.removeEventListener("pointerleave", handlePointerLeave);
 				rollover?.kill();
 				gsap.set(characters, {
 					clearProps: "transform,willChange",
