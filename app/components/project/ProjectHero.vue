@@ -164,7 +164,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .project-hero-description {
-   @apply m-0 w-full max-w-[20em] self-end text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl lg:col-start-2 xl:text-5xl;
+   @apply m-0 w-full max-w-[20em] self-end text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl lg:col-start-2 2xl:text-5xl;
 }
 
 .project-hero-description:has(> :deep(.split-text-line-mask)) {

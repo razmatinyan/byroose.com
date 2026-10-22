@@ -118,7 +118,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .listing-hero-description {
-   @apply m-0 max-w-[20em] self-end text-2xl lg:col-start-2 leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl xl:text-5xl;
+   @apply m-0 max-w-[20em] self-end text-2xl lg:col-start-2 leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:text-4xl 2xl:text-5xl;
 }
 
 .listing-hero-description:has(> :deep(.split-text-line-mask)) {

@@ -201,7 +201,7 @@ const emit = defineEmits<{
 }
 
 .case-results {
-	@apply mt-10 flex flex-wrap gap-x-10 gap-y-8 md:mt-auto md:pt-14;
+	@apply mt-10 flex flex-wrap gap-x-10 gap-y-8 md:mt-auto md:pt-14 xl:gap-x-8 2xl:gap-x-10;
 }
 
 .case-result {
@@ -209,10 +209,10 @@ const emit = defineEmits<{
 }
 
 .case-result-value {
-	@apply m-0 inline-block rounded-lg px-3 py-1.5 text-5xl leading-none font-extrabold tracking-[-0.05em] md:text-6xl;
+	@apply m-0 inline-block rounded-lg px-3 py-1.5 text-5xl leading-none font-extrabold tracking-[-0.05em] md:text-6xl xl:text-5xl 2xl:text-6xl;
 }
 
 .case-result-label {
-	@apply m-0 max-w-[18ch] pb-[0.1em] text-lg leading-[1.05] font-semibold tracking-[-0.02em] md:text-xl;
+	@apply m-0 max-w-[18ch] pb-[0.1em] text-lg leading-[1.05] font-semibold tracking-[-0.02em] md:text-xl xl:text-lg 2xl:text-xl;
 }
 </style>

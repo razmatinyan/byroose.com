@@ -31,7 +31,7 @@ function handleSplit(parts: SplitTextResult) {
 @reference '../../assets/css/tailwind.css';
 
 .about-statement {
-   @apply m-0 mt-20 text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:mt-28 md:ml-auto md:w-2/3 md:text-4xl xl:mt-36 xl:text-5xl;
+   @apply m-0 mt-20 text-2xl leading-[0.95] font-semibold tracking-[-0.04em] text-pretty md:mt-28 md:ml-auto md:w-2/3 md:text-4xl xl:mt-36 xl:text-4xl 2xl:text-5xl;
 }
 
 .about-statement :deep(.split-text-line),

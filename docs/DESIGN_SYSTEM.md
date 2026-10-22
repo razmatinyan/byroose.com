@@ -1405,18 +1405,23 @@ description is `font-medium` `brand-subtle` copy at `text-xl`, `text-2xl` from
 
 The card's optional `results` prop takes a list of value and label pairs,
 currently two per case study that has them. A card without results, such as
-Sygen, renders no results row. They sit side by side in a wrapping row with `gap-x-10`. From
+Sygen, renders no results row. They sit side by side in a wrapping row with
+`gap-x-10`, `gap-x-8` from `xl` until `2xl`. From
 `md` the copy column stretches to the height of the media and the row takes
 `mt-auto`, so the results sit on the bottom edge of the image while the title
 and description stay at the top. Below `md` the row follows the description
 with `mt-10`. Each value is an extrabold inline highlight at `text-5xl`,
-`text-6xl` from `md`, with `leading-none` and `-0.05em` tracking, that takes a
+`text-6xl` from `md`, back to `text-5xl` from `xl`, and `text-6xl` again from
+`2xl`, with `leading-none` and `-0.05em` tracking, that takes a
 `surface-*` utility through the card's `tone` prop, so a case study picks a
 brand color from `app/lib/surfaces.ts` rather than defining one. The highlight
 keeps a surface behind the number because yellow and pink would not be
 readable as text on the canvas. The label below it is `font-semibold`
-`foreground` text at `text-lg`, `text-xl` from `md`, with `1.05` leading, held
-to `18ch` so it wraps into at most two lines under its number. Its `0.1em` of
+`foreground` text at `text-lg`, `text-xl` from `md`, `text-lg` from `xl`, and
+`text-xl` from `2xl`, with `1.05` leading, held to `18ch` so it wraps into at
+most two lines under its number. The smaller `xl` step exists because the copy
+column is only about `440px` wide at 1280, so the two results of the widest
+pair stay on one row from 1280 to 1536 wide. Its `0.1em` of
 bottom padding keeps the last line's descenders inside its reveal mask. The
 color belongs to the number and not to the sentence that explains it.
 
@@ -1726,7 +1731,8 @@ the viewport edges. The service names, "AI Content Creation" and
 selectable, so a drag across the pinned panel never highlights its words.
 
 The title is left-aligned and starts at the left content edge. The description
-sets at `text-2xl`, `text-4xl` from `md`, and `text-6xl` from `xl`, in the
+sets at `text-2xl`, `text-4xl` from `md`, `text-5xl` from `xl`, and `text-6xl`
+from `2xl`, in the
 default `foreground` color at weight 600 with `0.9` leading and `-0.04em`
 tracking. It sits further below the title than the panel's default gap, with a
 top margin of `1rem`, `2rem` from `md`, and `3rem` from `xl`. That leading is
@@ -2340,7 +2346,7 @@ the More works panel does. "trust" carries a `ribbon` green wave and "choose" a
 primary orange one. Each wave draws once its title has risen. Below each
 heading a statement takes the right two thirds of the row from `md`. The
 statements use `AboutStatement`, which owns that placement, semibold at `text-2xl`,
-`text-4xl` from `md`, and `text-5xl` from `xl`, with `0.95` leading and
+`text-4xl` from `md`, and `text-5xl` from `2xl`, with `0.95` leading and
 `-0.04em` tracking, and they rise line by line with the services description
 timing, `1.5s`, `power3`, and a `0.1s` stagger.
 
@@ -2546,7 +2552,7 @@ crowds the letters on phones. The `h1` is an `sr-only` copy of the phrase and
 the visual line is hidden from assistive technology. The description, "Reels that stop the scroll. Visuals
 directed like a shoot. Websites designed and coded from scratch. The proof is
 in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
-`text-5xl` from `xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
+`text-5xl` from `2xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
 measure, in line masks that carry `0.12em` above and `0.18em` below. Each mask
 cancels that padding with negative margins, and the description becomes a flex
 column once it holds the masks, so the margins of adjacent masks never

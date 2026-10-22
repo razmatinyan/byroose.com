@@ -170,7 +170,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-description {
-   @apply m-0 mt-4 w-full text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty md:mt-8 md:w-2/3 md:self-end md:text-4xl xl:mt-12 xl:text-6xl;
+   @apply m-0 mt-4 w-full text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty md:mt-8 md:w-2/3 md:self-end md:text-4xl xl:mt-12 xl:text-5xl 2xl:text-6xl;
 }
 
 .services-offer[data-surface="dark"] .services-offer-title,
