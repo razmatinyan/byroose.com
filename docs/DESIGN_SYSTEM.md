@@ -310,11 +310,15 @@ layer or an animated surface.
 
 ## Icons and action buttons
 
-UI icons use the Lucide Iconify collection through Nuxt Icon. Canonical names
+UI icons use the Phosphor Iconify collection, `ph`, through Nuxt Icon, always
+in its bold weight, so every name ends in `-bold`. The only exception is the
+Lucide `loader-circle` spinner, the one icon kept from Lucide. Canonical names
 live in `app/lib/icons.ts`; add shared semantic icons there instead of placing
-Unicode glyphs or package-specific icon components in templates. The collection
-is installed locally and the known icons are client-bundled, so rendering never
-depends on the public Iconify API.
+Unicode glyphs or package-specific icon components in templates. Both
+collections are installed locally and the known icons are client-bundled, so
+rendering never depends on the public Iconify API. Phosphor glyphs are filled
+paths, so adjust their weight by choosing the variant, never with
+`stroke-width`.
 
 `ButtonIcon` owns the icon tone and icon-size contract. The default `plain` tone
 renders the bare glyph directly after the label, with no background and no tile
@@ -336,7 +340,7 @@ The `light`, `dark`, and `soft` tones render a filled tile, `size-11` or
 as the course card link.
 
 Icon names that express a repeated meaning belong in `app/lib/icons.ts`. A
-one-time decorative icon may use a direct Lucide collection name when a semantic
+one-time decorative icon may use a direct Phosphor bold name when a semantic
 alias would not improve clarity.
 
 ## Cookie notice
@@ -488,7 +492,7 @@ Reserved", and "byroose inc." as three separate lines that share the email
 address typography. "Razo Codes" is a `SiteNavLink` at its `inherit` size and
 opens the author's LinkedIn profile in a new tab. A "Back to Top" button sits on
 the right of the credits, aligned with their last line, in the same item
-typography with a Lucide up arrow at `0.9em`. Below the credits' width it wraps
+typography with a Phosphor bold up arrow at `0.9em`. Below the credits' width it wraps
 under them. It smooth scrolls to the top through `useSmoothScroll`. On hover or
 visible keyboard focus, `useArrowSwapHover` in its `up` direction without the
 scale moves the arrow up out of its clipped box while a copy rises in from
@@ -2151,7 +2155,7 @@ measure. A one-pixel `border` divider sits between items, never after the
 last one. The visual question is hidden from assistive technology and an
 `sr-only` copy names the trigger, because the visual question stays hidden
 until the items reveal and would otherwise leave the button without a name.
-The icon is a bare glyph with no tile: two Lucide `minus` bars in
+The icon is a bare glyph with no tile: two Phosphor bold `minus` bars in
 one grid cell, one of them rotated `90` degrees to form a plus. Opening an item
 turns that bar back to the left, so the plus becomes a minus.
 
@@ -2223,7 +2227,7 @@ inline message. The dialog is the shared Dialog primitive without its close
 glyph: a `max-w-xl` panel with `clamp(1.5rem, 3vw, 2.5rem)` corners, no
 border, and a large shadow. A round `yellow` `cta-icon` close action named
 "Close" sits in its top right corner, as in the About member dialog. Below
-it, centered, are a round `ribbon` green mark with a Lucide `check`, the
+it, centered, are a round `ribbon` green mark with a Phosphor bold `check`, the
 "Message sent" title, bold at `text-4xl` and `text-5xl` from `md`, and a
 muted description. Escape, the overlay, and the close action close it, and
 focus returns to the submit action. It locks the smooth scroll while open and skips its zoom and
@@ -2423,12 +2427,11 @@ uncovered from its center outward while the centered line spreads around it.
 The link frame is a square `NuxtLink` to `/about` on the `canvas-shade` grey of
 the statement section below, named "About" through `aria-label`. It holds a
 brand orange `primary` arrow up right glyph that fills the frame inside
-`0.14em` of padding. Lucide draws that arrow across only ten of its
-twenty-four units, so the glyph scales to `2`, which brings the arrow itself
-most of the way to the padding. Its path strokes at `3px` in the icon's own
-units instead of Lucide's `2`. The focus ring lives in the global
+`0.14em` of padding. The Phosphor bold arrow spans only about three fifths of
+its box, so the glyph scales to `1.5`, which brings the arrow itself most of
+the way to the padding. The focus ring lives in the global
 `inset-arrow-link` class group, the grey in `inset-arrow-surface`, and the
-glyph's scale and stroke in `inset-arrow-icon`, which the home service links
+glyph's scale in `inset-arrow-icon`, which the home service links
 share. Hovering it opens the hero's text-only TrailingTooltip, "About"
 with an arrow up right glyph, and keyboard focus shows the standard ring.
 

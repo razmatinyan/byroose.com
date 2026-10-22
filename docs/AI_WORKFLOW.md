@@ -181,7 +181,7 @@ Examples:
 
 ~~~text
 docs: add project rules and agent workflow
-feat(button): add compact Lucide icon variant
+feat(button): add compact icon variant
 fix(header): prevent mobile menu overflow
 refactor(motion): centralize GSAP context cleanup
 ~~~

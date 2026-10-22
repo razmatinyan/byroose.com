@@ -23,7 +23,7 @@ When two rules conflict, stop and ask one concise question before making an irre
 - Styling uses Tailwind CSS v4 with CSS-first OKLCH tokens.
 - Repeated utility groups use semantic classes or CVA variants.
 - Base UI primitives follow Shadcn Vue and Reka UI patterns.
-- Interface icons use Lucide through Nuxt Icon.
+- Interface icons use Phosphor bold icons through Nuxt Icon. The Lucide loader circle is the only Lucide icon kept.
 - Fonts load through Nuxt Fonts.
 - Smooth scrolling uses one app-level Lenis instance.
 - Motion uses the shared GSAP composable and must respect reduced motion.
@@ -163,9 +163,9 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 
 ## Icon rules
 
-- Use Nuxt Icon with Lucide names from app/lib/icons.ts.
+- Use Nuxt Icon with the Phosphor bold names from app/lib/icons.ts. Never use another Phosphor weight. The spinner is the one Lucide exception.
 - Add a shared semantic icon name to the icon map before repeating it in templates.
-- Do not use emoji, Unicode arrows, inline SVG copies, or a second icon library for interface controls.
+- Do not use emoji, Unicode arrows, inline SVG copies, or any icon library other than Phosphor bold for interface controls, apart from the Lucide spinner.
 - Keep decorative icons hidden from assistive technology.
 - Keep icon size, stroke, wrapper radius, and spacing inside the owning component variant.
 
@@ -287,7 +287,7 @@ Do not edit documentation only to create activity. When behavior and durable gui
 - Do not use the void operator.
 - Do not copy a component to make a minor variant.
 - Do not bypass design tokens with hardcoded colors.
-- Do not mix icon libraries.
+- Do not mix icon libraries beyond the single Lucide spinner.
 - Do not fetch initial page data only on the client.
 - Do not mutate props.
 - Do not leak server secrets into public runtime configuration.

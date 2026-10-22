@@ -42,7 +42,7 @@ skills for animation, and the SEO skill for public content.
 - Keep components focused, reusable, accessible, and responsive.
 - Extract shared stateful behavior into composables and pure shared logic into utilities.
 - Use Shadcn Vue primitives, semantic Tailwind CSS v4 tokens, and reusable class groups before creating new patterns.
-- Use Lucide icons through Nuxt Icon. Do not add Unicode symbols as interface icons.
+- Use Phosphor bold icons through Nuxt Icon. The Lucide loader circle spinner is the only Lucide icon. Do not add Unicode symbols as interface icons.
 - Keep browser-only behavior out of server rendering and avoid hydration mismatches.
 - Validate untrusted input at backend boundaries and keep secrets on the server.
 - Do not use any, suppress TypeScript errors, or introduce a dependency without a clear need.

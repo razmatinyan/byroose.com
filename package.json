@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.129",
+    "@iconify-json/ph": "^1.2.2",
     "@tailwindcss/vite": "^4.3.3",
     "@types/three": "^0.186.0",
     "tailwindcss": "^4.3.3",

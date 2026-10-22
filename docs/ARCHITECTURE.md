@@ -755,7 +755,7 @@ app/lib contains pure helpers, shared constants, and stable names.
   staggered rise to a timeline it is handed, so any character title can share
   the work title's timing from one definition. Like stack-reveal.ts, it never
   queries the DOM or creates its own timeline.
-- icons.ts is the canonical map for shared Lucide icon names.
+- icons.ts is the canonical map for shared icon names: Phosphor bold icons and the Lucide spinner.
 - services-anchors.ts owns the Services route's section ids, `servicesAnchors`,
   and `servicesSectionPath`, which builds the `/services#id` path that the home
   services section links to.
