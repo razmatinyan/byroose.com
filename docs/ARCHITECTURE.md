@@ -643,7 +643,7 @@ image, label, size, and optional icon, the 200ms close delay, and whether the fi
 should load. WorkSection, ServicesSection, AboutTeamSection, ServicesHero, and WorkProjectsSection compose it and
 keep their own TrailingTooltip instance. `show` takes an optional image, so a
 text-only tooltip opens without one, and an optional fourth argument sets
-the icon after the label.
+the icon mark shown on the left of the label when there is no image.
 
 useSiteHeaderMotion owns the site header's full and compact state transitions,
 the top-of-page scroll thresholds, and responsive animation states. It also

@@ -1574,10 +1574,18 @@ tooltip has no persistent `will-change` promotion, so its settled text remains
 sharp. Reduced motion removes the movement delay and clip transition.
 
 The tooltip also has a text-only form. Without an image it renders no
-thumbnail frame, switches to `px-5 py-3` padding, and can append an `icon`
-after the label at `0.8em`. The About team cards use it for "More Info", the
-Services hero link for "About", and the Work project cards for "View Project",
-all with an arrow up right glyph. Passing an
+thumbnail frame and switches to `px-5 py-3` padding. An `icon` passed instead
+of an image takes the thumbnail's place on the left of the label as a square
+mark styled like the home service link: the `inset-arrow-surface` grey, a
+brand orange `primary` glyph in `inset-arrow-icon`, `7.5%` corners, and a
+`17.5%` inset. That inset lives on an inner content box that fills the mark,
+as in the service link, because percentage padding resolves against the
+containing block's width and would otherwise grow with the whole tooltip and
+collapse the glyph. The mark is `size-12` with `p-2 pr-6` tooltip padding and a
+`gap-3`, or `size-9` with `p-1.5 pr-4` and `gap-2.5` in the compact size. An
+image always wins over an icon. The About team cards use it for "More Info",
+the Services hero link for "About", and the Work project cards for "View
+Project", all with an arrow up right glyph. Passing an
 empty image drops every thumbnail layer, so a tooltip that switches from an
 image target to a text-only one, such as the home services image and its
 service link, never keeps the previous thumbnail.
