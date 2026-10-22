@@ -2643,7 +2643,12 @@ Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
 the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
 TrailingTooltip in its text-only form, "View Project" with an arrow up right
 glyph. The scale applies only to `(hover: hover)` pointers and switches without
-the transition under reduced motion. The cards have no scroll reveal. They
+the transition under reduced motion. A card with a `video` keeps its image at
+rest and stacks a muted, looping, decorative
+video over it that loads nothing until hovered. Hovering plays the video,
+which fades in over `0.4s` once it is playing and scales with the image, and
+leaving pauses it, rewinds it to the start, and fades it out. It plays only
+for `(hover: hover)` pointers and never under reduced motion. The cards have no scroll reveal. They
 are always at rest and only move when a filter changes.
 
 Choosing a filter presses its button at once. The shown cards then fade out

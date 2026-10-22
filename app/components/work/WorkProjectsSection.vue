@@ -25,6 +25,7 @@ interface Project {
 	image: ProjectImage;
 	imageAlt: string;
 	name: string;
+	video?: string;
 }
 
 const filters: readonly WorkFilterOption<WorkFilter>[] = [

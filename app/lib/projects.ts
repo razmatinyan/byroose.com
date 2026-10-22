@@ -40,7 +40,13 @@ export interface ProjectVideo {
    poster?: string;
 }
 
+export interface ProjectCoverVideo extends ProjectVideo {
+   poster: string;
+}
+
 export type ProjectMedia = ProjectImage | ProjectVideo;
+
+export type ProjectCover = ProjectImage | ProjectCoverVideo;
 
 export interface ProjectTextBlock {
    type: "text";
@@ -95,7 +101,7 @@ export interface Project {
    categories: readonly ProjectCategory[];
    liveUrl?: string;
    surface: ProjectSurface;
-   cover: ProjectMedia;
+   cover: ProjectCover;
    blocks: readonly ProjectBlock[];
    seo?: {
       title?: string;
@@ -105,6 +111,13 @@ export interface Project {
 
 export function defineProject(project: Project): Project {
    return project;
+}
+
+export function getProjectCoverImage({ cover }: Project): ProjectImage {
+   if (cover.kind === "image") return cover;
+
+   const { poster, width, height, alt } = cover;
+   return { kind: "image", src: poster, width, height, alt };
 }
 
 export function getProjectImages({ cover, blocks }: Project): ProjectImage[] {

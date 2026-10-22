@@ -73,8 +73,11 @@ shared project layout:
    Project block. The file name is the project's address, `/work/<slug>`.
 
 See [Architecture](docs/ARCHITECTURE.md#work-projects) for the block types.
-The project appears in the sitemap and in `llms.txt` automatically, and its
-cover becomes its social sharing image when the cover is an image.
+The project appears in the sitemap and in `llms.txt` automatically. Its
+cover becomes its social sharing image, or, for a video cover, its required
+`poster`, a separate still image at the video's pixel size. To list the
+project on the Work page, add a card to `WorkProjectsSection` with the cover
+image or poster, and the video's address as `video` so it plays on hover.
 
 ## Adding a blog post
 

@@ -965,8 +965,10 @@ storage, admin area, or editor. Adding or changing a project is a code change.
   filters group by. Imagery, Reels, and Video are AI content, and Development,
   E-commerce, UI/UX Design, Web Design, and Web Development are website
   development. It also owns `defineProject`, an identity helper that type-checks a
-  project file, and `getProjectImages`, which lists the cover, media block, and
-  grid images of a project in page order for the image viewer.
+  project file, `getProjectImages`, which lists the cover, media block, and
+  grid images of a project in page order for the image viewer, and
+  `getProjectCoverImage`, which returns the cover, or the poster of a video
+  cover at the video's size and alternative text.
 - `app/data/projects/<slug>.ts` holds one project as the default export of
   `defineProject`: its slug, name, description, categories, optional live link,
   surface, cover, content blocks, and an optional search title and description that
@@ -982,7 +984,10 @@ storage, admin area, or editor. Adding or changing a project is a code change.
   and the media folder must match.
 - Project media lives in `public/images/work/<slug>/`. Each image and video
   carries its intrinsic width and height and its alternative text in the data
-  file.
+  file. A cover is a 16:9 image or video, normally 2560 by 1440 for an image
+  and 1920 by 1080 for a video. A video cover requires a `poster`, a separate
+  still image at the video's pixel size, which shows before the video plays
+  and becomes the page's sharing image because crawlers cannot read a video.
 
 The content blocks are:
 
@@ -1122,8 +1127,8 @@ internal links during development and builds.
   and Open Graph title and description. Given an image, it shares
   that image with its absolute URL, size, and alternative text. Otherwise it
   renders the `BrandCard` OG image with the title and an optional label. Every
-  indexable page calls it, and `ProjectPage` passes the project cover when the
-  cover is an image.
+  indexable page calls it, and `ProjectPage` passes `getProjectCoverImage`,
+  the cover image or the poster of a video cover.
 - `app/components/OgImage/BrandCard.takumi.vue` is the generated 1200 by 630
   card, rendered by Takumi in Switzer, which Nuxt Fonts registers globally for
   the renderer. Its colors come from `app/lib/og-image-theme.ts`, because CSS
@@ -1145,7 +1150,7 @@ internal links during development and builds.
   `false` to its FaqSection, so the shared questions are marked up only once
   across the site. `ProjectPage`
   adds a Home, Work, and project `BreadcrumbList` and a `CreativeWork` with the
-  project's absolute URL, cover, categories as its genre, and the organization
+  project's absolute URL, cover image, categories as its genre, and the organization
   as its creator. Raw nodes such as `CreativeWork` are not resolved by the
   module, so they use absolute URLs and ids.
 - `server/routes/llms.txt.get.ts` builds `/llms.txt` from the site facts, the

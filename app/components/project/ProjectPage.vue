@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { shallowRef } from "vue";
-import { getProjectImages } from "@/lib/projects";
+import { getProjectCoverImage, getProjectImages } from "@/lib/projects";
 import type { Project, ProjectImage } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 import ProjectBlocks from "./ProjectBlocks.vue";
@@ -29,13 +29,14 @@ function openImage(image: ProjectImage) {
 
 provideProjectGallery(openImage);
 
-const coverUrl = project.cover.kind === "image" ? new URL(project.cover.src, siteUrl).href : undefined;
+const coverImage = getProjectCoverImage(project);
+const coverUrl = new URL(coverImage.src, siteUrl).href;
 
 usePageSeo({
    title,
    description,
    label: "Case study",
-   image: project.cover.kind === "image" ? project.cover : undefined,
+   image: coverImage,
 });
 
 useSchemaOrg([

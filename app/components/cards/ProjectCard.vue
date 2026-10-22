@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, shallowRef, useTemplateRef } from "vue";
 import { NuxtLink } from "#components";
 
 export interface ProjectImage {
@@ -8,12 +8,13 @@ export interface ProjectImage {
    width: number;
 }
 
-const { categories, href, image, imageAlt, name } = defineProps<{
+const { categories, href, image, imageAlt, name, video } = defineProps<{
    categories: readonly string[];
    href?: string;
    image: ProjectImage;
    imageAlt: string;
    name: string;
+   video?: string;
 }>();
 
 const emit = defineEmits<{
@@ -22,6 +23,37 @@ const emit = defineEmits<{
 }>();
 
 const categoryLabel = computed(() => categories.join(", "));
+
+const previewVideo = useTemplateRef<HTMLVideoElement>("previewVideo");
+const previewPlaying = shallowRef(false);
+const hoverPointer = useMediaQuery("(hover: hover)");
+const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+
+function playPreview() {
+   const element = previewVideo.value;
+   if (!element || !hoverPointer.value || prefersReducedMotion.value) return;
+
+   element.play().catch(stopPreview);
+}
+
+function stopPreview() {
+   const element = previewVideo.value;
+   previewPlaying.value = false;
+   if (!element) return;
+
+   element.pause();
+   element.currentTime = 0;
+}
+
+function activate() {
+   emit("activate");
+   playPreview();
+}
+
+function deactivate() {
+   emit("deactivate");
+   stopPreview();
+}
 </script>
 
 <template>
@@ -30,8 +62,8 @@ const categoryLabel = computed(() => categories.join(", "));
       :to="href"
       class="project-card"
       data-work-project
-      @pointerenter="emit('activate')"
-      @pointerleave="emit('deactivate')"
+      @pointerenter="activate"
+      @pointerleave="deactivate"
    >
       <div class="project-card-media">
          <NuxtImg
@@ -44,6 +76,21 @@ const categoryLabel = computed(() => categories.join(", "));
             densities="x1"
             loading="lazy"
             draggable="false"
+         />
+         <video
+            v-if="video"
+            ref="previewVideo"
+            class="project-card-image project-card-video"
+            :src="video"
+            :width="image.width"
+            :height="image.height"
+            :data-playing="previewPlaying || undefined"
+            aria-hidden="true"
+            preload="none"
+            muted
+            loop
+            playsinline
+            @playing="previewPlaying = true"
          />
       </div>
       <div class="project-card-meta">
@@ -68,6 +115,14 @@ const categoryLabel = computed(() => categories.join(", "));
    @apply absolute inset-0 size-full object-cover select-none;
 }
 
+.project-card-video {
+   @apply opacity-0;
+}
+
+.project-card-video[data-playing] {
+   @apply opacity-100;
+}
+
 .project-card-meta {
    @apply flex items-baseline justify-between gap-x-6 px-3 text-xl leading-tight tracking-[-0.03em] md:px-4 md:text-2xl xl:px-5 xl:text-3xl;
 }
@@ -83,6 +138,12 @@ const categoryLabel = computed(() => categories.join(", "));
 @media (hover: hover) {
    .project-card-image {
       transition: scale 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+   }
+
+   .project-card-video {
+      transition:
+         scale 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+         opacity 0.4s ease-out;
    }
 
    .project-card:hover .project-card-image,
