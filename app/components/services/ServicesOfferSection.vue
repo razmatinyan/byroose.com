@@ -130,6 +130,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
                <ImageCycle
                   v-if="block.images"
                   class="services-offer-cycle"
+                  :class="{ 'lg:hidden': block.flight }"
                   :images="block.images"
                   :sizes="servicesOfferImageSizes"
                   densities="x1"

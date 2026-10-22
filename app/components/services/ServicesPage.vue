@@ -28,6 +28,7 @@ const aiContentBlocks: readonly ServicesOfferBlock[] = [
       description:
          "Short vertical edits for Instagram, TikTok, and Shorts. We write the hook, generate the visuals through our AI pipeline, and cut every second by hand so the first frame earns the next ten.",
       flight: true,
+      images: servicesHeroImages,
       title: "Reels that stop the scroll",
       tone: "pink-tint",
    },

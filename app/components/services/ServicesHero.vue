@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { defineAsyncComponent, useTemplateRef } from "vue";
+import ImageCycle from "@/components/shared/ImageCycle.vue";
 import { appIcons } from "@/lib/icons";
-import { servicesHeroImages } from "@/lib/services-hero";
+import {
+   servicesHeroImages,
+   servicesOfferImageSizes,
+} from "@/lib/services-hero";
 
 const TrailingTooltip = defineAsyncComponent(
    () => import("@/components/shared/TrailingTooltip.vue"),
@@ -83,17 +87,24 @@ function showAboutTooltip() {
                      data-services-hero-inset
                      data-services-flight-origin
                      aria-hidden="true"
-                     ><NuxtImg
-                        v-if="poster"
-                        class="services-hero-inset-content services-hero-poster"
+                     ><span
+                        class="services-hero-inset-content"
                         data-services-hero-inset-content
-                        :src="poster.src"
-                        alt=""
-                        :width="poster.width"
-                        :height="poster.height"
-                        sizes="sm:448px"
-                        loading="eager"
-                        draggable="false" /></span
+                        ><ImageCycle
+                           class="services-hero-cycle"
+                           :images="servicesHeroImages"
+                           loading="eager"
+                           :sizes="servicesOfferImageSizes"
+                           densities="x1" /><NuxtImg
+                           v-if="poster"
+                           class="services-hero-poster"
+                           :src="poster.src"
+                           alt=""
+                           :width="poster.width"
+                           :height="poster.height"
+                           sizes="sm:448px"
+                           loading="eager"
+                           draggable="false" /></span></span
                   ><span aria-hidden="true">{{ line.trail }}</span></span
                >
             </span>
@@ -113,7 +124,7 @@ function showAboutTooltip() {
 @reference '../../assets/css/tailwind.css';
 
 .services-hero {
-   @apply relative grid place-items-center pb-16 sm:pb-20;
+   @apply @container relative grid place-items-center pb-16 sm:pb-20;
    min-height: calc(100svh - 4.75rem - var(--services-hero-peek));
    --services-hero-peek: clamp(3rem, 9svh, 6rem);
 }
@@ -124,7 +135,7 @@ function showAboutTooltip() {
 
 .services-hero-title {
    @apply font-bold tracking-[-0.05em];
-   font-size: clamp(2rem, 11vw, 12rem);
+   font-size: min(15.5cqi, 26svh);
    line-height: 0.88;
    margin-top: -0.2em;
    --services-hero-inset-height: 0.8em;
@@ -166,8 +177,12 @@ function showAboutTooltip() {
    );
 }
 
+.services-hero-cycle {
+   @apply size-full lg:hidden;
+}
+
 .services-hero-poster {
-   @apply hidden object-cover select-none motion-reduce:block;
+   @apply absolute inset-0 hidden size-full object-cover select-none lg:motion-reduce:block;
 }
 
 .services-hero-link {

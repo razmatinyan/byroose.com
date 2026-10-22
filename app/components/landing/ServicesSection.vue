@@ -364,7 +364,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-link {
-   @apply relative mt-4 block size-[3.06em] shrink-0 self-start rounded-[7.5%] text-2xl md:col-start-1 md:mt-8 md:ml-[0.5em] md:size-auto md:aspect-square md:self-stretch md:justify-self-start md:text-4xl xl:mt-12 xl:text-6xl;
+   @apply relative hidden shrink-0 rounded-[7.5%] md:col-start-1 md:mt-8 md:ml-[0.5em] md:block md:aspect-square md:self-stretch md:justify-self-start md:text-4xl xl:mt-12 xl:text-6xl;
    --service-link-open: 0;
 }
 

@@ -805,9 +805,10 @@ looks soft, so work out `sizes` for every new image with this checklist:
    source width, such as 1536 for a 1456 image, returns the original converted
    to WebP.
 
-The Services offer media and the hero image that flies into the first of them
-share `servicesOfferImageSizes` from `app/lib/services-hero.ts`, so the flying
-layer and its landing slot request the same file. The slot is a 4/3 box that
+The Services offer media, the hero image that flies into the first of them,
+and the hero frame's own cycle below `lg` share `servicesOfferImageSizes` from
+`app/lib/services-hero.ts`, so the flying layer, the hero frame, and the
+landing slot request the same file. The slot is a 4/3 box that
 fills the block below `md` and half of it above, and it shows 16:9 sources, so
 it lists `sm:1024px md:640px lg:768px xl:1024px 2xl:1536px` with
 `densities="x1"`. Fluid entries such as `md:50vw` resolve against the screen
@@ -1754,9 +1755,8 @@ the column from stretching its width instead. It sits `0.5em` of the
 description's font size in from the left content edge, so it shifts right with
 the type. Its corners are `7.5%` of its size and its glyph sits inside
 `17.5%` of padding, the hero frame's proportions. Its top is level with the
-description's first line. On phones it is a fixed `3.06em` square, the height
-of three description lines, between the title and the description on the left
-edge. Hovering it opens the services section's TrailingTooltip in its
+description's first line. Below `md` it is hidden, so phones show the title
+and the description without it. Hovering it opens the services section's TrailingTooltip in its
 text-only form, "More Details" with an arrow up right glyph and no thumbnail.
 
 The link keeps its full size from the start, so the layout never moves. Its
@@ -2395,10 +2395,13 @@ rounded top of the statement section shows at the bottom of the first screen.
 It has no description. The title sets "We create", "AI Content and", and
 "Websites" on three centered lines, with a link frame after "We" and an image
 frame before "Websites". It is bold with `-0.05em` tracking and `0.88` leading,
-in the same padded line masks as `AboutTitle`. Its size is
-`clamp(2rem, 11vw, 12rem)`, the About display size with a lower `2rem` floor,
-so "AI Content and" still fits a 390 wide phone. Every line stays on one line
-and fits the content width from 390 to 1440 wide. The `h1` is an `sr-only`
+in the same padded line masks as `AboutTitle`. The hero is an inline-size
+container, and the title sets `min(15.5cqi, 26svh)`. The longest line, "AI
+Content and", measures about `6.2em` with its frames open, so `15.5cqi` sets it
+across about 96 percent of the content width at every width, and the `26svh`
+cap keeps the three lines inside the first screen on short, wide viewports.
+Every line stays on one line. If the phrase changes, measure its longest line
+again and update the size. The `h1` is an `sr-only`
 copy of the phrase. The visual title is a `div` whose text fragments are hidden
 from assistive technology one by one, rather than as a whole, so the link
 inside it stays reachable.
@@ -2425,9 +2428,11 @@ with an arrow up right glyph, and keyboard focus shows the standard ring.
 
 The image frame is 16:9 and shows an `ImageCycle` that cuts through four images
 from `public/images/hero` every `750ms`, the way the About section headings do.
-The images are decorative and load eagerly. The slider is not inside the frame:
-it is a page-level layer that sits exactly on the frame at the top of the page
-and becomes the first AI Content Creation block's image, as described below.
+The images are decorative and load eagerly. From `lg` the slider is not inside
+the frame: it is a page-level layer that sits exactly on the frame at the top
+of the page and becomes the first AI Content Creation block's image, as
+described below. Below `lg` there is no flight, so the frame holds its own
+`ImageCycle` of the same images and stays in the hero.
 
 The title rises with the About hero timing at the page transition's reveal
 point, or after the fonts load on a direct request. `0.5s` later, while the
@@ -2474,8 +2479,9 @@ reaches 82 percent of the viewport, its title rises word by word from its word
 masks and its description rises line by line from its line masks, both with
 the services description timing, `1.5s`, `power3`, and a `0.1s` stagger.
 
-The Reels block has no image of its own. Its slot receives the hero slider,
-which flies there with the scroll: from the top of the page until the slot's
+Below `lg` the Reels block cycles the four Services hero images in its own
+slot, the same images the hero frame shows. From `lg` that cycle is hidden and
+the slot receives the hero slider, which flies there with the scroll: from the top of the page until the slot's
 center reaches the viewport's center, the slider's position, size, and corner
 radius move linearly from the hero frame to the slot. Because the page scrolls
 at the same time, the slider barely moves on screen. It leaves the fading hero
@@ -2483,7 +2489,7 @@ title, grows to the slot's size, and the statement section and the AI Content
 Creation intro, both above it at `z-10`, slide over it. It sits at `z-5`, above
 the blocks, so the Reels block arrives under it as it lands. While the hero
 frame is still opening, the slider follows its width and its `1.3` to `1`
-scale. Reduced motion places the slider in the Reels slot at rest.
+scale. Reduced motion from `lg` places the slider in the Reels slot at rest.
 
 The Website Development section repeats the AI Content Creation layout on a
 dark `foreground` surface with `background` ink. Its intro title is "Website
@@ -2511,13 +2517,16 @@ fractional smooth scroll offset never opens a light hairline at the seam.
 The Work route stacks a hero, a grey projects section, and the dark call to
 action that also closes the Services route, followed by the site footer.
 
-The hero repeats the Services hero's frame: it fills the first screen below the
-header except for `--work-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded
-top of the projects section shows at the bottom of the first screen. Its
-content fills that space. The title sets "Our Work" on one line across the
-full content width at the top, and the description sits at the bottom of the
-space below it, in the right half of a two-column grid with a `4rem` gap from
-`lg` and across the full width below `lg`. The title is bold with `-0.05em`
+From `lg` the hero repeats the Services hero's frame: it fills the first screen
+below the header except for `--listing-hero-peek`, `clamp(3rem, 9svh, 6rem)`,
+so the rounded top of the projects section shows at the bottom of the first
+screen. Its content fills that space. The title sets "Our Work" on one line
+across the full content width at the top, and the description sits at the
+bottom of the space below it, in the right half of a two-column grid with a
+`4rem` column gap and a `3.5rem` row gap. Below `lg` the hero has no minimum
+height and takes only its content's height, and the description follows the
+title across the full width `1.5rem` below it, `2rem` from `sm`. The projects
+section still slides over the drifting hero on every width. The title is bold with `-0.05em`
 tracking and a tight `0.76` leading, in the same padded line mask as the
 Services hero, with each word and each of its characters an inline block
 inside it. Separate characters drop the font's kerning pairs, which the

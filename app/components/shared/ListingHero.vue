@@ -76,12 +76,17 @@ function setDescriptionSplit(parts: SplitTextResult) {
 
 .listing-hero {
    @apply relative grid pt-10 pb-16 sm:pb-20;
-   min-height: calc(100svh - 4.75rem - var(--listing-hero-peek));
    --listing-hero-peek: clamp(3rem, 9svh, 6rem);
 }
 
+@media (min-width: 64rem) {
+   .listing-hero {
+      min-height: calc(100svh - 4.75rem - var(--listing-hero-peek));
+   }
+}
+
 .listing-hero-content {
-   @apply @container grid grid-rows-[auto_1fr] gap-10 sm:gap-14 lg:grid-cols-2 lg:gap-x-16;
+   @apply @container grid grid-rows-[auto_1fr] gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-14;
 }
 
 .listing-hero-title {

@@ -110,8 +110,8 @@ export function useServicesMediaFlight(scope: MotionScope) {
 
       createMatchMedia(
          {
-            motion: "(prefers-reduced-motion: no-preference)",
-            reduceMotion: "(prefers-reduced-motion: reduce)",
+            motion: "(min-width: 64rem) and (prefers-reduced-motion: no-preference)",
+            reduceMotion: "(min-width: 64rem) and (prefers-reduced-motion: reduce)",
          },
          (context) => {
             if (context.conditions?.reduceMotion)

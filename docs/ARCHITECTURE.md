@@ -198,17 +198,19 @@ for AI Content Creation, and a dark one for Website Development, and
 app/pages/services.vue renders it with the route
 metadata. ServicesPage also owns both offers' copy and blocks, and
 the `data-services-flight` layer, an ImageCycle of the hero images that is
-absolutely positioned in the page and travels from the hero to the first
-block. ServicesHero owns the title lines, the About link, and its
+absolutely positioned in the page and, from `lg`, travels from the hero to the
+first block. ServicesHero owns the title lines, the About link, and its
 TrailingTooltip. A title line can carry one `data-services-hero-inset` frame
 placed inline in the line: the link frame, a NuxtLink to `/about`, or the
-media frame, which is the flight's `data-services-flight-origin` and holds only
-a still poster for reduced motion. ServicesStatementSection owns the statement
+media frame, which is the flight's `data-services-flight-origin`. It holds an
+ImageCycle of the hero images that shows only below `lg`, where there is no
+flight, and a still poster for reduced motion from `lg`. ServicesStatementSection owns the statement
 copy and its split. ServicesOfferSection receives an `anchor` from
 app/lib/services-anchors.ts, which becomes its section id, a title, a description, a
 `surface` of `light` or `dark`, and a list of blocks, each with a title, a
-description, a tone, and either its own images or the `flight` flag that makes
-its media slot the flight's `data-services-flight-target`. The dark surface
+description, a tone, optional images, and an optional `flight` flag that makes
+its media slot the flight's `data-services-flight-target`. A flight block's
+images show only below `lg`, where the flight does not run. The dark surface
 adds a `data-services-reveal-backdrop` layer at `-z-10` without isolating
 the section, so the intro text can blend with it and the page behind it.
 app/lib/services-hero.ts holds the hero images
@@ -537,7 +539,9 @@ and corner radius between them by the progress of a ScrollTrigger that runs
 from the top of the page until the slot's center reaches the viewport's
 center, and writes them to the flight layer. While the hero frame is still
 opening, it also matches the frame's content scale from its
-`--services-hero-inset-open` value. Reduced motion keeps the layer in the slot.
+`--services-hero-inset-open` value. It runs only from `lg`. Below `lg` the
+layer stays hidden and the hero frame and the slot show their own cycles.
+Reduced motion from `lg` keeps the layer in the slot.
 
 useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` split,
 then rises each text's lines, or its words when it is split into words only,
