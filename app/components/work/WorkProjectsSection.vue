@@ -34,10 +34,20 @@ const filters: readonly WorkFilterOption<WorkFilter>[] = [
 	{ id: "website-development", label: "Website Development" },
 ];
 
-const wideImage = { height: 816, width: 1456 } as const;
-const tallImage = { height: 1919, width: 1080 } as const;
-
 const projects: readonly Project[] = [
+	{
+		categories: ["Reel", "Video", "Image"],
+		href: "/work/ugc-creator",
+		image: {
+			height: 1440,
+			src: "/images/work/ugc-creator/cover.jpg",
+			width: 2560,
+		},
+		imageAlt:
+			"The AI UGC creator getting ready in a yellow sweatshirt, wide-leg jeans, and a brown suede bag",
+		name: "UGC Creator",
+		video: "/images/work/ugc-creator/cover.mp4",
+	},
 	{
 		categories: ["Web Development", "UI/UX Design"],
 		href: "/work/sygen",
@@ -45,6 +55,19 @@ const projects: readonly Project[] = [
 		imageAlt:
 			"Sygen home page on a desktop monitor, turning the brand color #2F5BEA into brand, neutral, and status scales",
 		name: "Sygen",
+	},
+	{
+		categories: ["Reel", "Video", "Image"],
+		href: "/work/cartoon",
+		image: {
+			height: 1440,
+			src: "/images/work/cartoon/cover.jpg",
+			width: 2560,
+		},
+		imageAlt:
+			"The cartoon character in a grey knit sweater, leopard print cargo pants, yellow sneakers, and a black crossbody bag",
+		name: "Cartoon",
+		video: "/images/work/cartoon/cover.mp4",
 	},
 	{
 		categories: ["Web Development", "UI/UX Design"],
@@ -57,42 +80,6 @@ const projects: readonly Project[] = [
 		imageAlt:
 			"ZEEL AI Studio home screen on a laptop resting on a textured stone block",
 		name: "ZEEL AI Studio",
-	},
-	{
-		categories: ["Reels", "Video"],
-		image: { ...wideImage, src: "/images/hero/1.png" },
-		imageAlt: "Nova Dairy project visual",
-		name: "Nova Dairy",
-	},
-	{
-		categories: ["Imagery", "Reels"],
-		image: { ...tallImage, src: "/images/work/1.png" },
-		imageAlt: "Lumen Skincare project visual",
-		name: "Lumen Skincare",
-	},
-	{
-		categories: ["Web Design", "E-commerce", "Imagery"],
-		image: { ...wideImage, src: "/images/hero/4.png" },
-		imageAlt: "Marrow and Co project visual",
-		name: "Marrow & Co",
-	},
-	{
-		categories: ["Video", "Imagery"],
-		image: { ...wideImage, src: "/images/hero/6.png" },
-		imageAlt: "Atlas Running project visual",
-		name: "Atlas Running",
-	},
-	{
-		categories: ["E-commerce", "Development"],
-		image: { ...wideImage, src: "/images/hero/5.png" },
-		imageAlt: "Fieldnote Coffee project visual",
-		name: "Fieldnote Coffee",
-	},
-	{
-		categories: ["Reels"],
-		image: { ...tallImage, src: "/images/work/5.png" },
-		imageAlt: "Orbit Studio project visual",
-		name: "Orbit Studio",
 	},
 ];
 
@@ -107,6 +94,7 @@ const {
 	hide: hideTooltip,
 	shouldLoad: shouldLoadTooltip,
 	show: showTooltip,
+	size: tooltipSize,
 } = useTrailingTooltip();
 
 const shownCount = computed(
@@ -136,7 +124,7 @@ async function selectFilter(filter: WorkFilter) {
 }
 
 function activateTooltip() {
-	showTooltip("", tooltipLabel);
+	showTooltip("", tooltipLabel, "compact");
 }
 </script>
 
@@ -169,6 +157,7 @@ function activateTooltip() {
 			v-if="shouldLoadTooltip"
 			:active="tooltipActive"
 			:icon="appIcons.arrowUpRight"
+			:size="tooltipSize"
 			:label="tooltipLabel"
 		/>
 	</section>

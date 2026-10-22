@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, shallowRef } from "vue";
 import ArrowLink from "@/components/shared/ArrowLink.vue";
+import HoverVideo from "@/components/shared/HoverVideo.vue";
 import { appIcons } from "@/lib/icons";
+import { getProjectCoverImage } from "@/lib/projects";
 import type { Project } from "@/lib/projects";
 
 const TrailingTooltip = defineAsyncComponent(
@@ -13,7 +15,9 @@ const { project } = defineProps<{
 }>();
 
 const projectPath = `/work/${project.slug}`;
+const coverImage = getProjectCoverImage(project);
 const tooltipLabel = "Next Project";
+const hovered = shallowRef(false);
 
 const {
    active: tooltipActive,
@@ -23,7 +27,13 @@ const {
 } = useTrailingTooltip();
 
 function activateTooltip() {
+   hovered.value = true;
    showTooltip("", tooltipLabel);
+}
+
+function deactivateTooltip() {
+   hovered.value = false;
+   hideTooltip();
 }
 </script>
 
@@ -41,33 +51,25 @@ function activateTooltip() {
             class="project-next-link"
             data-arrow-link-trigger
             @pointerenter="activateTooltip"
-            @pointerleave="hideTooltip"
+            @pointerleave="deactivateTooltip"
          >
             <h2 id="project-next-title" class="project-next-title">Next Project</h2>
             <span class="project-next-media">
                <NuxtImg
-                  v-if="project.cover.kind === 'image'"
-                  :src="project.cover.src"
+                  :src="coverImage.src"
                   alt=""
-                  :width="project.cover.width"
-                  :height="project.cover.height"
+                  :width="coverImage.width"
+                  :height="coverImage.height"
                   sizes="sm:1024px md:1024px lg:640px xl:768px 2xl:1280px"
                   densities="x1"
                   loading="lazy"
                   class="project-next-image"
                />
-               <video
-                  v-else
+               <HoverVideo
+                  v-if="project.cover.kind === 'video'"
                   :src="project.cover.src"
-                  :poster="project.cover.poster"
-                  :width="project.cover.width"
-                  :height="project.cover.height"
-                  class="project-next-image"
-                  muted
-                  loop
-                  autoplay
-                  playsinline
-                  preload="metadata"
+                  :active="hovered"
+                  class="project-next-video"
                />
             </span>
             <ArrowLink :label="project.name" size="lg" class="project-next-name" />
@@ -116,11 +118,15 @@ function activateTooltip() {
 }
 
 .project-next-media {
-   @apply block md:col-start-1 md:row-span-2 md:row-start-1;
+   @apply relative block md:col-start-1 md:row-span-2 md:row-start-1;
 }
 
 .project-next-image {
    @apply block aspect-4/3 w-full rounded-lg object-cover;
+}
+
+.project-next-video {
+   @apply absolute inset-0 size-full rounded-lg object-cover;
 }
 
 .project-next-name {

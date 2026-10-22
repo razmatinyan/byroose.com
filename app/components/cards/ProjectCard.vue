@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, shallowRef, useTemplateRef } from "vue";
+import { computed, shallowRef } from "vue";
 import { NuxtLink } from "#components";
+import HoverVideo from "@/components/shared/HoverVideo.vue";
 
 export interface ProjectImage {
    height: number;
@@ -23,36 +24,16 @@ const emit = defineEmits<{
 }>();
 
 const categoryLabel = computed(() => categories.join(", "));
-
-const previewVideo = useTemplateRef<HTMLVideoElement>("previewVideo");
-const previewPlaying = shallowRef(false);
-const hoverPointer = useMediaQuery("(hover: hover)");
-const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-
-function playPreview() {
-   const element = previewVideo.value;
-   if (!element || !hoverPointer.value || prefersReducedMotion.value) return;
-
-   element.play().catch(stopPreview);
-}
-
-function stopPreview() {
-   const element = previewVideo.value;
-   previewPlaying.value = false;
-   if (!element) return;
-
-   element.pause();
-   element.currentTime = 0;
-}
+const hovered = shallowRef(false);
 
 function activate() {
+   hovered.value = true;
    emit("activate");
-   playPreview();
 }
 
 function deactivate() {
+   hovered.value = false;
    emit("deactivate");
-   stopPreview();
 }
 </script>
 
@@ -66,32 +47,20 @@ function deactivate() {
       @pointerleave="deactivate"
    >
       <div class="project-card-media">
-         <NuxtImg
-            class="project-card-image"
-            :src="image.src"
-            :alt="imageAlt"
-            :width="image.width"
-            :height="image.height"
-            sizes="sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px"
-            densities="x1"
-            loading="lazy"
-            draggable="false"
-         />
-         <video
-            v-if="video"
-            ref="previewVideo"
-            class="project-card-image project-card-video"
-            :src="video"
-            :width="image.width"
-            :height="image.height"
-            :data-playing="previewPlaying || undefined"
-            aria-hidden="true"
-            preload="none"
-            muted
-            loop
-            playsinline
-            @playing="previewPlaying = true"
-         />
+         <span class="project-card-zoom">
+            <NuxtImg
+               class="project-card-image"
+               :src="image.src"
+               :alt="imageAlt"
+               :width="image.width"
+               :height="image.height"
+               sizes="sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px"
+               densities="x1"
+               loading="lazy"
+               draggable="false"
+            />
+            <HoverVideo v-if="video" class="project-card-image" :src="video" :active="hovered" />
+         </span>
       </div>
       <div class="project-card-meta">
          <h3 class="project-card-title">{{ name }}</h3>
@@ -111,16 +80,12 @@ function deactivate() {
    @apply relative aspect-4/3 overflow-hidden rounded-md bg-muted;
 }
 
+.project-card-zoom {
+   @apply absolute inset-0 block;
+}
+
 .project-card-image {
    @apply absolute inset-0 size-full object-cover select-none;
-}
-
-.project-card-video {
-   @apply opacity-0;
-}
-
-.project-card-video[data-playing] {
-   @apply opacity-100;
 }
 
 .project-card-meta {
@@ -136,24 +101,18 @@ function deactivate() {
 }
 
 @media (hover: hover) {
-   .project-card-image {
+   .project-card-zoom {
       transition: scale 0.8s cubic-bezier(0.19, 1, 0.22, 1);
    }
 
-   .project-card-video {
-      transition:
-         scale 0.8s cubic-bezier(0.19, 1, 0.22, 1),
-         opacity 0.4s ease-out;
-   }
-
-   .project-card:hover .project-card-image,
-   .project-card:focus-visible .project-card-image {
+   .project-card:hover .project-card-zoom,
+   .project-card:focus-visible .project-card-zoom {
       scale: 1.06;
    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-   .project-card-image {
+   .project-card-zoom {
       transition: none;
    }
 }

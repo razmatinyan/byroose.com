@@ -18,7 +18,7 @@ export default defineProject({
    blocks: [
       {
          type: "text",
-         title: "From palette to system",
+         title: "The rebuild",
          align: "right",
          paragraphs: [
             "Sygen started in 2023 as ColorGen, a random palette generator like many others. In October 2026 we rebuilt it from scratch and gave it a new name.",

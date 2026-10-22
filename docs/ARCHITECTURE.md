@@ -962,11 +962,11 @@ storage, admin area, or editor. Adding or changing a project is a code change.
 - `app/lib/projects.ts` owns the `Project` type, its block types, the
   `ProjectCategory` names with `projectCategoryServices`, which maps each
   category to the `ai-content` or `website-development` service that the Work
-  filters group by. Imagery, Reels, and Video are AI content, and Development,
+  filters group by. Image, Reel, and Video are AI content, and Development,
   E-commerce, UI/UX Design, Web Design, and Web Development are website
   development. It also owns `defineProject`, an identity helper that type-checks a
-  project file, `getProjectImages`, which lists the cover, media block, and
-  grid images of a project in page order for the image viewer, and
+  project file, `getProjectGallery`, which lists the cover, media block, and
+  grid images and videos of a project in page order for the viewer, and
   `getProjectCoverImage`, which returns the cover, or the poster of a video
   cover at the video's size and alternative text.
 - `app/data/projects/<slug>.ts` holds one project as the default export of
@@ -1012,7 +1012,9 @@ only and own no data.
   with an "All Works" link to `/work` placed beside it, and owns a
   TrailingTooltip through `useTrailingTooltip`. It renders the cover itself
   instead of through `ProjectMedia`, so the next project's cover never opens
-  the current page's image viewer. When it is present, `ProjectPage` drops
+  the current page's viewer. It shows the cover image, or the poster of a
+  video cover, and a video cover plays through `HoverVideo` while the block
+  is hovered. When it is present, `ProjectPage` drops
   its bottom padding so the block meets the site call to action.
 - `ProjectHero` repeats the Work hero frame. The name is the page H1, centered
   on one line, and `useFitText` shrinks a long name to the full width, capped at
@@ -1029,36 +1031,49 @@ only and own no data.
   as the external Visit Live Website link, which the project hero and the home
   case study cards use, and `ProjectNext` uses it for the next project's name
   and the All Works link.
+- The shared `HoverVideo` in `app/components/shared` renders a muted,
+  looping, decorative video that plays while its `active` prop is true and
+  pauses and rewinds when it turns false. It sets its source on the first
+  play, so a page downloads none of the video until a reader hovers. It plays
+  only for `(hover: hover)` pointers and never under reduced motion.
+  `ProjectCard`, `CaseStudyCard`, and `ProjectNext` stack it over their
+  image.
 - `ProjectMedia` renders an image through NuxtImg or a muted, looping,
   autoplaying video, with the given responsive sizes and loading intent. The
   cover loads eagerly and every other media item lazily. The cover and media
   blocks span the page gutter and use its default per-breakpoint sizes, which
   top out at the 1536px screen, and only grid images pass their own. When a
-  project gallery is provided, an image renders inside a button that opens it
-  in the viewer.
-- `ProjectPage` collects the images with `getProjectImages`, owns the viewer
-  index, and provides an `openImage` function through `provideProjectGallery`.
-  `ProjectMedia` reads it with `useProjectGallery`, so the blocks between them
-  pass nothing down. An image that appears twice opens at the position it was
-  clicked, because the lookup compares the image object before its source.
+  project gallery is provided, an image or video renders inside a button that
+  opens it in the viewer, and hovering a video shows the page's "Watch with
+  sound" hint.
+- `ProjectPage` collects the gallery with `getProjectGallery`, owns the viewer
+  index and a TrailingTooltip for the video hint, and provides `open`,
+  `showVideoHint`, and `hideVideoHint` through `provideProjectGallery`.
+  `ProjectMedia` reads them with `useProjectGallery`, so the blocks between
+  them pass nothing down. An item that appears twice opens at the position it
+  was clicked, because the lookup compares the item object before its source.
 - `ProjectImageViewer` renders the gallery in a full-screen Dialog with close,
   previous, and next actions, arrow key and touch swipe navigation, and a
   counter. It holds the smooth scroll lock while open. It sizes its frame from
-  the image's intrinsic width and height, so it never waits for the file to
-  measure, and GSAP tweens the frame to each new size.
+  the item's intrinsic width and height, so it never waits for the file to
+  measure, and GSAP tweens the frame to each new size. A video slide renders
+  `ProjectVideoPlayer`, a custom player built on VueUse `useMediaControls`
+  and `useFullscreen` with the source-owned shadcn `Slider` in
+  `app/components/ui/slider`, a Reka UI slider whose optional `thumbLabel`
+  names its thumb.
 - `ProjectBlocks` renders the blocks in order and places a spacer before each
   one, so the spacing is owned by the list rather than by the blocks.
   `ProjectTextBlock`, `ProjectTitleBlock`, `ProjectGridBlock`, and `ProjectResultsBlock` render their
   block types, and a media block renders `ProjectMedia` directly.
 
 The Work listing and the home case studies still keep their cards as local
-data in `WorkProjectsSection` and `WorkSection`. ZEEL AI Studio and Sygen each
-replace one placeholder in both and pass an `href` to their project page, which turns
-`ProjectCard` into a NuxtLink and adds a NuxtLink covering `CaseStudyCard`, so
-the case card's `liveUrl` link can sit above it without nesting. The remaining cards are
-placeholders without a link. Both lists will read `app/data/projects/index.ts`
-once every card is a real project. The Work listing reads its category names
-and the category to service map from `app/lib/projects.ts`.
+data in `WorkProjectsSection` and `WorkSection`. Both show only the real
+projects, UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in the order of
+`app/data/projects/index.ts`. Each card passes an `href` to its project page,
+which turns `ProjectCard` into a NuxtLink and adds a NuxtLink covering
+`CaseStudyCard`, so the case card's `liveUrl` link can sit above it without
+nesting. A new project needs a card in both lists. The Work listing reads its
+category names and the category to service map from `app/lib/projects.ts`.
 
 ## Blog posts
 

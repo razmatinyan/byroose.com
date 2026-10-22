@@ -23,12 +23,26 @@ interface CaseStudy {
 	results?: readonly { label: string; value: string }[];
 	revealTones: readonly SurfaceTone[];
 	tone: SurfaceTone;
+	video?: string;
 }
 
 const workTitle = "What we've done";
 const liveTooltipLabel = "Visit Live";
 
 const caseStudies: CaseStudy[] = [
+	{
+		client: "UGC Creator",
+		description:
+			"A virtual UGC creator, one consistent face who tries on clothes and films get ready with me videos.",
+		href: "/work/ugc-creator",
+		image: "/images/work/ugc-creator/cover.jpg",
+		imageAlt:
+			"The AI UGC creator getting ready in a yellow sweatshirt, wide-leg jeans, and a brown suede bag",
+		imageScale: 1.05,
+		revealTones: ["yellow", "primary"],
+		tone: "primary",
+		video: "/images/work/ugc-creator/cover.mp4",
+	},
 	{
 		client: "Sygen",
 		description:
@@ -41,6 +55,19 @@ const caseStudies: CaseStudy[] = [
 		liveUrl: "https://sygenn.vercel.app/",
 		revealTones: ["primary", "pink"],
 		tone: "pink",
+	},
+	{
+		client: "Cartoon",
+		description:
+			"A short cartoon about a girl who oversleeps on a school day and gets dressed by magic.",
+		href: "/work/cartoon",
+		image: "/images/work/cartoon/cover.jpg",
+		imageAlt:
+			"The cartoon character in a grey knit sweater, leopard print cargo pants, yellow sneakers, and a black crossbody bag",
+		imageScale: 1.05,
+		revealTones: ["pink", "green"],
+		tone: "green",
+		video: "/images/work/cartoon/cover.mp4",
 	},
 	{
 		client: "ZEEL AI Studio",
@@ -57,32 +84,6 @@ const caseStudies: CaseStudy[] = [
 		],
 		revealTones: ["blue", "yellow"],
 		tone: "yellow",
-	},
-	{
-		client: "Nova Dairy",
-		description:
-			"A launch film and sixty cutdowns produced in one sprint, cut for every placement the brand actually buys.",
-		image: "/images/hero/1.png",
-		imageAlt: "Nova Dairy project visual",
-		results: [
-			{ label: "Views earned across the launch", value: "11M" },
-			{ label: "Cutdowns delivered in one sprint", value: "60" },
-		],
-		revealTones: ["yellow", "primary"],
-		tone: "primary",
-	},
-	{
-		client: "Marrow & Co",
-		description:
-			"One landing page rebuilt around a single offer, with the proof moved above the decision.",
-		image: "/images/hero/4.png",
-		imageAlt: "Marrow and Co project visual",
-		results: [
-			{ label: "Conversion rate, up from 3.1%", value: "4.7%" },
-			{ label: "Lower bounce rate on the offer page", value: "-24%" },
-		],
-		revealTones: ["pink", "green"],
-		tone: "green",
 	},
 ];
 
@@ -108,16 +109,8 @@ function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts;
 }
 
-function activateTooltip(item: CaseStudy) {
-	showTooltip(item.image);
-}
-
-function activateLiveTooltip() {
-	showTooltip("", liveTooltipLabel, "compact", appIcons.arrowUpRight);
-}
-
-function activatePanelTooltip(image: string, label: string) {
-	showTooltip(image, label, "compact");
+function activateTooltip(label: string) {
+	showTooltip("", label, "compact", appIcons.arrowRight);
 }
 </script>
 
@@ -140,16 +133,14 @@ function activatePanelTooltip(image: string, label: string) {
 					v-for="item in caseStudies"
 					:key="item.client"
 					v-bind="item"
-					@activate="activateTooltip(item)"
+					@activate="activateTooltip('View Project')"
 					@deactivate="deactivateTooltip"
-					@live-activate="activateLiveTooltip"
-					@live-deactivate="activateTooltip(item)"
 				/>
 			</div>
 		</div>
 
 		<MoreWorksPanel
-			@activate="activatePanelTooltip"
+			@activate="activateTooltip('All Projects')"
 			@deactivate="deactivateTooltip"
 		/>
 

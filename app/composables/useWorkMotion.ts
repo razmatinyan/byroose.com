@@ -146,6 +146,8 @@ export function useWorkMotion(
       });
 
       addStackReveal(timeline, layers);
+      const coveredLayers = layers.slice(0, -1);
+      if (coveredLayers.length) timeline.set(coveredLayers, { autoAlpha: 0 }, ">");
       if (lines.length) {
          revealLines(timeline, lines, timeline.duration() * linesAtMedia);
       }

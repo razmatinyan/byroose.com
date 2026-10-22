@@ -5,16 +5,17 @@ import { Button, ButtonIcon } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { whenImageLoaded } from "@/composables/useImagesLoaded";
 import { appIcons } from "@/lib/icons";
-import type { ProjectImage } from "@/lib/projects";
+import type { ProjectImage, ProjectMedia } from "@/lib/projects";
+import ProjectVideoPlayer from "./ProjectVideoPlayer.vue";
 
 interface ViewerLayer {
    id: number;
-   image: ProjectImage;
+   item: ProjectMedia;
    ready: boolean;
 }
 
-const { images } = defineProps<{
-   images: readonly ProjectImage[];
+const { items } = defineProps<{
+   items: readonly ProjectMedia[];
 }>();
 
 const index = defineModel<number>("index");
@@ -28,6 +29,7 @@ const reservedSpace = {
    compact: { block: 32, inline: 32 },
    wide: { block: 48, inline: 48 },
 } as const;
+const compactVideoBlockSpace = 168;
 const stillMotion =
    "motion-reduce:data-[state=open]:animate-none motion-reduce:data-[state=closed]:animate-none";
 const contentClass = `inset-0 top-0 left-0 block h-svh w-screen max-w-none translate-x-0 translate-y-0 rounded-none border-0 bg-transparent p-0 shadow-none sm:max-w-none ${stillMotion}`;
@@ -51,39 +53,64 @@ const open = computed({
       if (!isOpen) index.value = undefined;
    },
 });
-const current = computed(() => (index.value === undefined ? undefined : images[index.value]));
-const hasSiblings = computed(() => images.length > 1);
-const title = computed(() =>
-   index.value === undefined ? "" : `Image ${index.value + 1} of ${images.length}`,
-);
+const current = computed(() => (index.value === undefined ? undefined : items[index.value]));
+const hasSiblings = computed(() => items.length > 1);
+const showsCounter = computed(() => !(isWide.value && current.value?.kind === "video"));
+const title = computed(() => {
+   if (index.value === undefined || !current.value) return "";
+
+   const kind = current.value.kind === "video" ? "Video" : "Image";
+   return `${kind} ${index.value + 1} of ${items.length}`;
+});
 const counter = computed(() =>
-   index.value === undefined ? "" : `${index.value + 1} / ${images.length}`,
+   index.value === undefined ? "" : `${index.value + 1} / ${items.length}`,
 );
 const neighbors = computed(() => {
    if (index.value === undefined || !hasSiblings.value) return [];
 
-   const count = images.length;
-   return [images[(index.value + 1) % count], images[(index.value - 1 + count) % count]].filter(
-      (image): image is ProjectImage => Boolean(image),
+   const count = items.length;
+   return [items[(index.value + 1) % count], items[(index.value - 1 + count) % count]].filter(
+      (item): item is ProjectImage => item?.kind === "image",
    );
 });
 
-function fitSize({ height, width }: ProjectImage) {
+function fitSize({ height, kind, width }: ProjectMedia) {
    const space = isWide.value ? reservedSpace.wide : reservedSpace.compact;
+   const blockSpace = kind === "video" && !isWide.value ? compactVideoBlockSpace : space.block;
    const scale = Math.min(
       1,
       (viewportWidth.value - space.inline) / width,
-      (viewportHeight.value - space.block) / height,
+      (viewportHeight.value - blockSpace) / height,
    );
 
    return { height: Math.round(height * scale), width: Math.round(width * scale) };
 }
 
-function resizeFrame(image: ProjectImage, animate: boolean) {
+function whenVideoReady(video: HTMLVideoElement) {
+   if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return Promise.resolve(true);
+
+   return new Promise<boolean>((resolve) => {
+      video.addEventListener("loadeddata", () => resolve(true), { once: true });
+      video.addEventListener("error", () => resolve(false), { once: true });
+   });
+}
+
+function whenLayerReady(element: Element | null | undefined) {
+   if (element instanceof HTMLImageElement) return whenImageLoaded(element);
+
+   const video = element?.querySelector("video");
+   return video ? whenVideoReady(video) : undefined;
+}
+
+function pauseVideos() {
+   frame.value?.querySelectorAll("video").forEach((video) => video.pause());
+}
+
+function resizeFrame(item: ProjectMedia, animate: boolean) {
    const element = frame.value;
    if (!element) return;
 
-   const size = fitSize(image);
+   const size = fitSize(item);
    if (!animate || prefersReducedMotion.value) {
       gsap.killTweensOf(element);
       gsap.set(element, size);
@@ -97,21 +124,23 @@ function hasLayer(id: number) {
    return layers.value.some((layer) => layer.id === id);
 }
 
-async function showImage(image: ProjectImage, animate: boolean) {
+async function showItem(item: ProjectMedia, animate: boolean) {
    const id = nextLayerId++;
-   const layer = { id, image, ready: false };
+   const layer = { id, item, ready: false };
+   pauseVideos();
    layers.value = animate && layers.value.length ? [...layers.value, layer] : [layer];
 
    await nextTick();
    const element = frame.value?.querySelector(`[data-viewer-layer="${id}"]`);
-   if (!(element instanceof HTMLImageElement)) return;
+   const ready = whenLayerReady(element);
+   if (!element || !ready) return;
 
-   await whenImageLoaded(element);
+   await ready;
    if (!hasLayer(id)) return;
 
-   layers.value = layers.value.map((item) => (item.id === id ? { ...item, ready: true } : item));
+   layers.value = layers.value.map((entry) => (entry.id === id ? { ...entry, ready: true } : entry));
    const keepFromLayer = () => {
-      layers.value = layers.value.filter((item) => item.id >= id);
+      layers.value = layers.value.filter((entry) => entry.id >= id);
    };
 
    if (!animate || prefersReducedMotion.value) return keepFromLayer();
@@ -126,10 +155,12 @@ async function showImage(image: ProjectImage, animate: boolean) {
 function step(offset: number) {
    if (index.value === undefined || !hasSiblings.value) return;
 
-   index.value = (index.value + offset + images.length) % images.length;
+   index.value = (index.value + offset + items.length) % items.length;
 }
 
 function handleKeydown(event: KeyboardEvent) {
+   if (event.target instanceof HTMLElement && event.target.closest("[data-video-player]")) return;
+
    if (event.key === "ArrowRight") {
       event.preventDefault();
       step(1);
@@ -160,8 +191,13 @@ function unlockScroll() {
    releaseScroll = null;
 }
 
+function startsInPlayerControls(event: TouchEvent) {
+   return event.target instanceof HTMLElement && Boolean(event.target.closest("[data-video-player-controls]"));
+}
+
 useSwipe(stage, {
-   onSwipeEnd: (_, direction) => {
+   onSwipeEnd: (event, direction) => {
+      if (startsInPlayerControls(event)) return;
       if (direction === "left") step(1);
       if (direction === "right") step(-1);
    },
@@ -173,13 +209,13 @@ watch(
       if (next === undefined) return unlockScroll();
 
       releaseScroll ??= lock();
-      const image = images[next];
-      if (!image) return;
+      const item = items[next];
+      if (!item) return;
 
       await nextTick();
       const animate = previous !== undefined;
-      resizeFrame(image, animate);
-      await showImage(image, animate);
+      resizeFrame(item, animate);
+      await showItem(item, animate);
    },
    { flush: "post" },
 );
@@ -207,21 +243,29 @@ onScopeDispose(unlockScroll);
 
          <div ref="stage" class="image-viewer-stage" @click.self="open = false">
             <div ref="frame" class="image-viewer-frame">
-               <NuxtImg
-                  v-for="layer in layers"
-                  :key="layer.id"
-                  :data-viewer-layer="layer.id"
-                  :data-ready="layer.ready"
-                  class="image-viewer-image"
-                  :src="layer.image.src"
-                  alt=""
-                  :width="layer.image.width"
-                  :height="layer.image.height"
-                  :sizes="imageSizes"
-                  densities="x1"
-                  loading="eager"
-                  draggable="false"
-               />
+               <template v-for="layer in layers" :key="layer.id">
+                  <NuxtImg
+                     v-if="layer.item.kind === 'image'"
+                     :data-viewer-layer="layer.id"
+                     :data-ready="layer.ready"
+                     class="image-viewer-image"
+                     :src="layer.item.src"
+                     alt=""
+                     :width="layer.item.width"
+                     :height="layer.item.height"
+                     :sizes="imageSizes"
+                     densities="x1"
+                     loading="eager"
+                     draggable="false"
+                  />
+                  <ProjectVideoPlayer
+                     v-else
+                     :data-viewer-layer="layer.id"
+                     :data-ready="layer.ready"
+                     class="image-viewer-image"
+                     :video="layer.item"
+                  />
+               </template>
             </div>
          </div>
 
@@ -245,7 +289,7 @@ onScopeDispose(unlockScroll);
                variant="light"
                size="cta-icon"
                :bounce-on-hover="true"
-               aria-label="Previous image"
+               aria-label="Previous slide"
                @click="step(-1)"
             >
                <template #icon>
@@ -257,14 +301,14 @@ onScopeDispose(unlockScroll);
                variant="light"
                size="cta-icon"
                :bounce-on-hover="true"
-               aria-label="Next image"
+               aria-label="Next slide"
                @click="step(1)"
             >
                <template #icon>
                   <ButtonIcon :icon="appIcons.arrowRight" />
                </template>
             </Button>
-            <p class="image-viewer-counter" aria-hidden="true">{{ counter }}</p>
+            <p v-if="showsCounter" class="image-viewer-counter" aria-hidden="true">{{ counter }}</p>
          </template>
 
          <span class="image-viewer-preload" aria-hidden="true">

@@ -590,7 +590,9 @@ component.
 
 The whole block is one link to the next project. Hovering it shows the shared
 TrailingTooltip in its text-only form, "Next Project" with an arrow up right
-glyph. From `md` it is a `9fr` and `11fr` grid with a `2.5rem` column gap, so
+glyph. A video cover shows its poster at rest and plays muted inside the
+frame through the shared `HoverVideo` while the block is hovered, loading
+none of the video before then. From `md` it is a `9fr` and `11fr` grid with a `2.5rem` column gap, so
 the next project's cover takes about 45 percent of the width as a `4/3`
 `object-cover` crop in a `rounded-lg` frame. A 16:9 cover needs about 1.33
 times the frame width, so it requests
@@ -635,10 +637,12 @@ content. It scales up the home case study recipe: the value is an extrabold
 `1.5rem` below it in balanced semibold `text-4xl`, `text-5xl` from `md`, at
 most `16ch` wide. Labels start with a capital letter.
 
-Every project image, from the cover to the grid items, opens in the image
-viewer on click or keyboard activation. The image sits in a full-width button
+Every project image and video, from the cover to the grid items, opens in the
+viewer on click or keyboard activation. The item sits in a full-width button
 with a pointer cursor, a `rounded-lg` focus ring, and the label "View full
-size" followed by its alt text. Videos do not open.
+size", or "Watch with sound" for a video, followed by its alt text. Hovering a
+video opens the page's TrailingTooltip in its text-only form, "Watch with
+sound" with a speaker high glyph.
 
 The viewer is a full-screen Dialog over a `foreground/90` overlay. The image
 shows at its intrinsic size and only shrinks to fit the viewport, never grows,
@@ -668,6 +672,45 @@ Window resizes refit the frame at once. Reduced motion swaps the size and the
 image without tweens and keeps the Dialog still. The images request
 `sm:1024px md:1536px xl:2560px` with `densities="x1"`, so a large screen gets
 the full source.
+
+A video slide fits the same way as an image from `md`, so a 1920 by 1080
+video fills about 1835 by 1032 of a 1920 by 1080 screen, and the counter hides
+while it shows so it never covers the controls. Below `md` it keeps `168px`
+of height free, so its controls clear the bottom navigation. It appears once
+its first frame has loaded and plays with sound.
+
+The slide is `ProjectVideoPlayer`, a custom player on the `foreground`
+frame. A bar along the bottom edge fades from `foreground/80` to transparent
+and holds, in `primary-foreground` ink, a play and pause action, a semibold
+tabular "0:12 / 0:20" time, a shadcn `Slider` that seeks, a volume control,
+and a full screen action where the browser supports it. The actions are
+`inverse` `icon` buttons with Phosphor bold play, pause, speaker high,
+speaker low, speaker x, corners out, and corners in glyphs, each with an
+accessible name, and the seek thumb is named "Seek".
+
+The volume control is a mute action whose glyph follows the level: speaker x
+when muted or at zero, speaker low below half, and speaker high from half.
+Hovering it, or focusing anything inside it, opens a popover centered
+`0.5rem` above the button without moving the bar: a `foreground/80`
+`rounded-action` panel holding a vertical `6rem` shadcn `Slider`, its thumb
+named "Volume". The popover fades in over `0.2s` while it rises `0.5rem` over
+`0.3s` on `cubic-bezier(0.19, 1, 0.22, 1)`, and a transparent bridge spans
+the gap, so the pointer can travel from the button to the slider. Dragging to
+zero mutes, and unmuting at zero restores half volume. The popover shows only
+for fine hover pointers, because touch browsers, iOS among them, leave volume
+to the device buttons.
+
+While the video is paused, a round
+`light` `cta-icon` play action sits in the center, and while it buffers a
+spinner takes its place. Clicking the video plays or pauses it. The bar and
+the pointer hide after `2.5s` without pointer movement while the video plays
+and return on any movement, press, or focus, and they always show while it is
+paused. With focus inside the player, Space or K plays and pauses, M mutes, F
+toggles full screen, the up and down arrows change the volume by ten percent,
+and the left and right arrows seek five seconds instead of stepping slides, and a touch swipe that starts on the bar does not step either. Full
+screen shows the whole video with `object-contain`. Stepping away or closing
+the viewer stops it. Neighbor preloading skips videos. Reduced motion removes
+the bar's fade, the volume popover's fade and rise, and the spinner's spin.
 
 ## Blog article
 
@@ -1429,9 +1472,9 @@ pair stay on one row from 1280 to 1536 wide. Its `0.1em` of
 bottom padding keeps the last line's descenders inside its reveal mask. The
 color belongs to the number and not to the sentence that explains it.
 
-Case images are currently reused from the hero set. They are content images with
-their own alternative text, and they will be replaced by real project media when
-case studies gain their own routes.
+Each case image is its project's cover image, or the poster of a video cover,
+with the project's own alternative text. The section shows only real projects,
+currently UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in that order.
 
 The section heading is a `SplitText` character reveal. It splits into words and
 characters with a mask on every character. The word wrappers stay inline
@@ -1466,10 +1509,14 @@ highlights. The sequences are all different, and each one ends on the card's own
 `tone`, so the color that lands immediately before the image is the color the
 result numbers wear.
 
-Layers bleed one pixel past the frame and inherit its radius, and the frame
-shapes itself with `clip-path: inset(0 round var(--radius-2xl))` alongside its
-radius and `overflow: hidden`, so the resting surface never survives as a
-hairline rim around the final layer. DOM order is the paint order, so the image
+The card, its covering link, and the frame use `rounded-xl` corners. Layers
+bleed one pixel past the frame and inherit its radius, and the frame shapes
+itself with `clip-path: inset(0 round var(--radius-xl))` alongside its radius
+and `overflow: hidden`, so the resting surface never survives as a hairline
+rim around the final layer. Keep the clip's radius token equal to the frame's
+radius class. Once the reveal ends, `useWorkMotion` hides every layer but the
+last with `autoAlpha: 0`, because the image covers them and their color would
+otherwise tint the antialiased pixels along the frame's edges and corners. DOM order is the paint order, so the image
 wrapper must stay last. The colored layers rest at `scale(0)` in CSS because
 they are decorative, which keeps a solid color block off the card before the
 motion initializes and without JavaScript. The image wrapper carries no CSS rest
@@ -1491,8 +1538,10 @@ of the shift: the image only has `(scale - 1) / 2` of overflow on each edge, so
 raising the travel without raising the scale exposes the frame.
 A card can lower its scale through the optional `imageScale` prop when the
 default crops its image too tightly, as Sygen's wide monitor shot does at
-`1.1`. The travel then shrinks in proportion through `imageParallaxShiftFor`,
-to about `4.7` percent at `1.1`, so the overflow still covers it.
+`1.1` and UGC Creator and Cartoon do at `1.05` to keep the head in the frame.
+The travel then shrinks in proportion through `imageParallaxShiftFor`, to
+about `4.7` percent at `1.1` and `2.3` percent at `1.05`, so the overflow
+still covers it.
 
 Card content is not hidden before the motion initializes, because it is part of
 the server output. Reduced motion therefore needs no exit state for the cards:
@@ -1504,7 +1553,10 @@ to its actual size on hover over `0.8s` on the tooltip's
 linked card does the same while its link has keyboard focus. The scale sits on
 a `case-image-zoom` wrapper around the image, because GSAP owns the image's
 parallax transform and writes an inline `scale: none` on it. It applies only to `(hover: hover)` pointers and switches without
-the transition under reduced motion.
+the transition under reduced motion. A card with a `video` stacks the shared
+`HoverVideo` over its image inside the parallax layer, so the video moves
+with the image and plays while the card is hovered. The page loads none of it
+until the first hover.
 
 The complete case study card is the hover surface for one shared trailing
 tooltip. WorkSection owns the active image and keeps one TrailingTooltip mounted
@@ -1518,8 +1570,8 @@ mask with `0.25rem` of padding so its focus ring is not clipped. It sits above
 the covering link, so both links stay separate and never nest. Hovering it
 switches the tooltip to its compact text-only form, "Visit Live" with an arrow
 up right glyph and no image, and leaving it for the rest of the card brings
-back the card image and "See Full Project". A placeholder card has neither and
-stays a plain article. Its pointer cursor
+back the card image and "See Full Project". A card with neither stays a plain
+article. Its pointer cursor
 communicates the intended future link surface without introducing a no-op
 control or fake URL.
 
@@ -1587,8 +1639,8 @@ image always wins over an icon. The About team cards use it for "More Info",
 the Services hero link for "About", and the Work project cards for "View
 Project", all with an arrow up right glyph. Passing an
 empty image drops every thumbnail layer, so a tooltip that switches from an
-image target to a text-only one, such as the home services image and its
-service link, never keeps the previous thumbnail.
+image target to a text-only one, such as a home case study card and its
+Visit Live link, never keeps the previous thumbnail.
 
 The open, close-delay, and loading state lives in `useTrailingTooltip`, which
 the services section, the About team section, the Services hero, and the Work
@@ -1871,7 +1923,7 @@ origin exit, so the transform origins never fight.
 Each image is a `NuxtLink` to its service's section on the `/services` route,
 `/services#ai-content-creation` or `/services#website-development`, named for
 its service through `aria-label`. Hovering it opens the services section's TrailingTooltip
-at its `compact` size with the service image and the label "More Details". The images are decorative
+at its `compact` size in its text-only form with the label "More Details". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
 media.
 
@@ -2631,12 +2683,11 @@ row is inset from the frame's edges by `0.75rem`, `1rem` from `md`, and
 edges rather than flush with them. The categories and their services come
 from `app/lib/projects.ts`. The images are `object-cover` crops of 16:9 or
 portrait sources, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
-with `densities="x1"`, which covers the 4:3 crop and the hover scale. ZEEL AI
-Studio and Sygen are real projects: their cards take an `href`, so the whole
-card renders as a NuxtLink to its project page. The other projects, their names,
-and their images are placeholders, so their cards stay articles without a link
-until their project pages exist. The pointer cursor marks the link surface on
-both, as on the home case study cards. A linked card shows the focus ring and
+with `densities="x1"`, which covers the 4:3 crop and the hover scale. The
+listing shows only real projects, UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in
+that order. Each card takes an `href`, so the whole card renders as a NuxtLink
+to its project page, and a card without one stays an article. The pointer
+cursor marks the link surface, as on the home case study cards. A linked card shows the focus ring and
 the hover image scale on keyboard focus.
 
 Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
@@ -2644,8 +2695,9 @@ the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
 TrailingTooltip in its text-only form, "View Project" with an arrow up right
 glyph. The scale applies only to `(hover: hover)` pointers and switches without
 the transition under reduced motion. A card with a `video` keeps its image at
-rest and stacks a muted, looping, decorative
-video over it that loads nothing until hovered. Hovering plays the video,
+rest and stacks the shared `HoverVideo` over it, a muted, looping,
+decorative video whose source is set on the first hover, so the page loads
+none of it before then. Hovering plays the video,
 which fades in over `0.4s` once it is playing and scales with the image, and
 leaving pauses it, rewinds it to the start, and fades it out. It plays only
 for `(hover: hover)` pointers and never under reduced motion. The cards have no scroll reveal. They

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from "vue"
-import { Card } from "@/components/ui/card"
-import LiveLink from "@/components/shared/LiveLink.vue"
-import { surfaceTones } from "@/lib/surfaces"
-import type { SurfaceTone } from "@/lib/surfaces"
-import { cn } from "@/lib/utils"
+import { shallowRef } from "vue";
+import type { HTMLAttributes } from "vue";
+import { Card } from "@/components/ui/card";
+import HoverVideo from "@/components/shared/HoverVideo.vue";
+import LiveLink from "@/components/shared/LiveLink.vue";
+import { surfaceTones } from "@/lib/surfaces";
+import type { SurfaceTone } from "@/lib/surfaces";
+import { cn } from "@/lib/utils";
 
 const {
 	class: className,
@@ -18,26 +20,40 @@ const {
 	results,
 	revealTones = ["yellow", "primary"],
 	tone = "primary",
+	video,
 } = defineProps<{
-	class?: HTMLAttributes["class"]
-	client: string
-	description: string
-	href?: string
-	image: string
-	imageAlt: string
-	imageScale?: number
-	liveUrl?: string
-	results?: readonly { label: string, value: string }[]
-	revealTones?: readonly SurfaceTone[]
-	tone?: SurfaceTone
-}>()
+	class?: HTMLAttributes["class"];
+	client: string;
+	description: string;
+	href?: string;
+	image: string;
+	imageAlt: string;
+	imageScale?: number;
+	liveUrl?: string;
+	results?: readonly { label: string; value: string }[];
+	revealTones?: readonly SurfaceTone[];
+	tone?: SurfaceTone;
+	video?: string;
+}>();
 
 const emit = defineEmits<{
-	activate: []
-	deactivate: []
-	liveActivate: []
-	liveDeactivate: []
-}>()
+	activate: [];
+	deactivate: [];
+	liveActivate: [];
+	liveDeactivate: [];
+}>();
+
+const hovered = shallowRef(false);
+
+function activate() {
+	hovered.value = true;
+	emit("activate");
+}
+
+function deactivate() {
+	hovered.value = false;
+	emit("deactivate");
+}
 </script>
 
 <template>
@@ -46,8 +62,8 @@ const emit = defineEmits<{
 		variant="plain"
 		data-work-case
 		:class="cn('case', className)"
-		@pointerenter="emit('activate')"
-		@pointerleave="emit('deactivate')"
+		@pointerenter="activate"
+		@pointerleave="deactivate"
 	>
 		<NuxtLink v-if="href" :to="href" class="case-link">
 			<span class="sr-only">{{ client }}</span>
@@ -64,19 +80,29 @@ const emit = defineEmits<{
 
 			<div data-work-case-layer class="case-image-layer">
 				<span class="case-image-zoom">
-					<NuxtImg
+					<span
 						data-work-case-image
 						:data-work-case-image-scale="imageScale"
 						class="case-image"
-						:src="image"
-						:alt="imageAlt"
-						width="1456"
-						height="816"
-						sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
-						densities="x1"
-						loading="lazy"
-						draggable="false"
-					/>
+					>
+						<NuxtImg
+							class="case-image-media"
+							:src="image"
+							:alt="imageAlt"
+							width="1456"
+							height="816"
+							sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
+							densities="x1"
+							loading="lazy"
+							draggable="false"
+						/>
+						<HoverVideo
+							v-if="video"
+							class="case-image-media"
+							:src="video"
+							:active="hovered"
+						/>
+					</span>
 				</span>
 			</div>
 		</div>
@@ -94,16 +120,16 @@ const emit = defineEmits<{
 
 			<div v-if="liveUrl" class="case-line case-live">
 				<div data-work-case-reveal>
-					<LiveLink
-						:href="liveUrl"
-						@pointerenter="emit('liveActivate')"
-						@pointerleave="emit('liveDeactivate')"
-					/>
+					<LiveLink :href="liveUrl" />
 				</div>
 			</div>
 
 			<div v-if="results?.length" class="case-results">
-				<div v-for="result in results" :key="result.label" class="case-result">
+				<div
+					v-for="result in results"
+					:key="result.label"
+					class="case-result"
+				>
 					<div class="case-line">
 						<p
 							data-work-case-reveal
@@ -128,7 +154,7 @@ const emit = defineEmits<{
 @reference '../../assets/css/tailwind.css';
 
 .case {
-	@apply relative grid cursor-pointer grid-cols-1 items-start gap-8 rounded-2xl md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
+	@apply relative grid cursor-pointer grid-cols-1 items-start gap-8 rounded-xl md:grid-cols-[3fr_2fr] md:gap-12 xl:gap-20;
 }
 
 .case:has(.case-link:focus-visible) {
@@ -136,7 +162,7 @@ const emit = defineEmits<{
 }
 
 .case-link {
-	@apply absolute inset-0 z-1 rounded-2xl outline-none;
+	@apply absolute inset-0 z-1 rounded-xl outline-none;
 }
 
 .case-live {
@@ -144,8 +170,8 @@ const emit = defineEmits<{
 }
 
 .case-media {
-	@apply relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-muted;
-	clip-path: inset(0 round var(--radius-2xl));
+	@apply relative aspect-4/3 w-full overflow-hidden rounded-xl bg-muted;
+	clip-path: inset(0 round var(--radius-xl));
 }
 
 .case-layer,
@@ -181,6 +207,10 @@ const emit = defineEmits<{
 }
 
 .case-image {
+	@apply absolute inset-0 block size-full;
+}
+
+.case-image-media {
 	@apply absolute inset-0 size-full select-none object-cover;
 }
 

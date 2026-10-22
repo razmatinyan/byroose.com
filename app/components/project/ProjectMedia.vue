@@ -12,23 +12,37 @@ const {
    loading?: "lazy" | "eager";
 }>();
 
-const openImage = useProjectGallery();
-const viewLabel = computed(() => (media.alt ? `View full size: ${media.alt}` : "View full size image"));
+const gallery = useProjectGallery();
+const viewLabel = computed(() => {
+   const action = media.kind === "video" ? "Watch with sound" : "View full size";
+   return media.alt ? `${action}: ${media.alt}` : action;
+});
 
-function viewImage() {
-   if (media.kind === "image") openImage?.(media);
+function openMedia() {
+   gallery?.open(media);
+}
+
+function showHint() {
+   if (media.kind === "video") gallery?.showVideoHint();
+}
+
+function hideHint() {
+   if (media.kind === "video") gallery?.hideVideoHint();
 }
 </script>
 
 <template>
    <button
-      v-if="media.kind === 'image' && openImage"
+      v-if="gallery"
       type="button"
       class="project-media-trigger"
       :aria-label="viewLabel"
-      @click="viewImage"
+      @click="openMedia"
+      @pointerenter="showHint"
+      @pointerleave="hideHint"
    >
       <NuxtImg
+         v-if="media.kind === 'image'"
          :src="media.src"
          alt=""
          :width="media.width"
@@ -37,6 +51,20 @@ function viewImage() {
          densities="x1"
          :loading="loading"
          class="project-media"
+      />
+      <video
+         v-else
+         :src="media.src"
+         :poster="media.poster"
+         :width="media.width"
+         :height="media.height"
+         class="project-media"
+         aria-hidden="true"
+         preload="metadata"
+         autoplay
+         muted
+         loop
+         playsinline
       />
    </button>
    <NuxtImg

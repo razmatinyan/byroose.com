@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { shallowRef } from "vue";
-import { getProjectCoverImage, getProjectImages } from "@/lib/projects";
-import type { Project, ProjectImage } from "@/lib/projects";
+import { defineAsyncComponent, shallowRef } from "vue";
+import { appIcons } from "@/lib/icons";
+import { getProjectCoverImage, getProjectGallery } from "@/lib/projects";
+import type { Project, ProjectMedia as ProjectMediaItem } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 import ProjectBlocks from "./ProjectBlocks.vue";
 import ProjectHero from "./ProjectHero.vue";
 import ProjectImageViewer from "./ProjectImageViewer.vue";
 import ProjectMedia from "./ProjectMedia.vue";
 import ProjectNext from "./ProjectNext.vue";
+
+const TrailingTooltip = defineAsyncComponent(
+   () => import("@/components/shared/TrailingTooltip.vue"),
+);
 
 const { project, nextProject } = defineProps<{
    project: Project;
@@ -18,16 +23,32 @@ const title = project.seo?.title ?? project.name;
 const description = project.seo?.description ?? project.description;
 const projectPath = `/work/${project.slug}`;
 const projectUrl = new URL(projectPath, siteUrl).href;
-const images = getProjectImages(project);
+const galleryItems = getProjectGallery(project);
 const viewerIndex = shallowRef<number>();
+const videoHintLabel = "Watch with sound";
 
-function openImage(image: ProjectImage) {
-   const sameImage = images.indexOf(image);
-   const position = sameImage === -1 ? images.findIndex(({ src }) => src === image.src) : sameImage;
-   if (position !== -1) viewerIndex.value = position;
+const {
+   active: videoHintActive,
+   hide: hideVideoHint,
+   shouldLoad: shouldLoadVideoHint,
+   show: showTooltip,
+} = useTrailingTooltip();
+
+function openMedia(media: ProjectMediaItem) {
+   const sameItem = galleryItems.indexOf(media);
+   const position =
+      sameItem === -1 ? galleryItems.findIndex(({ src }) => src === media.src) : sameItem;
+   if (position === -1) return;
+
+   hideVideoHint();
+   viewerIndex.value = position;
 }
 
-provideProjectGallery(openImage);
+function showVideoHint() {
+   showTooltip("", videoHintLabel, "default", appIcons.speakerHigh);
+}
+
+provideProjectGallery({ open: openMedia, showVideoHint, hideVideoHint });
 
 const coverImage = getProjectCoverImage(project);
 const coverUrl = new URL(coverImage.src, siteUrl).href;
@@ -72,7 +93,13 @@ useSchemaOrg([
       </div>
       <ProjectBlocks :blocks="project.blocks" />
       <ProjectNext v-if="nextProject" :project="nextProject" />
-      <ProjectImageViewer v-model:index="viewerIndex" :images="images" />
+      <ProjectImageViewer v-model:index="viewerIndex" :items="galleryItems" />
+      <TrailingTooltip
+         v-if="shouldLoadVideoHint"
+         :active="videoHintActive"
+         :icon="appIcons.speakerHigh"
+         :label="videoHintLabel"
+      />
    </article>
 </template>
 

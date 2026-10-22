@@ -5,8 +5,8 @@ export type ProjectService = "ai-content" | "website-development";
 export type ProjectCategory =
    | "Development"
    | "E-commerce"
-   | "Imagery"
-   | "Reels"
+   | "Image"
+   | "Reel"
    | "UI/UX Design"
    | "Video"
    | "Web Design"
@@ -15,8 +15,8 @@ export type ProjectCategory =
 export const projectCategoryServices: Readonly<Record<ProjectCategory, ProjectService>> = {
    Development: "website-development",
    "E-commerce": "website-development",
-   Imagery: "ai-content",
-   Reels: "ai-content",
+   Image: "ai-content",
+   Reel: "ai-content",
    "UI/UX Design": "website-development",
    Video: "ai-content",
    "Web Design": "website-development",
@@ -120,13 +120,13 @@ export function getProjectCoverImage({ cover }: Project): ProjectImage {
    return { kind: "image", src: poster, width, height, alt };
 }
 
-export function getProjectImages({ cover, blocks }: Project): ProjectImage[] {
-   const images: ProjectImage[] = cover.kind === "image" ? [cover] : [];
+export function getProjectGallery({ cover, blocks }: Project): ProjectMedia[] {
+   const items: ProjectMedia[] = [cover];
 
    for (const block of blocks) {
-      if (block.type === "media" && block.media.kind === "image") images.push(block.media);
-      if (block.type === "grid") images.push(...block.images);
+      if (block.type === "media") items.push(block.media);
+      if (block.type === "grid") items.push(...block.images);
    }
 
-   return images;
+   return items;
 }

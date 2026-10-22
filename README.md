@@ -75,9 +75,11 @@ shared project layout:
 See [Architecture](docs/ARCHITECTURE.md#work-projects) for the block types.
 The project appears in the sitemap and in `llms.txt` automatically. Its
 cover becomes its social sharing image, or, for a video cover, its required
-`poster`, a separate still image at the video's pixel size. To list the
-project on the Work page, add a card to `WorkProjectsSection` with the cover
-image or poster, and the video's address as `video` so it plays on hover.
+`poster`, a separate still image at the video's pixel size. To show the
+project on the Work page and the home page, add a card to
+`WorkProjectsSection` and a case study to `WorkSection` with the cover image
+or poster. On both, pass the video's address as `video` so it plays on
+hover.
 
 ## Adding a blog post
 
