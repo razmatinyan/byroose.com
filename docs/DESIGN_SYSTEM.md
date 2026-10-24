@@ -484,8 +484,8 @@ location share `site-footer-item-text`: semibold at `text-xl`, `text-2xl` from
 size so they take it, and list items sit only `0.125rem` apart. Navigation lists
 Home, About, Works, Services, Blog, and Contact. Social Media lists X, LinkedIn, and
 Instagram, which point to `#` until the real profile URLs exist. Located in
-shows "Yerevan, Armenia", a live local time with "GMT +4", then Terms &
-Conditions and Privacy Policy after a larger gap.
+shows "Yerevan, Armenia", a live local time with "GMT +4", then Privacy Policy
+after a larger gap.
 
 The right column ends with "Website by Razo Codes", "© 2026 All Rights
 Reserved", and "byroose inc." as three separate lines that share the email
@@ -753,6 +753,32 @@ The next article block follows the article in the page gutter: two equal
 on the right that centers a "Next article" label, the title in semibold
 `text-3xl`, `text-4xl` from `md`, and a `dark` `cta-sm` "Read the article"
 button. Below `md` the cover stacks above the panel at 4:3.
+
+## Legal page
+
+The Privacy policy route opens with the shared listing hero, "Privacy policy"
+fitted to one line with a short description, and the hero drifts behind a
+rounded `canvas-shade` section like the Work projects section. From `lg` the
+section is a twelve column grid. The section navigation spans the first three
+columns and stays `7rem` below the viewport top while the document scrolls.
+The body spans columns five to twelve, five to eleven from `xl`. Below `lg`
+the navigation stacks above the body as a plain list.
+
+The navigation has a semibold `text-lg` "On this page" label above an ordered
+list on a one pixel `foreground/15` track. Each link is medium `text-base`
+`muted-foreground` text that turns `foreground` on hover and focus. The current
+section's link is `foreground`, and a `0.5` wide `primary` bar grows over the
+track beside it over `300ms`. Reduced motion switches both without the
+transition.
+
+The body is medium `text-lg`, `text-xl` from `md`, relaxed `brand-subtle` text,
+with a muted "Last updated" date above it. Section headings are semibold
+`text-3xl`, `text-4xl` from `md`, with `-0.03em` tracking and a one pixel
+`foreground/15` line above every heading but the first. They carry a `7rem`
+scroll margin, so a navigation jump leaves them clear of the header.
+Subheadings are semibold `text-2xl`. Bold lead-ins, links, and headings use
+`foreground`, links are underlined and turn `primary` on hover, and list
+markers use `foreground/40`.
 
 ## Error page
 

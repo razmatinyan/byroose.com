@@ -55,4 +55,12 @@ export const pageSeo = {
          "Tell byroose about your project. Share your name, email, and idea, and we'll reply with clear next steps for AI content creation or web development.",
       label: "Contact",
    },
+   privacy: {
+      path: "/privacy",
+      name: "Privacy policy",
+      title: "Privacy policy: how byroose handles personal data",
+      description:
+         "Read how byroose collects, uses, and protects personal data when you visit byroose.com, send us a message, or work with us on a project.",
+      label: "Legal",
+   },
 } as const satisfies Record<string, PageSeoCopy>;

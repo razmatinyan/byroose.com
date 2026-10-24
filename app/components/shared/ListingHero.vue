@@ -3,9 +3,14 @@ import { computed, shallowRef, useTemplateRef } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
-const { description, titleWords } = defineProps<{
+const {
+   description,
+   titleWords,
+   titleSize = "23.71cqi",
+} = defineProps<{
    description: string;
    titleWords: readonly string[];
+   titleSize?: string;
 }>();
 
 const title = computed(() => titleWords.join(" "));
@@ -35,6 +40,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
          <div
             ref="heroTitle"
             class="listing-hero-title"
+            :style="{ '--listing-hero-title-size': titleSize }"
             data-listing-hero-reveal
             aria-hidden="true"
          >
@@ -90,7 +96,6 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .listing-hero-title {
-   --listing-hero-title-size: 23.71cqi;
    @apply col-span-full w-max self-start pe-[0.05em] leading-[0.76] font-bold tracking-[-0.05em];
    font-size: calc(
       var(--listing-hero-title-size) * var(--fit-text-scale, 1)

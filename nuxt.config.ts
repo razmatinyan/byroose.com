@@ -79,8 +79,6 @@ export default defineNuxtConfig({
 	routeRules: {
 		'/**': { prerender: true },
 		'/courses': unlistedRoute,
-		'/terms': unlistedRoute,
-		'/privacy': unlistedRoute,
 	},
 
 	nitro: {

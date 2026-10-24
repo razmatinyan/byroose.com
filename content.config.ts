@@ -24,5 +24,12 @@ export default defineContentConfig({
 				draft: z.boolean().default(false),
 			}),
 		}),
+		legal: defineCollection({
+			type: 'page',
+			source: { include: 'legal/*.md', prefix: '/' },
+			schema: z.object({
+				updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+			}),
+		}),
 	},
 })

@@ -50,7 +50,6 @@ const navigationLinks: FooterLink[] = [
 ];
 
 const policyLinks: FooterLink[] = [
-   { href: "/terms", label: "Terms & Conditions" },
    { href: "/privacy", label: "Privacy Policy" },
 ];
 

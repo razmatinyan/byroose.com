@@ -29,6 +29,7 @@ app/
     cards/
     landing/
     layout/
+    legal/
     OgImage/
     project/
     services/
@@ -39,6 +40,7 @@ app/
     useAboutHeroMotion.ts
     useAboutHeroTrail.ts
     useAboutSectionMotion.ts
+    useActiveSection.ts
     useArrowSwapHover.ts
     useBlogMotion.ts
     useBlogPostHeroMotion.ts
@@ -122,7 +124,6 @@ app/
     [...slug].vue
     privacy.vue
     services.vue
-    terms.vue
     work/
       index.vue
       <slug>.vue
@@ -144,6 +145,8 @@ server/
 content/
   blog/
     <slug>.md
+  legal/
+    privacy.md
 content.config.ts
 config/
   blog-posts.ts
@@ -156,7 +159,7 @@ package.json
 
 ### Application entry
 
-app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog.vue renders the Blog experience from app/components/blog, and app/pages/contact.vue renders the Contact experience from app/components/contact. The remaining page files own the Courses, Terms, and Privacy routes as focused route-level views. The Terms and Privacy routes are placeholders that the footer links to until the real policies exist. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog.vue renders the Blog experience from app/components/blog, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -258,6 +261,23 @@ shared article content from app/lib/blog-articles.ts in a three-column grid from
 `md`, and requests the neutral BlogCard surface. The home BlogSection consumes
 the same article content with the default tinted BlogCard surface.
 
+### Legal components
+
+app/components/legal renders legal documents from the `legal` content
+collection. LegalPage passes the document title and description to the shared
+ListingHero, then renders a rounded `canvas-shade` section with LegalSectionNav
+on the left and the Markdown body through `ContentRenderer` on the right, with
+the last updated date above it. The section list comes from the document's
+table of contents, one entry per `##` heading. LegalSectionNav renders those
+entries as same-page anchor links, which Lenis scrolls to while honoring the
+headings' `scroll-margin-top`, and marks the current one with
+`aria-current="location"`. useActiveSection owns which section is current: on
+scroll and resize, at most once per animation frame, it picks the last heading
+inside the body whose top has passed 30 percent of the viewport height, and it
+falls back to the first section above that line. app/pages/privacy.vue passes
+a `titleSize` measured for "Privacy policy" and renders SiteErrorView with a
+404 status if the document is missing.
+
 ### Contact components
 
 app/components/contact contains the Contact route's sections. ContactPage
@@ -340,7 +360,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work and Blog. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. With the default `aria` of `auto`, a heading keeps its text through GSAP's `aria-label`, because a heading may carry one. A paragraph, `div`, or `span` may not, so after every split SplitText hides the split pieces from assistive technology and prepends an `sr-only` copy of the text, which the next revert removes. Text that sits in a hidden rest state before its reveal therefore stays readable to screen readers. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work, Blog, and the Privacy policy. Its optional `titleSize`, `23.71cqi` by default as measured for "Our Work", sets the title's first-paint size, so a longer phrase passes its own measured size. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount, and emits typed runtime parts for component-owned animation. With the default `aria` of `auto`, a heading keeps its text through GSAP's `aria-label`, because a heading may carry one. A paragraph, `div`, or `span` may not, so after every split SplitText hides the split pieces from assistive technology and prepends an `sr-only` copy of the text, which the next revert removes. Text that sits in a hidden rest state before its reveal therefore stays readable to screen readers. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -1075,6 +1095,16 @@ which turns `ProjectCard` into a NuxtLink and adds a NuxtLink covering
 nesting. A new project needs a card in both lists. The Work listing reads its
 category names and the category to service map from `app/lib/projects.ts`.
 
+## Legal documents
+
+Legal documents are Markdown files in `content/legal/`, read into the `legal`
+page collection with a `/` prefix, so `content/legal/privacy.md` has the path
+`/privacy`. Its frontmatter requires a `title`, a `description` that the hero
+shows, and an `updated` date as `YYYY-MM-DD`. Each `##` heading becomes one
+entry in the section navigation. Each document needs its own page file, and its
+search title and description live in `app/lib/page-seo.ts`. Change the
+`updated` date with every content change.
+
 ## Blog posts
 
 Blog posts are Markdown files managed by Nuxt Content v3, which reads them into
@@ -1154,10 +1184,11 @@ internal links during development and builds.
 - The sitemap lists every indexable route, including each Work project page
   as soon as its page file exists. robots.txt allows every crawler and links
   the sitemap.
-- The Courses, Terms, and Privacy placeholders set `robots: false`
+- The Courses placeholder sets `robots: false`
   and `ogImage: false` through route rules, so they send `noindex, nofollow`
   in a meta tag and an `X-Robots-Tag` header, stay out of the sitemap, and get
-  no OG image. Remove a route's rule when its real page ships.
+  no OG image. Remove a route's rule when its real page ships. The Privacy
+  policy is indexable.
 - Schema.org identity is an `Organization` with the logo, email, and address.
   Every page gets `WebSite` and `WebPage` nodes. FaqSection turns the home page
   into an `FAQPage` with one `Question` per visible FAQ item. ContactPage
