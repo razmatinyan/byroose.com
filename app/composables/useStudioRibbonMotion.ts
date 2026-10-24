@@ -220,11 +220,16 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		strokeTimeline = null;
 	}
 
-	async function rebuild() {
+	function hasMeasuredSize() {
 		const studio = toValue(scope);
+		if (!studio) return true;
+
+		return `${studio.offsetWidth}x${studio.offsetHeight}` === measuredSize;
+	}
+
+	async function rebuild() {
 		const context = motionContext;
-		if (!studio || !context) return;
-		if (`${studio.offsetWidth}x${studio.offsetHeight}` === measuredSize) return;
+		if (!context || hasMeasuredSize()) return;
 
 		const geometry = measure();
 		if (!geometry) return;
@@ -240,12 +245,15 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			loadPlugin("DrawSVGPlugin"),
 		]);
 		if (!ScrollTrigger || !DrawSVGPlugin || disposed) return;
-		if (!measure()) return;
+
+		let initialGeometry = measure();
+		if (!initialGeometry) return;
 
 		createMatchMedia(
 			desktopMotionQuery,
 			(context) => {
-				const geometry = measure();
+				const geometry = initialGeometry ?? measure();
+				initialGeometry = null;
 				if (!geometry) return;
 
 				motionContext = context;
@@ -259,6 +267,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 			},
 			scope,
 		);
+		initialGeometry = null;
 
 		await refresh();
 	}
@@ -267,6 +276,7 @@ export function useStudioRibbonMotion(scope: MotionScope) {
 		() => toValue(scope),
 		() => {
 			if (motionContext) return rebuild();
+			if (hasMeasuredSize()) return;
 
 			measure();
 		},

@@ -223,6 +223,7 @@ onScopeDispose(() => {
 					v-for="src in preload"
 					:key="src"
 					v-bind="thumbnail"
+					class="trailing-tooltip-preload-image"
 					:src="src"
 				/>
 			</span>
@@ -261,6 +262,10 @@ onScopeDispose(() => {
 
 .trailing-tooltip-preload {
 	@apply hidden;
+}
+
+.trailing-tooltip-preload-image {
+	@apply object-cover;
 }
 
 .trailing-tooltip-label {

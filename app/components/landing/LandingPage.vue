@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef } from "vue";
 import type { SplitTextResult } from "@/lib/split-text";
-import BlogSection from "./BlogSection.vue";
 import BrandGrid from "./BrandGrid.vue";
 import CoursesSection from "./CoursesSection.vue";
-import FaqSection from "@/components/shared/FaqSection.vue";
 import HeroSection from "./HeroSection.vue";
 import ReviewsSection from "./ReviewsSection.vue";
 import ServicesSection from "./ServicesSection.vue";
@@ -21,6 +19,7 @@ const { introState } = useHomeIntroMotion(
 	descriptionSplit,
 );
 useHomeHeroScrollMotion(landingRoot, introState);
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
 
 function setTitleSplit(parts: SplitTextResult) {
 	titleSplit.value = parts;
@@ -53,8 +52,8 @@ function setDescriptionSplit(parts: SplitTextResult) {
 		<WhyChooseSection />
 		<!-- <ReviewsSection /> -->
 		<!-- <CoursesSection /> -->
-		<BlogSection />
-		<FaqSection />
+		<LazyLandingBlogSection :hydrate-on-visible="belowFoldHydrationArea" />
+		<LazySharedFaqSection :hydrate-on-visible="belowFoldHydrationArea" />
 	</div>
 </template>
 
@@ -82,6 +81,25 @@ function setDescriptionSplit(parts: SplitTextResult) {
 .landing-page:not([data-home-intro-state="complete"])
 	:deep([data-home-intro-card]) {
 	visibility: hidden;
+}
+
+@media (max-width: 63.999rem) {
+	.landing-page :deep([data-home-intro-card-remove]) {
+		display: none;
+	}
+
+	.landing-page :deep([data-home-intro-card]:not([data-home-intro-card-remove])) {
+		translate: 0 2.5rem;
+	}
+
+	.landing-page:not([data-home-intro-state="complete"])
+		:deep([data-home-intro-title]),
+	.landing-page:not([data-home-intro-state="complete"])
+		:deep([data-home-intro-copy]),
+	.landing-page:not([data-home-intro-state="complete"])
+		:deep([data-home-intro-card]) {
+		visibility: inherit;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

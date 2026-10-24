@@ -36,6 +36,8 @@ interface NativeScrollStyles {
 const DOCK_OFFSET_Y = 40;
 const HEADER_LOWER_DURATION = 0.22;
 const HEADER_LOWER_STAGGER = 0.015;
+const DESKTOP_QUERY = "(min-width: 64rem)";
+const MOBILE_QUERY = "(max-width: 63.999rem)";
 
 const selectors = {
    action: "[data-home-intro-action]",
@@ -223,6 +225,12 @@ export function useHomeIntroMotion(
       const finalImages = images.filter(
          (image) => !removedCards.includes(image),
       );
+      if (window.matchMedia(MOBILE_QUERY).matches) {
+         introState.value = "complete";
+         for (const card of removedCards) card.hidden = true;
+         return;
+      }
+
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
          introState.value = "complete";
          settleMedia(finalImages, removedCards);
@@ -243,6 +251,7 @@ export function useHomeIntroMotion(
               return imageElement ? [imageElement] : [];
            })
          : [];
+      for (const image of preloaderImages) image.loading = "eager";
 
       await nextTick();
       const [titleSplit, descriptionSplit] = await Promise.all([
@@ -256,8 +265,8 @@ export function useHomeIntroMotion(
 
       createMatchMedia(
          {
-            desktop: "(min-width: 64rem)",
-            mobile: "(max-width: 63.999rem)",
+            desktop: DESKTOP_QUERY,
+            mobile: MOBILE_QUERY,
             reduceMotion: "(prefers-reduced-motion: reduce)",
          },
          (context) => {

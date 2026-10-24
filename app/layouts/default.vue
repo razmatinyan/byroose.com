@@ -60,4 +60,15 @@ watch(
 		visibility: inherit;
 	}
 }
+
+@media (max-width: 63.999rem) {
+	.site-layout:not([data-home-intro-state='complete'])
+		:deep([data-home-intro-header]),
+	.site-layout:not([data-home-intro-state='complete'])
+		:deep([data-home-intro-nav-item]),
+	.site-layout:not([data-home-intro-state='complete'])
+		:deep([data-header-rise]) {
+		visibility: inherit;
+	}
+}
 </style>

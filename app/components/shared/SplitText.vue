@@ -18,6 +18,7 @@ const {
 	as = 'span',
 	autoSplit = false,
 	mask,
+	media,
 	text,
 	type = 'words',
 } = defineProps<{
@@ -25,6 +26,7 @@ const {
 	as?: SplitTextElement
 	autoSplit?: boolean
 	mask?: SplitTextMask
+	media?: string
 	text: string
 	type?: SplitTextMode
 }>()
@@ -71,10 +73,31 @@ function getParts(instance: SplitTextInstance): SplitTextParts {
 	}
 }
 
-onMounted(async () => {
-	await document.fonts.ready
+function split(SplitTextPlugin: typeof SplitTextInstance) {
 	const element = root.value
-	if (!element) {
+	if (!element) return
+
+	splitInstance = SplitTextPlugin.create(element, {
+		aria: usesTextCopy ? 'none' : aria,
+		autoSplit,
+		charsClass: 'split-text-char',
+		linesClass: 'split-text-line',
+		mask,
+		onSplit: instance => handleSplit(element, instance),
+		tag: 'span',
+		type,
+		wordsClass: 'split-text-word',
+	})
+}
+
+onMounted(async () => {
+	if (media && !window.matchMedia(media).matches) {
+		emit('split', null)
+		return
+	}
+
+	await document.fonts.ready
+	if (!root.value) {
 		emit('split', null)
 		return
 	}
@@ -86,17 +109,7 @@ onMounted(async () => {
 			return
 		}
 
-		splitInstance = SplitTextPlugin.create(element, {
-			aria: usesTextCopy ? 'none' : aria,
-			autoSplit,
-			charsClass: 'split-text-char',
-			linesClass: 'split-text-line',
-			mask,
-			onSplit: instance => handleSplit(element, instance),
-			tag: 'span',
-			type,
-			wordsClass: 'split-text-word',
-		})
+		await queueMainThreadTask(() => split(SplitTextPlugin))
 	} catch {
 		emit('split', null)
 	}

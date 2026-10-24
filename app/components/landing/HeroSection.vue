@@ -18,7 +18,7 @@ const heroActionLabel = "Start a project";
 const heroImages = [
    {
       id: "hero-one",
-      preload: true,
+      preload: false,
       removed: true,
       rotation: 0,
       src: "/images/hero/1.png",
@@ -105,6 +105,7 @@ function handleDescriptionSplit(parts: SplitTextResult) {
             data-home-intro-title
             as="h1"
             mask="lines"
+            media="(min-width: 64rem)"
             :text="heroTitle"
             type="lines"
             @split="handleTitleSplit"
@@ -116,6 +117,7 @@ function handleDescriptionSplit(parts: SplitTextResult) {
                data-home-intro-copy
                as="p"
                mask="lines"
+               media="(min-width: 64rem)"
                :text="heroDescription"
                type="lines"
                @split="handleDescriptionSplit"
@@ -160,8 +162,9 @@ function handleDescriptionSplit(parts: SplitTextResult) {
                height="816"
                sizes="sm:768px lg:1024px xl:1280px 2xl:1536px"
                densities="x1"
-               loading="eager"
-               :preload="image.preload"
+               :loading="image.removed ? 'lazy' : 'eager'"
+               :preload="image.preload ? { fetchPriority: 'high' } : false"
+               :fetchpriority="image.preload ? 'high' : 'auto'"
                draggable="false"
             />
          </article>

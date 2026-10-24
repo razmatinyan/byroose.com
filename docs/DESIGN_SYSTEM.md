@@ -894,7 +894,10 @@ Small fixed slots follow the same rules. The TrailingTooltip thumbnail is a
 
 Use `object-cover` only when the composition intentionally crops the source.
 Lazy-load below-the-fold images. Reserve eager loading and preload behavior for
-images that are verified as critical to the initial viewport.
+images that are verified as critical to the initial viewport, and give a
+preloaded image `fetchpriority="high"` on both the image and its preload, as
+the home hero does. Hidden preload copies, such as the TrailingTooltip
+thumbnails, keep `object-cover` so their square box matches the displayed crop.
 
 ## Accessibility
 
@@ -1180,6 +1183,13 @@ of the media motion. They arrive through the page transition with the four
 retained cards already at rest in their grid, so the cards travel in with the
 incoming page instead of expanding from the center.
 
+Below `lg` there is no intro. The header, the hero title, the description, the
+call to action, and the four retained cards with their `40px` dock offset are
+visible from the first paint, the six preloader cards are never displayed, and
+the scroll stays free. The six preloader cards load lazily, so phones never
+download them, and the desktop intro switches them to eager loading before it
+waits for them.
+
 The second stage begins at the shared `expand` timeline label. Hide the six back
 layers without an exit tween, then expand the four retained 4:3 images straight
 from the centered stack into their responsive grid positions over one second
@@ -1220,7 +1230,9 @@ what keeps the cards above the page now that the page is visible behind them.
 Render animated titles through the shared `SplitText` component. Its server
 output must remain the complete text node for indexing and assistive technology.
 After mount, the component may split into words, lines, or characters and pass
-those elements to the consuming animation. The home title animates its generated
+those elements to the consuming animation. Splits run one per browser task in
+mount order through `queueMainThreadTask`, so a page with many split texts
+never blocks the main thread with one long task, and the hero splits first. The home title animates its generated
 visual lines in order. Each fully opaque line rises from 150% below its own
 clipping mask over `0.8s` with `power3.out` easing and a `0.1s` stagger. The
 start is deeper than the usual 115% because the padded title masks would
