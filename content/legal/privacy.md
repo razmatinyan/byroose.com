@@ -67,8 +67,9 @@ Where data protection laws such as the EU and UK General Data Protection Regulat
 To create content and build websites, our clients share materials with us, such as logos, brand guidelines, product photos, footage, copy, and access to existing accounts. These materials can contain personal data, for example images of people or customer information.
 
 - **Use limited to the work.** We use client materials only to deliver the work we agreed on. We do not sell them, share them with other clients, or use them for unrelated purposes.
-- **AI tools.** Our AI content creation work uses third-party tools to generate and edit images, video, and other content. We upload only the materials a brief needs. Where a tool lets us choose, we turn off settings that allow its provider to use our inputs to train its models.
-- **People in your materials.** If your materials show identifiable people, you confirm that you have their permission for us to use those materials. We do not create content that imitates a real, identifiable person without that person's documented consent.
+- **AI tools.** Our AI content creation work uses third-party tools to generate and edit images, video, and other content. We upload only the materials a project needs to the AI tools we use.
+- **People in your materials.** If your materials show identifiable people, you confirm that you have their permission for us to use those materials.
+- **No imitation of real people.** We do not use AI to imitate real, identifiable people. AI characters we create, such as UGC-style creators, are original and do not depict real people.
 - **Your website's visitors.** When we build or maintain a website for you, you decide how your visitors' data is collected and used. For that data, we act on your instructions and under your agreement with us.
 - **Account access.** When you give us access to hosting, content management, or other accounts, we use it only for the work, and we recommend that you remove or rotate our access once the handover is complete.
 - **Showing our work.** We publish client names, projects, and results on our website only with the client's approval.
@@ -104,7 +105,7 @@ When we transfer personal data internationally, we use providers that apply reco
 
 We keep personal data only as long as we need it for the purpose we collected it for:
 
-- **Enquiries.** Messages that do not lead to a project are kept for up to 24 months after our last exchange, then deleted.
+- **Enquiries.** Messages that do not lead to a project are kept for as long as reasonably needed to follow up, then deleted.
 - **Client records.** Contracts, project correspondence, and invoices are kept for the length of the engagement and afterwards for as long as accounting, tax, and other legal obligations require.
 - **Client materials.** Project files are kept while we deliver and support the work. You can ask us to delete or return them when the engagement ends, unless we must keep a copy by law.
 - **Abuse protection data.** IP addresses used to limit contact form submissions are cleared from memory within 10 minutes.
