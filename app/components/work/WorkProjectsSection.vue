@@ -69,18 +69,6 @@ const projects: readonly Project[] = [
 		name: "Cartoon",
 		video: "/images/work/cartoon/cover.mp4",
 	},
-	{
-		categories: ["Web Development", "UI/UX Design"],
-		href: "/work/zeel-ai-studio",
-		image: {
-			height: 1440,
-			src: "/images/work/zeel-ai-studio/cover.jpg",
-			width: 2560,
-		},
-		imageAlt:
-			"ZEEL AI Studio home screen on a laptop resting on a textured stone block",
-		name: "ZEEL AI Studio",
-	},
 ];
 
 const tooltipLabel = "View Project";

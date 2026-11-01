@@ -57,6 +57,7 @@ app/
     useHeaderSurface.ts
     useHoverBounce.ts
     useHoverRollover.ts
+    useJourneyMotion.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
     useNavLinkMotion.ts
@@ -65,7 +66,6 @@ app/
     usePageTransitionMotion.ts
     useProjectGallery.ts
     useServicesHeroMotion.ts
-    useServicesMediaFlight.ts
     useServicesMotion.ts
     useServicesRevealMotion.ts
     useServicesStatementMotion.ts
@@ -196,30 +196,25 @@ on landing sections.
 
 ### Services components
 
-app/components/services contains the Services route's sections. ServicesPage
-composes ServicesHero, ServicesStatementSection, a light ServicesOfferSection
-for AI Content Creation, and a dark one for Website Development, and
-app/pages/services.vue renders it with the route
-metadata. ServicesPage also owns both offers' copy and blocks, and
-the `data-services-flight` layer, an ImageCycle of the hero images that is
-absolutely positioned in the page and, from `lg`, travels from the hero to the
-first block. ServicesHero owns the title lines, the About link, and its
-TrailingTooltip. A title line can carry one `data-services-hero-inset` frame
-placed inline in the line: the link frame, a NuxtLink to `/about`, or the
-media frame, which is the flight's `data-services-flight-origin`. It holds an
-ImageCycle of the hero images that shows only below `lg`, where there is no
-flight, and a still poster for reduced motion from `lg`. ServicesStatementSection owns the statement
-copy and its split. ServicesOfferSection receives an `anchor` from
-app/lib/services-anchors.ts, which becomes its section id, a title, a description, a
-`surface` of `light` or `dark`, and a list of blocks, each with a title, a
-description, a tone, optional images, and an optional `flight` flag that makes
-its media slot the flight's `data-services-flight-target`. A flight block's
-images show only below `lg`, where the flight does not run. The dark surface
-adds a `data-services-reveal-backdrop` layer at `-z-10` without isolating
-the section, so the intro text can blend with it and the page behind it.
-app/lib/services-hero.ts holds the hero images
-and the inset open property, content scale, and open duration that the hero
-motion, the flight, and the home service links share. The sections own their copy and do not depend on landing or
+app/components/services contains the Services route's sections. The route is
+a hub: short service summaries that link to the planned full service pages.
+ServicesPage composes ServicesHero, ServicesStatementSection, a light
+ServicesOfferSection for AI Content Creation, and a dark one for Website
+Development, and app/pages/services.vue renders it with the route metadata.
+ServicesPage owns both summaries' copy. ServicesHero owns the title lines, the
+About link, and its TrailingTooltip. A title line can carry one
+`data-services-hero-inset` frame placed inline in the line: the link frame, a
+NuxtLink to `/about`, or the media frame, which holds an ImageCycle of the
+hero images. ServicesStatementSection owns the statement copy and its split.
+ServicesOfferSection receives an `anchor` from app/lib/services-anchors.ts,
+which becomes its section id, a title, a description, a link label and path,
+and a `surface` of `light` or `dark`. The link points to the service's own
+page from `servicePagePaths` in the same module. The dark surface adds a
+`data-services-reveal-backdrop` layer at `-z-10` without isolating the
+section, so the intro text can blend with it and the page behind it.
+app/lib/services-hero.ts holds the hero images and the inset open property,
+content scale, and open duration that the hero motion and the home service
+links share. The sections own their copy and do not depend on landing or
 About components.
 
 ### Work components
@@ -334,9 +329,12 @@ SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, SiteCtaSection, and 
 may use shared components and UI primitives. They should not depend on a landing
 section.
 
-SiteCtaSection is the dark "Have an idea? Let's build it." call to action
-that closes every route. The layout renders it inside the main landmark after
-the page, so no page owns a copy. It owns its copy and its link to `/contact`
+SiteCtaSection is the dark call to action that closes every route. It reads
+its title lines and description for the current route from `siteCtaFor` in
+app/lib/site-cta.ts, which falls back to the default "Turn your social media
+views into leads?" copy, so a route such as `/services` can ask its own
+question. It fits its title to the content width with useFitText. The layout renders it inside the main landmark after
+the page, so no page owns a copy. It owns its link to `/contact`
 and reveals through useSiteCtaMotion. Its `ctaCanvas` paints the smoke
 background that useSiteCtaBackground owns. Like the footer, it carries
 `data-page-transition-follow`, so it leaves with the outgoing page. Because the
@@ -385,7 +383,7 @@ The existing useGsap composable is the integration boundary for component-owned 
 useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It shows every `data-home-intro-header` element, which covers the header and its separate logo layer, and rises their pieces from `getHeaderRevealParts` in visual order without fading the header. Below `lg` it marks the intro complete at mount and only hides the preloader cards, while LandingPage and the default layout show the hero copy, the retained cards, and the header at rest in CSS below `lg`, so phones paint them without waiting for JavaScript. It runs the preloader and the center expansion only while Nuxt is hydrating a direct home request from `lg` upward. A client-side entry arrives through a page transition: it shows the hero cards at rest in their grid immediately, lowers the header pieces into their masks, and builds its reveal timeline only when usePageTransition reports the reveal point, so the timeline starts at its own beginning instead of absorbing the incoming page's mount work. It holds the scroll through the shared Lenis lock rather than stopping Lenis directly, and marks the intro complete if the page is left before the intro finishes, so the header never stays hidden on the next route.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
-and Studio section. It waits for the intro to complete and lets the hero leave
+and the section after it, currently the work section. It waits for the intro to complete and lets the hero leave
 through normal document scrolling. From the first scroll, one scrubbed
 timeline slows the featured retained card from page speed into a hold at the
 viewport center, moves it to the horizontal center, expands it until the
@@ -393,7 +391,7 @@ transition space ends, and releases it back to page speed. Every property
 follows a velocity matched curve from app/lib/scroll-curve.ts, so nothing
 stops or changes speed abruptly. The card's resting offset from the home intro
 is part of the measured path. The transition runs only from `lg` upward, where
-LandingPage supplies an empty scroll space one and a half viewports tall before Studio. Below `lg`
+LandingPage supplies an empty scroll space one and a half viewports tall before that section. Below `lg`
 the space collapses and the composable creates no animation. Responsive
 measurements, the reduced-motion outcome, ScrollTrigger lifecycle, and route
 cleanup remain inside the composable.
@@ -459,12 +457,9 @@ the children of its `data-service-content` block, the description line rise
 anchored to the static service title, and the scrubbed bottom origin image entry
 and top origin image exit, which meet when the image frame crosses the viewport
 center. The content keeps one constant slowed speed throughout, so the section
-never slows down further while its image scales. It returns `introRevealed`, which turns true once
-the scrubbed intro reaches the end of its last word and false again above that
-point, and ServicesSection feeds it to the `drawn` prop of the WaveUnderline
-under "You?". It also owns the scrubbed rise of a dark panel's
+never slows down further while its image scales. It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved
-exit that reaches down toward the Why Choose Us title as the panel leaves. Because the content block moves, those triggers are
+exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. On touch devices its media context drops the slowed travel, the
 scrubbed image scale, and the backdrop rise, so the content stays in place, the dark backdrop
@@ -480,6 +475,15 @@ service links, the image links, and the tooltip handlers. Both links route to
 the service's section through `servicesSectionPath`. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
+
+useJourneyMotion owns the journey section's motion: the one-time character
+reveal of the `data-journey-title` heading beneath the services section's
+exiting dark curve, and for each `data-journey-step` row the character reveal
+of its title and the line reveal of its description. It waits for the title
+split and every step's title and description splits, and shows everything at
+rest under reduced motion. JourneySection owns the step content and emits
+those splits. LandingPage renders JourneySection after the services section and
+currently keeps WhyChooseSection disabled.
 
 useWhyChooseMotion owns the Why Choose Us section's motion: the one-time
 character spawn of the `data-why-title` heading beneath the services
@@ -553,17 +557,6 @@ to `1` and settling its `data-services-hero-inset-content` from a larger
 scale, and scrubs the hero
 content down at half the scroll speed while it fades out, as the About hero
 does. It returns `revealed`, which lifts the hero's hidden CSS rest state.
-
-useServicesMediaFlight owns the Services image flight. On every GSAP ticker
-frame, after Lenis has scrolled, it measures the hero's media frame and the
-first block's media slot against the page, interpolates the position, size,
-and corner radius between them by the progress of a ScrollTrigger that runs
-from the top of the page until the slot's center reaches the viewport's
-center, and writes them to the flight layer. While the hero frame is still
-opening, it also matches the frame's content scale from its
-`--services-hero-inset-open` value. It runs only from `lg`. Below `lg` the
-layer stays hidden and the hero frame and the slot show their own cycles.
-Reduced motion from `lg` keeps the layer in the slot.
 
 useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` split,
 then rises each text's lines, or its words when it is split into words only,
@@ -648,7 +641,7 @@ useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
 element, which the component's own font size must multiply. An optional
 `maxScale` caps the multiplier, so short text stops growing at the base size
-and only longer text shrinks to fit. WhyChooseSection uses it for its title,
+and only longer text shrinks to fit. JourneySection and WhyChooseSection use it for their titles,
 WorkHero for its title, and ProjectHero for the project name with a
 `maxScale` of `1`.
 
@@ -1094,7 +1087,7 @@ only and own no data.
 
 The Work listing and the home case studies still keep their cards as local
 data in `WorkProjectsSection` and `WorkSection`. Both show only the real
-projects, UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in the order of
+projects, UGC Creator, Sygen, and Cartoon, in the order of
 `app/data/projects/index.ts`. Each card passes an `href` to its project page,
 which turns `ProjectCard` into a NuxtLink and adds a NuxtLink covering
 `CaseStudyCard`, so the case card's `liveUrl` link can sit above it without

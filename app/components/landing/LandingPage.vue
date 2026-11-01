@@ -4,6 +4,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 import BrandGrid from "./BrandGrid.vue";
 import CoursesSection from "./CoursesSection.vue";
 import HeroSection from "./HeroSection.vue";
+import JourneySection from "./JourneySection.vue";
 import ReviewsSection from "./ReviewsSection.vue";
 import ServicesSection from "./ServicesSection.vue";
 import StudioSection from "./StudioSection.vue";
@@ -45,11 +46,12 @@ function setDescriptionSplit(parts: SplitTextResult) {
 			class="home-hero-scroll-space"
 			aria-hidden="true"
 		/>
-		<StudioSection />
+		<!-- <StudioSection /> -->
 		<!-- <BrandGrid /> -->
 		<WorkSection />
 		<ServicesSection />
-		<WhyChooseSection />
+		<JourneySection />
+		<!-- <WhyChooseSection /> -->
 		<!-- <ReviewsSection /> -->
 		<!-- <CoursesSection /> -->
 		<LazyLandingBlogSection :hydrate-on-visible="belowFoldHydrationArea" />

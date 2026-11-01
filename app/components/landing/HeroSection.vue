@@ -10,9 +10,9 @@ const emit = defineEmits<{
 }>();
 
 const heroTitle =
-   "Scrolled past? Make AI content that turns views into new clients";
+   "AI content and web development agency that turns views into leads";
 const heroDescription =
-   "Most brands post more and get noticed less. We pair AI content creation with web development, so your visuals get seen and your site turns that attention into enquiries.";
+   "We make AI videos, UGC ads, and product visuals that stop the scroll, then build the website that turns that attention into enquiries. One team, from first view to booked call.";
 const heroActionLabel = "Start a project";
 
 const heroImages = [
@@ -188,10 +188,10 @@ function handleDescriptionSplit(parts: SplitTextResult) {
 }
 
 .hero-title {
-   @apply m-0 leading-[0.82] font-bold tracking-[-0.05em] lg:col-start-2 lg:row-start-1;
-   font-size: calc((100vw - 2 * var(--spacing-page)) / 7.6);
+   @apply m-0 leading-[0.90] font-bold tracking-[-0.05em] lg:col-start-2 lg:row-start-1;
+   font-size: calc((100vw - 2 * var(--spacing-page)) / 7.9);
    margin-top: -0.22em;
-   max-width: 7.4em;
+   max-width: 7.85em;
 }
 
 .hero-copy {
@@ -260,13 +260,13 @@ function handleDescriptionSplit(parts: SplitTextResult) {
 @media (min-width: 64rem) {
    .hero-title {
       font-size: var(--text-hero);
-      max-width: 7.25em;
+      max-width: 7.85em;
    }
 
    .hero-description {
       @apply text-wrap;
       font-size: clamp(1.0625rem, 1.7vw, 1.75rem);
-      max-width: 12.7em;
+      max-width: 15em;
    }
 
    .hero {

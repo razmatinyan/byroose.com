@@ -2,7 +2,7 @@ export const siteName = "byroose";
 export const siteUrl = "https://byroose.com";
 export const siteSlogan = "From seen to chosen";
 export const siteDescription =
-   "byroose is a creative agency for AI content creation and web development. Visuals, video and reels, plus websites designed to convert.";
+   "byroose is an AI content and web development agency. We create scroll-stopping AI videos and UGC ads, then build websites designed to turn views into leads.";
 export const siteEmail = "contact@hello.byroose.com";
 
 export const siteHeadquarters = {

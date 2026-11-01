@@ -20,7 +20,7 @@ export const pageSeo = {
       name: "Services",
       title: "AI content creation and web development services",
       description:
-         "byroose creates AI content and builds websites in one connected practice, from visuals, videos, and reels to clear, fast sites designed to convert.",
+         "AI content creation and web development services from one team. Buy one or both, made to the same brief, so your views turn into leads.",
       label: "Services",
    },
    work: {

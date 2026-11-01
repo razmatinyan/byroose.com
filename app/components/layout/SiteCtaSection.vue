@@ -4,9 +4,11 @@ import { NuxtLink } from "#components";
 import SplitText from "@/components/shared/SplitText.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { appIcons } from "@/lib/icons";
+import { siteCtaFor } from "@/lib/site-cta";
 import type { SplitTextResult } from "@/lib/split-text";
 
-const titleLines = ["Have an idea?", "Let's build it."];
+const route = useRoute();
+const { description, titleLines } = siteCtaFor(route.path);
 const title = titleLines.join(" ");
 const contactRoute = "/contact";
 const actionLabel = "Start a project";
@@ -16,14 +18,23 @@ const ctaCanvas = useTemplateRef<HTMLCanvasElement>("ctaCanvas");
 const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
    titleLines.map(() => undefined),
 );
+const descriptionSplit = shallowRef<SplitTextResult>();
 
-useSiteCtaMotion(ctaRoot, titleSplits);
+useSiteCtaMotion(ctaRoot, titleSplits, descriptionSplit);
+useFitText(
+   () => ctaRoot.value?.querySelector<HTMLElement>("[data-site-cta-title]"),
+   { maxScale: 1 },
+);
 const { ready: backgroundReady } = useSiteCtaBackground(ctaRoot, ctaCanvas);
 
 function setTitleSplit(index: number, parts: SplitTextResult) {
    titleSplits.value = titleSplits.value.map((entry, entryIndex) =>
       entryIndex === index ? parts : entry,
    );
+}
+
+function setDescriptionSplit(parts: SplitTextResult) {
+   descriptionSplit.value = parts;
 }
 </script>
 
@@ -54,6 +65,14 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
             />
          </span>
       </h2>
+      <SplitText
+         class="site-cta-description"
+         as="p"
+         mask="lines"
+         :text="description"
+         type="lines"
+         @split="setDescriptionSplit"
+      />
       <div class="site-cta-action-mask">
          <span class="site-cta-action-rise" data-site-cta-action>
             <Button
@@ -90,7 +109,21 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .site-cta-title {
-   @apply m-0 text-display font-bold tracking-[-0.05em];
+   @apply m-0 w-max max-w-none leading-[0.9] font-bold tracking-[-0.05em];
+   font-size: calc(clamp(1.75rem, 8.6vw, 9.5rem) * var(--fit-text-scale, 1));
+}
+
+.site-cta-description {
+   @apply m-0 mt-8 max-w-[38ch] text-xl leading-tight font-medium tracking-[-0.03em] text-balance text-background/70 md:mt-10 md:text-2xl xl:text-3xl;
+}
+
+.site-cta-description :deep(.split-text-line),
+.site-cta-description :deep(.split-text-line-mask) {
+   display: block;
+}
+
+.site-cta-description :deep(.split-text-line) {
+   visibility: hidden;
 }
 
 .site-cta-title-line {
@@ -112,7 +145,7 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .site-cta-action-mask {
-   @apply mt-16 overflow-x-visible overflow-y-clip md:mt-24;
+   @apply mt-12 overflow-x-visible overflow-y-clip md:mt-16;
    padding: 0.5rem;
 }
 

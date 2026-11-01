@@ -105,6 +105,32 @@ Before drafting a public page:
 
 Do not force a keyword into every heading or paragraph. Use the main phrase naturally in the title, H1, introduction, and other relevant locations only when it reads well.
 
+## Keyword map
+
+Each page targets one primary keyword in its title, H1, introduction, and at
+least one H2 where it reads naturally. Confirm search volumes in a keyword tool
+before a page launches.
+
+| Page | URL | Primary keyword | Secondary keywords | Search intent |
+| --- | --- | --- | --- | --- |
+| Home | / | AI content and web development agency | AI content creation agency, web development agency [City] | Find an agency |
+| Services | /services | AI content and web development services | content marketing services, website development services | Compare services |
+| AI content | /services/ai-content-creation | AI content creation agency | AI UGC ads, AI video ads, AI product photography, AI reels for brands | Hire for content |
+| Websites | /services/web-development | web development agency | landing page development, conversion-focused web development, website development [City] | Hire for a website |
+| Work | /work | AI content and web development case studies | AI marketing case study, web development portfolio | Check proof |
+| About | /about | AI creative agency [City] | AI content team, byroose founders | Check credibility |
+| Blog | /blog | AI content marketing blog | AI marketing tips, landing page tips | Learn |
+| Contact | /contact | contact AI content agency | hire AI content agency, contact byroose | Get in touch |
+
+[City] stands for the market byroose wants to rank in. /services is a hub of
+short summaries that link to the two service pages, so each service can rank
+on its own. The two service URLs are planned routes. Until they ship, the hub
+links to them in advance.
+
+The home hero title is the H1 and the site description in `app/lib/site.ts` is
+the home meta description, the site description, and the Organization
+description.
+
 ## Page structure
 
 Each indexable page should normally include:

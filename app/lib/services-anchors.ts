@@ -9,3 +9,8 @@ export type ServicesAnchor =
 export function servicesSectionPath(anchor: ServicesAnchor) {
    return `/services#${anchor}`;
 }
+
+export const servicePagePaths = {
+   aiContent: "/services/ai-content-creation",
+   web: "/services/web-development",
+} as const;
