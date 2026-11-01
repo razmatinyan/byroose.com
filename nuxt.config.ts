@@ -79,6 +79,8 @@ export default defineNuxtConfig({
 	routeRules: {
 		'/**': { prerender: true },
 		'/courses': unlistedRoute,
+		'/services/ai-content-creation': unlistedRoute,
+		'/services/web-development': unlistedRoute,
 	},
 
 	nitro: {
