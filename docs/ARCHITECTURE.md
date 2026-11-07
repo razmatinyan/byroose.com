@@ -442,7 +442,12 @@ title to visible characters and leaves every card in its resting state. It also
 owns the handoff from the last card to the MoreWorksPanel. It slows and fades
 the `data-work-case-list` element and brings in the `data-work-more-panel`
 surface inside the `data-work-more` track, because that handoff choreographs
-WorkSection's own cards against its closing panel.
+WorkSection's own cards against its closing panel. The handoff ends where the
+track pins, and its trigger carries `refreshPriority: 2`, above the pin's `1`,
+so it measures the track before the pin applies its state. A refresh made
+while the page sits below the panel, such as when the lazy Blog and FAQ
+sections hydrate after a scrollbar jump, would otherwise measure the track at
+its pinned end, one viewport lower, and play the handoff during the pin.
 
 useDrawnLineMotion owns a single scroll-drawn line. It receives a scope and a
 DrawnLine, the path builder and optional head lead from a lib artwork module,
