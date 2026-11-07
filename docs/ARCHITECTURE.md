@@ -183,7 +183,9 @@ AboutTitle renders a title from explicit lines, each in its own mask, with an
 optional underlined word that carries a WaveUnderline, every other text
 fragment in a `data-about-title-text` span that an owner can style, and an optional
 `images` list that opens a `data-about-title-inset` ImageCycle frame before the
-line's text. AboutMediaFrame wraps
+line's text. A line with `logo` set renders the site logo in place of its text,
+as a masked `data-about-title-text` span, while the line text still feeds the
+`sr-only` heading label. AboutMediaFrame wraps
 any image or placeholder in a frame and a parallax layer. AboutStatement is the
 large split statement, placed in the right two thirds of its section, shared by
 the trust and brands sections, and

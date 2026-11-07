@@ -2465,7 +2465,12 @@ the site footer.
 The hero fills the first screen below the header except for
 `--about-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded top of the team
 section shows at the bottom of the first screen. It centers the "Welcome to"
-and "forrrow" title above a three line description, `5rem` below the title and
+title above a three line description, held to `36ch` and widened to `80ch`
+from `lg` so the founding story stays on three balanced lines, with the
+forrrow logo in place of the second line's text. The logo is a `currentColor` span masked by `/logo.svg`,
+`0.74em` tall, the measured height of the bold lowercase "forrrow" it replaces,
+and sits on the text baseline, so it takes the title's color and blend. Screen
+readers still hear "Welcome to forrrow" from the heading label. The description sits `5rem` below the title and
 `7rem` from `md`, which keeps the descender of the y clear. The title and the call
 to action title use `AboutTitle` at its `display` size,
 `clamp(3.5rem, 11vw, 12rem)`. The section titles use its `section` size,
@@ -2506,7 +2511,7 @@ random tilt of up to `10` degrees. It lands from `1.3` scale over `0.6s` on
 the pointer's last movement while it turns to a new random tilt. `0.1s` after
 the throw it shrinks to zero over `0.3s` on `back.in(1.5)`. The images are the
 seven files in `public/images/work`, cycled in order, in `rounded-xl` 3:4
-frames `clamp(9rem, 15vw, 16rem)` wide. They paint behind the hero text and
+frames `clamp(6rem, 10vw, 11rem)` wide. They paint behind the hero text and
 below the team section. The title text and the description are set in
 `background` with `mix-blend-difference`, as the Services dark section intro
 is, so they read black over the canvas and invert over a passing image, and

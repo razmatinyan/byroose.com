@@ -11,6 +11,7 @@ export interface AboutTitleImage {
 
 export interface AboutTitleLine {
    images?: readonly AboutTitleImage[];
+   logo?: boolean;
    text: string;
    underlined?: string;
 }
@@ -31,10 +32,10 @@ const {
 
 const label = computed(() => lines.map((line) => line.text).join(" "));
 const segmentedLines = computed(() =>
-   lines.map(({ images, text, underlined = "" }) => {
+   lines.map(({ images, logo = false, text, underlined = "" }) => {
       const start = underlined ? text.indexOf(underlined) : -1;
       if (start < 0)
-         return { images, segments: [{ text, underlined: false }], text };
+         return { images, logo, segments: [{ text, underlined: false }], text };
 
       const segments = [
          { text: text.slice(0, start), underlined: false },
@@ -44,6 +45,7 @@ const segmentedLines = computed(() =>
 
       return {
          images,
+         logo,
          segments: segments.filter((segment) => segment.text),
          text,
       };
@@ -78,7 +80,16 @@ const segmentedLines = computed(() =>
                      loading="eager"
                      sizes="sm:448px"
                /></span>
-               <template v-for="segment in line.segments" :key="segment.text">
+               <span
+                  v-if="line.logo"
+                  class="about-title-text about-title-logo"
+                  data-about-title-text
+               />
+               <template
+                  v-for="segment in line.segments"
+                  v-else
+                  :key="segment.text"
+               >
                   <span v-if="segment.underlined" class="about-title-underlined"
                      >{{ segment.text
                      }}<WaveUnderline
@@ -140,6 +151,13 @@ const segmentedLines = computed(() =>
 .about-title-inset > .about-title-inset-content {
    @apply absolute top-0 left-1/2 h-full -translate-x-1/2;
    width: var(--about-title-inset-width);
+}
+
+.about-title-logo {
+   @apply inline-block bg-current align-baseline;
+   aspect-ratio: 594 / 146;
+   height: 0.74em;
+   mask: url("/logo.svg") center / contain no-repeat;
 }
 
 .about-title-underlined {

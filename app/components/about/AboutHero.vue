@@ -12,10 +12,10 @@ const titleImages: readonly AboutTitleImage[] = [1, 2, 3, 4].map((index) => ({
 }));
 const titleLines: readonly AboutTitleLine[] = [
 	{ text: "Welcome to" },
-	{ images: titleImages, text: "forrrow" },
+	{ images: titleImages, logo: true, text: "forrrow" },
 ];
 const description =
-	"A creative agency that pairs AI content creation with web development, so your brand gets seen and chosen.";
+	"We started forrrow because the handoff kept breaking. Great content was sending people to websites that lost them. Good websites sat waiting for traffic that never came. So a creative director and a software engineer decided to build both, together.";
 const trailImages = [1, 2, 3, 4, 5, 6, 7].map(
 	(index) => `/images/work/${index}.png`,
 );
@@ -103,7 +103,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .about-hero-description {
-	@apply m-0 mt-20 max-w-[36ch] text-lg leading-tight font-medium tracking-[-0.03em] text-balance md:mt-28 md:text-xl lg:text-2xl;
+	@apply m-0 mt-20 max-w-[36ch] text-lg leading-tight font-medium tracking-[-0.03em] text-balance md:mt-28 md:text-xl lg:max-w-[80ch] lg:text-2xl;
 }
 
 .about-hero-description :deep(.split-text-line),
@@ -117,7 +117,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 
 .about-hero-trail-item {
 	@apply invisible absolute top-0 left-0 block aspect-[3/4] overflow-hidden rounded-xl;
-	width: clamp(9rem, 15vw, 16rem);
+	width: clamp(6rem, 10vw, 11rem);
 }
 
 .about-hero-trail-image {

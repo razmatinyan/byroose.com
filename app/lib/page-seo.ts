@@ -50,9 +50,9 @@ export const pageSeo = {
    about: {
       path: "/about",
       name: "About",
-      title: "About forrrow: AI content and web development team",
+      title: "About forrrow: AI creative agency",
       description:
-         "Meet the team behind forrrow, a creative agency that pairs AI content creation with web development so brands get seen, trusted, and chosen.",
+         "Meet the founders of forrrow, an AI content and web development agency. A creative director and a software engineer building both halves of your funnel.",
       label: "About",
    },
    blog: {
