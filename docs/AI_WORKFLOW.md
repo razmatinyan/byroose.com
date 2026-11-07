@@ -1,6 +1,6 @@
 # AI agent workflow
 
-This workflow defines how AI agents plan, implement, verify, commit, push, and hand off changes in byroose.com.
+This workflow defines how AI agents plan, implement, verify, commit, push, and hand off changes in forrrow.com.
 
 ## 1. Start every new session
 

@@ -1,4 +1,4 @@
-# byroose design system
+# forrrow design system
 
 The design system keeps the original landing-page character while following
 Shadcn Vue and Tailwind CSS v4 conventions. Components own behavior and variants;
@@ -60,7 +60,7 @@ visual and accessibility review.
 
 `brand-blue` and `brand-pink` are explicit brand aliases. Generic components
 should prefer `secondary` and `accent`. Brand aliases are appropriate when the
-color itself is part of a byroose composition. `brand-cream` no longer matches
+color itself is part of a forrrow composition. `brand-cream` no longer matches
 the canvas, so use it only when a surface must read as cream.
 
 Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
@@ -379,7 +379,7 @@ directions with `gsap.set`, so the notice still appears and still dismisses
 without travelling.
 
 Accepting writes `accepted` and declining writes `declined` to the
-`byroose-cookie-consent` cookie for one year. Any future tracking must check for
+`forrrow-cookie-consent` cookie for one year. Any future tracking must check for
 `accepted` before it runs. Because the value is read through `useCookie`, the
 server already knows whether to render the notice, so an answered banner never
 flashes during hydration.
@@ -487,7 +487,7 @@ are all in `em`, so the button scales with the title.
 
 Below the title, a semibold `muted-foreground` "Or write directly to" label at
 `text-base`, `text-lg` from `md`, with `-0.03em` tracking sits tightly above the
-`contact@hello.byroose.com` mail link.
+`contact@hello.forrrow.com` mail link.
 The lead column uses the larger `gap-16`, `gap-20` from `md`, rhythm.
 
 Column titles are bold `h2` labels in the ink `paper-foreground` at `text-xl`,
@@ -504,7 +504,7 @@ shows "Yerevan, Armenia", a live local time with "GMT +4", then Privacy Policy
 after a larger gap.
 
 The right column ends with "Website by Razo Codes", "© 2026 All Rights
-Reserved", and "byroose inc." as three separate lines that share the email
+Reserved", and "forrrow inc." as three separate lines that share the email
 address typography. "Razo Codes" is a `SiteNavLink` at its `inherit` size and
 opens the author's LinkedIn profile in a new tab. A "Back to Top" button sits on
 the right of the credits, aligned with their last line, in the same item
@@ -817,7 +817,7 @@ navigating. The page is
 
 `BrandCard` is the generated 1200 by 630 OG image for every page without its
 own sharing image. It is a dark `foreground` surface with `72px` of padding and
-three rows spread across the height. The top row holds the bold `byroose`
+three rows spread across the height. The top row holds the bold `forrrow`
 wordmark text with `-0.05em` tracking on the left and the site host in muted ink
 on the right. The middle row holds an optional semibold page label in the
 `primary` orange above the bold title, set large with `-0.05em` tracking and
@@ -2465,7 +2465,7 @@ the site footer.
 The hero fills the first screen below the header except for
 `--about-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded top of the team
 section shows at the bottom of the first screen. It centers the "Welcome to"
-and "byroose" title above a three line description, `5rem` below the title and
+and "forrrow" title above a three line description, `5rem` below the title and
 `7rem` from `md`, which keeps the descender of the y clear. The title and the call
 to action title use `AboutTitle` at its `display` size,
 `clamp(3.5rem, 11vw, 12rem)`. The section titles use its `section` size,
@@ -2486,7 +2486,7 @@ the image frame one by one, because a transform or opacity on the content
 itself would isolate the blended text from the trail behind it. It reaches zero opacity as the hero leaves the top of the viewport, so
 the team section appears to arrive faster and covers it.
 
-The "byroose" line opens a 16:9 image frame before the word, the same frame the
+The "forrrow" line opens a 16:9 image frame before the word, the same frame the
 Services hero sets before "Websites": `0.8em` tall, `0.06em` below the
 baseline, with `0.06em` corners, and its width and `0.12em` end margin
 multiplied by `--about-title-inset-open`. It holds an `ImageCycle` of the four
@@ -2522,7 +2522,7 @@ absent on touch devices and under reduced motion.
 
 The team section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
-"Who stands behind byroose" sits on the left with a primary orange wave under
+"Who stands behind forrrow" sits on the left with a primary orange wave under
 "behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan,
 Co-Founder & Creative Director, on the right, and Razmik Matinyan, Co-Founder &
 Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width

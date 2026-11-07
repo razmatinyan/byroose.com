@@ -73,7 +73,7 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
                   class="studio-portrait-image"
                   data-studio-portrait-image
                   src="/images/founder.jpg"
-                  alt="Founder of byroose kicking one leg high beside a lamppost on a sunny street corner"
+                  alt="Founder of forrrow kicking one leg high beside a lamppost on a sunny street corner"
                   width="2048"
                   height="1536"
                   sizes="sm:1280px md:768px lg:1024px xl:1280px 2xl:1536px"

@@ -1,6 +1,6 @@
 ---
 title: Layout sample for the article template
-description: A draft that shows every element of the byroose article layout. It only renders in development.
+description: A draft that shows every element of the forrrow article layout. It only renders in development.
 date: 2026-10-14
 category: Web development
 draft: true
@@ -10,7 +10,7 @@ cover:
   height: 816
   alt: Sample cover image
 author:
-  name: byroose team
+  name: forrrow team
 ---
 
 This opening paragraph is the lead. It sits beside the article details and introduces what the reader will learn, in two or three sentences.

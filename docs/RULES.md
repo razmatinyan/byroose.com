@@ -1,6 +1,6 @@
 # Project rules
 
-These are the mandatory engineering and content rules for byroose.com. They apply to human contributors, Codex, Claude Code, and other AI agents.
+These are the mandatory engineering and content rules for forrrow.com. They apply to human contributors, Codex, Claude Code, and other AI agents.
 
 ## Rule priority
 
@@ -156,7 +156,7 @@ Do not create a composable for a pure formatting function. Do not place DOM side
 - Keep one-off layout utilities in the template when the class list remains short and clear.
 - Move repeated visual recipes into a semantic class group under the appropriate Tailwind layer.
 - Use CVA for a component with meaningful variants, sizes, or states.
-- Keep source-owned Shadcn components generic. Put byroose-specific composition in cards, shared components, layouts, or feature components.
+- Keep source-owned Shadcn components generic. Put forrrow-specific composition in cards, shared components, layouts, or feature components.
 - Extend existing primitives instead of copying almost identical components.
 - Preserve dark-mode token pairs even when a feature launches in the light theme first.
 - Add or change tokens through the process in DESIGN_SYSTEM.md.

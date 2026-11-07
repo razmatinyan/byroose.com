@@ -1,20 +1,20 @@
 ---
 title: Privacy policy
 description: How we collect, use, and protect your personal data.
-updated: 2026-10-24
+updated: 2026-11-07
 ---
 
 ## Who we are
 
-byroose is a creative agency based in Yerevan, Armenia. We create AI content and build websites for brands. In this policy, "byroose", "we", "us", and "our" mean the byroose agency, and "you" means anyone who visits byroose.com, contacts us, or works with us.
+forrrow is a creative agency based in Yerevan, Armenia. We create AI content and build websites for brands. In this policy, "forrrow", "we", "us", and "our" mean the forrrow agency, and "you" means anyone who visits forrrow.com, contacts us, or works with us.
 
-We are responsible for the personal data described in this policy. If you have a question about it, write to us at [info@byroose.com](mailto:info@byroose.com).
+We are responsible for the personal data described in this policy. If you have a question about it, write to us at [info@forrrow.com](mailto:info@forrrow.com).
 
 ## Scope of this policy
 
 This policy explains what personal data we collect, why we collect it, how long we keep it, and the choices you have. It covers:
 
-- Visits to byroose.com and its pages
+- Visits to forrrow.com and its pages
 - Messages you send us through the contact form or by email
 - Information we handle while we deliver AI content creation or web development work for a client
 
@@ -36,7 +36,7 @@ We collect as little personal data as we need to run the site, answer you, and d
 - **Abuse protection.** When you send the contact form, we hold your IP address in temporary server memory for up to 10 minutes to limit repeated submissions and block spam.
 - **Your cookie choice.** We store your answer to our cookie notice in a cookie, as described in [Cookies and similar technologies](#cookies-and-similar-technologies).
 
-We do not use analytics, advertising, or tracking tools on byroose.com. Our fonts and icons are served from our own domain, so loading a page does not send your data to font or icon services.
+We do not use analytics, advertising, or tracking tools on forrrow.com. Our fonts and icons are served from our own domain, so loading a page does not send your data to font or icon services.
 
 We do not knowingly collect sensitive personal data, such as health information, political opinions, or financial account numbers. Please do not send it to us through the contact form or by email.
 
@@ -47,7 +47,7 @@ We use personal data only for clear, specific purposes:
 - To reply to your message and discuss a possible project
 - To prepare proposals, agree on scope, and deliver the work you hire us for
 - To send invoices, receive payments, and keep business records
-- To run, protect, and improve byroose.com, including preventing spam and abuse
+- To run, protect, and improve forrrow.com, including preventing spam and abuse
 - To remember your cookie choice
 - To meet our legal, tax, and accounting obligations, and to establish or defend legal claims
 
@@ -76,9 +76,9 @@ To create content and build websites, our clients share materials with us, such 
 
 ## Cookies and similar technologies
 
-A cookie is a small text file that a website stores in your browser. byroose.com uses one cookie:
+A cookie is a small text file that a website stores in your browser. forrrow.com uses one cookie:
 
-- **byroose-cookie-consent.** Stores whether you accepted or declined our cookie notice, so the notice does not appear on every visit. It is set only when you answer the notice and lasts for one year.
+- **forrrow-cookie-consent.** Stores whether you accepted or declined our cookie notice, so the notice does not appear on every visit. It is set only when you answer the notice and lasts for one year.
 
 This cookie does not identify you and is not used for tracking. We do not set analytics or advertising cookies. If we add any tool that uses optional cookies in the future, it will run only after you choose "Accept all", and we will update this policy first.
 
@@ -91,7 +91,7 @@ We share personal data only when it is needed for the purposes in this policy:
 - **Service providers.** We use trusted providers for website hosting and delivery, email delivery, email and file storage, AI content generation, and project and business tools. They process data on our behalf and only for the services they provide to us.
 - **Professional advisers.** We may share information with accountants, lawyers, or insurers when it is necessary for our business and under a duty of confidentiality.
 - **Legal requirements.** We may disclose information when the law requires it, or when it is necessary to protect our rights, our clients, or the public.
-- **Business changes.** If byroose is involved in a merger, acquisition, or sale of assets, personal data may transfer as part of that transaction, and this policy will continue to protect it.
+- **Business changes.** If forrrow is involved in a merger, acquisition, or sale of assets, personal data may transfer as part of that transaction, and this policy will continue to protect it.
 
 We never sell personal data or share it with third parties for their own marketing.
 
@@ -130,13 +130,13 @@ Depending on where you live, you may have the right to:
 - Receive the data you gave us in a structured, commonly used format, or have it sent to another organization
 - Withdraw your consent at any time, where we rely on consent
 
-To use any of these rights, email [info@byroose.com](mailto:info@byroose.com). We may ask you to confirm your identity before we act on the request, and we will reply within one month. We do not charge a fee unless a request is clearly unfounded or excessive.
+To use any of these rights, email [info@forrrow.com](mailto:info@forrrow.com). We may ask you to confirm your identity before we act on the request, and we will reply within one month. We do not charge a fee unless a request is clearly unfounded or excessive.
 
 If you believe we have not handled your data properly, please contact us first so we can try to resolve it. You also have the right to complain to a data protection authority. In Armenia, this is the Personal Data Protection Agency of the Ministry of Justice. In the European Economic Area or the United Kingdom, you can contact the supervisory authority where you live or work.
 
 ## Children's privacy
 
-byroose.com and our services are intended for businesses and adults. We do not knowingly collect personal data from children under 16. If you believe a child has sent us personal data, contact us and we will delete it.
+forrrow.com and our services are intended for businesses and adults. We do not knowingly collect personal data from children under 16. If you believe a child has sent us personal data, contact us and we will delete it.
 
 ## Links to other websites
 
@@ -150,7 +150,7 @@ We may update this policy when our services, tools, or legal obligations change.
 
 For any question about this policy or your personal data, contact us:
 
-- **Email:** [info@byroose.com](mailto:info@byroose.com)
+- **Email:** [info@forrrow.com](mailto:info@forrrow.com)
 - **Location:** Yerevan, Armenia
 
 We read every message and reply as soon as we can.

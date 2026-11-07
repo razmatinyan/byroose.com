@@ -90,6 +90,6 @@ export default defineProject({
    seo: {
       title: "Cartoon: A Late-for-School Animated Short",
       description:
-         "How byroose made a short cartoon, from designing the character and her outfit to a late-for-school morning where magic gets her dressed.",
+         "How forrrow made a short cartoon, from designing the character and her outfit to a late-for-school morning where magic gets her dressed.",
    },
 });

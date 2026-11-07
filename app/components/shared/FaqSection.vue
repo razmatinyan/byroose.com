@@ -40,7 +40,7 @@ const defaultFaqs: readonly FaqItem[] = [
 		id: 'ai-agency',
 		question: 'What does an AI content agency do?',
 		answer:
-			'An AI content agency creates marketing content, such as videos, UGC ads, reels, and product photos, using AI tools. At byroose, people direct and edit everything AI generates, and we also build the website the content sends people to.',
+			'An AI content agency creates marketing content, such as videos, UGC ads, reels, and product photos, using AI tools. At forrrow, people direct and edit everything AI generates, and we also build the website the content sends people to.',
 	},
 	{
 		id: 'quality',

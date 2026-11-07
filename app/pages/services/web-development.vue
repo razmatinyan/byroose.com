@@ -16,7 +16,7 @@ usePageSeo(pageSeo.webDevelopment);
 const heroTitle =
    "Web development agency for websites that turn visitors into leads";
 const heroDescription =
-   "byroose designs and builds websites, landing pages, web platforms, and CRMs, so every click from your content lands somewhere that matches what your visitor just watched. Fast, easy to update, and design is always included.";
+   "forrrow designs and builds websites, landing pages, web platforms, and CRMs, so every click from your content lands somewhere that matches what your visitor just watched. Fast, easy to update, and design is always included.";
 
 const servicesTitle = "Web development services";
 const services: readonly ServiceCard[] = [
@@ -58,7 +58,7 @@ const storyBlocks: readonly ServiceStoryBlock[] = [
       description:
          "Our co-founder and senior software engineer builds every site, so what you approve in design is exactly what goes live: fast, stable, and easy to maintain.",
       link: {
-         label: "Meet the byroose team",
+         label: "Meet the forrrow team",
          to: pageSeo.about.path,
       },
       offset: "middle",

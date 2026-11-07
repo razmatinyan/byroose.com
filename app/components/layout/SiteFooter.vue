@@ -217,7 +217,7 @@ function scrollToTop() {
                         />
                      </p>
                      <p>© 2026 All Rights Reserved</p>
-                     <p>byroose inc.</p>
+                     <p>forrrow inc.</p>
                   </div>
 
                   <button
@@ -253,7 +253,7 @@ function scrollToTop() {
             <NuxtImg
                class="site-footer-logo"
                src="/logo.svg"
-               alt="byroose"
+               alt="forrrow"
                width="680"
                height="192"
                format="svg"

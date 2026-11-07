@@ -17,7 +17,7 @@ const TrailingTooltip = defineAsyncComponent(
 
 const titleLines: readonly AboutTitleLine[] = [
    { text: "Who stands" },
-   { text: "behind byroose", underlined: "behind" },
+   { text: "behind forrrow", underlined: "behind" },
 ];
 
 const tooltipLabel = "More Info";
@@ -33,7 +33,7 @@ interface TeamMember {
 const members: readonly TeamMember[] = [
    {
       bio: [
-         "Ruzan started byroose to bring AI content creation and web development into one connected practice, so brands stop juggling separate teams for what they say and where they say it.",
+         "Ruzan started forrrow to bring AI content creation and web development into one connected practice, so brands stop juggling separate teams for what they say and where they say it.",
          "Ruzan leads the creative direction on every project, from the first idea to the final cut, and makes sure each piece of content earns its place in front of the audience it was built for.",
       ],
       name: "Ruzan Darbinyan",
@@ -59,7 +59,7 @@ const members: readonly TeamMember[] = [
    },
    {
       bio: [
-         "Razmik co-founded byroose and builds the websites that turn attention into enquiries. Every site starts with a clear structure, loads fast, and stays easy to grow.",
+         "Razmik co-founded forrrow and builds the websites that turn attention into enquiries. Every site starts with a clear structure, loads fast, and stays easy to grow.",
          "Razmik owns the technical side of each project, from the first prototype to launch, so the content and the code ship as one experience instead of two handoffs.",
       ],
       name: "Razmik Matinyan",

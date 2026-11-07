@@ -12,7 +12,7 @@ const titleImages: readonly AboutTitleImage[] = [1, 2, 3, 4].map((index) => ({
 }));
 const titleLines: readonly AboutTitleLine[] = [
 	{ text: "Welcome to" },
-	{ images: titleImages, text: "byroose" },
+	{ images: titleImages, text: "forrrow" },
 ];
 const description =
 	"A creative agency that pairs AI content creation with web development, so your brand gets seen and chosen.";

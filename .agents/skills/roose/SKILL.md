@@ -1,9 +1,9 @@
 ---
 name: roose
-description: Run the complete repository-first workflow for byroose.com tasks. Use whenever the user invokes /roose or $roose, asks to use the roose skill, or requests a change that must begin with a full review of project instructions, documentation, architecture, applicable skills, current implementation, Git state, and relevant history before planning or implementation.
+description: Run the complete repository-first workflow for forrrow.com tasks. Use whenever the user invokes /roose or $roose, asks to use the roose skill, or requests a change that must begin with a full review of project instructions, documentation, architecture, applicable skills, current implementation, Git state, and relevant history before planning or implementation.
 compatibility: Requires repository filesystem access and Git. Uses the project-local git skill for commit and push delivery when available.
 metadata:
-  author: byroose
+  author: forrrow
   version: "1.0.0"
 ---
 

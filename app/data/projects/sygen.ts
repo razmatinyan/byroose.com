@@ -199,6 +199,6 @@ export default defineProject({
    seo: {
       title: "Sygen: Accessible Design System Color Builder",
       description:
-         "How byroose rebuilt Sygen, a free tool that turns one brand color into an accessible light and dark color system for Tailwind, shadcn, CSS, and Figma.",
+         "How forrrow rebuilt Sygen, a free tool that turns one brand color into an accessible light and dark color system for Tailwind, shadcn, CSS, and Figma.",
    },
 });

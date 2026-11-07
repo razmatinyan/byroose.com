@@ -69,7 +69,7 @@ const caseStudies: CaseStudy[] = [
       imageScale: 1.1,
       liveUrl: "https://sygenn.vercel.app/",
       revealTones: ["primary", "pink"],
-      title: "Sygen: a free color system generator built by byroose",
+      title: "Sygen: a free color system generator built by forrrow",
       tone: "pink",
    },
    {

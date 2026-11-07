@@ -16,7 +16,7 @@ usePageSeo(pageSeo.aiContentCreation);
 const heroTitle =
   "AI content creation agency for brands that want leads, not just likes";
 const heroDescription =
-  "byroose creates AI videos, reels, UGC ads, and product visuals for Instagram, TikTok, LinkedIn, and paid social. Every asset is directed, generated, and then edited by a human, so it looks like your brand, not like AI. And every piece points somewhere: to a page built to turn that attention into a lead.";
+  "forrrow creates AI videos, reels, UGC ads, and product visuals for Instagram, TikTok, LinkedIn, and paid social. Every asset is directed, generated, and then edited by a human, so it looks like your brand, not like AI. And every piece points somewhere: to a page built to turn that attention into a lead.";
 
 const servicesTitle = "AI content creation services";
 const services: readonly ServiceCard[] = [
@@ -99,7 +99,7 @@ const faqs: readonly FaqItem[] = [
     id: "premium-brand",
     question: "Is AI content good enough for a premium brand?",
     answer:
-      "Yes, when people direct and edit it. Every byroose asset is checked by a human editor for brand fit, detail, and quality before it goes live.",
+      "Yes, when people direct and edit it. Every forrrow asset is checked by a human editor for brand fit, detail, and quality before it goes live.",
   },
   {
     id: "ownership",

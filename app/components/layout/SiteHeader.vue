@@ -150,7 +150,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
          <NuxtLink
             class="site-logo-link"
             to="/"
-            aria-label="byroose home"
+            aria-label="forrrow home"
             data-header-rise
             @click="handleLogoClick"
          >

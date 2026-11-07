@@ -90,6 +90,6 @@ export default defineProject({
    seo: {
       title: "UGC Creator: Virtual Get Ready With Me Videos",
       description:
-         "How byroose made a virtual UGC creator, from one consistent face and a set of clothes to get ready with me videos filmed in a sunlit bedroom.",
+         "How forrrow made a virtual UGC creator, from one consistent face and a set of clothes to get ready with me videos filmed in a sunlit bedroom.",
    },
 });

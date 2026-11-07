@@ -321,7 +321,7 @@ client IP in ten minutes and answers `429` past that. Without a Resend key
 it answers `503`. Otherwise `sendContactMail` from
 `server/utils/contact-mail.ts` sends a plain text email through the Resend
 REST API with `$fetch`, so no SDK is installed. It goes from
-`byroose website <contact@hello.byroose.com>` to the site email and, when
+`forrrow website <contact@hello.forrrow.com>` to the site email and, when
 `runtimeConfig.contactInboxEmail` is set, to that private inbox too, with the
 sender's address as `reply_to`, so replying in the inbox answers the person
 directly. The `Idempotency-Key` is a SHA-256 hash of the payload, so Resend
@@ -333,9 +333,9 @@ The Resend key lives in the server-only `runtimeConfig.resendApiKey`, which
 `nuxt.config.ts` fills from `RESEND_API_KEY` at build time.
 `NUXT_RESEND_API_KEY` overrides it at runtime. The private inbox comes from
 `CONTACT_INBOX_EMAIL` the same way and stays out of the repository, which is
-public. The site email is `contact@hello.byroose.com` until a
-`hello@byroose.com` inbox exists. The sending domain,
-`hello.byroose.com`, must be verified in Resend before mail is delivered.
+public. The site email is `contact@hello.forrrow.com` until a
+`hello@forrrow.com` inbox exists. The sending domain,
+`hello.forrrow.com`, must be verified in Resend before mail is delivered.
 
 ### Layout components
 
@@ -359,7 +359,7 @@ transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
 after the leaving page has been removed and every route reveals it again.
 
 SiteCookieBanner owns the cookie notice. Its consent value lives in the
-byroose-cookie-consent cookie through Nuxt's useCookie, so the server and the
+forrrow-cookie-consent cookie through Nuxt's useCookie, so the server and the
 first client render agree on whether the notice is visible and an accepted or
 declined notice never reappears. The layout withholds the banner until the home intro
 reports a complete state, so it never paints over the preloader.
@@ -379,7 +379,7 @@ app/components/shared contains small project-wide composition patterns such as F
 
 ### UI primitives
 
-app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain byroose page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label.
+app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain forrrow page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label.
 
 Preserve Reka UI integration, attribute forwarding, data-slot values, keyboard behavior, focus behavior, and CVA contracts when modifying this layer.
 
@@ -1185,7 +1185,7 @@ internal links during development and builds.
   than `production` makes the deployment not indexable.
 - The SEO utilities add the canonical link, `og:url`, `og:site_name`,
   `og:type`, and a `max-image-preview` robots tag to every page, and append
-  ` | byroose` to every title. Page titles are therefore written without the
+  ` | forrrow` to every title. Page titles are therefore written without the
   brand. The site emits no `twitter:*` tags: X builds link previews from Open
   Graph, and unhead flags those tags as deprecated. `seo.automaticTwitterTags:
   false` stops the SEO utilities from inferring them, and

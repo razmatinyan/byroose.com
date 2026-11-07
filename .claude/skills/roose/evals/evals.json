@@ -34,7 +34,7 @@
       "expectations": [
         "The agent reads the content guide, design system, current hero copy, and applicable content or SEO skills before planning.",
         "The plan preserves the requested layout and limits the scope to copy and necessary documentation.",
-        "The new copy follows the byroose voice and contains no em dash.",
+        "The new copy follows the forrrow voice and contains no em dash.",
         "The agent verifies the affected content and completes the configured Git delivery workflow."
       ]
     }
