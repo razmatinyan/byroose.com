@@ -5,46 +5,46 @@ export const wordRevealStart = "top 82%";
 export const wordRevealStagger = 0.03;
 export const wordRevealDenseStagger = 0.01;
 export const navRevealStagger = 0.08;
-export const lineRevealDuration = 1.5;
+export const lineRevealDuration = 1.1;
 export const lineRevealEase = "power3";
-export const lineRevealStagger = 0.1;
+export const lineRevealStagger = 0.075;
 export const titleLineRevealOffset = 150;
 export const titleLineRevealStagger = 0.1;
 export const revealMaskClip = "inset(0 -0.5em)";
 
 export interface WordRevealOptions {
-	duration?: number;
-	ease?: gsap.EaseString;
-	position?: gsap.Position;
-	stagger?: number;
+   duration?: number;
+   ease?: gsap.EaseString;
+   position?: gsap.Position;
+   stagger?: number;
 }
 
 export function addWordReveal(
-	timeline: gsap.core.Timeline,
-	elements: readonly Element[],
-	{
-		duration = wordRevealDuration,
-		ease = wordRevealEase,
-		position = 0,
-		stagger = wordRevealStagger,
-	}: WordRevealOptions = {},
+   timeline: gsap.core.Timeline,
+   elements: readonly Element[],
+   {
+      duration = wordRevealDuration,
+      ease = wordRevealEase,
+      position = 0,
+      stagger = wordRevealStagger,
+   }: WordRevealOptions = {},
 ) {
-	if (!elements.length) return timeline;
+   if (!elements.length) return timeline;
 
-	return timeline
-		.set(
-			elements,
-			{ visibility: "inherit", yPercent: wordRevealOffset },
-			position,
-		)
-		.to(
-			elements,
-			{
-				duration,
-				ease,
-				stagger,
-				yPercent: 0,
-			},
-			position,
-		);
+   return timeline
+      .set(
+         elements,
+         { visibility: "inherit", yPercent: wordRevealOffset },
+         position,
+      )
+      .to(
+         elements,
+         {
+            duration,
+            ease,
+            stagger,
+            yPercent: 0,
+         },
+         position,
+      );
 }

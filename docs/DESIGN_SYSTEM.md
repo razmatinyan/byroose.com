@@ -1968,9 +1968,9 @@ word space, so the heading still reads "AI Content Creation". Every title
 stays on one line with the frame open from `md` up, and phones keep the same
 two lines whether it is open or closed. The title still anchors the description reveal: when the title
 reaches 60 percent of the viewport, the description rises line by line from
-`SplitText` line masks with a `0.1s` stagger set through
+`SplitText` line masks with a `0.075s` stagger set through
 `lineRevealStagger` in `app/lib/word-reveal.ts`. Each description line takes
-`1.5s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
+`1.1s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
 through `lineRevealDuration` and `lineRevealEase`. The blog card titles share
 the same three values. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest.
@@ -2134,7 +2134,7 @@ When a row reaches 82 percent of the viewport, its title reveals character by
 character with the shared `addCharReveal` recipe at a `0.02s` stagger, each
 character mask padded `0.12em` so descenders are not clipped. The description
 lines rise `0.2s` later with the hero description's line reveal,
-`lineRevealDuration` on `lineRevealEase` with a `0.1s` stagger. The images do
+`lineRevealDuration` on `lineRevealEase` with a `0.075s` stagger. The images do
 not animate. Reduced motion shows everything at rest.
 
 ### Why Choose Us section
@@ -2216,8 +2216,8 @@ Each card reveals once when its wrapper's top reaches 82 percent of the
 viewport. The card rises `160px` to rest over `1.2s` on `power3.out`, without
 a fade or a clip, and its transform is cleared at the end. The wrapper is the
 trigger, so the card's own movement never shifts its start. `0.2s` into the
-rise, the text follows with the shared line reveal timing, `1.5s`, `power3`,
-and a `0.1s` stagger: the number rises as one line from its clipping
+rise, the text follows with the shared line reveal timing, `1.1s`, `power3`,
+and a `0.075s` stagger: the number rises as one line from its clipping
 paragraph, the title rises word by word from its `SplitText` word masks, and
 the description rises line by line from its line masks, starting one stagger
 step per title word later. The two notes rise line by line the same way from
@@ -2286,7 +2286,7 @@ so the focus ring and the rollover are never cut.
 The cards themselves do not animate, so the tinted surfaces and the images are
 always at rest. Only their text reveals, from each card's own trigger at the
 same 82 percent line. The title rises line by line from its `SplitText` line
-masks with the services description timing, `1.5s`, `power3`, and a `0.1s` stagger, and
+masks with the services description timing, `1.1s`, `power3`, and a `0.075s` stagger, and
 the meta row rises as one line from its clipping wrapper one stagger step after
 the last title line. Cards that share a layout row, measured by their
 `offsetTop` when they enter, start their text `0.15s` apart, so the desktop row
@@ -2367,7 +2367,7 @@ one grid cell, one of them rotated `90` degrees to form a plus. Opening an item
 turns that bar back to the left, so the plus becomes a minus.
 
 The title rises line by line from `SplitText` line masks with the services
-description timing, `1.5s`, `power3`, and a `0.1s` stagger, when it reaches 82
+description timing, `1.1s`, `power3`, and a `0.075s` stagger, when it reaches 82
 percent of the viewport. When the accordion reaches the same line, each item's
 question and icon rise together from their own masks, and its divider draws
 from the left, with items `0.08s` apart. The title uses `autoSplit`. A re-split
@@ -2563,7 +2563,7 @@ heading a statement takes the right two thirds of the row from `md`. The
 statements use `AboutStatement`, which owns that placement, semibold at `text-2xl`,
 `text-4xl` from `md`, and `text-5xl` from `2xl`, with `0.95` leading and
 `-0.04em` tracking, and they rise line by line with the services description
-timing, `1.5s`, `power3`, and a `0.1s` stagger.
+timing, `1.1s`, `power3`, and a `0.075s` stagger.
 
 Two lines draw themselves with the scroll on larger screens, as the home Studio
 ribbon and work line do. Both were drawn as two layers of one 1440 wide frame
@@ -2669,8 +2669,8 @@ does. Its statement spans the full content width, semibold at `text-3xl`,
 `text-5xl` from `md`, and `text-6xl` from `xl`, with `0.95` leading and
 `-0.04em` tracking, and its line masks carry `0.12em` above and `0.18em` below
 like `AboutStatement`. When the text reaches 82 percent of the viewport its
-lines rise once with the services description timing, `1.5s`, `power3`, and a
-`0.1s` stagger. Every word also starts at `0.2` opacity and is scrubbed to full
+lines rise once with the services description timing, `1.1s`, `power3`, and a
+`0.075s` stagger. Every word also starts at `0.2` opacity and is scrubbed to full
 opacity in reading order, from when the text top reaches 65 percent of the
 viewport until its bottom reaches the viewport middle, with about three words
 fading in at a time, so the read part of the statement stays dark while the
@@ -2690,7 +2690,7 @@ two thirds wide and aligned right from `md`. Under the description, `2.5rem`
 below and `3.5rem` from `md`, sits the shared `ArrowLink` to the service's own
 page, "See AI content creation services" or "See web development services",
 sized to its label. The title and description rise line by line with the
-services description timing, `1.5s`, `power3`, and a `0.1s` stagger, and the
+services description timing, `1.1s`, `power3`, and a `0.075s` stagger, and the
 link rises from its mask `0.3s` later with the word reveal timing. The light AI
 Content Creation section ends with twice `spacing-section` of bottom padding,
 so there is a large gap before the dark Website Development section. The dark
