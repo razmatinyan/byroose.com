@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ArrowLink from "@/components/shared/ArrowLink.vue";
 import MediaPlaceholder from "@/components/shared/MediaPlaceholder.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import {
@@ -9,12 +10,14 @@ import {
 } from "@/components/ui/dialog";
 import { appIcons } from "@/lib/icons";
 import type {
+   AboutMemberLink,
    AboutMemberPortrait,
    AboutMemberSocial,
 } from "./AboutTeamMember.vue";
 
-const { bio, name, portrait, role, socials } = defineProps<{
+const { bio, link, name, portrait, role, socials } = defineProps<{
    bio: readonly string[];
+   link?: AboutMemberLink;
    name: string;
    portrait?: AboutMemberPortrait;
    role: string;
@@ -110,6 +113,13 @@ function focusDialog(event: Event) {
             <div class="about-member-dialog-bio">
                <p v-for="paragraph in bio" :key="paragraph">{{ paragraph }}</p>
             </div>
+
+            <ArrowLink
+               v-if="link"
+               class="about-member-dialog-link"
+               :to="link.to"
+               :label="link.label"
+            />
          </div>
       </div>
    </DialogContent>
@@ -172,5 +182,13 @@ function focusDialog(event: Event) {
 
 .about-member-dialog-bio p {
    @apply m-0;
+}
+
+.about-member-dialog-link {
+   @apply mt-8 self-start md:mt-10;
+}
+
+.about-member-dialog-body .about-member-dialog-info :deep(.arrow-link[data-size]) {
+   @apply w-fit max-w-full gap-4 text-lg md:gap-6 md:text-2xl;
 }
 </style>

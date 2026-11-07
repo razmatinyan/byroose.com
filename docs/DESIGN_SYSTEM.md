@@ -54,7 +54,7 @@ visual and accessibility review.
 | `brand-subtle`                                                    | Dark neutral                                                    | Editorial body copy below primary emphasis                                                                                                      |
 | `ribbon`                                                          | Fresh green, `oklch(0.82 0.16 135)`                             | The decorative Studio ribbon stroke                                                                                                             |
 | `ribbon-shade`                                                    | Deeper green, `oklch(0.66 0.15 142)`                            | The ribbon's shading where it passes under itself                                                                                               |
-| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface, such as the About team card actions                                                                                  |
+| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface                                                                                                                        |
 | `destructive`                                                     | Alert red                                                       | Destructive and error actions only                                                                                                              |
 | `border`, `input`, and `ring`                                     | Semantic controls                                               | Boundaries, fields, and focus indicators                                                                                                        |
 
@@ -93,8 +93,7 @@ its foreground, card, popover, accent, and cream foreground tokens. Change
 `canvas-shade` is neutral rather than warm, so it reads as a grey version of
 the canvas instead of another cream. It pairs with the ink
 `canvas-shade-foreground`, and in the dark theme it sits one step above the dark
-canvas with the cream foreground. `ribbon` doubles as a surface on the round
-`ribbon` actions of the About team cards. Its `ribbon-foreground` is the ink in the light theme and the
+canvas with the cream foreground. Its `ribbon-foreground` is the ink in the light theme and the
 cream in the dark theme, where the ribbon itself turns a deeper green.
 
 ### Adding colors
@@ -2458,9 +2457,23 @@ scroll reveal can play.
 
 ### About page
 
-The About route stacks four sections: a centered hero, a grey team section, a
-trust section, and a brands section, followed by the site call to action and
-the site footer.
+The About route stacks five sections: a centered hero, a combined section, a
+grey team section, a trust section, and a brands section, followed by the site
+call to action and the site footer.
+
+`AboutCombinedSection` explains why forrrow joins AI content creation and web
+development. Its H2, "Why we combined AI content creation and web
+development", is centered at `clamp(2.25rem, 5.5vw, 5.5rem)`, smaller
+than the other About section titles, bold with `-0.05em` tracking and `0.88`
+leading, balanced and held to `14em`, so it breaks into two lines on desktop and
+three on phones. Its lines are a `SplitText` line split in masks with the
+section titles' `0.2em` padding and `-0.4em` bottom margin, and they rise with
+the same title reveal. Two `AboutStatement` paragraphs follow at `text-xl`,
+`text-2xl` from `md` and `text-3xl` from `xl`, held to `26em` and centered as
+a block under the title, with their lines aligned left. The first sits `3.5rem` below the title,
+`5rem` from `md` and `6rem` from `xl`, the second `1.5rem` below it, `2rem` from
+`md`, and each rises line by line like the trust and brands statements. It sits on the canvas between the
+hero and the team section, with `spacing-section` above and below.
 
 The hero fills the first screen below the header except for
 `--about-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded top of the team
@@ -2470,7 +2483,11 @@ from `lg` so the founding story stays on three balanced lines, with the
 forrrow logo in place of the second line's text. The logo is a `currentColor` span masked by `/logo.svg`,
 `0.74em` tall, the measured height of the bold lowercase "forrrow" it replaces,
 and sits on the text baseline, so it takes the title's color and blend. Screen
-readers still hear "Welcome to forrrow" from the heading label. The description sits `5rem` below the title and
+readers still hear "Welcome to forrrow" from the heading label. The team,
+trust, and brands section titles, "Who are the forrrow founders", "Why people
+trust forrrow", and "Why brands choose forrrow", render the brand name as the
+same logo at the same `0.74em`, next to their underlined word. Body copy keeps
+the name as text. The description sits `5rem` below the title and
 `7rem` from `md`, which keeps the descender of the y clear. The title and the call
 to action title use `AboutTitle` at its `display` size,
 `clamp(3.5rem, 11vw, 12rem)`. The section titles use its `section` size,
@@ -2527,15 +2544,16 @@ absent on touch devices and under reduced motion.
 
 The team section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
-"Who stands behind forrrow" sits on the left with a primary orange wave under
-"behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan,
-Co-Founder & Creative Director, on the right, and Razmik Matinyan, Co-Founder &
-Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width
-from `md`. The name and the role share the section's ink. Ruzan's portrait reuses
+"Who are the forrrow founders" sits on the left with a primary orange wave
+under "founders". Two 5:6 portraits with a name and a role follow: Ruzan
+Darbinyan, Co-Founder and Creative Director, on the right, and Razmik Matinyan,
+Co-Founder and Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width
+from `md`. From `md`, both cards also step in from the page edge by
+`clamp(2rem, 8vw, 9rem)`, Ruzan's from the right and Razmik's from the left. The name and the role share the section's ink. Ruzan's portrait reuses
 `public/images/founder.jpg`. A member without a `portrait` shows the striped
 `MediaPlaceholder` until a photo exists.
 
-A round `ribbon` `cta-icon` action with an arrow up right glyph sits to the
+A round `yellow` `cta-icon` action with an arrow up right glyph sits to the
 right of each name and role, centered on both, and rises with them. Hovering
 it runs the CTA rollover. Hovering anywhere on a card opens the text-only
 TrailingTooltip, "More Info" with an arrow up right glyph, set in title case at
@@ -2550,14 +2568,16 @@ the viewport height less `2rem`. The body scrolls inside the panel with
 `data-lenis-prevent` while the page's smooth scroll is locked. From `md` it is a
 `5fr 6fr` grid: the 5:6 portrait on the left, and on the right the name with one
 word per line, then a row with the role on the left and round `background`
-social links on the right, then the bio paragraphs. Below `md` everything
+social links on the right, then the bio paragraphs and an optional
+`ArrowLink` `2rem` below them, `2.5rem` from `md`, sized to its label at
+`text-lg`, `text-2xl` from `md`. Ruzan's links to "See AI content creation
+services" and Razmik's to "See web development services". Below `md` everything
 stacks. Each social link opens in a new tab and is named "{name} on {network}".
 The close action is a round `yellow` `cta-icon` in the top right corner whose
 close glyph scales in place on hover. Opening focuses the dialog itself rather
 than the close action, so a pointer open never shows the close action in its
 covered or focus state, and Tab reaches it first. Escape, the overlay, and the
-close action all close the dialog, and focus returns to the card action. The
-bios are working copy to be replaced.
+close action all close the dialog, and focus returns to the card action.
 
 The trust and brands sections share `AboutSectionHeading`: the title on the
 left and a 5:6 `ImageCycle` frame on the right, centered on the title from

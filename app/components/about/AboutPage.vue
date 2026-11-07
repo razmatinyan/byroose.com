@@ -3,6 +3,7 @@ import { useTemplateRef } from "vue";
 import DrawnLine from "@/components/shared/DrawnLine.vue";
 import { aboutStoryLine } from "@/lib/about-line-path";
 import AboutBrandsSection from "./AboutBrandsSection.vue";
+import AboutCombinedSection from "./AboutCombinedSection.vue";
 import AboutHero from "./AboutHero.vue";
 import AboutTeamSection from "./AboutTeamSection.vue";
 import AboutTrustSection from "./AboutTrustSection.vue";
@@ -14,6 +15,7 @@ useDrawnLineMotion(storyRoot, aboutStoryLine);
 <template>
    <div class="about-page">
       <AboutHero />
+      <AboutCombinedSection />
       <AboutTeamSection />
       <div ref="storyRoot" class="about-story">
          <DrawnLine class="about-story-line" />

@@ -12,7 +12,7 @@ const titleImages: readonly AboutTitleImage[] = [1, 2, 3, 4].map((index) => ({
 }));
 const titleLines: readonly AboutTitleLine[] = [
 	{ text: "Welcome to" },
-	{ images: titleImages, logo: true, text: "forrrow" },
+	{ images: titleImages, logo: "forrrow", text: "forrrow" },
 ];
 const description =
 	"We started forrrow because the handoff kept breaking. Great content was sending people to websites that lost them. Good websites sat waiting for traffic that never came. So a creative director and a software engineer decided to build both, together.";

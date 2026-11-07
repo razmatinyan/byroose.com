@@ -174,7 +174,8 @@ A landing section should not become a general component merely because it contai
 ### About components
 
 app/components/about contains the About route's sections. AboutPage composes
-AboutHero, AboutTeamSection, AboutTrustSection, and AboutBrandsSection, and
+AboutHero, AboutCombinedSection, AboutTeamSection, AboutTrustSection, and
+AboutBrandsSection, and
 app/pages/about.vue renders it with the route metadata. AboutPage wraps the
 trust and brands sections in an isolated `about-story` block that holds their
 shared DrawnLine and marks the brands root with `data-drawn-line-anchor`. AboutTeamSection holds its
@@ -183,9 +184,10 @@ AboutTitle renders a title from explicit lines, each in its own mask, with an
 optional underlined word that carries a WaveUnderline, every other text
 fragment in a `data-about-title-text` span that an owner can style, and an optional
 `images` list that opens a `data-about-title-inset` ImageCycle frame before the
-line's text. A line with `logo` set renders the site logo in place of its text,
-as a masked `data-about-title-text` span, while the line text still feeds the
-`sr-only` heading label. AboutMediaFrame wraps
+line's text. A line's optional `logo` names the word, such as "forrrow", that
+renders as the site logo in a masked `data-about-title-text` span, beside any
+underlined word, while the full line text still feeds the `sr-only` heading
+label. AboutMediaFrame wraps
 any image or placeholder in a frame and a parallax layer. AboutStatement is the
 large split statement, placed in the right two thirds of its section, shared by
 the trust and brands sections, and
@@ -195,8 +197,8 @@ action. It owns a Dialog whose open state both the action and a click anywhere
 on the card set, locks the smooth scroll while it is open, and emits `activate`
 and `deactivate` on pointer enter and leave. AboutMemberDialog renders the
 dialog content: the portrait, the name, the role, the social links, the bio,
-and the close action. AboutTeamSection owns the member data, including each
-bio and social link, and the shared TrailingTooltip the cards drive. The sections own their copy. They do not depend
+an optional service link, and the close action. AboutTeamSection owns the
+member data, including each bio, service link, and social link, and the shared TrailingTooltip the cards drive. The sections own their copy. They do not depend
 on landing sections.
 
 ### Services components
@@ -649,7 +651,10 @@ scope it reveals the `data-about-title` lines, clip reveals and parallaxes
 every `data-about-media` frame through its `data-about-media-layer`, rises the
 `data-about-rise` items of every `data-about-rise-group` from their
 `data-about-rise-mask`, and rises the lines of every `data-about-text` split,
-matched by order to the `textSplits` it receives. It returns `titleRevealed`,
+matched by order to the `textSplits` it receives. An optional `titleSplit`
+replaces the title's explicit `AboutTitle` lines with a `SplitText` line split,
+as AboutCombinedSection's wrapping title uses, and the reveal waits for it. It
+returns `titleRevealed`,
 which the section feeds to its title underline.
 
 useFooterMotion owns the site footer's scroll reveal. It receives the footer

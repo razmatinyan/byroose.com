@@ -11,9 +11,44 @@ export interface AboutTitleImage {
 
 export interface AboutTitleLine {
    images?: readonly AboutTitleImage[];
-   logo?: boolean;
+   logo?: string;
    text: string;
    underlined?: string;
+}
+
+type AboutTitleSegmentKind = "logo" | "text" | "underlined";
+
+interface AboutTitleSegment {
+   kind: AboutTitleSegmentKind;
+   text: string;
+}
+
+function segmentLine(
+   text: string,
+   marks: readonly AboutTitleSegment[],
+): AboutTitleSegment[] {
+   const found = marks
+      .map((mark) => ({ ...mark, start: mark.text ? text.indexOf(mark.text) : -1 }))
+      .filter((mark) => mark.start >= 0)
+      .sort((first, second) => first.start - second.start);
+
+   const segments: AboutTitleSegment[] = [];
+   let cursor = 0;
+
+   for (const mark of found) {
+      if (mark.start < cursor) continue;
+      if (mark.start > cursor) {
+         segments.push({ kind: "text", text: text.slice(cursor, mark.start) });
+      }
+      segments.push({ kind: mark.kind, text: mark.text });
+      cursor = mark.start + mark.text.length;
+   }
+
+   if (cursor < text.length) {
+      segments.push({ kind: "text", text: text.slice(cursor) });
+   }
+
+   return segments;
 }
 
 const {
@@ -32,24 +67,14 @@ const {
 
 const label = computed(() => lines.map((line) => line.text).join(" "));
 const segmentedLines = computed(() =>
-   lines.map(({ images, logo = false, text, underlined = "" }) => {
-      const start = underlined ? text.indexOf(underlined) : -1;
-      if (start < 0)
-         return { images, logo, segments: [{ text, underlined: false }], text };
-
-      const segments = [
-         { text: text.slice(0, start), underlined: false },
-         { text: underlined, underlined: true },
-         { text: text.slice(start + underlined.length), underlined: false },
-      ];
-
-      return {
-         images,
-         logo,
-         segments: segments.filter((segment) => segment.text),
-         text,
-      };
-   }),
+   lines.map(({ images, logo = "", text, underlined = "" }) => ({
+      images,
+      segments: segmentLine(text, [
+         { kind: "logo", text: logo },
+         { kind: "underlined", text: underlined },
+      ]),
+      text,
+   })),
 );
 </script>
 
@@ -80,17 +105,18 @@ const segmentedLines = computed(() =>
                      loading="eager"
                      sizes="sm:448px"
                /></span>
-               <span
-                  v-if="line.logo"
-                  class="about-title-text about-title-logo"
-                  data-about-title-text
-               />
                <template
                   v-for="segment in line.segments"
-                  v-else
-                  :key="segment.text"
+                  :key="`${segment.kind}-${segment.text}`"
                >
-                  <span v-if="segment.underlined" class="about-title-underlined"
+                  <span
+                     v-if="segment.kind === 'logo'"
+                     class="about-title-text about-title-logo"
+                     data-about-title-text
+                  />
+                  <span
+                     v-else-if="segment.kind === 'underlined'"
+                     class="about-title-underlined"
                      >{{ segment.text
                      }}<WaveUnderline
                         class="about-title-wave"
