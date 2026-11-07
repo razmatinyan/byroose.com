@@ -88,11 +88,11 @@ export function useSiteCtaMotion(
    watch(
       () => [toValue(titleSplits), toValue(descriptionSplit)] as const,
       ([splits, description]) => {
-         if (splits.includes(undefined) || !description) return;
+         if (splits.includes(undefined) || description === undefined) return;
 
          return initialize(
             splits.flatMap((parts) => parts?.words ?? []),
-            description.lines,
+            description?.lines ?? [],
          );
       },
       { flush: "post", immediate: true },

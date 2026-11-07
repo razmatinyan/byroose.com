@@ -1,5 +1,5 @@
 export interface SiteCtaCopy {
-   description: string;
+   description?: string;
    titleLines: readonly string[];
 }
 
@@ -14,6 +14,12 @@ const routeSiteCta: Readonly<Record<string, SiteCtaCopy>> = {
       description:
          "Tell us what you're building, and we'll recommend AI content, web development, or both.",
       titleLines: ["Not sure which marketing", "service you need?"],
+   },
+   "/services/ai-content-creation": {
+      titleLines: ["Get AI content that", "turns views into leads"],
+   },
+   "/services/web-development": {
+      titleLines: ["Get a website that turns", "your views into leads"],
    },
 };
 

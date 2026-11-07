@@ -66,6 +66,9 @@ app/
     usePageTransitionMotion.ts
     useProjectGallery.ts
     useServicesHeroMotion.ts
+    useServiceCardsMotion.ts
+    useServiceHeroMotion.ts
+    useServiceStoryMotion.ts
     useServicesMotion.ts
     useServicesRevealMotion.ts
     useServicesStatementMotion.ts
@@ -217,6 +220,18 @@ content scale, and open duration that the hero motion and the home service
 links share. The sections own their copy and do not depend on landing or
 About components.
 
+The service pages live in app/pages/services, with the hub at index.vue. A
+built service page composes ServiceHero, which takes a title and description
+and reveals through useServiceHeroMotion, and ServiceCardsSection, which takes
+a title and a list of cards, each with a title, description, and surface tone,
+and reveals its title, line, and cards through useServiceCardsMotion, and
+ServiceStorySection, which takes a list of story blocks, each with a title,
+description, optional link, and a `start` or `middle` offset, and reveals
+them through useServiceStoryMotion. The AI content creation and web
+development pages both follow them with the shared ProcessSection and a
+FaqSection with their own title and items.
+The page owns its copy and its metadata from `pageSeo`.
+
 ### Work components
 
 app/components/work contains the Work route's sections. WorkPage composes
@@ -333,7 +348,8 @@ SiteCtaSection is the dark call to action that closes every route. It reads
 its title lines and description for the current route from `siteCtaFor` in
 app/lib/site-cta.ts, which falls back to the default "Turn your social media
 views into leads?" copy, so a route such as `/services` can ask its own
-question. It fits its title to the content width with useFitText. The layout renders it inside the main landmark after
+question. The description is optional, and a route without one renders no
+description paragraph. It fits its title to the content width with useFitText. The layout renders it inside the main landmark after
 the page, so no page owns a copy. It owns its link to `/contact`
 and reveals through useSiteCtaMotion. Its `ctaCanvas` paints the smoke
 background that useSiteCtaBackground owns. Like the footer, it carries
@@ -359,7 +375,7 @@ app/components/cards contains reusable content presentation such as case studies
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work, Blog, and the Privacy policy. Its optional `titleSize`, `23.71cqi` by default as measured for "Our Work", sets the title's first-paint size, so a longer phrase passes its own measured size. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount through `queueMainThreadTask`, one split per browser task, and emits typed runtime parts for component-owned animation. With a `media` query that does not match at mount it keeps the server text unsplit and emits `null`, as the home hero does below `lg`, where its text has no intro to animate and a late split would repaint the page's largest text. With the default `aria` of `auto`, a heading keeps its text through GSAP's `aria-label`, because a heading may carry one. A paragraph, `div`, or `span` may not, so after every split SplitText hides the split pieces from assistive technology and prepends an `sr-only` copy of the text, which the next revert removes. Text that sits in a hidden rest state before its reveal therefore stays readable to screen readers. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. The home page renders it as `LazySharedFaqSection`, and BlogSection as `LazyLandingBlogSection`, both with `hydrate-on-visible` and a one-viewport `rootMargin`, so they hydrate just before they scroll into view instead of during startup. The schema still ships, because Schema.org renders only on the server in production. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work, Blog, and the Privacy policy. Its optional `titleSize`, `23.71cqi` by default as measured for "Our Work", sets the title's first-paint size, so a longer phrase passes its own measured size. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount through `queueMainThreadTask`, one split per browser task, and emits typed runtime parts for component-owned animation. With a `media` query that does not match at mount it keeps the server text unsplit and emits `null`, as the home hero does below `lg`, where its text has no intro to animate and a late split would repaint the page's largest text. With the default `aria` of `auto`, a heading keeps its text through GSAP's `aria-label`, because a heading may carry one. A paragraph, `div`, or `span` may not, so after every split SplitText hides the split pieces from assistive technology and prepends an `sr-only` copy of the text, which the next revert removes. Text that sits in a hidden rest state before its reveal therefore stays readable to screen readers. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the default FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. Its optional `title` and `items` props replace the default title and questions, so each service page renders its own FAQ and schema. An item's optional `link` renders an ArrowLink below its answer. The home page renders it as `LazySharedFaqSection`, and BlogSection as `LazyLandingBlogSection`, both with `hydrate-on-visible` and a one-viewport `rootMargin`, so they hydrate just before they scroll into view instead of during startup. The schema still ships, because Schema.org renders only on the server in production. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
@@ -481,8 +497,10 @@ reveal of the `data-journey-title` heading beneath the services section's
 exiting dark curve, and for each `data-journey-step` row the character reveal
 of its title and the line reveal of its description. It waits for the title
 split and every step's title and description splits, and shows everything at
-rest under reduced motion. JourneySection owns the step content and emits
-those splits. LandingPage renders JourneySection after the services section and
+rest under reduced motion. ProcessSection, in app/components/shared, takes the
+title and the steps as props and emits those splits. LandingPage passes the
+"Working process" steps and renders it after the services section, and the AI
+content creation page passes its own process. LandingPage
 currently keeps WhyChooseSection disabled.
 
 useWhyChooseMotion owns the Why Choose Us section's motion: the one-time
@@ -598,7 +616,9 @@ useSiteCtaMotion owns the site call to action's reveal. It waits for both
 title lines' word splits, then builds one timeline on the title's
 `data-site-cta-title` trigger that rises every word of both lines in reading
 order with the shared word reveal and a `0.12s` stagger, and rises the
-`data-site-cta-action` one stagger step after the last word. Reduced motion
+`data-site-cta-action` one stagger step after the last word. The owner passes
+`null` for the description split when the route has no description, and the
+action then follows the title words directly. Reduced motion
 shows the words and the action at rest.
 
 useSiteCtaBackground owns the site call to action's Three.js smoke background.
@@ -641,7 +661,7 @@ useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
 element, which the component's own font size must multiply. An optional
 `maxScale` caps the multiplier, so short text stops growing at the base size
-and only longer text shrinks to fit. JourneySection and WhyChooseSection use it for their titles,
+and only longer text shrinks to fit. ProcessSection and WhyChooseSection use it for their titles,
 WorkHero for its title, and ProjectHero for the project name with a
 `maxScale` of `1`.
 
@@ -1190,7 +1210,8 @@ internal links during development and builds.
   policy is indexable.
 - Schema.org identity is an `Organization` with the logo, email, and address.
   Every page gets `WebSite` and `WebPage` nodes. FaqSection turns the home page
-  into an `FAQPage` with one `Question` per visible FAQ item. ContactPage
+  into an `FAQPage` with one `Question` per visible FAQ item, and each
+  service page into one with its own questions. ContactPage
   marks the Contact page as a `ContactPage` and passes `structuredData` as
   `false` to its FaqSection, so the shared questions are marked up only once
   across the site. `ProjectPage`

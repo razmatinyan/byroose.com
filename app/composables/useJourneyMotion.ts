@@ -36,6 +36,7 @@ const selectors = {
 const refreshPriority = -2;
 const titleRevealStart = "top 85%";
 const stepCharStagger = 0.02;
+const titleWordStagger = 0.08;
 const stepBodyDelay = 0.2;
 
 export function useJourneyMotion(
@@ -47,7 +48,7 @@ export function useJourneyMotion(
    let disposed = false;
    let initialized = false;
 
-   function revealTitleChars(chars: HTMLElement[], trigger: HTMLElement) {
+   function revealTitle(title: SplitTextResult, trigger: HTMLElement) {
       const timeline = gsap.timeline({
          scrollTrigger: {
             once: true,
@@ -57,7 +58,14 @@ export function useJourneyMotion(
          },
       });
 
-      addCharReveal(timeline, chars);
+      if (!title) return;
+
+      if (title.chars.length) {
+         addCharReveal(timeline, title.chars);
+         return;
+      }
+
+      addWordReveal(timeline, title.words, { stagger: titleWordStagger });
    }
 
    function revealStep({ bodyLines, step, titleChars }: StepParts) {
@@ -84,7 +92,7 @@ export function useJourneyMotion(
    }
 
    async function initialize(
-      chars: HTMLElement[],
+      heading: SplitTextResult,
       titleParts: readonly SplitTextResult[],
       bodyParts: readonly SplitTextResult[],
    ) {
@@ -115,7 +123,8 @@ export function useJourneyMotion(
          (context) => {
             if (context.conditions?.reduceMotion) {
                showAll([
-                  ...chars,
+                  ...(heading?.chars ?? []),
+                  ...(heading?.words ?? []),
                   ...steps.flatMap(({ bodyLines, titleChars }) => [
                      ...titleChars,
                      ...bodyLines,
@@ -124,7 +133,7 @@ export function useJourneyMotion(
                return;
             }
 
-            if (chars.length) revealTitleChars(chars, title);
+            revealTitle(heading, title);
             steps.forEach(revealStep);
          },
          scope,
@@ -150,7 +159,7 @@ export function useJourneyMotion(
          }
 
          return initialize(
-            title?.chars ?? [],
+            title,
             stepTitles.filter((parts) => parts !== undefined),
             stepBodies.filter((parts) => parts !== undefined),
          );

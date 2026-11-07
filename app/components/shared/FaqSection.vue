@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef } from 'vue'
+import ArrowLink from '@/components/shared/ArrowLink.vue'
 import SplitText from '@/components/shared/SplitText.vue'
 import {
 	Accordion,
@@ -10,14 +11,31 @@ import {
 import { appIcons } from '@/lib/icons'
 import type { SplitTextResult } from '@/lib/split-text'
 
-const { revealReady = true, structuredData = true } = defineProps<{
+export interface FaqLink {
+	label: string
+	to: string
+}
+
+export interface FaqItem {
+	id: string
+	question: string
+	answer: string
+	link?: FaqLink
+}
+
+const {
+	title = 'Frequently Asked Questions',
+	items,
+	revealReady = true,
+	structuredData = true,
+} = defineProps<{
+	title?: string
+	items?: readonly FaqItem[]
 	revealReady?: boolean
 	structuredData?: boolean
 }>()
 
-const faqTitle = 'Frequently Asked Questions'
-
-const faqs = [
+const defaultFaqs: readonly FaqItem[] = [
 	{
 		id: 'ai-agency',
 		question: 'What does an AI content agency do?',
@@ -68,14 +86,16 @@ const faqs = [
 	},
 ]
 
+const faqs = computed(() => items ?? defaultFaqs)
+
 const faqRoot = useTemplateRef<HTMLElement>('faqRoot')
 const openItem = shallowRef<string>()
 const titleSplit = shallowRef<SplitTextResult>()
 const answerSplits = shallowRef<(SplitTextResult | undefined)[]>(
-	faqs.map(() => undefined),
+	faqs.value.map(() => undefined),
 )
 const openIndex = computed(() =>
-	faqs.findIndex(faq => faq.id === openItem.value),
+	faqs.value.findIndex(faq => faq.id === openItem.value),
 )
 
 useFaqMotion(faqRoot, {
@@ -88,7 +108,7 @@ useFaqMotion(faqRoot, {
 if (structuredData) {
 	useSchemaOrg([
 		defineWebPage({ '@type': 'FAQPage' }),
-		...faqs.map(faq =>
+		...faqs.value.map(faq =>
 			defineQuestion({ name: faq.question, acceptedAnswer: faq.answer }),
 		),
 	])
@@ -110,7 +130,7 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 			as="h2"
 			auto-split
 			mask="lines"
-			:text="faqTitle"
+			:text="title"
 			type="lines,words"
 			data-faq-title
 			@split="setTitleSplit"
@@ -157,6 +177,12 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 						:text="faq.answer"
 						type="lines,words"
 						@split="setAnswerSplit(index, $event)"
+					/>
+					<ArrowLink
+						v-if="faq.link"
+						class="faq-answer-link"
+						:to="faq.link.to"
+						:label="faq.link.label"
 					/>
 				</AccordionContent>
 				<span class="faq-divider" data-faq-divider aria-hidden="true" />
@@ -259,6 +285,10 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 
 .faq-answer {
 	@apply m-0 max-w-[44ch] text-lg leading-[1.2] font-medium tracking-[-0.02em] text-pretty text-muted-foreground md:text-xl xl:text-2xl;
+}
+
+.faq-answer-link {
+	@apply mt-6 md:mt-8;
 }
 
 .faq-divider {

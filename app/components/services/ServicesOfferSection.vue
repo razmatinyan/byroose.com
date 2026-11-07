@@ -85,6 +85,10 @@ function setTextSplit(index: number, parts: SplitTextResult) {
    @apply pb-section text-foreground;
 }
 
+.services-offer[data-surface="light"] {
+   padding-bottom: calc(var(--spacing-section) * 2);
+}
+
 .services-offer[data-surface="dark"] {
    @apply relative text-background;
 }

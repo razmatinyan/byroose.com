@@ -395,7 +395,12 @@ bold lines, "Turn your social media" and "views into leads?", at
 That is smaller than `text-display`, because the lines are longer than the old
 title's, and the floor keeps "Turn your social media" on one line down to 320
 wide. The Services route asks "Not sure which marketing service you need?"
-with its own description. The title is `w-max` and `useFitText` scales it down,
+with its own description. The AI content creation route says "Get AI content
+that turns views into leads" on the lines "Get AI content that" and "turns
+views into leads" with no description, so the action follows the title
+directly. The web development route says "Get a website that turns your views
+into leads" on the lines "Get a website that turns" and "your views into
+leads", also with no description. The title is `w-max` and `useFitText` scales it down,
 never up, when its longest line is wider than the content, so a longer route
 title still holds two lines at every width. Below it sits a description in `font-medium`
 `background/70` at `text-xl`, `text-2xl` from `md`, and `text-3xl` from `xl`,
@@ -2082,15 +2087,22 @@ panel keeps a flat backdrop without the lead.
 
 ### Journey section
 
-The journey section follows the services section under a full-width
-"WORKING PROCESS" title, set in uppercase. It opens with two and a half times `spacing-section`
-of top padding, about 360px at 1440 wide, so the title stands well clear of
-the services panel's dark curve. The title is bold, `0.86` leading, and
-`-0.05em` tracking through `split-title`, sized at `11.2cqi` of its container
-and fitted to one line through `useFitText`. It reveals once, character by
-character, as it reaches 85 percent of the viewport, with the shared
-`addCharReveal` recipe that the "Case studies" title uses. Each character mask
-carries `0.25em` of block padding, so descenders are not
+The journey section is the shared `ProcessSection`, which takes its title and
+steps as props. The home page uses it for "Working Process", and the AI content
+creation page repeats it after its story blocks for "AI Content Creation
+Process", with the same layout and motion. The `uppercase` prop sets the title
+in capitals and defaults to `true`; both pages currently set it to `false`. The
+`titleReveal` prop chooses a `chars` or `words` title reveal and defaults to
+`chars`; the AI content page uses `words`. On the home page it follows the
+services section under a full-width title. It opens with two and a half times
+`spacing-section` of top padding, about 360px at 1440 wide, so the title stands
+well clear of the services panel's dark curve. The title is bold, `0.86`
+leading, and `-0.05em` tracking, sized at `11.2cqi` of its container and fitted
+to one line through `useFitText`. It reveals once as it reaches 85 percent of
+the viewport, either character by character with the shared `addCharReveal`
+recipe that the "Case studies" title uses, or word by word with the shared
+word reveal and a `0.08s` stagger. Each character or word mask carries `0.25em`
+of block padding, so descenders are not
 clipped at the tight leading. Reduced motion shows the title at rest.
 
 The steps sit `4rem` below the title, `6rem` from `md` and `8rem` from `xl`, in one continuous full-bleed `canvas-shade` panel, the grey of
@@ -2129,7 +2141,7 @@ not animate. Reduced motion shows everything at rest.
 
 The home page does not currently render the Why Choose Us section. LandingPage
 keeps it disabled and shows the Journey section in its place, under the
-"WORKING PROCESS" title. The section stays documented for when it returns.
+"Working Process" title. The section stays documented for when it returns.
 
 The Why Choose Us section opens with its title, "Why Choose Us", written in
 title case at the user's request, without uppercase, on one line that always
@@ -2373,7 +2385,11 @@ reveal at rest and switches items instantly.
 
 The questions and answers are placeholder copy until the real policies are
 confirmed. FaqSection is a shared component, and the Contact route renders the
-same section below its hero.
+same section below its hero. A route can pass its own `title` and `items`, as
+the AI content creation page does with "AI content creation questions" after its
+process section and the web development page with "Web development FAQ". An
+item may carry an optional `link`, which renders as an `ArrowLink` `1.5rem`
+below the answer, `2rem` from `md`, and opens and closes with it.
 
 ### Contact page
 
@@ -2602,9 +2618,9 @@ It has no description. The title sets "We create", "AI Content and", and
 "Websites" on three centered lines, with a link frame after "We" and an image
 frame before "Websites". It is bold with `-0.05em` tracking and `0.88` leading,
 in the same padded line masks as `AboutTitle`. The hero is an inline-size
-container, and the title sets `min(15.5cqi, 26svh)`. The longest line, "AI
-Content and", measures about `6.2em` with its frames open, so `15.5cqi` sets it
-across about 96 percent of the content width at every width, and the `26svh`
+container, and the title sets `min(12.5cqi, 21svh)`. The longest line, "AI
+Content and", measures about `6.2em` with its frames open, so `12.5cqi` sets it
+across about 78 percent of the content width at every width, and the `21svh`
 cap keeps the three lines inside the first screen on short, wide viewports.
 Every line stays on one line. If the phrase changes, measure its longest line
 again and update the size. The `h1` is an `sr-only`
@@ -2675,8 +2691,10 @@ below and `3.5rem` from `md`, sits the shared `ArrowLink` to the service's own
 page, "See AI content creation services" or "See web development services",
 sized to its label. The title and description rise line by line with the
 services description timing, `1.5s`, `power3`, and a `0.1s` stagger, and the
-link rises from its mask `0.3s` later with the word reveal timing. The section
-ends with `spacing-section` of bottom padding.
+link rises from its mask `0.3s` later with the word reveal timing. The light AI
+Content Creation section ends with twice `spacing-section` of bottom padding,
+so there is a large gap before the dark Website Development section. The dark
+section ends with `spacing-section`.
 
 The Website Development section repeats the layout on a dark `foreground`
 surface with `background` ink. Its description names the range of work, from
@@ -2693,6 +2711,83 @@ The site call to action follows on the same dark surface, so the two read as
 one dark block that ends in a straight edge above the footer. The dark surface
 extends one pixel below the section, under the call to action, so the
 fractional smooth scroll offset never opens a light hairline at the seam.
+
+### Service pages
+
+Each service has its own route under `/services`, so it can rank on its own.
+`/services/ai-content-creation` is built; `/services/web-development` is still
+a placeholder heading. Both stay out of search through `unlistedRoute` until
+their content ships.
+
+A service page opens with `ServiceHero`, which repeats the home hero layout.
+From `lg` it is a two-column grid with a `3rem` column gap: the description and
+the dark `cta-lg` Start a project action sit in the flexible left column, and
+the H1 sits in an auto-width right column. Below `lg` the title stacks above
+the copy, which is capped at `max-w-md`. The H1 is bold with `-0.05em` tracking
+and `0.88` leading at `clamp(2.5rem, 7.4vw, 8rem)`, capped at `9.2em`. The
+description is semibold `foreground` with `-0.04em` tracking, at `text-xl`
+below `lg` and `clamp(1.0625rem, 1.5vw, 1.5rem)` from `lg`, held to `17em`. At
+the page transition's reveal point, or after the fonts load on a direct
+request, the title lines rise from their masks with the line reveal timing and
+the About title's `0.1s` stagger, the description lines follow `0.3s` later,
+and the action rises after the last line. The title, description, and action
+stay hidden until the reveal starts, and the motion places every line at its
+start offset before showing them, so the text never flashes in its final place
+first. The title line masks carry `0.12em` above and `0.18em` below, and
+`0.12em` on each side cancelled by a matching negative margin, so letters that
+overhang their box, such as the tail of a "j", are not clipped. The
+description masks `0.1em` and `0.2em`, cancelled by a negative bottom margin
+only, because negative top and bottom margins of adjacent masks would collapse
+and grow the hero when the text splits. The title shifts up `0.24em` to match.
+Reduced motion shows the hero at rest. The hero has no parallax.
+
+`ServiceCardsSection` follows on a dark `foreground` surface with
+`clamp(1.5rem, 3vw, 3rem)` corners on all four sides at `z-10`, set `3rem`
+below the hero, `5rem` from `md` and `6rem` from `xl`, so the light
+canvas shows around it before the next section, and marks the header as dark.
+Its centered H2 keeps `section-title` and reveals word by word with the shared
+word reveal and a `0.08s` stagger when it reaches 82 percent of the viewport.
+Below it the cards sit in a row of four from `lg`, two from `md`, and a stack
+below `md`. Each card is a `rounded-2xl` `surface-*` tone with `p-6`, `p-8`
+from `xl`, a `4:5` ratio from `md`, and a minimum height of `18rem` on phones.
+It carries a two-digit number at the top in bold `text-6xl`, `text-7xl` from
+`xl`, with `-0.05em` tracking, and its H3 title and description
+at the bottom. The cards tilt by `-3deg`, `2.5deg`, `-2deg`, and `3deg` in
+turn, at 40 percent of that on phones so they stay inside the gutter, and from
+`lg` every second card sits `4rem` lower. A decorative white `6px` line in an
+SVG hidden from assistive technology curves behind the row from `lg`.
+Each list item holds an inner surface that carries the tone and the tilt, so
+the pop-in scale on the item never fights the hover. With hover and a fine
+pointer, the hovered card straightens to `0deg`, scales to `1.05`, and rises
+above its neighbors, over `0.5s` on the `cubic-bezier(0.19, 1, 0.22, 1)` ease
+the blog cards use. Reduced motion switches the hover without a transition. Do not
+give the path `vector-effect: non-scaling-stroke`, because DrawSVG then
+measures the dash in the wrong units and the line draws with gaps.
+
+When the row reaches 75 percent of the viewport, the line draws from left to
+right over `1s` at a constant speed, and each card pops in from `0` scale
+`0.1s` before the line reaches its center, on `elastic.out(1, 0.6)` over
+`1.1s`, so it overshoots past full size and settles back. The cards are hidden
+until their pop starts. Reduced motion shows the title, the line, and the cards
+at rest. The AI content cards use green, pink, blue, and the brand orange.
+
+`ServiceStorySection` follows on the light canvas after twice
+`spacing-section` of space. It stacks story blocks inside the page gutter,
+`7rem` apart, `10rem` from `md` and `12rem` from `xl`. Each block holds a
+`text-section` H2 at `0.95` leading with balanced wrapping, a `font-medium`
+`foreground` description in the same ink as the title, at `text-xl`,
+`text-2xl` from `md`, held to `40ch`,
+and an optional `ArrowLink`. Every block is start-aligned. From `lg` a block
+with the `start` offset begins 12 percent from the left edge, and a `middle`
+block begins 55 percent from the left edge and is held to 40 percent of the
+width. Below `lg` both sit at the left edge. When a block reaches 82 percent of
+the viewport, its title lines rise from their masks with the line reveal timing
+and a `0.1s` stagger,
+its description lines rise `0.3s` later with the line reveal timing, and the
+link rises after the last line. Reduced motion shows the blocks at rest.
+
+The AI content creation page closes with the shared `ProcessSection` for its
+four step process, described under Journey section.
 
 ### Work page
 

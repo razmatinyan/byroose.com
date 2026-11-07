@@ -20,7 +20,9 @@ const titleSplits = shallowRef<(SplitTextResult | undefined)[]>(
 );
 const descriptionSplit = shallowRef<SplitTextResult>();
 
-useSiteCtaMotion(ctaRoot, titleSplits, descriptionSplit);
+useSiteCtaMotion(ctaRoot, titleSplits, () =>
+   description ? descriptionSplit.value : null,
+);
 useFitText(
    () => ctaRoot.value?.querySelector<HTMLElement>("[data-site-cta-title]"),
    { maxScale: 1 },
@@ -66,6 +68,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
          </span>
       </h2>
       <SplitText
+         v-if="description"
          class="site-cta-description"
          as="p"
          mask="lines"
