@@ -730,9 +730,9 @@ return on hover and visible keyboard focus. Both composables scope their GSAP wo
 to their consuming layout components.
 
 useNavLinkMotion owns the primary navigation link hover: the resting label
-scales away to its top center, its copy scales up from its bottom center, and an
-underline draws outward from its center, all on the More works action's
-`power4.inOut` timing. It tracks pointer and visible keyboard focus together and
+slides up out of its mask while its copy slides up from below, and an
+underline draws outward from its center, all on a `nav-link-slide` CustomEase
+of `cubic-bezier(0.16, 1, 0.35, 1)` over `0.65s`. It tracks pointer and visible keyboard focus together and
 resolves instantly under reduced motion. SiteNavLink owns the markup.
 
 useHoverBounce owns the hover and press scale states of action surfaces. It

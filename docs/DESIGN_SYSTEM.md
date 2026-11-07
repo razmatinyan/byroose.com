@@ -2988,11 +2988,15 @@ size and weight so the link takes them from its surrounding text, as the
 footer credit does. The copy and the underline are brand orange, `primary`, so hovering
 swaps the ink label for an orange one. The header's Start a project action
 and the menu control drop uppercase too. On hover or visible keyboard focus,
-`useNavLinkMotion` scales the label to zero toward its top center while the copy scales up from zero at its
-bottom center, and a one-pixel underline below the label draws outward from its
-center. All three share the More works action's `0.7s` `power4.inOut` timing,
-and leaving reverses them. The copy and the underline rest at zero scale in CSS
-so they never flash before hydration. Reduced motion switches states instantly.
+`useNavLinkMotion` slides the label up out of a clipping mask while the copy
+slides up from just below it, with no scaling, and a one-pixel underline below
+the label draws outward from its center. All three run over `0.65s` on
+`cubic-bezier(0.16, 1, 0.35, 1)`, so the motion starts at once, and leaving
+reverses them. The mask sets the labels at `1.25` leading so the two words pass
+close together while descenders still clear it, and the link adds `0.15em` of
+vertical padding so its height and the underline position stay the same. The copy
+rests one line below in CSS and the underline at zero scale, so neither flashes
+before hydration. Reduced motion switches states instantly.
 
 The header rises into place piece by piece when a page loads, with no opacity
 change. The logo, every navigation link, the Start a project action, and the
