@@ -135,7 +135,7 @@ function activateTooltip(label: string) {
                v-for="item in caseStudies"
                :key="item.client"
                v-bind="item"
-               @activate="activateTooltip('View Project')"
+               @activate="activateTooltip(`View ${item.client} Case`)"
                @deactivate="deactivateTooltip"
             />
          </div>

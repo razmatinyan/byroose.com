@@ -11,6 +11,7 @@ import SplitText from "@/components/shared/SplitText.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { projects } from "@/data/projects";
 import { appIcons } from "@/lib/icons";
+import type { Project } from "@/lib/projects";
 import { siteCtaFor } from "@/lib/site-cta";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -26,7 +27,6 @@ const { description, titleLines, titleScale = 1 } = siteCtaFor(route.path);
 const title = titleLines.join(" ");
 const contactRoute = "/contact";
 const actionLabel = "Start a project";
-const tooltipLabel = "View Project";
 
 const ctaRoot = useTemplateRef<HTMLElement>("ctaRoot");
 const marquee = useTemplateRef<HTMLElement>("marquee");
@@ -55,6 +55,7 @@ const marqueeProjects = computed(() => {
 const {
    active: tooltipActive,
    hide: hideTooltip,
+   label: tooltipLabel,
    shouldLoad: shouldLoadTooltip,
    show: showTooltip,
    size: tooltipSize,
@@ -79,8 +80,8 @@ function setTitleSplit(index: number, parts: SplitTextResult) {
    );
 }
 
-function showCardTooltip() {
-   showTooltip("", tooltipLabel, "compact");
+function showCardTooltip({ name }: Project) {
+   showTooltip("", `View ${name} Case`, "compact");
 }
 
 function setDescriptionSplit(parts: SplitTextResult) {
@@ -155,7 +156,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
                   class="site-cta-marquee-card"
                   :project="item.project"
                   :duplicate="copy === 'duplicate' || item.repeated"
-                  @pointerenter="showCardTooltip"
+                  @pointerenter="showCardTooltip(item.project)"
                   @pointerleave="hideTooltip"
                />
             </div>

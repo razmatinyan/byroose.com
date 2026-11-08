@@ -434,7 +434,8 @@ edge, and the row scrolls left. Either way the loop crosses one card about
 every `5s`, eases to a stop under the pointer or keyboard focus, and pauses
 off screen. A card's cover does not scale on hover. Instead, on fine-pointer
 devices, the shared `TrailingTooltip` follows the pointer over a card in its
-compact size with an arrow right glyph and "View Project". Covers load
+compact size with an arrow right glyph and "View" followed by the project
+name and "Case", such as "View Cartoon Case". Covers load
 lazily, and a video cover plays muted and looped only while its card is near
 the screen, fading in over its poster once it plays. Reduced motion stops the
 loop and the videos, keeps the posters, and lets the mobile row scroll by
@@ -1698,6 +1699,18 @@ was already open before the image changed. Opening from a closed state, and
 reduced motion, both replace the thumbnail in one step instead, so a stale
 project image never shows while the panel is wiping open.
 
+Every case card names its project in the tooltip, "View" followed by the
+project's short name and "Case", such as "View Sygen Case", on the home case
+studies, the Work route grid, and the call to action marquee. When the label
+changes while the tooltip stays open, it swaps like a header navigation link:
+the outgoing label slides up out of a clipping mask while the incoming one
+slides up from just below it, over `0.65s` on the shared `nav-link-slide`
+curve, and the label's width eases to the new text over the same time. The
+outgoing label leaves the layout during the swap, so the tooltip never holds
+the width of both. The mask adds `0.15em` of block padding so descenders clear
+it. Opening from a closed state, and reduced motion, set the new label in one
+step.
+
 A new layer never shows before its image has loaded. It stays invisible while
 it loads, and only then reveals over the previous layer or, when opening from a
 closed state, replaces it, so the thumbnail frame never shows an empty box
@@ -1910,7 +1923,9 @@ the type. Its corners are `7.5%` of its size and its glyph sits inside
 `17.5%` of padding, the hero frame's proportions. Its top is level with the
 description's first line. Below `md` it is hidden, so phones show the title
 and the description without it. Hovering it opens the services section's TrailingTooltip in its
-text-only form, "More Details" with an arrow up right glyph and no thumbnail.
+text-only form, "More about" followed by the service name and "service", such
+as "More about Website Development service", with an arrow up right glyph and
+no thumbnail.
 
 The link keeps its full size from the start, so the layout never moves. Its
 grey `service-link-surface` is clipped from the right by
@@ -2006,7 +2021,8 @@ origin exit, so the transform origins never fight.
 Each image is a `NuxtLink` to its service's own page,
 `/services/ai-content-creation` or `/services/web-development`, named for
 its service through `aria-label`. Hovering it opens the services section's TrailingTooltip
-at its `compact` size in its text-only form with the label "More Details". The images are decorative
+at its `compact` size in its text-only form with the label "More about"
+followed by the service name and "service". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
 media.
 
@@ -2960,7 +2976,8 @@ the hover image scale on keyboard focus.
 
 Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
 the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
-TrailingTooltip in its text-only form, "View Project" with an arrow up right
+TrailingTooltip in its text-only form, "View" followed by the project name
+and "Case", such as "View UGC Creator Case", with an arrow up right
 glyph. The scale applies only to `(hover: hover)` pointers and switches without
 the transition under reduced motion. A card with a `video` keeps its image at
 rest and stacks the shared `HoverVideo` over it, a muted, looping,

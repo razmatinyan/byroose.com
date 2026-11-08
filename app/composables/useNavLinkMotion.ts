@@ -1,13 +1,11 @@
 import { onMounted, onScopeDispose } from 'vue'
 import { unrefElement } from '@vueuse/core'
 import type { MaybeComputedElementRef } from '@vueuse/core'
+import { registerSlideEase, slideDuration } from '@/lib/slide-ease'
 
 const labelSelector = '[data-nav-label]'
 const labelCopySelector = '[data-nav-label-copy]'
 const lineSelector = '[data-nav-line]'
-const slideDuration = 0.65
-const slideEaseName = 'nav-link-slide'
-const slideEaseData = 'M0,0 C0.16,1 0.35,1 1,1'
 
 export function useNavLinkMotion(target: MaybeComputedElementRef) {
 	const { createMatchMedia, gsap, loadPlugin } = useGsap()
@@ -21,8 +19,7 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 		const CustomEase = await loadPlugin('CustomEase')
 		if (!CustomEase || !active) return
 
-		const slideEase = CustomEase.get(slideEaseName)
-			?? CustomEase.create(slideEaseName, slideEaseData)
+		const slideEase = registerSlideEase(CustomEase)
 
 		createMatchMedia(
 			{

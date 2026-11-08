@@ -71,8 +71,6 @@ const projects: readonly Project[] = [
 	},
 ];
 
-const tooltipLabel = "View Project";
-
 const sectionRoot = useTemplateRef<HTMLElement>("sectionRoot");
 const selectedFilter = shallowRef<WorkFilter>("all");
 const shownFilter = shallowRef<WorkFilter>("all");
@@ -80,6 +78,7 @@ const { swapProjects } = useWorkProjectsMotion(sectionRoot);
 const {
 	active: tooltipActive,
 	hide: hideTooltip,
+	label: tooltipLabel,
 	shouldLoad: shouldLoadTooltip,
 	show: showTooltip,
 	size: tooltipSize,
@@ -111,8 +110,8 @@ async function selectFilter(filter: WorkFilter) {
 	});
 }
 
-function activateTooltip() {
-	showTooltip("", tooltipLabel, "compact");
+function activateTooltip({ name }: Project) {
+	showTooltip("", `View ${name} Case`, "compact");
 }
 </script>
 
@@ -135,7 +134,7 @@ function activateTooltip() {
 			>
 				<ProjectCard
 					v-bind="project"
-					@activate="activateTooltip"
+					@activate="activateTooltip(project)"
 					@deactivate="hideTooltip"
 				/>
 			</li>

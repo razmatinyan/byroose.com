@@ -31,7 +31,6 @@ interface Service {
 
 const introLines = ["AI Content and", "Website Services"];
 const introTitle = introLines.join(" ");
-const tooltipText = "More Details";
 
 const servicesData: Service[] = [
 	{
@@ -68,6 +67,10 @@ const tooltipPreload = servicesData.map((service) => service.image);
 
 function serviceTitle({ titleLead, titleTrail }: Service) {
 	return `${titleLead}${titleTrail}`;
+}
+
+function showServiceTooltip(service: Service) {
+	showTooltip("", `More about ${serviceTitle(service)} service`, "compact");
 }
 
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
@@ -183,7 +186,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 					:to="service.path"
 					:aria-label="service.linkLabel"
 					@click="hideTooltip"
-					@pointerenter="showTooltip('', tooltipText, 'compact')"
+					@pointerenter="showServiceTooltip(service)"
 					@pointerleave="hideTooltip"
 				>
 					<span class="service-link-surface inset-arrow-surface">
@@ -214,7 +217,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 							data-service-media
 							:to="service.path"
 							:aria-label="`More details about ${serviceTitle(service)}`"
-							@pointerenter="showTooltip('', tooltipText, 'compact')"
+							@pointerenter="showServiceTooltip(service)"
 							@pointerleave="hideTooltip"
 						>
 							<NuxtImg
