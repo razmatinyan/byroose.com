@@ -1520,7 +1520,7 @@ description is `font-medium` `brand-subtle` copy at `text-xl`, `text-2xl` from
 `md`, with `leading-tight`, `-0.03em` tracking, and a `36ch` measure.
 
 The optional `serviceLink` takes a label and an internal path, such as the
-matching section of the Services page, and renders the shared `ArrowLink` in
+matching service page, and renders the shared `ArrowLink` in
 the same slot and layer as the live link. Inside the card both links size to
 their label, capped at the column width, instead of the link's default `20rem`
 cap, so a longer label is never clipped.
@@ -1897,8 +1897,8 @@ image spans the full content width at the source's natural `1456 / 816`
 ratio, so it is never cropped to fit the viewport.
 
 The left third holds a square service link, the Services hero's link frame
-repeated at a larger scale. It is a `NuxtLink` to the service's section on the
-`/services` route, named "See AI content creation services" or "See web
+repeated at a larger scale. It is a `NuxtLink` to the service's own page,
+`/services/ai-content-creation` or `/services/web-development`, named "See AI content creation services" or "See web
 development services" through `aria-label`, and it shares the hero link's
 `inset-arrow-link` focus ring, `inset-arrow-surface` grey, and
 `inset-arrow-icon` glyph. From `md` it is exactly as tall as the description:
@@ -2003,8 +2003,8 @@ The image never reaches its full layout size. Entry and exit live on two nested
 elements, the link for the bottom origin entry and its wrapper for the top
 origin exit, so the transform origins never fight.
 
-Each image is a `NuxtLink` to its service's section on the `/services` route,
-`/services#ai-content-creation` or `/services#website-development`, named for
+Each image is a `NuxtLink` to its service's own page,
+`/services/ai-content-creation` or `/services/web-development`, named for
 its service through `aria-label`. Hovering it opens the services section's TrailingTooltip
 at its `compact` size in its text-only form with the label "More Details". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
@@ -2741,7 +2741,7 @@ without the rise, the drift, or the scrub.
 
 The AI Content Creation section sits on the white `background` canvas, like
 the hero. It carries the `ai-content-creation` id and the Website Development
-section the `website-development` id, so the home service links can open them.
+section the `website-development` id, so a link can open either section.
 Each section is a summary, not a list of offers. Its intro repeats the home
 services panel: the title in bold `text-service` with `-0.045em` tracking on
 the left, and the description below it in the home service description style,

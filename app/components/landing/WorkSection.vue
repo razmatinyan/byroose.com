@@ -8,7 +8,7 @@ import type { ProjectCategory } from "@/lib/projects";
 import MoreWorksPanel from "./MoreWorksPanel.vue";
 import WorkLine from "./WorkLine.vue";
 import { appIcons } from "@/lib/icons";
-import { servicesAnchors, servicesSectionPath } from "@/lib/services-anchors";
+import { servicePagePaths } from "@/lib/services-anchors";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 import type { SurfaceTone } from "@/lib/surfaces";
@@ -51,7 +51,7 @@ const caseStudies: CaseStudy[] = [
       revealTones: ["yellow", "primary"],
       serviceLink: {
          label: "Explore AI content creation",
-         to: servicesSectionPath(servicesAnchors.aiContent),
+         to: servicePagePaths.aiContent,
       },
       title: "AI UGC creator: a virtual spokesperson for brand videos",
       tone: "primary",

@@ -527,7 +527,7 @@ hero inset's content scale. The slowed travel moves the `data-service-title`
 through `top` and the other content children through a transform, so the
 title's blended text fragments stay unisolated. ServicesSection owns the copy, the
 service links, the image links, and the tooltip handlers. Both links route to
-the service's section through `servicesSectionPath`. The composable waits until the intro
+the service's own page from `servicePagePaths`. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
@@ -840,8 +840,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   queries the DOM or creates its own timeline.
 - icons.ts is the canonical map for shared icon names: Phosphor bold icons and the Lucide spinner.
 - services-anchors.ts owns the Services route's section ids, `servicesAnchors`,
-  and `servicesSectionPath`, which builds the `/services#id` path that the home
-  services section links to.
+  and `servicePagePaths`, the two service page routes that the home services
+  section and the home UGC creator case study link to.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images

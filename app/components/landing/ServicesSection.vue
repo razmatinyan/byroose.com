@@ -8,8 +8,8 @@ import {
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import { appIcons } from "@/lib/icons";
-import { servicesAnchors, servicesSectionPath } from "@/lib/services-anchors";
-import type { ServicesAnchor } from "@/lib/services-anchors";
+import { servicePagePaths } from "@/lib/services-anchors";
+import type { ServicePagePath } from "@/lib/services-anchors";
 import { servicesHeroImages } from "@/lib/services-hero";
 import type { ServicesImage } from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
@@ -19,7 +19,7 @@ const TrailingTooltip = defineAsyncComponent(
 );
 
 interface Service {
-	anchor: ServicesAnchor;
+	path: ServicePagePath;
 	description: string;
 	image: string;
 	linkLabel: string;
@@ -35,7 +35,7 @@ const tooltipText = "More Details";
 
 const servicesData: Service[] = [
 	{
-		anchor: servicesAnchors.aiContent,
+		path: servicePagePaths.aiContent,
 		description:
 			"Content people stop for. AI videos, reels, UGC ads, and AI product photography, directed and edited by humans.",
 		image: "/images/hero/5.png",
@@ -46,7 +46,7 @@ const servicesData: Service[] = [
 		titleTrail: "Creation",
 	},
 	{
-		anchor: servicesAnchors.web,
+		path: servicePagePaths.web,
 		description:
 			"A website that feels like the post they just tapped. From conversion-focused landing pages to full websites and custom web platforms, designed around your content.",
 		image: "/images/hero/6.png",
@@ -138,7 +138,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 		<article
 			v-for="(service, index) in servicesData"
-			:key="service.anchor"
+			:key="service.path"
 			class="service-panel"
 			:class="{ 'service-panel-dark': service.surface === 'dark' }"
 			data-service-panel
@@ -180,7 +180,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 				<NuxtLink
 					class="service-link inset-arrow-link"
 					data-service-link
-					:to="servicesSectionPath(service.anchor)"
+					:to="service.path"
 					:aria-label="service.linkLabel"
 					@click="hideTooltip"
 					@pointerenter="showTooltip('', tooltipText, 'compact')"
@@ -212,7 +212,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 						<NuxtLink
 							class="service-media"
 							data-service-media
-							:to="servicesSectionPath(service.anchor)"
+							:to="service.path"
 							:aria-label="`More details about ${serviceTitle(service)}`"
 							@pointerenter="showTooltip('', tooltipText, 'compact')"
 							@pointerleave="hideTooltip"
