@@ -5,7 +5,7 @@ type CookieConsent = "accepted" | "declined";
 
 const consentMaxAge = 60 * 60 * 24 * 365;
 
-const consent = useCookie<CookieConsent | null>("byroose-cookie-consent", {
+const consent = useCookie<CookieConsent | null>("forrrow-cookie-consent", {
 	default: () => null,
 	maxAge: consentMaxAge,
 	path: "/",

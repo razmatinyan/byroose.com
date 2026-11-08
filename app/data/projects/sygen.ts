@@ -4,7 +4,7 @@ export default defineProject({
    slug: "sygen",
    name: "Sygen",
    description:
-      "A free color tool that turns one brand color into a complete, accessible UI color system for light and dark mode, ready to paste into code or Figma.",
+      "Sygen is our free tool for turning one brand color into a complete, accessible UI color system for light and dark mode. We built it because we needed it ourselves.",
    categories: ["Web Development", "UI/UX Design"],
    liveUrl: "https://sygenn.vercel.app/",
    surface: { color: "oklch(0.943 0.1021 117.72)", ink: "dark" },
@@ -199,6 +199,6 @@ export default defineProject({
    seo: {
       title: "Sygen: Accessible Design System Color Builder",
       description:
-         "How byroose rebuilt Sygen, a free tool that turns one brand color into an accessible light and dark color system for Tailwind, shadcn, CSS, and Figma.",
+         "How forrrow rebuilt Sygen, a free tool that turns one brand color into an accessible light and dark color system for Tailwind, shadcn, CSS, and Figma.",
    },
 });

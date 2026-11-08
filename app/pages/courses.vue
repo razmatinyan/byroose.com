@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useSeoMeta({
 	title: 'Courses',
-	description: 'Courses from byroose on AI content creation and web development.',
+	description: 'Courses from forrrow on AI content creation and web development.',
 })
 </script>
 

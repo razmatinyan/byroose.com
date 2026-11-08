@@ -1,12 +1,23 @@
 <script setup lang="ts">
+import type { BlogCategoryPage } from "@/lib/blog-categories";
 import BlogArticlesSection from "./BlogArticlesSection.vue";
 import BlogHero from "./BlogHero.vue";
+
+const { categoryPage } = defineProps<{
+   categoryPage?: BlogCategoryPage;
+}>();
 </script>
 
 <template>
    <div class="blog-page">
-      <BlogHero />
-      <BlogArticlesSection />
+      <BlogHero
+         v-if="categoryPage"
+         :title-words="categoryPage.titleWords"
+         :title-size="categoryPage.titleSize"
+         :description="categoryPage.description"
+      />
+      <BlogHero v-else />
+      <BlogArticlesSection :category="categoryPage?.category" />
    </div>
 </template>
 

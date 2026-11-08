@@ -39,6 +39,7 @@ app/
   composables/
     useAboutHeroMotion.ts
     useAboutHeroTrail.ts
+    useAboutApproachMotion.ts
     useAboutSectionMotion.ts
     useActiveSection.ts
     useArrowSwapHover.ts
@@ -57,6 +58,7 @@ app/
     useHeaderSurface.ts
     useHoverBounce.ts
     useHoverRollover.ts
+    useJourneyMotion.ts
     useMenuLinkMotion.ts
     useMoreWorksMotion.ts
     useNavLinkMotion.ts
@@ -64,12 +66,14 @@ app/
     usePageSeo.ts
     usePageTransitionMotion.ts
     useProjectGallery.ts
+    useProjectMarquee.ts
     useServicesHeroMotion.ts
-    useServicesMediaFlight.ts
+    useServiceCardsMotion.ts
+    useServiceHeroMotion.ts
+    useServiceStoryMotion.ts
     useServicesMotion.ts
     useServicesRevealMotion.ts
     useServicesStatementMotion.ts
-    useSiteCtaBackground.ts
     useSiteCtaMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -98,9 +102,10 @@ app/
     scroll-curve.ts
     services-anchors.ts
     site.ts
+    slide-ease.ts
     blog-articles.ts
+    blog-categories.ts
     services-hero.ts
-    site-cta-smoke.ts
     split-text.ts
     stack-reveal.ts
     surfaces.ts
@@ -160,7 +165,7 @@ package.json
 
 ### Application entry
 
-app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog.vue renders the Blog experience from app/components/blog, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog/index.vue renders the Blog experience from app/components/blog, app/pages/blog/ai-content.vue and app/pages/blog/web-development.vue render its two category pages through the same BlogPage, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -171,7 +176,9 @@ A landing section should not become a general component merely because it contai
 ### About components
 
 app/components/about contains the About route's sections. AboutPage composes
-AboutHero, AboutTeamSection, AboutTrustSection, and AboutBrandsSection, and
+AboutHero, AboutCombinedSection, AboutTeamSection, AboutApproachSection,
+AboutTrustSection, and
+AboutBrandsSection, and
 app/pages/about.vue renders it with the route metadata. AboutPage wraps the
 trust and brands sections in an isolated `about-story` block that holds their
 shared DrawnLine and marks the brands root with `data-drawn-line-anchor`. AboutTeamSection holds its
@@ -180,7 +187,10 @@ AboutTitle renders a title from explicit lines, each in its own mask, with an
 optional underlined word that carries a WaveUnderline, every other text
 fragment in a `data-about-title-text` span that an owner can style, and an optional
 `images` list that opens a `data-about-title-inset` ImageCycle frame before the
-line's text. AboutMediaFrame wraps
+line's text. A line's optional `logo` names the word, such as "forrrow", that
+renders as the site logo in a masked `data-about-title-text` span, beside any
+underlined word, while the full line text still feeds the `sr-only` heading
+label. AboutMediaFrame wraps
 any image or placeholder in a frame and a parallax layer. AboutStatement is the
 large split statement, placed in the right two thirds of its section, shared by
 the trust and brands sections, and
@@ -190,37 +200,44 @@ action. It owns a Dialog whose open state both the action and a click anywhere
 on the card set, locks the smooth scroll while it is open, and emits `activate`
 and `deactivate` on pointer enter and leave. AboutMemberDialog renders the
 dialog content: the portrait, the name, the role, the social links, the bio,
-and the close action. AboutTeamSection owns the member data, including each
-bio and social link, and the shared TrailingTooltip the cards drive. The sections own their copy. They do not depend
+an optional service link, and the close action. AboutTeamSection owns the
+member data, including each bio, service link, and social link, and the shared TrailingTooltip the cards drive. The sections own their copy. They do not depend
 on landing sections.
 
 ### Services components
 
-app/components/services contains the Services route's sections. ServicesPage
-composes ServicesHero, ServicesStatementSection, a light ServicesOfferSection
-for AI Content Creation, and a dark one for Website Development, and
-app/pages/services.vue renders it with the route
-metadata. ServicesPage also owns both offers' copy and blocks, and
-the `data-services-flight` layer, an ImageCycle of the hero images that is
-absolutely positioned in the page and, from `lg`, travels from the hero to the
-first block. ServicesHero owns the title lines, the About link, and its
-TrailingTooltip. A title line can carry one `data-services-hero-inset` frame
-placed inline in the line: the link frame, a NuxtLink to `/about`, or the
-media frame, which is the flight's `data-services-flight-origin`. It holds an
-ImageCycle of the hero images that shows only below `lg`, where there is no
-flight, and a still poster for reduced motion from `lg`. ServicesStatementSection owns the statement
-copy and its split. ServicesOfferSection receives an `anchor` from
-app/lib/services-anchors.ts, which becomes its section id, a title, a description, a
-`surface` of `light` or `dark`, and a list of blocks, each with a title, a
-description, a tone, optional images, and an optional `flight` flag that makes
-its media slot the flight's `data-services-flight-target`. A flight block's
-images show only below `lg`, where the flight does not run. The dark surface
-adds a `data-services-reveal-backdrop` layer at `-z-10` without isolating
-the section, so the intro text can blend with it and the page behind it.
-app/lib/services-hero.ts holds the hero images
-and the inset open property, content scale, and open duration that the hero
-motion, the flight, and the home service links share. The sections own their copy and do not depend on landing or
+app/components/services contains the Services route's sections. The route is
+a hub: short service summaries that link to the planned full service pages.
+ServicesPage composes ServicesHero, ServicesStatementSection, a light
+ServicesOfferSection for AI Content Creation, and a dark one for Website
+Development, and app/pages/services.vue renders it with the route metadata.
+ServicesPage owns both summaries' copy. ServicesHero owns the title lines, the
+About link, and its TrailingTooltip. A title line can carry one
+`data-services-hero-inset` frame placed inline in the line: the link frame, a
+NuxtLink to `/about`, or the media frame, which holds an ImageCycle of the
+hero images. ServicesStatementSection owns the statement copy and its split.
+ServicesOfferSection receives an `anchor` from app/lib/services-anchors.ts,
+which becomes its section id, a title, a description, a link label and path,
+and a `surface` of `light` or `dark`. The link points to the service's own
+page from `servicePagePaths` in the same module. The dark surface adds a
+`data-services-reveal-backdrop` layer at `-z-10` without isolating the
+section, so the intro text can blend with it and the page behind it.
+app/lib/services-hero.ts holds the hero images and the inset open property,
+content scale, and open duration that the hero motion and the home service
+links share. The sections own their copy and do not depend on landing or
 About components.
+
+The service pages live in app/pages/services, with the hub at index.vue. A
+built service page composes ServiceHero, which takes a title and description
+and reveals through useServiceHeroMotion, and ServiceCardsSection, which takes
+a title and a list of cards, each with a title, description, and surface tone,
+and reveals its title, line, and cards through useServiceCardsMotion, and
+ServiceStorySection, which takes a list of story blocks, each with a title,
+description, optional link, and a `start` or `middle` offset, and reveals
+them through useServiceStoryMotion. The AI content creation and web
+development pages both follow them with the shared ProcessSection and a
+FaqSection with their own title and items.
+The page owns its copy and its metadata from `pageSeo`.
 
 ### Work components
 
@@ -255,11 +272,25 @@ component's role.
 ### Blog components
 
 app/components/blog contains the Blog route's sections. BlogPage composes
-BlogHero and BlogArticlesSection, and app/pages/blog.vue renders it with the
-route metadata. BlogHero supplies the Blog title and description to the shared
-ListingHero. BlogArticlesSection owns the article count heading, renders the
-shared article content from app/lib/blog-articles.ts in a three-column grid from
-`md`, and requests the neutral BlogCard surface. The home BlogSection consumes
+BlogHero and BlogArticlesSection, and app/pages/blog/index.vue renders it with
+the route metadata. Each category page, app/pages/blog/ai-content.vue and
+app/pages/blog/web-development.vue, passes BlogPage its entry from
+`blogCategoryPages` in app/lib/blog-categories.ts as `categoryPage`. That module
+owns each category's content value, link label, hero title words, measured
+first-paint `titleSize`, hero description, and its `pageSeo` entry, and
+`blogCategoryLinks` lists All and both categories for the navigation. Static
+page files take precedence over `app/pages/blog/[slug].vue`, so no post may use
+the slug `ai-content` or `web-development`. BlogHero supplies the Blog title and
+description to the shared ListingHero, or a category's when BlogPage passes
+them. BlogArticlesSection owns the article count heading, keeps only the
+articles of its optional `category`, renders the shared article content from
+app/lib/blog-articles.ts in a three-column grid from `md`, shows an empty
+message when a category has no articles, and requests the neutral BlogCard
+surface. BlogCategoryNav sits beside the count and renders All and the two
+categories as links, not filters, marking the link of the current path with
+`aria-current="page"`. useBlogMotion rises every `data-blog-cta` in the
+heading after the title characters with the navigation stagger, so the same
+hook serves the home section's single action and these links. The home BlogSection consumes
 the same article content with the default tinted BlogCard surface.
 
 ### Legal components
@@ -311,7 +342,7 @@ client IP in ten minutes and answers `429` past that. Without a Resend key
 it answers `503`. Otherwise `sendContactMail` from
 `server/utils/contact-mail.ts` sends a plain text email through the Resend
 REST API with `$fetch`, so no SDK is installed. It goes from
-`byroose website <contact@hello.byroose.com>` to the site email and, when
+`forrrow website <contact@hello.forrrow.com>` to the site email and, when
 `runtimeConfig.contactInboxEmail` is set, to that private inbox too, with the
 sender's address as `reply_to`, so replying in the inbox answers the person
 directly. The `Idempotency-Key` is a SHA-256 hash of the payload, so Resend
@@ -323,9 +354,9 @@ The Resend key lives in the server-only `runtimeConfig.resendApiKey`, which
 `nuxt.config.ts` fills from `RESEND_API_KEY` at build time.
 `NUXT_RESEND_API_KEY` overrides it at runtime. The private inbox comes from
 `CONTACT_INBOX_EMAIL` the same way and stays out of the repository, which is
-public. The site email is `contact@hello.byroose.com` until a
-`hello@byroose.com` inbox exists. The sending domain,
-`hello.byroose.com`, must be verified in Resend before mail is delivered.
+public. The site email is `contact@hello.forrrow.com` until a
+`hello@forrrow.com` inbox exists. The sending domain,
+`hello.forrrow.com`, must be verified in Resend before mail is delivered.
 
 ### Layout components
 
@@ -334,18 +365,37 @@ SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, SiteCtaSection, and 
 may use shared components and UI primitives. They should not depend on a landing
 section.
 
-SiteCtaSection is the dark "Have an idea? Let's build it." call to action
-that closes every route. The layout renders it inside the main landmark after
-the page, so no page owns a copy. It owns its copy and its link to `/contact`
-and reveals through useSiteCtaMotion. Its `ctaCanvas` paints the smoke
-background that useSiteCtaBackground owns. Like the footer, it carries
+SiteCtaSection is the light call to action that closes every route. It is a
+two-column split from `lg`: the copy on the left and a projects marquee on the
+right. Below `lg` the marquee follows the copy. It reads its title lines and
+description for the current route from `siteCtaFor` in app/lib/site-cta.ts,
+which falls back to the default "Turn your social media views into leads?"
+copy, so a route such as `/services` can ask its own question. `/blog` and
+every path under it share one Blog copy. An optional
+`titleScale` shrinks one route's title, both its base size and the width it
+fits to. The description is optional, and a route without one renders no
+description paragraph. It fits its title to the copy column's width with
+useFitText. The layout renders it inside the main landmark after the page, so
+no page owns a copy. It owns its link to `/contact` and reveals through
+useSiteCtaMotion.
+
+The marquee reads `projects` from app/data/projects, leaves out the project
+whose page is open, and repeats the rest until a set holds at least four
+cards. It renders that set twice for a seamless loop inside a `nav` named "Our
+projects", and each card is a ProjectMarqueeCard linking to `/work/<slug>`.
+Only the first card of each project is focusable and exposed to assistive
+technology, so a keyboard or screen reader meets every project once.
+useProjectMarquee moves the track. Hovering a card shows the shared
+TrailingTooltip with "View" followed by the project name and "Case", such as
+"View Sygen Case", through useTrailingTooltip, which loads it
+only on fine-pointer devices. Like the footer, the section carries
 `data-page-transition-follow`, so it leaves with the outgoing page. Because the
 layout persists, the layout keys it and bumps that key through the page
 transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
 after the leaving page has been removed and every route reveals it again.
 
 SiteCookieBanner owns the cookie notice. Its consent value lives in the
-byroose-cookie-consent cookie through Nuxt's useCookie, so the server and the
+forrrow-cookie-consent cookie through Nuxt's useCookie, so the server and the
 first client render agree on whether the notice is visible and an accepted or
 declined notice never reappears. The layout withholds the banner until the home intro
 reports a complete state, so it never paints over the preloader.
@@ -357,15 +407,15 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. Cards do not fetch their own page data.
 
 ### Shared components
 
-app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work, Blog, and the Privacy policy. Its optional `titleSize`, `23.71cqi` by default as measured for "Our Work", sets the title's first-paint size, so a longer phrase passes its own measured size. SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount through `queueMainThreadTask`, one split per browser task, and emits typed runtime parts for component-owned animation. With a `media` query that does not match at mount it keeps the server text unsplit and emits `null`, as the home hero does below `lg`, where its text has no intro to animate and a late split would repaint the page's largest text. With the default `aria` of `auto`, a heading keeps its text through GSAP's `aria-label`, because a heading may carry one. A paragraph, `div`, or `span` may not, so after every split SplitText hides the split pieces from assistive technology and prepends an `sr-only` copy of the text, which the next revert removes. Text that sits in a hidden rest state before its reveal therefore stays readable to screen readers. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. The home page renders it as `LazySharedFaqSection`, and BlogSection as `LazyLandingBlogSection`, both with `hydrate-on-visible` and a one-viewport `rootMargin`, so they hydrate just before they scroll into view instead of during startup. The schema still ships, because Schema.org renders only on the server in production. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
+app/components/shared contains small project-wide composition patterns such as FaqSection, ListingHero, SectionHeading, MediaPlaceholder, SplitText, and TrailingTooltip. ListingHero owns the fitted one-line title, semantic `h1`, description split, and shared listing-page hero layout used by Work, Blog, and the Privacy policy. Its optional `titleSize`, `23.71cqi` by default as measured for "Our Work", sets the title's first-paint size, so a longer phrase passes its own measured size, as WorkHero does with `18.13cqi` for "Case studies". SplitText renders its complete text during SSR, applies the GSAP SplitText plugin after mount through `queueMainThreadTask`, one split per browser task, and emits typed runtime parts for component-owned animation. With a `media` query that does not match at mount it keeps the server text unsplit and emits `null`, as the home hero does below `lg`, where its text has no intro to animate and a late split would repaint the page's largest text. With the default `aria` of `auto`, a heading keeps its text through GSAP's `aria-label`, because a heading may carry one. A paragraph, `div`, or `span` may not, so after every split SplitText hides the split pieces from assistive technology and prepends an `sr-only` copy of the text, which the next revert removes. Text that sits in a hidden rest state before its reveal therefore stays readable to screen readers. It reverts its split through the page transition's deferred cleanup, so a leaving page keeps its split text until the incoming page covers it. TrailingTooltip renders through Nuxt's shared teleport target, receives its active state, image, and optional label from its owner, and owns its fine-pointer tracking, reduced-motion state, thumbnail layer list, and GSAP cleanup. It keeps the outgoing thumbnail mounted until the incoming one has loaded and finished revealing, so the owner still passes a single image string and never manages the transition. An empty image string drops every thumbnail layer, so the text-only form never keeps the previous image. It keeps a label layer list the same way: when the label changes while the tooltip stays open, the outgoing label slides up out of a clipping mask while the incoming one slides up from below and the mask eases to the new width, on the shared slide ease from app/lib/slide-ease.ts, and each finished slide drops the layers beneath it. Its owner loads it asynchronously only after mount when the primary input supports both hover and fine pointing, so touch-first devices do not request or mount the component. ImageCycle cuts through a list of decorative images on an interval, `750ms` by default, without a crossfade. It cycles only while it is on screen, only after all of its images have loaded, and never under reduced motion. Its images load lazily unless the owner passes `loading="eager"`, as the Services hero does for its above-the-fold frame. DrawnLine renders the empty decorative SVG and path that useDrawnLineMotion fills and draws, with the shared stroke width, round caps, hidden resting state, reduced-motion visibility, and below-`lg` hiding. Its path strokes `currentColor`, so each owner sets the color, opacity, position, size, and overflow on the root. FaqSection owns the default FAQ copy, its `FAQPage` schema, and its motion, and the home and Contact routes both render it. Its optional `title` and `items` props replace the default title and questions, so each service page renders its own FAQ and schema. An item's optional `link` renders an ArrowLink below its answer. The home page renders it as `LazySharedFaqSection`, and BlogSection as `LazyLandingBlogSection`, both with `hydrate-on-visible` and a one-viewport `rootMargin`, so they hydrate just before they scroll into view instead of during startup. The schema still ships, because Schema.org renders only on the server in production. Its `structuredData` prop defaults to `true` and turns the schema off for a repeated copy. Shared components must remain independent of a single landing section.
 
 ### UI primitives
 
-app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain byroose page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label.
+app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain forrrow page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label.
 
 Preserve Reka UI integration, attribute forwarding, data-slot values, keyboard behavior, focus behavior, and CVA contracts when modifying this layer.
 
@@ -385,7 +435,7 @@ The existing useGsap composable is the integration boundary for component-owned 
 useHomeIntroMotion owns the home route's entry sequence, geometry measurements, native and Lenis scroll lock, responsive timeline, shared layout-header reveal state, and cleanup. Its preloader stage builds on the shared stack-reveal recipe in app/lib/stack-reveal.ts. It receives the hero title and description splits from LandingPage and reveals them with the hero call to action. It shows every `data-home-intro-header` element, which covers the header and its separate logo layer, and rises their pieces from `getHeaderRevealParts` in visual order without fading the header. Below `lg` it marks the intro complete at mount and only hides the preloader cards, while LandingPage and the default layout show the hero copy, the retained cards, and the header at rest in CSS below `lg`, so phones paint them without waiting for JavaScript. It runs the preloader and the center expansion only while Nuxt is hydrating a direct home request from `lg` upward. A client-side entry arrives through a page transition: it shows the hero cards at rest in their grid immediately, lowers the header pieces into their masks, and builds its reveal timeline only when usePageTransition reports the reveal point, so the timeline starts at its own beginning instead of absorbing the incoming page's mount work. It holds the scroll through the shared Lenis lock rather than stopping Lenis directly, and marks the intro complete if the page is left before the intro finishes, so the header never stays hidden on the next route.
 
 useHomeHeroScrollMotion owns the scroll-linked transition between the home hero
-and Studio section. It waits for the intro to complete and lets the hero leave
+and the section after it, currently the work section. It waits for the intro to complete and lets the hero leave
 through normal document scrolling. From the first scroll, one scrubbed
 timeline slows the featured retained card from page speed into a hold at the
 viewport center, moves it to the horizontal center, expands it until the
@@ -393,7 +443,7 @@ transition space ends, and releases it back to page speed. Every property
 follows a velocity matched curve from app/lib/scroll-curve.ts, so nothing
 stops or changes speed abruptly. The card's resting offset from the home intro
 is part of the measured path. The transition runs only from `lg` upward, where
-LandingPage supplies an empty scroll space one and a half viewports tall before Studio. Below `lg`
+LandingPage supplies an empty scroll space one and a half viewports tall before that section. Below `lg`
 the space collapses and the composable creates no animation. Responsive
 measurements, the reduced-motion outcome, ScrollTrigger lifecycle, and route
 cleanup remain inside the composable.
@@ -428,7 +478,12 @@ title to visible characters and leaves every card in its resting state. It also
 owns the handoff from the last card to the MoreWorksPanel. It slows and fades
 the `data-work-case-list` element and brings in the `data-work-more-panel`
 surface inside the `data-work-more` track, because that handoff choreographs
-WorkSection's own cards against its closing panel.
+WorkSection's own cards against its closing panel. The handoff ends where the
+track pins, and its trigger carries `refreshPriority: 2`, above the pin's `1`,
+so it measures the track before the pin applies its state. A refresh made
+while the page sits below the panel, such as when the lazy Blog and FAQ
+sections hydrate after a scrollbar jump, would otherwise measure the track at
+its pinned end, one viewport lower, and play the handoff during the pin.
 
 useDrawnLineMotion owns a single scroll-drawn line. It receives a scope and a
 DrawnLine, the path builder and optional head lead from a lib artwork module,
@@ -459,12 +514,9 @@ the children of its `data-service-content` block, the description line rise
 anchored to the static service title, and the scrubbed bottom origin image entry
 and top origin image exit, which meet when the image frame crosses the viewport
 center. The content keeps one constant slowed speed throughout, so the section
-never slows down further while its image scales. It returns `introRevealed`, which turns true once
-the scrubbed intro reaches the end of its last word and false again above that
-point, and ServicesSection feeds it to the `drawn` prop of the WaveUnderline
-under "You?". It also owns the scrubbed rise of a dark panel's
+never slows down further while its image scales. It also owns the scrubbed rise of a dark panel's
 `data-service-backdrop` from the viewport bottom center, and its curved
-exit that reaches down toward the Why Choose Us title as the panel leaves. Because the content block moves, those triggers are
+exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
 scroll positions computed from untransformed layout rather than trigger
 elements. On touch devices its media context drops the slowed travel, the
 scrubbed image scale, and the backdrop rise, so the content stays in place, the dark backdrop
@@ -477,9 +529,20 @@ hero inset's content scale. The slowed travel moves the `data-service-title`
 through `top` and the other content children through a transform, so the
 title's blended text fragments stay unisolated. ServicesSection owns the copy, the
 service links, the image links, and the tooltip handlers. Both links route to
-the service's section through `servicesSectionPath`. The composable waits until the intro
+the service's own page from `servicePagePaths`. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
+
+useJourneyMotion owns the journey section's motion: the one-time character
+reveal of the `data-journey-title` heading beneath the services section's
+exiting dark curve, and for each `data-journey-step` row the character reveal
+of its title and the line reveal of its description. It waits for the title
+split and every step's title and description splits, and shows everything at
+rest under reduced motion. ProcessSection, in app/components/shared, takes the
+title and the steps as props and emits those splits. LandingPage passes the
+"Working process" steps and renders it after the services section, and the AI
+content creation page passes its own process. LandingPage
+currently keeps WhyChooseSection disabled.
 
 useWhyChooseMotion owns the Why Choose Us section's motion: the one-time
 character spawn of the `data-why-title` heading beneath the services
@@ -554,17 +617,6 @@ scale, and scrubs the hero
 content down at half the scroll speed while it fades out, as the About hero
 does. It returns `revealed`, which lifts the hero's hidden CSS rest state.
 
-useServicesMediaFlight owns the Services image flight. On every GSAP ticker
-frame, after Lenis has scrolled, it measures the hero's media frame and the
-first block's media slot against the page, interpolates the position, size,
-and corner radius between them by the progress of a ScrollTrigger that runs
-from the top of the page until the slot's center reaches the viewport's
-center, and writes them to the flight layer. While the hero frame is still
-opening, it also matches the frame's content scale from its
-`--services-hero-inset-open` value. It runs only from `lg`. Below `lg` the
-layer stays hidden and the hero frame and the slot show their own cycles.
-Reduced motion from `lg` keeps the layer in the slot.
-
 useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` split,
 then rises each text's lines, or its words when it is split into words only,
 once with the shared line reveal timing when it enters, and rises every `data-services-reveal-rise` item once with the word
@@ -601,35 +653,40 @@ shown items in. A newer swap
 interrupts an older one, which then stops without applying its update. Reduced
 motion applies the update at once and shows everything at rest.
 
-useSiteCtaMotion owns the site call to action's reveal. It waits for both
-title lines' word splits, then builds one timeline on the title's
-`data-site-cta-title` trigger that rises every word of both lines in reading
-order with the shared word reveal and a `0.12s` stagger, and rises the
-`data-site-cta-action` one stagger step after the last word. Reduced motion
-shows the words and the action at rest.
+useSiteCtaMotion owns the site call to action's reveal. It waits for every
+title line's line split, then builds one timeline on the title's
+`data-site-cta-title` trigger that rises the title lines one after the other
+with the shared word reveal and the `titleLineRevealStagger`, then the
+description lines, and rises the `data-site-cta-action` one stagger step after
+the last line. The owner passes `null` for the description split when the
+route has no description, and the action then follows the title lines
+directly. Reduced motion shows the lines and the action at rest.
 
-useSiteCtaBackground owns the site call to action's Three.js smoke background.
-It imports `three` dynamically only once the section comes within a quarter of
-a viewport of the screen, so the library never reaches the server output or
-the main bundle. It reads the section's computed background and text colors,
-creates one WebGLRenderer on the section's canvas, and renders two passes: the
-mouse trail sprites into a half-resolution render target, then a full-section
-backdrop shader that the trail distorts. The frame loop is a GSAP ticker
-callback, so it adds no second animation frame loop, and it runs only while the
-section is near the viewport and motion is allowed. It measures the section
-through a resize observer and tracks pointer movement on the section. Reduced
-motion renders one still frame without the trail. It returns `ready`, which
-fades the canvas in, and releases the renderer, every material, geometry,
-texture, and render target, and the WebGL context through the page
-transition's `deferCleanup`, so a leaving copy keeps its background until it
-has been covered.
+useProjectMarquee owns the site call to action's projects marquee. It
+receives the marquee viewport, its track, and the card count, and loops the
+track by half its length, the length of one set, with a linear GSAP tween at
+`5s` per card in a set. From `lg` the track moves up, and below `lg` it moves
+left. Pointer hover or keyboard focus inside the marquee eases the loop to a
+stop and releases it on leave. The loop plays only while the marquee is within
+a quarter of a viewport of the screen. Reduced motion creates no loop, and the
+mobile row then scrolls natively.
+
+useAboutApproachMotion owns AboutApproachSection's motion. It waits for the
+title's word split, rises the `data-about-approach-title` words with the shared
+word reveal, and rises each `data-about-approach-item`'s
+`data-about-approach-rise` title and description from their
+`data-about-approach-rise-mask` when the item enters. Reduced motion shows
+everything at rest.
 
 useAboutSectionMotion owns the scroll reveals of one About section. Inside its
 scope it reveals the `data-about-title` lines, clip reveals and parallaxes
 every `data-about-media` frame through its `data-about-media-layer`, rises the
 `data-about-rise` items of every `data-about-rise-group` from their
 `data-about-rise-mask`, and rises the lines of every `data-about-text` split,
-matched by order to the `textSplits` it receives. It returns `titleRevealed`,
+matched by order to the `textSplits` it receives. An optional `titleSplit`
+replaces the title's explicit `AboutTitle` lines with a `SplitText` line split,
+as AboutCombinedSection's wrapping title uses, and the reveal waits for it. It
+returns `titleRevealed`,
 which the section feeds to its title underline.
 
 useFooterMotion owns the site footer's scroll reveal. It receives the footer
@@ -648,7 +705,9 @@ useFitText fits a single line of text to the full content width of its parent.
 It watches the text's box and writes a `--fit-text-scale` multiplier on the
 element, which the component's own font size must multiply. An optional
 `maxScale` caps the multiplier, so short text stops growing at the base size
-and only longer text shrinks to fit. WhyChooseSection uses it for its title,
+and only longer text shrinks to fit. An optional `fill` fraction
+fits the text to that share of the width instead, which SiteCtaSection sets
+from the route's `titleScale`. ProcessSection and WhyChooseSection use it for their titles,
 WorkHero for its title, and ProjectHero for the project name with a
 `maxScale` of `1`.
 
@@ -712,9 +771,10 @@ return on hover and visible keyboard focus. Both composables scope their GSAP wo
 to their consuming layout components.
 
 useNavLinkMotion owns the primary navigation link hover: the resting label
-scales away to its top center, its copy scales up from its bottom center, and an
-underline draws outward from its center, all on the More works action's
-`power4.inOut` timing. It tracks pointer and visible keyboard focus together and
+slides up out of its mask while its copy slides up from below, and an
+underline draws outward from its center, all on a `nav-link-slide` CustomEase
+of `cubic-bezier(0.16, 1, 0.35, 1)` over `0.65s`. app/lib/slide-ease.ts owns
+that ease and duration, so TrailingTooltip's label swap moves on the same curve. It tracks pointer and visible keyboard focus together and
 resolves instantly under reduced motion. SiteNavLink owns the markup.
 
 useHoverBounce owns the hover and press scale states of action surfaces. It
@@ -783,13 +843,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   queries the DOM or creates its own timeline.
 - icons.ts is the canonical map for shared icon names: Phosphor bold icons and the Lucide spinner.
 - services-anchors.ts owns the Services route's section ids, `servicesAnchors`,
-  and `servicesSectionPath`, which builds the `/services#id` path that the home
-  services section links to.
-- site-cta-smoke.ts holds the site call to action's smoke background: the
-  noise texture URL, the trail and pixel ratio values in `smokeTrail`, the
-  field contrast, trail push, glow, and grain values in `smokeField`, and the
-  GLSL for the trail sprites and the backdrop. It holds data only, so
-  useSiteCtaBackground stays the only module that imports `three`.
+  and `servicePagePaths`, the two service page routes that the home services
+  section and the home UGC creator case study link to.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images
@@ -814,6 +869,9 @@ app/lib contains pure helpers, shared constants, and stable names.
   formatter and never queries the DOM.
 - about-line-path.ts owns the About route's two line artworks and their
   DrawnLine definitions, `aboutTeamLine` and `aboutStoryLine`.
+- slide-ease.ts owns `slideDuration` and `registerSlideEase`, which creates or
+  reuses the `nav-link-slide` CustomEase from a loaded CustomEase plugin.
+  useNavLinkMotion and TrailingTooltip share it.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
   and follower tweens to a timeline it is handed, so the home preloader and the
   work section's media reveal keep identical timing from one definition. It
@@ -898,9 +956,7 @@ Give an updated image a new file name when it must appear immediately. SVG
 brand assets use the registered `none` provider so they bypass the optimizer,
 which does not process SVG. Repeating decorative textures such as the canvas
 grain tile are the exception. They are referenced by root-relative URL from the
-global stylesheet and do not pass through Nuxt Image. The smoke background's
-`public/images/smoke-noise.avif` is the other exception: it is a WebGL texture
-that Three.js loads by root-relative URL.
+global stylesheet and do not pass through Nuxt Image.
 
 ## Dependency direction
 
@@ -1094,7 +1150,7 @@ only and own no data.
 
 The Work listing and the home case studies still keep their cards as local
 data in `WorkProjectsSection` and `WorkSection`. Both show only the real
-projects, UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in the order of
+projects, UGC Creator, Sygen, and Cartoon, in the order of
 `app/data/projects/index.ts`. Each card passes an `href` to its project page,
 which turns `ProjectCard` into a NuxtLink and adds a NuxtLink covering
 `CaseStudyCard`, so the case card's `liveUrl` link can sit above it without
@@ -1150,8 +1206,8 @@ a SQLite database at build time through Node's built-in `node:sqlite`
   `content/blog/layout-sample.md` is a draft that shows every element and
   serves as the authoring reference.
 
-The `/blog` listing still shows the placeholder cards from
-`app/lib/blog-articles.ts`. It will read the collection once real posts exist.
+The `/blog` listing and its category pages still show the placeholder cards
+from `app/lib/blog-articles.ts`. It will read the collection once real posts exist.
 
 ## SEO
 
@@ -1167,7 +1223,7 @@ internal links during development and builds.
   than `production` makes the deployment not indexable.
 - The SEO utilities add the canonical link, `og:url`, `og:site_name`,
   `og:type`, and a `max-image-preview` robots tag to every page, and append
-  ` | byroose` to every title. Page titles are therefore written without the
+  ` | forrrow` to every title. Page titles are therefore written without the
   brand. The site emits no `twitter:*` tags: X builds link previews from Open
   Graph, and unhead flags those tags as deprecated. `seo.automaticTwitterTags:
   false` stops the SEO utilities from inferring them, and
@@ -1197,7 +1253,8 @@ internal links during development and builds.
   policy is indexable.
 - Schema.org identity is an `Organization` with the logo, email, and address.
   Every page gets `WebSite` and `WebPage` nodes. FaqSection turns the home page
-  into an `FAQPage` with one `Question` per visible FAQ item. ContactPage
+  into an `FAQPage` with one `Question` per visible FAQ item, and each
+  service page into one with its own questions. ContactPage
   marks the Contact page as a `ContactPage` and passes `structuredData` as
   `false` to its FaqSection, so the shared questions are marked up only once
   across the site. `ProjectPage`

@@ -7,10 +7,9 @@ import {
 } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
-import WaveUnderline from "@/components/shared/WaveUnderline.vue";
 import { appIcons } from "@/lib/icons";
-import { servicesAnchors, servicesSectionPath } from "@/lib/services-anchors";
-import type { ServicesAnchor } from "@/lib/services-anchors";
+import { servicePagePaths } from "@/lib/services-anchors";
+import type { ServicePagePath } from "@/lib/services-anchors";
 import { servicesHeroImages } from "@/lib/services-hero";
 import type { ServicesImage } from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
@@ -20,38 +19,37 @@ const TrailingTooltip = defineAsyncComponent(
 );
 
 interface Service {
-	anchor: ServicesAnchor;
+	path: ServicePagePath;
 	description: string;
 	image: string;
+	linkLabel: string;
 	surface: "canvas" | "dark";
 	titleImages: readonly ServicesImage[];
 	titleLead: string;
 	titleTrail: string;
 }
 
-const introLines = ["What can we do", "for"];
-const introUnderlinedWord = "You?";
-const introPhrases = [...introLines, introUnderlinedWord];
-const introTitle = introPhrases.join(" ");
-const lastIntroLineIndex = introLines.length - 1;
-const tooltipText = "More Details";
+const introLines = ["AI Content and", "Website Services"];
+const introTitle = introLines.join(" ");
 
 const servicesData: Service[] = [
 	{
-		anchor: servicesAnchors.aiContent,
+		path: servicePagePaths.aiContent,
 		description:
-			"Visuals, video, reels and site imagery produced through an AI pipeline with a human editor on every asset. Planned as a quarterly slate instead of one-off requests.",
+			"Content people stop for. AI videos, reels, UGC ads, and AI product photography, directed and edited by humans.",
 		image: "/images/hero/5.png",
+		linkLabel: "See AI content creation services",
 		surface: "canvas",
 		titleImages: servicesHeroImages,
 		titleLead: "AI Content ",
 		titleTrail: "Creation",
 	},
 	{
-		anchor: servicesAnchors.web,
+		path: servicePagePaths.web,
 		description:
-			"Design and build in the same sprint. Headless CMS, clean analytics, accessibility that passes audit, a handover your team can maintain.",
+			"A website that feels like the post they just tapped. From conversion-focused landing pages to full websites and custom web platforms, designed around your content.",
 		image: "/images/hero/6.png",
+		linkLabel: "See web development services",
 		surface: "dark",
 		titleImages: [
 			{ height: 1620, src: "/images/work/3.png", width: 1080 },
@@ -71,9 +69,13 @@ function serviceTitle({ titleLead, titleTrail }: Service) {
 	return `${titleLead}${titleTrail}`;
 }
 
+function showServiceTooltip(service: Service) {
+	showTooltip("", `More about ${serviceTitle(service)} service`, "compact");
+}
+
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
 const introSplits = shallowRef<(SplitTextResult | undefined)[]>(
-	introPhrases.map(() => undefined),
+	introLines.map(() => undefined),
 );
 const descriptionSplits = shallowRef<(SplitTextResult | undefined)[]>(
 	servicesData.map(() => undefined),
@@ -92,7 +94,7 @@ const tooltipIcon = computed(() =>
 	tooltipImage.value ? undefined : appIcons.arrowUpRight,
 );
 
-const { introRevealed } = useServicesMotion(servicesRoot, {
+useServicesMotion(servicesRoot, {
 	descriptionSplits,
 	introSplits,
 });
@@ -132,21 +134,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 							:text="line"
 							@split="setIntroSplit(index, $event)"
 						/>
-						<span
-							v-if="index === lastIntroLineIndex"
-							class="services-intro-underlined"
-						>
-							<SplitText
-								aria="none"
-								:text="introUnderlinedWord"
-								@split="setIntroSplit(introLines.length, $event)"
-							/>
-							<WaveUnderline
-								class="services-intro-wave"
-								color="var(--color-primary)"
-								:drawn="introRevealed"
-							/>
-						</span>
 					</span>
 				</span>
 			</h2>
@@ -154,7 +141,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 		<article
 			v-for="(service, index) in servicesData"
-			:key="service.anchor"
+			:key="service.path"
 			class="service-panel"
 			:class="{ 'service-panel-dark': service.surface === 'dark' }"
 			data-service-panel
@@ -196,10 +183,10 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 				<NuxtLink
 					class="service-link inset-arrow-link"
 					data-service-link
-					:to="servicesSectionPath(service.anchor)"
-					:aria-label="`Explore ${serviceTitle(service)}`"
+					:to="service.path"
+					:aria-label="service.linkLabel"
 					@click="hideTooltip"
-					@pointerenter="showTooltip('', tooltipText, 'compact')"
+					@pointerenter="showServiceTooltip(service)"
 					@pointerleave="hideTooltip"
 				>
 					<span class="service-link-surface inset-arrow-surface">
@@ -228,9 +215,9 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 						<NuxtLink
 							class="service-media"
 							data-service-media
-							:to="servicesSectionPath(service.anchor)"
+							:to="service.path"
 							:aria-label="`More details about ${serviceTitle(service)}`"
-							@pointerenter="showTooltip('', tooltipText, 'compact')"
+							@pointerenter="showServiceTooltip(service)"
 							@pointerleave="hideTooltip"
 						>
 							<NuxtImg
@@ -276,19 +263,11 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .services-intro-title {
 	@apply text-center leading-[0.95] select-none;
-	font-size: clamp(3rem, 10vw, 12rem);
+	font-size: clamp(2.25rem, 10vw, 12rem);
 }
 
 .services-intro-line {
 	@apply block whitespace-nowrap;
-}
-
-.services-intro-underlined {
-	@apply relative ml-[0.25em] inline-block;
-}
-
-.services-intro-wave {
-	@apply absolute top-full left-0 -mt-[0.04em];
 }
 
 .services-intro-title :deep(.split-text-word) {

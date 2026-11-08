@@ -9,12 +9,13 @@ const { statusCode = 404, clearsError = false } = defineProps<{
 }>();
 
 const isNotFound = computed(() => statusCode === 404);
-const title = computed(() => (isNotFound.value ? "This page took a wrong turn" : "Something went wrong on our side"));
-const description = computed(() =>
-   isNotFound.value
-      ? "The page you are looking for moved or never existed. Head back home or see what we have been building."
-      : "We could not load this page. Try again in a moment, or head back home.",
-);
+const title = computed(() => (isNotFound.value ? "This page scrolled away." : "Something went wrong on our side"));
+const errorDescription = "We could not load this page. Try again in a moment, or head back home.";
+const notFoundLinks = {
+   aiContent: { label: "AI content creation services", path: "/services/ai-content-creation" },
+   webDevelopment: { label: "web development work", path: "/services/web-development" },
+   home: { label: "the homepage", path: "/" },
+} as const;
 
 useSeoMeta({
    title: () => (isNotFound.value ? "Page not found" : "Something went wrong"),
@@ -33,7 +34,28 @@ async function leave(event: MouseEvent, path: string) {
    <section class="error-view section-gutter" aria-labelledby="error-view-title">
       <p class="error-view-code" aria-hidden="true">{{ statusCode }}</p>
       <h1 id="error-view-title" class="error-view-title">{{ title }}</h1>
-      <p class="error-view-description">{{ description }}</p>
+      <p v-if="isNotFound" class="error-view-description">
+         The link might be old, or we moved something. Try our
+         <NuxtLink
+            class="error-view-link"
+            :to="notFoundLinks.aiContent.path"
+            @click="leave($event, notFoundLinks.aiContent.path)"
+            >{{ notFoundLinks.aiContent.label }}</NuxtLink
+         >, our
+         <NuxtLink
+            class="error-view-link"
+            :to="notFoundLinks.webDevelopment.path"
+            @click="leave($event, notFoundLinks.webDevelopment.path)"
+            >{{ notFoundLinks.webDevelopment.label }}</NuxtLink
+         >, or
+         <NuxtLink
+            class="error-view-link"
+            :to="notFoundLinks.home.path"
+            @click="leave($event, notFoundLinks.home.path)"
+            >{{ notFoundLinks.home.label }}</NuxtLink
+         >.
+      </p>
+      <p v-else class="error-view-description">{{ errorDescription }}</p>
       <div class="error-view-actions">
          <Button :as="NuxtLink" to="/" size="cta-lg" variant="dark" @click="leave($event, '/')">
             Back to home
@@ -77,6 +99,10 @@ async function leave(event: MouseEvent, path: string) {
 
 .error-view-description {
    @apply max-w-[32em] text-xl leading-relaxed font-medium text-muted-foreground text-pretty;
+}
+
+.error-view-link {
+   @apply rounded-xs text-foreground underline decoration-1 underline-offset-[0.2em] outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50;
 }
 
 .error-view-actions {

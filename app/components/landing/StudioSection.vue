@@ -25,7 +25,7 @@ const copySplits = shallowRef<
    Partial<Record<CopyParagraphId, SplitTextResult>>
 >({});
 const studioStatement =
-   "We make work that gets chosen, not just seen. Sharp thinking, fast execution, numbers you can defend.";
+   "Most brands only get one half right. Some post great content that sends people to a slow, generic website, and the attention leaks out. Others have a beautiful website nobody visits. We do AI content creation and web development to one brief, so both halves work as one system.";
 
 const copyWords = computed(() => {
    const results = copyParagraphs.map(({ id }) => copySplits.value[id]);
@@ -73,7 +73,7 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
                   class="studio-portrait-image"
                   data-studio-portrait-image
                   src="/images/founder.jpg"
-                  alt="Founder of byroose kicking one leg high beside a lamppost on a sunny street corner"
+                  alt="Founder of forrrow kicking one leg high beside a lamppost on a sunny street corner"
                   width="2048"
                   height="1536"
                   sizes="sm:1280px md:768px lg:1024px xl:1280px 2xl:1536px"
@@ -108,7 +108,13 @@ function setCopySplit(id: CopyParagraphId, parts: SplitTextResult) {
 }
 
 .studio-statement {
-   @apply m-0 max-w-[22ch] text-statement font-semibold tracking-[-0.035em];
+   @apply m-0 max-w-[20.85em] text-statement font-semibold tracking-[-0.035em];
+}
+
+@media (min-width: 64rem) {
+   .studio-statement {
+      margin-left: clamp(0rem, 100% - 20.85em, 8%);
+   }
 }
 
 .studio-statement :deep(.split-text-word),

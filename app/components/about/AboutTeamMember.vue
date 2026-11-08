@@ -13,14 +13,20 @@ export interface AboutMemberPortrait {
    width: number;
 }
 
+export interface AboutMemberLink {
+   label: string;
+   to: string;
+}
+
 export interface AboutMemberSocial {
    href: string;
    icon: string;
    label: string;
 }
 
-const { bio, name, portrait, role, socials } = defineProps<{
+const { bio, link, name, portrait, role, socials } = defineProps<{
    bio: readonly string[];
+   link?: AboutMemberLink;
    name: string;
    portrait?: AboutMemberPortrait;
    role: string;
@@ -95,7 +101,7 @@ onScopeDispose(unlockScroll);
                <span class="about-member-action-rise" data-about-rise>
                   <DialogTrigger as-child>
                      <Button
-                        variant="ribbon"
+                        variant="yellow"
                         size="cta-icon"
                         :bounce-on-hover="true"
                         :aria-label="`More about ${name}`"
@@ -111,6 +117,7 @@ onScopeDispose(unlockScroll);
 
          <AboutMemberDialog
             :bio="bio"
+            :link="link"
             :name="name"
             :portrait="portrait"
             :role="role"

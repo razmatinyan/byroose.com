@@ -11,12 +11,18 @@ import {
 } from "vue";
 import { whenImageLoaded } from "@/composables/useImagesLoaded";
 import type { TrailingTooltipSize } from "@/composables/useTrailingTooltip";
+import { registerSlideEase, slideDuration } from "@/lib/slide-ease";
 import { stackRevealEase } from "@/lib/stack-reveal";
 
 interface TooltipLayer {
 	id: number;
 	ready: boolean;
 	src: string;
+}
+
+interface LabelLayer {
+	id: number;
+	text: string;
 }
 
 const {
@@ -47,12 +53,17 @@ const thumbnail = {
 
 const tooltip = useTemplateRef<HTMLElement>("tooltip");
 const media = useTemplateRef<HTMLElement>("media");
+const labelMask = useTemplateRef<HTMLElement>("labelMask");
 const layers = ref<TooltipLayer[]>([]);
+const labelLayers = ref<LabelLayer[]>([{ id: 0, text: label }]);
+const currentLabelId = computed(() => labelLayers.value.at(-1)?.id);
 const resizesSmoothly = ref(false);
 const showsMark = computed(() => Boolean(icon) && !image);
 const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-const { createMatchMedia, gsap } = useGsap();
+const { createMatchMedia, gsap, loadPlugin } = useGsap();
 let nextLayerId = 0;
+let nextLabelId = 1;
+let labelEase: string | gsap.EaseFunction = "power3.out";
 
 function keepLayersFrom(id: number) {
 	layers.value = layers.value.filter((layer) => layer.id >= id);
@@ -124,6 +135,78 @@ watch(
 	{ flush: "post", immediate: true },
 );
 
+function resetLabelMotion() {
+	const mask = labelMask.value;
+	if (!mask) return;
+
+	gsap.killTweensOf([mask, ...mask.children]);
+	gsap.set(mask, { clearProps: "width" });
+}
+
+async function slideLabel(id: number, fromWidth: number) {
+	await nextTick();
+	const mask = labelMask.value;
+	const incoming = mask?.querySelector(`[data-label-layer="${id}"]`);
+	if (!mask || !(incoming instanceof HTMLElement)) return;
+
+	const outgoing = mask.querySelectorAll('[data-leaving="true"]');
+	const tween = {
+		duration: slideDuration,
+		ease: labelEase,
+		force3D: false,
+		overwrite: "auto" as const,
+	};
+
+	gsap.killTweensOf(mask);
+	gsap.set(mask, { clearProps: "width" });
+	const toWidth = mask.getBoundingClientRect().width;
+
+	gsap.fromTo(
+		mask,
+		{ width: fromWidth },
+		{ ...tween, clearProps: "width", width: toWidth },
+	);
+	gsap.to(outgoing, { ...tween, yPercent: -100 });
+	gsap.fromTo(
+		incoming,
+		{ yPercent: 100 },
+		{
+			...tween,
+			onComplete: () => {
+				labelLayers.value = labelLayers.value.filter(
+					(layer) => layer.id >= id,
+				);
+			},
+			yPercent: 0,
+		},
+	);
+}
+
+watch(
+	() => [active, label] as const,
+	([isActive, nextLabel], previous) => {
+		if (nextLabel === labelLayers.value.at(-1)?.text) return;
+
+		const layer = { id: nextLabelId++, text: nextLabel };
+		const mask = labelMask.value;
+		const slides =
+			Boolean(previous?.[0]) &&
+			isActive &&
+			Boolean(mask) &&
+			!prefersReducedMotion.value;
+
+		if (!slides || !mask) {
+			resetLabelMotion();
+			labelLayers.value = [layer];
+			return;
+		}
+
+		const fromWidth = mask.getBoundingClientRect().width;
+		labelLayers.value = [...labelLayers.value, layer];
+		return slideLabel(layer.id, fromWidth);
+	},
+);
+
 watch(
 	() => [active, size] as const,
 	([isActive], previous) => {
@@ -131,7 +214,7 @@ watch(
 	},
 );
 
-onMounted(() => {
+onMounted(async () => {
 	createMatchMedia(
 		{
 			finePointer: "(hover: hover) and (pointer: fine)",
@@ -178,11 +261,15 @@ onMounted(() => {
 		},
 		tooltip,
 	);
+
+	const CustomEase = await loadPlugin("CustomEase");
+	if (CustomEase) labelEase = registerSlideEase(CustomEase);
 });
 
 onScopeDispose(() => {
 	const element = media.value;
 	if (element) gsap.killTweensOf(element.children);
+	resetLabelMotion();
 });
 </script>
 
@@ -217,7 +304,17 @@ onScopeDispose(() => {
 					:src="layer.src"
 				/>
 			</span>
-			<span class="trailing-tooltip-label">{{ label }}</span>
+			<span ref="labelMask" class="trailing-tooltip-label">
+				<span
+					v-for="layer in labelLayers"
+					:key="layer.id"
+					class="trailing-tooltip-label-text"
+					:data-label-layer="layer.id"
+					:data-leaving="layer.id !== currentLabelId"
+				>
+					{{ layer.text }}
+				</span>
+			</span>
 			<span v-if="preload.length" class="trailing-tooltip-preload">
 				<NuxtImg
 					v-for="src in preload"
@@ -269,7 +366,15 @@ onScopeDispose(() => {
 }
 
 .trailing-tooltip-label {
-	@apply block whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
+	@apply relative -my-[0.15em] block overflow-y-clip whitespace-nowrap text-3xl tracking-tighter leading-none font-semibold;
+}
+
+.trailing-tooltip-label-text {
+	@apply block py-[0.15em];
+}
+
+.trailing-tooltip-label-text[data-leaving="true"] {
+	@apply absolute top-0 left-0;
 }
 
 .trailing-tooltip-mark {

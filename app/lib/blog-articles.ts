@@ -1,5 +1,7 @@
+import type { BlogCategory } from "./blog-categories";
+
 export interface BlogArticle {
-   category: string;
+   category: BlogCategory;
    image: string;
    publishedAt: string;
    title: string;

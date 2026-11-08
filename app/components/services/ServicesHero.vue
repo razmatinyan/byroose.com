@@ -2,10 +2,7 @@
 import { defineAsyncComponent, useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import { appIcons } from "@/lib/icons";
-import {
-   servicesHeroImages,
-   servicesOfferImageSizes,
-} from "@/lib/services-hero";
+import { servicesHeroImages } from "@/lib/services-hero";
 
 const TrailingTooltip = defineAsyncComponent(
    () => import("@/components/shared/TrailingTooltip.vue"),
@@ -24,7 +21,6 @@ const titleLines: readonly HeroTitleLine[] = [
 ];
 
 const aboutLabel = "About";
-const [poster] = servicesHeroImages;
 
 function lineText({ lead, trail = "" }: HeroTitleLine) {
    return `${lead}${trail}`;
@@ -85,7 +81,6 @@ function showAboutTooltip() {
                      v-else-if="line.inset === 'media'"
                      class="services-hero-inset services-hero-media"
                      data-services-hero-inset
-                     data-services-flight-origin
                      aria-hidden="true"
                      ><span
                         class="services-hero-inset-content"
@@ -94,17 +89,8 @@ function showAboutTooltip() {
                            class="services-hero-cycle"
                            :images="servicesHeroImages"
                            loading="eager"
-                           :sizes="servicesOfferImageSizes"
-                           densities="x1" /><NuxtImg
-                           v-if="poster"
-                           class="services-hero-poster"
-                           :src="poster.src"
-                           alt=""
-                           :width="poster.width"
-                           :height="poster.height"
                            sizes="sm:448px"
-                           loading="eager"
-                           draggable="false" /></span></span
+                           densities="x1" /></span></span
                   ><span aria-hidden="true">{{ line.trail }}</span></span
                >
             </span>
@@ -135,7 +121,7 @@ function showAboutTooltip() {
 
 .services-hero-title {
    @apply font-bold tracking-[-0.05em];
-   font-size: min(15.5cqi, 26svh);
+   font-size: min(12.5cqi, 21svh);
    line-height: 0.88;
    margin-top: -0.2em;
    --services-hero-inset-height: 0.8em;
@@ -178,11 +164,7 @@ function showAboutTooltip() {
 }
 
 .services-hero-cycle {
-   @apply size-full lg:hidden;
-}
-
-.services-hero-poster {
-   @apply absolute inset-0 hidden size-full object-cover select-none lg:motion-reduce:block;
+   @apply size-full;
 }
 
 .services-hero-link {

@@ -170,6 +170,7 @@ export function useWorkMotion(
             end: "top top",
             endTrigger: more,
             invalidateOnRefresh: true,
+            refreshPriority: 2,
             scrub: true,
             start: () =>
                documentTop(lastCase) +

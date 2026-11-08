@@ -25,9 +25,16 @@ type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
 type SplitListSource = MaybeRefOrGetter<
    readonly (SplitTextResult | undefined)[]
 >;
+type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 
 interface AboutSectionMotionOptions {
    textSplits?: SplitListSource;
+   titleSplit?: SplitSource;
+}
+
+interface TitleParts {
+   lines: HTMLElement[];
+   masks: HTMLElement[];
 }
 
 const selectors = {
@@ -54,7 +61,7 @@ function queryAll(root: HTMLElement, selector: string) {
 
 export function useAboutSectionMotion(
    scope: MotionScope,
-   { textSplits = [] }: AboutSectionMotionOptions = {},
+   { textSplits = [], titleSplit }: AboutSectionMotionOptions = {},
 ) {
    const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
@@ -62,9 +69,18 @@ export function useAboutSectionMotion(
    let disposed = false;
    let initialized = false;
 
+   function titlePartsOf(title: HTMLElement): TitleParts {
+      const split = titleSplit ? toValue(titleSplit) : undefined;
+      if (split) return { lines: split.lines, masks: split.masks };
+
+      return {
+         lines: queryAll(title, selectors.titleLine),
+         masks: queryAll(title, selectors.titleMask),
+      };
+   }
+
    function revealTitle(title: HTMLElement) {
-      const lines = queryAll(title, selectors.titleLine);
-      const masks = queryAll(title, selectors.titleMask);
+      const { lines, masks } = titlePartsOf(title);
       if (!lines.length) {
          titleRevealed.value = true;
          return;
@@ -221,9 +237,13 @@ export function useAboutSectionMotion(
    }
 
    watch(
-      () => toValue(textSplits),
-      (splits) => {
-         if (splits.includes(undefined)) return;
+      () =>
+         [
+            toValue(textSplits),
+            titleSplit ? toValue(titleSplit) : null,
+         ] as const,
+      ([splits, title]) => {
+         if (splits.includes(undefined) || title === undefined) return;
 
          return initialize(splits.map((parts) => parts?.lines ?? []));
       },

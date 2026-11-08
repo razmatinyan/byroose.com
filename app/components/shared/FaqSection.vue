@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, useTemplateRef } from 'vue'
+import ArrowLink from '@/components/shared/ArrowLink.vue'
 import SplitText from '@/components/shared/SplitText.vue'
 import {
 	Accordion,
@@ -10,60 +11,91 @@ import {
 import { appIcons } from '@/lib/icons'
 import type { SplitTextResult } from '@/lib/split-text'
 
-const { revealReady = true, structuredData = true } = defineProps<{
+export interface FaqLink {
+	label: string
+	to: string
+}
+
+export interface FaqItem {
+	id: string
+	question: string
+	answer: string
+	link?: FaqLink
+}
+
+const {
+	title = 'Frequently Asked Questions',
+	items,
+	revealReady = true,
+	structuredData = true,
+} = defineProps<{
+	title?: string
+	items?: readonly FaqItem[]
 	revealReady?: boolean
 	structuredData?: boolean
 }>()
 
-const faqTitle = 'Frequently Asked Questions'
-
-const faqs = [
+const defaultFaqs: readonly FaqItem[] = [
+	{
+		id: 'ai-agency',
+		question: 'What does an AI content agency do?',
+		answer:
+			'An AI content agency creates marketing content, such as videos, UGC ads, reels, and product photos, using AI tools. At forrrow, people direct and edit everything AI generates, and we also build the website the content sends people to.',
+	},
+	{
+		id: 'quality',
+		question: 'Is AI-generated content good enough for my brand?',
+		answer:
+			'Yes, when people direct it. AI gives us speed and volume, and our creative director and editors check every asset so it looks like your brand and is worth stopping for.',
+	},
 	{
 		id: 'start',
-		question: 'How fast can you start?',
+		question: 'How fast can we start?',
 		answer:
-			'Kickoff happens within ten working days of a signed scope. Before that, we run a short discovery call to agree on goals, audience, and what success looks like, so the first sprint starts from a clear brief. If the brief is already tight and your assets are ready, a sprint can start sooner.',
+			'Usually within a couple of weeks. We begin with a discovery call about your brand, your audience, and your goals, then get to work.',
 	},
 	{
 		id: 'in-house',
-		question: 'Do you work with in-house teams?',
+		question: 'Can you work with our in-house marketing team?',
 		answer:
-			'Most of the time. We plug into your stand-ups, work inside the tools your team already uses, and keep decisions visible in one shared channel instead of a long email chain. When the work is done, we hand over everything we built with documentation, so your team can run it without waiting on us.',
-	},
-	{
-		id: 'ai-content',
-		question: 'What does the AI content actually mean?',
-		answer:
-			'A model tuned on your voice and your look, producing visuals, video and reels inside a human review loop. Every asset passes through an editor who checks it against your brand, fixes what the model gets wrong, and decides whether it ships. Nothing publishes without that sign-off.',
+			"Yes. Many clients keep their own social media or development team and use us for the stage they're missing. We plug into your brief and your tools, and we hand over everything we make.",
 	},
 	{
 		id: 'single-service',
-		question: 'Can we buy one service on its own?',
+		question: 'Can I hire you just for AI content, or just for web development?',
 		answer:
-			'Yes. AI content creation and web development are sold separately, and plenty of clients start with one. They compound when the site and the content are built to the same brief: the imagery is made for the layouts it lives in, and the pages are designed around the content you will actually publish.',
+			"Yes. But the biggest results come when both are built to the same brief, because that's where most funnels leak. If you start with one, we'll tell you honestly whether the other half is holding you back.",
+	},
+	{
+		id: 'cost',
+		question: 'How much does an AI content and web development agency cost?',
+		answer:
+			"It depends on the scope: how much content you need each month, how big the website is, and whether we do both. Tell us about your project and we'll send an exact quote.",
 	},
 	{
 		id: 'reporting',
-		question: 'How do you report results?',
+		question: 'How do you measure and report results?',
 		answer:
-			'One dashboard, weekly written readouts, and a monthly decision meeting. The readouts explain what moved and why in plain language rather than a wall of charts. In the monthly meeting we agree on what to double down on and drop the formats that are not working.',
+			"One monthly report that follows the whole funnel: which content stopped people, how many came to the website, and how many became leads. Plus what we're keeping, what we're cutting, and why.",
 	},
 	{
 		id: 'commitment',
-		question: 'Is there a minimum commitment?',
+		question: 'Why is there a 90-day minimum?',
 		answer:
-			'Ninety days on retainers, so there is enough runway to test, learn, and act on what the numbers show. After that it is month to month. Fixed-scope work, such as a website build, is quoted as a project and runs to its agreed scope and timeline.',
+			'Because a marketing funnel needs time to learn. The first month sets the baseline, the second tests what works, and by the third you can see which posts bring which leads.',
 	},
 ]
+
+const faqs = computed(() => items ?? defaultFaqs)
 
 const faqRoot = useTemplateRef<HTMLElement>('faqRoot')
 const openItem = shallowRef<string>()
 const titleSplit = shallowRef<SplitTextResult>()
 const answerSplits = shallowRef<(SplitTextResult | undefined)[]>(
-	faqs.map(() => undefined),
+	faqs.value.map(() => undefined),
 )
 const openIndex = computed(() =>
-	faqs.findIndex(faq => faq.id === openItem.value),
+	faqs.value.findIndex(faq => faq.id === openItem.value),
 )
 
 useFaqMotion(faqRoot, {
@@ -76,7 +108,7 @@ useFaqMotion(faqRoot, {
 if (structuredData) {
 	useSchemaOrg([
 		defineWebPage({ '@type': 'FAQPage' }),
-		...faqs.map(faq =>
+		...faqs.value.map(faq =>
 			defineQuestion({ name: faq.question, acceptedAnswer: faq.answer }),
 		),
 	])
@@ -98,7 +130,7 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 			as="h2"
 			auto-split
 			mask="lines"
-			:text="faqTitle"
+			:text="title"
 			type="lines,words"
 			data-faq-title
 			@split="setTitleSplit"
@@ -145,6 +177,12 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 						:text="faq.answer"
 						type="lines,words"
 						@split="setAnswerSplit(index, $event)"
+					/>
+					<ArrowLink
+						v-if="faq.link"
+						class="faq-answer-link"
+						:to="faq.link.to"
+						:label="faq.link.label"
 					/>
 				</AccordionContent>
 				<span class="faq-divider" data-faq-divider aria-hidden="true" />
@@ -247,6 +285,10 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 
 .faq-answer {
 	@apply m-0 max-w-[44ch] text-lg leading-[1.2] font-medium tracking-[-0.02em] text-pretty text-muted-foreground md:text-xl xl:text-2xl;
+}
+
+.faq-answer-link {
+	@apply mt-6 md:mt-8;
 }
 
 .faq-divider {

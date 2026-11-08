@@ -1,9 +1,9 @@
 ---
 name: git
-description: Safely deliver byroose.com changes through focused Git commits and a normal GitHub push. Use whenever the user invokes /git or $git, asks to use the project git skill, or explicitly asks to review current changes, create conventional commits, and push the current branch. Audit instructions, ownership, diffs, documentation impact, verification, branch state, and remotes before any Git mutation.
+description: Safely deliver forrrow.com changes through focused Git commits and a normal GitHub push. Use whenever the user invokes /git or $git, asks to use the project git skill, or explicitly asks to review current changes, create conventional commits, and push the current branch. Audit instructions, ownership, diffs, documentation impact, verification, branch state, and remotes before any Git mutation.
 compatibility: Requires a Git worktree and repository access. Push requires an accessible origin remote and valid authentication.
 metadata:
-  author: byroose
+  author: forrrow
   version: "1.0.0"
 ---
 

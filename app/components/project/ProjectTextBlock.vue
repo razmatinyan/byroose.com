@@ -11,7 +11,9 @@ const { block } = defineProps<{
       <div class="text-block-content">
          <h2 v-if="block.title" class="text-block-title">{{ block.title }}</h2>
          <div v-if="block.paragraphs.length" class="text-block-body">
-            <p v-for="(paragraph, index) in block.paragraphs" :key="index">{{ paragraph }}</p>
+            <p v-for="(paragraph, index) in block.paragraphs" :key="index">
+               {{ paragraph }}
+            </p>
          </div>
       </div>
    </div>
@@ -45,6 +47,6 @@ const { block } = defineProps<{
 }
 
 .text-block-body {
-   @apply flex flex-col gap-[1lh] text-xl leading-[1.1] font-medium tracking-[-0.01em] text-foreground md:text-2xl;
+   @apply flex flex-col gap-[1lh] text-xl leading-[1.1] font-semibold tracking-[-0.01em] text-foreground md:text-2xl;
 }
 </style>

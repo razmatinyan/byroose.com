@@ -14,7 +14,7 @@ interface Reason {
 
 const whyTitle = 'Why Choose Us'
 const whyIntro =
-	"Two services, one team, and a process you can watch every week. Here's what changes when byroose makes your content and your site."
+	"Two services, one team, and a process you can watch every week. Here's what changes when forrrow makes your content and your site."
 const whyOutro =
 	"Still comparing agencies? Tell us what you're building and we'll show you how these six play out for your brand."
 

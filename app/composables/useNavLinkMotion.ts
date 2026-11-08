@@ -1,16 +1,26 @@
-import { onMounted } from 'vue'
+import { onMounted, onScopeDispose } from 'vue'
 import { unrefElement } from '@vueuse/core'
 import type { MaybeComputedElementRef } from '@vueuse/core'
-import { swapDuration, swapEase } from '@/lib/swap-timing'
+import { registerSlideEase, slideDuration } from '@/lib/slide-ease'
 
 const labelSelector = '[data-nav-label]'
 const labelCopySelector = '[data-nav-label-copy]'
 const lineSelector = '[data-nav-line]'
 
 export function useNavLinkMotion(target: MaybeComputedElementRef) {
-	const { createMatchMedia, gsap } = useGsap()
+	const { createMatchMedia, gsap, loadPlugin } = useGsap()
+	let active = true
 
-	onMounted(() => {
+	onScopeDispose(() => {
+		active = false
+	})
+
+	onMounted(async () => {
+		const CustomEase = await loadPlugin('CustomEase')
+		if (!CustomEase || !active) return
+
+		const slideEase = registerSlideEase(CustomEase)
+
 		createMatchMedia(
 			{
 				motion: '(prefers-reduced-motion: no-preference)',
@@ -26,26 +36,27 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 				const line = element.querySelector<HTMLElement>(lineSelector)
 				if (!label || !labelCopy || !line) return
 
+				const animated = Boolean(context.conditions?.motion)
+				const shared = { force3D: false, overwrite: 'auto' as const }
 				const tween = {
-					duration: context.conditions?.motion ? swapDuration : 0,
-					ease: swapEase,
-					force3D: false,
-					overwrite: 'auto' as const,
+					...shared,
+					duration: animated ? slideDuration : 0,
+					ease: slideEase,
 				}
-				let active = false
+				let hovered = false
 				let pointerInside = false
 				let focusVisible = false
 
-				gsap.set(label, { scale: 1 })
-				gsap.set(labelCopy, { scale: 0 })
+				gsap.set(label, { yPercent: 0 })
+				gsap.set(labelCopy, { y: 0, yPercent: 100 })
 				gsap.set(line, { scaleX: 0 })
 
 				const settle = (next: boolean) => {
-					if (next === active) return
+					if (next === hovered) return
 
-					active = next
-					gsap.to(label, { ...tween, scale: next ? 0 : 1 })
-					gsap.to(labelCopy, { ...tween, scale: next ? 1 : 0 })
+					hovered = next
+					gsap.to(label, { ...tween, yPercent: next ? -100 : 0 })
+					gsap.to(labelCopy, { ...tween, yPercent: next ? 0 : 100 })
 					gsap.to(line, { ...tween, scaleX: next ? 1 : 0 })
 				}
 

@@ -2,7 +2,7 @@ import type { ContactFormPayload } from '../../app/lib/contact-form'
 import { siteEmail, siteName } from '../../app/lib/site'
 
 const resendEmailsEndpoint = 'https://api.resend.com/emails'
-const contactMailSender = `${siteName} website <contact@hello.byroose.com>`
+const contactMailSender = `${siteName} website <contact@hello.forrrow.com>`
 
 
 function singleLine(value: string) {

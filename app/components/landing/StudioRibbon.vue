@@ -4,9 +4,7 @@ import { ribbonPaintOrder, ribbonSegments } from "@/lib/ribbon-path";
 import type { RibbonSegment } from "@/lib/ribbon-path";
 
 const shadeIdPrefix = useId();
-const shadedSegments = ribbonSegments.filter(
-   ({ layer }) => layer === "under",
-);
+const shadedSegments = ribbonSegments.filter(({ layer }) => layer === "under");
 
 function shadeId(segmentId: string) {
    return `${shadeIdPrefix}-${segmentId}`;
@@ -57,7 +55,7 @@ function segmentStroke(segment: RibbonSegment) {
 .studio-ribbon {
    --studio-ribbon-lift: 15vw;
 
-   @apply pointer-events-none absolute inset-x-0 -z-10 size-full overflow-visible select-none;
+   @apply pointer-events-none absolute inset-x-0 -z-10 size-full overflow-visible select-none opacity-30;
    top: calc(var(--studio-ribbon-lift) * -1);
 }
 

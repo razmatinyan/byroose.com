@@ -3,8 +3,10 @@ import { defineAsyncComponent, useTemplateRef } from "vue";
 import DrawnLine from "@/components/shared/DrawnLine.vue";
 import { aboutTeamLine } from "@/lib/about-line-path";
 import { appIcons } from "@/lib/icons";
+import { servicePagePaths } from "@/lib/services-anchors";
 import AboutTeamMember from "./AboutTeamMember.vue";
 import type {
+   AboutMemberLink,
    AboutMemberPortrait,
    AboutMemberSocial,
 } from "./AboutTeamMember.vue";
@@ -16,14 +18,15 @@ const TrailingTooltip = defineAsyncComponent(
 );
 
 const titleLines: readonly AboutTitleLine[] = [
-   { text: "Who stands" },
-   { text: "behind byroose", underlined: "behind" },
+   { text: "Who are the" },
+   { text: "forrrow founders", logo: "forrrow", underlined: "founders" },
 ];
 
 const tooltipLabel = "More Info";
 
 interface TeamMember {
    bio: readonly string[];
+   link?: AboutMemberLink;
    name: string;
    portrait?: AboutMemberPortrait;
    role: string;
@@ -33,17 +36,20 @@ interface TeamMember {
 const members: readonly TeamMember[] = [
    {
       bio: [
-         "Ruzan started byroose to bring AI content creation and web development into one connected practice, so brands stop juggling separate teams for what they say and where they say it.",
-         "Ruzan leads the creative direction on every project, from the first idea to the final cut, and makes sure each piece of content earns its place in front of the audience it was built for.",
+         "Ruzan leads AI content creation: the concepts, the visuals, and the videos that make people stop. She directs every asset and makes sure it looks like your brand, not like a prompt.",
       ],
+      link: {
+         label: "See AI content creation services",
+         to: servicePagePaths.aiContent,
+      },
       name: "Ruzan Darbinyan",
       portrait: {
-         alt: "Ruzan Darbinyan kicking one leg high beside a lamppost on a sunny street corner",
+         alt: "Ruzan Darbinyan, co-founder and creative director of forrrow",
          height: 1536,
          src: "/images/founder.jpg",
          width: 2048,
       },
-      role: "Co-Founder & Creative Director",
+      role: "Co-Founder and Creative Director",
       socials: [
          {
             href: "https://www.linkedin.com/in/ruzan-darbinian-b38855232/",
@@ -59,11 +65,14 @@ const members: readonly TeamMember[] = [
    },
    {
       bio: [
-         "Razmik co-founded byroose and builds the websites that turn attention into enquiries. Every site starts with a clear structure, loads fast, and stays easy to grow.",
-         "Razmik owns the technical side of each project, from the first prototype to launch, so the content and the code ship as one experience instead of two handoffs.",
+         "Razmik leads web development: the websites, forms, and tracking that turn attention into leads. He builds sites that are fast, accessible, and easy to update.",
       ],
+      link: {
+         label: "See web development services",
+         to: servicePagePaths.web,
+      },
       name: "Razmik Matinyan",
-      role: "Co-Founder & Senior Software Engineer",
+      role: "Co-Founder and Senior Software Engineer",
       socials: [
          {
             href: "https://www.linkedin.com/in/razmatinyan/",
@@ -111,6 +120,7 @@ function activateTooltip() {
             :key="member.name"
             class="about-team-member"
             :bio="member.bio"
+            :link="member.link"
             :name="member.name"
             :portrait="member.portrait"
             :role="member.role"
@@ -134,7 +144,9 @@ function activateTooltip() {
 
 .about-team {
    @apply relative z-10 rounded-t-[clamp(1.5rem,3vw,3rem)] bg-canvas-shade py-section text-canvas-shade-foreground;
+   padding-bottom: calc(var(--spacing-section) * 2.25);
    --about-member-width: clamp(16rem, 34vw, 32rem);
+   --about-member-inset: clamp(2rem, 8vw, 9rem);
 }
 
 .about-team-line {
@@ -158,8 +170,13 @@ function activateTooltip() {
 }
 
 @media (min-width: 48rem) {
+   .about-team-member:first-child {
+      margin-right: var(--about-member-inset);
+   }
+
    .about-team-member:last-child {
       margin-top: calc(var(--about-member-width) * -0.45);
+      margin-left: var(--about-member-inset);
    }
 }
 </style>

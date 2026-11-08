@@ -1,4 +1,4 @@
-import { nextTick, onScopeDispose, shallowRef, toValue, watch } from "vue";
+import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
 import {
    servicesHeroInsetContentScale,
@@ -123,22 +123,15 @@ export function useServicesMotion(
    let panels: ServicePanelParts[] = [];
    const textTimelines = new Map<HTMLElement, gsap.core.Timeline>();
    const revealedPanels = new WeakSet<HTMLElement>();
-   const introRevealed = shallowRef(false);
 
    function revealIntro(intro: HTMLElement, words: HTMLElement[]) {
       if (!words.length) return;
 
-      const wordsRevealedAt =
-         introWordDuration + introWordStagger * (words.length - 1);
-      introRevealed.value = false;
       gsap.set(words, { ...introWordFrom, visibility: "inherit" });
 
-      const timeline: gsap.core.Timeline = gsap
+      gsap
          .timeline({
             defaults: { ease: "none" },
-            onUpdate: () => {
-               introRevealed.value = timeline.time() >= wordsRevealedAt;
-            },
             scrollTrigger: {
                end: `+=${introPinLength * 100}%`,
                pin: true,
@@ -544,7 +537,6 @@ export function useServicesMotion(
                   ...introWords,
                   ...panels.flatMap(({ descriptionLines }) => descriptionLines),
                ]);
-               introRevealed.value = true;
                return;
             }
 
@@ -589,6 +581,4 @@ export function useServicesMotion(
    onScopeDispose(() => {
       disposed = true;
    });
-
-   return { introRevealed };
 }

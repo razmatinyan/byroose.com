@@ -3,12 +3,15 @@ import { shallowRef } from "vue";
 import type { HTMLAttributes } from "vue";
 import { Card } from "@/components/ui/card";
 import HoverVideo from "@/components/shared/HoverVideo.vue";
+import ArrowLink from "@/components/shared/ArrowLink.vue";
 import LiveLink from "@/components/shared/LiveLink.vue";
 import { surfaceTones } from "@/lib/surfaces";
 import type { SurfaceTone } from "@/lib/surfaces";
+import type { ProjectCategory } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
 const {
+	categories = [],
 	class: className,
 	client,
 	description,
@@ -19,9 +22,12 @@ const {
 	liveUrl,
 	results,
 	revealTones = ["yellow", "primary"],
+	serviceLink,
+	title,
 	tone = "primary",
 	video,
 } = defineProps<{
+	categories?: readonly ProjectCategory[];
 	class?: HTMLAttributes["class"];
 	client: string;
 	description: string;
@@ -32,6 +38,8 @@ const {
 	liveUrl?: string;
 	results?: readonly { label: string; value: string }[];
 	revealTones?: readonly SurfaceTone[];
+	serviceLink?: { label: string; to: string };
+	title?: string;
 	tone?: SurfaceTone;
 	video?: string;
 }>();
@@ -109,7 +117,7 @@ function deactivate() {
 
 		<div class="case-body">
 			<div class="case-line">
-				<h3 data-work-case-reveal class="case-title">{{ client }}</h3>
+				<h3 data-work-case-reveal class="case-title">{{ title ?? client }}</h3>
 			</div>
 
 			<div class="case-line mt-4">
@@ -122,6 +130,24 @@ function deactivate() {
 				<div data-work-case-reveal>
 					<LiveLink :href="liveUrl" />
 				</div>
+			</div>
+
+			<div v-if="serviceLink" class="case-line case-live">
+				<div data-work-case-reveal>
+					<ArrowLink :to="serviceLink.to" :label="serviceLink.label" />
+				</div>
+			</div>
+
+			<div v-if="categories.length" class="case-line case-services">
+				<ul data-work-case-reveal class="case-service-list" aria-label="Services">
+					<li
+						v-for="category in categories"
+						:key="category"
+						class="case-service"
+					>
+						{{ category }}
+					</li>
+				</ul>
 			</div>
 
 			<div v-if="results?.length" class="case-results">
@@ -167,6 +193,10 @@ function deactivate() {
 
 .case-live {
 	@apply relative z-2 -m-1 mt-7 p-1;
+}
+
+.case-live :deep(.arrow-link) {
+	@apply w-fit max-w-full;
 }
 
 .case-media {
@@ -223,11 +253,23 @@ function deactivate() {
 }
 
 .case-title {
-	@apply m-0 pb-[0.12em] text-5xl leading-none font-bold tracking-[-0.045em] md:text-6xl xl:text-[5rem];
+	@apply m-0 pb-[0.12em] text-4xl leading-[0.95] font-bold tracking-[-0.045em] text-balance md:text-5xl xl:text-6xl;
 }
 
 .case-description {
 	@apply m-0 max-w-[36ch] text-xl leading-tight font-medium tracking-[-0.03em] text-brand-subtle md:text-2xl;
+}
+
+.case-services {
+	@apply mt-7;
+}
+
+.case-service-list {
+	@apply m-0 flex list-none flex-wrap gap-2.5 p-0 md:gap-3;
+}
+
+.case-service {
+	@apply rounded-full bg-foreground/8 px-6 py-3.5 text-xl leading-none font-semibold tracking-[-0.03em] md:text-2xl;
 }
 
 .case-results {

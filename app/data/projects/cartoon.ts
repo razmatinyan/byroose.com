@@ -4,7 +4,7 @@ export default defineProject({
    slug: "cartoon",
    name: "Cartoon",
    description:
-      "A short cartoon about a girl who oversleeps on a school day, jumps out of bed, and gets dressed by magic.",
+      "An animated series made with our AI pipeline, to show that brands can own a recurring character without a full animation studio.",
    categories: ["Reel", "Video", "Image"],
    surface: { color: "oklch(0.8892 0.0345 40.68)", ink: "dark" },
    cover: {
@@ -90,6 +90,6 @@ export default defineProject({
    seo: {
       title: "Cartoon: A Late-for-School Animated Short",
       description:
-         "How byroose made a short cartoon, from designing the character and her outfit to a late-for-school morning where magic gets her dressed.",
+         "How forrrow made a short cartoon, from designing the character and her outfit to a late-for-school morning where magic gets her dressed.",
    },
 });

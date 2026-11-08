@@ -7,7 +7,7 @@ import type { SplitTextResult } from "@/lib/split-text";
 
 const titleLines: readonly AboutTitleLine[] = [
    { text: "Why people" },
-   { text: "trust byroose", underlined: "trust" },
+   { text: "trust forrrow", logo: "forrrow", underlined: "trust" },
 ];
 
 const headingImages = [

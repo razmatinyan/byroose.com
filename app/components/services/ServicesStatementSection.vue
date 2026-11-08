@@ -4,7 +4,7 @@ import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const statement =
-   "byroose brings AI content creation and web development into one practice. We produce visuals, videos, and reels through an AI pipeline with human editing, then design and build the website they lead to. One team carries the idea from the first frame to the final page, so everything your audience sees points to the same next step.";
+   "Buy AI content, web development, or both. Either way, your AI content and your website are made by the same team, to the same brief, so nothing leaks between social media and sales.";
 
 const statementRoot = useTemplateRef<HTMLElement>("statementRoot");
 const statementSplit = shallowRef<SplitTextResult>();

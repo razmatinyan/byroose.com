@@ -1,4 +1,4 @@
-# byroose design system
+# forrrow design system
 
 The design system keeps the original landing-page character while following
 Shadcn Vue and Tailwind CSS v4 conventions. Components own behavior and variants;
@@ -54,13 +54,13 @@ visual and accessibility review.
 | `brand-subtle`                                                    | Dark neutral                                                    | Editorial body copy below primary emphasis                                                                                                      |
 | `ribbon`                                                          | Fresh green, `oklch(0.82 0.16 135)`                             | The decorative Studio ribbon stroke                                                                                                             |
 | `ribbon-shade`                                                    | Deeper green, `oklch(0.66 0.15 142)`                            | The ribbon's shading where it passes under itself                                                                                               |
-| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface, such as the About team card actions                                                                                  |
+| `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface                                                                                                                        |
 | `destructive`                                                     | Alert red                                                       | Destructive and error actions only                                                                                                              |
 | `border`, `input`, and `ring`                                     | Semantic controls                                               | Boundaries, fields, and focus indicators                                                                                                        |
 
 `brand-blue` and `brand-pink` are explicit brand aliases. Generic components
 should prefer `secondary` and `accent`. Brand aliases are appropriate when the
-color itself is part of a byroose composition. `brand-cream` no longer matches
+color itself is part of a forrrow composition. `brand-cream` no longer matches
 the canvas, so use it only when a surface must read as cream.
 
 Orange, blue, green, and violet surfaces use white foregrounds. Yellow and pink
@@ -93,8 +93,7 @@ its foreground, card, popover, accent, and cream foreground tokens. Change
 `canvas-shade` is neutral rather than warm, so it reads as a grey version of
 the canvas instead of another cream. It pairs with the ink
 `canvas-shade-foreground`, and in the dark theme it sits one step above the dark
-canvas with the cream foreground. `ribbon` doubles as a surface on the round
-`ribbon` actions of the About team cards. Its `ribbon-foreground` is the ink in the light theme and the
+canvas with the cream foreground. Its `ribbon-foreground` is the ink in the light theme and the
 cream in the dark theme, where the ribbon itself turns a deeper green.
 
 ### Adding colors
@@ -128,7 +127,7 @@ through the extra space. Recheck every mask and every measured wrap when the fon
 changes.
 
 - `text-hero` is reserved for the primary landing statement. It sets
-  `clamp(2.875rem, 8.8vw, 9.5rem)`, about 127px at 1440 wide. See Home hero
+  `clamp(2.5rem, 7.65vw, 8.25rem)`, about 110px at 1440 wide. See Home hero
   layout for how the hero title uses it.
 - `text-display` is the largest title size. It sets
   `min(clamp(3.5rem, 11vw, 12rem), 12vw)` at `0.88` leading, about 158px at
@@ -379,7 +378,7 @@ directions with `gsap.set`, so the notice still appears and still dismisses
 without travelling.
 
 Accepting writes `accepted` and declining writes `declined` to the
-`byroose-cookie-consent` cookie for one year. Any future tracking must check for
+`forrrow-cookie-consent` cookie for one year. Any future tracking must check for
 `accepted` before it runs. Because the value is read through `useCookie`, the
 server already knows whether to render the notice, so an answered banner never
 flashes during hydration.
@@ -387,44 +386,60 @@ flashes during hydration.
 ## Site call to action
 
 `SiteCtaSection` closes every route, between the page and the footer. It is a
-dark `foreground` section with `background` text that fills at least the
-viewport, centered, with "Have an idea?" and "Let's build it." on two bold
-lines in `text-display`, `min(clamp(3.5rem, 11vw, 12rem), 12vw)` at `0.88`
-leading, with `-0.05em` tracking, and a large `light` Start a project action to `/contact` with
-an arrow right glyph and the hover bounce. It marks the header as dark. When
-the title reaches 82 percent of the viewport, its words rise one by one from
-their word masks in reading order across both lines, with the shared word
-reveal, `0.8s` on `power3.out`, and the blog title's `0.12s` stagger. The
-action rises one stagger step after the last word. The word masks carry
-`0.12em` above and `0.18em` below, cancelled by equal negative margins. The action's rise mask clips only
+light `background` section with `foreground` text that fills at least the
+viewport. From `lg` it splits into two equal columns: the copy on the left,
+left-aligned and centered vertically, and a projects marquee on the right.
+Below `lg` the copy comes first and the marquee follows as a row. Its copy comes from `app/lib/site-cta.ts` by route. The
+default title is "Turn your social media views into leads?" on two
+bold lines, "Turn your social media" and "views into leads?", at
+`clamp(1.75rem, 8.6vw, 9.5rem)` with `0.9` leading and `-0.05em` tracking.
+That is smaller than `text-display`, because the lines are longer than the old
+title's, and the floor keeps "Turn your social media" on one line down to 320
+wide. The Services route asks "Not sure which marketing service you need?"
+with its own description. The AI content creation route says "Get AI content
+that turns views into leads" on the lines "Get AI content that" and "turns
+views into leads" with no description, so the action follows the title
+directly. The web development route says "Get a website that turns your views
+into leads" on the lines "Get a website that turns" and "your views into
+leads", also with no description. Every Blog page, the category pages, and every post ask "Want this done for
+your brand?" on the lines "Want this done" and "for your brand?" with the
+description "We make the AI content and build the website, so nothing leaks
+in between." The Work route asks "Want work like this for your brand?" on the lines
+"Want work like this" and "for your brand?", with no description. The About
+route says "Work with an AI
+content and web development agency" on the lines "Work with an AI content" and
+"and web development agency", with no description, and sets `titleScale`
+to `0.85` so its title renders at 85 percent of the shared size. The title is `w-max` and `useFitText` scales it down,
+never up, when its longest line is wider than the copy column, so a longer route
+title still holds two lines at every width. Below it sits a description in `font-medium`
+`foreground/60` at `text-xl` and `text-2xl` from `md`, held to `38ch` with
+balanced wrapping, then a large `default` Start a project
+action to `/contact` with an arrow right glyph and the hover bounce. When the title reaches 82 percent of the viewport, its
+lines rise one after the other from their line masks, with the shared word
+reveal, `0.8s` on `power3.out`, and the title line reveal's `0.1s` stagger.
+The description lines then rise with the hero description's line reveal, and
+the action rises after the last line. The line masks carry
+`0.12em` above, `0.18em` below, and `0.12em` on each side, cancelled by equal
+negative margins, so the tight tracking never cuts the last letter of a line. The action's rise mask clips only
 vertically, so the hover bounce can grow the action past its sides without
 cutting its corners. Reduced motion shows the text and the action at rest.
 
-A Three.js smoke background fills the section behind the text. A full-section
-canvas at `-z-10` inside the now `isolate` section paints a drifting value
-noise field, mixed from the section's own `foreground` surface toward its
-`background` ink by up to `0.24`, so the darkest smoke matches the surface and
-the effect follows both themes. The field is cut with a smoothstep between
-`0.26` and `0.62` of its range, so most of the section stays dark and soft grey
-clouds move through it, crossing the section in roughly ten seconds. A
-film grain of `0.08` sits on the final color, one CSS pixel per grain cell, so
-it reads equally on the dark areas and the clouds. It changes about twelve
-times a second through `grainRate`, like the page grain, because a pattern
-that changed every frame would average out to a flat color. The page's own canvas grain
-multiplies a light tile and barely shows on this dark surface, so the section
-needs its own. Moving the mouse over the section leaves a smoke
-trail: every frame the pointer travels a pixel, a soft sprite cut from
-`public/images/smoke-noise.avif` spawns at it, turns, grows, and fades out over
-about two seconds. The trail pushes the noise coordinates themselves by up to
-`0.35` of a noise cell, so the push looks equally strong across the whole
-section, and it lifts the brightness by up to `0.3` of the cloud strength, so
-it still shows over the dark areas. The values live in `smokeField` in
-`app/lib/site-cta-smoke.ts`. The trail renders at half resolution because it
-is only ever sampled as a soft distortion. The canvas fades in over
-`1s` once its first frame is drawn, renders only while the section is near the
-viewport, and never takes the pointer. Reduced motion shows one still frame
-without the trail or the fade. Without WebGL the plain `foreground` surface
-remains.
+The marquee shows every project's cover as a rounded 16:9 card on a `muted`
+ground, with no name or caption, each linking to its project page. On a
+project page it leaves that project out. From `lg` the cards fill the right
+column, up to the page gutter, in one column with a `1.5rem` gap, cut by the
+section's top and bottom edges, and the column scrolls up. Below `lg` the
+cards are `78vw` wide, `48vw` from `sm`, with a `1rem` gap, run from edge to
+edge, and the row scrolls left. Either way the loop crosses one card about
+every `5s`, eases to a stop under the pointer or keyboard focus, and pauses
+off screen. A card's cover does not scale on hover. Instead, on fine-pointer
+devices, the shared `TrailingTooltip` follows the pointer over a card in its
+compact size with an arrow right glyph and "View" followed by the project
+name and "Case", such as "View Cartoon Case". Covers load
+lazily, and a video cover plays muted and looped only while its card is near
+the screen, fading in over its poster once it plays. Reduced motion stops the
+loop and the videos, keeps the posters, and lets the mobile row scroll by
+hand.
 
 The section follows the outgoing page during a page transition, and a fresh
 copy replaces it once the new page has landed, so it reveals again on every
@@ -447,7 +462,7 @@ surface, so it carries no
 action.
 
 From `lg` the top row is a two-column grid. The left column stacks the slogan
-title above the email block. The right column holds Navigation, Social Media, and
+title and its description above the email block. The right column holds Navigation, Social Media, and
 Located in as a three-column grid, then aligns the three credit lines with the
 email block at the bottom of the row. Below `lg` the right side stacks under the
 left column. Its link grid drops to two columns below `sm`.
@@ -456,22 +471,19 @@ The title uses `section-title` on two block lines, "From seen" and "to chosen".
 "seen" and "chosen" each carry a static `WaveUnderline` just below the word, as
 wide as the word, with `animated` off so the lines are always present. The
 "seen" line is the `ribbon` green, and the "chosen" line is brand orange
-`primary`. A transparent right-arrow glyph and a
-`cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
-width of "From seen", with `0.45em` of space above it, which keeps the action
-clear of the wave under "chosen". The glyph is as tall as
-the action, and the action keeps the `light` variant's own white `bg-card`
-surface, so it reads as the lightest shape on the cream footer. Its wrapper is
-`max(2.75rem, 0.7em)` tall, so on desktop the action matches the title scale,
-while on phones it never drops below a comfortable touch target. The left
-column is an inline-size container, and the title sets `min(18cqi, 6.5rem)`,
-about 104px at 1440 wide. The action sets `0.78em` of that. Its label font is
-`0.25em` of the action, with a `0.875rem` floor, and its padding, gap, and glyph
-are all in `em`, so the button scales with the title.
+`primary`. The left column is an inline-size container, and the title sets
+`min(18cqi, 6.5rem)`, about 104px at 1440 wide. The footer has no call to
+action of its own, because the site call to action sits directly above it.
+
+Under the title, `2.5rem` below and `3rem` from `md`, a semibold
+`muted-foreground` description at `text-lg`, `text-xl` from `md`, with
+`-0.03em` tracking and snug leading, held to `24em`, reads "forrrow is an AI
+content and web development agency. We create AI videos and UGC ads that stop
+the scroll, and build websites that turn views into leads."
 
 Below the title, a semibold `muted-foreground` "Or write directly to" label at
 `text-base`, `text-lg` from `md`, with `-0.03em` tracking sits tightly above the
-`contact@hello.byroose.com` mail link.
+`contact@hello.forrrow.com` mail link.
 The lead column uses the larger `gap-16`, `gap-20` from `md`, rhythm.
 
 Column titles are bold `h2` labels in the ink `paper-foreground` at `text-xl`,
@@ -488,7 +500,7 @@ shows "Yerevan, Armenia", a live local time with "GMT +4", then Privacy Policy
 after a larger gap.
 
 The right column ends with "Website by Razo Codes", "© 2026 All Rights
-Reserved", and "byroose inc." as three separate lines that share the email
+Reserved", and "forrrow inc." as three separate lines that share the email
 address typography. "Razo Codes" is a `SiteNavLink` at its `inherit` size and
 opens the author's LinkedIn profile in a new tab. A "Back to Top" button sits on
 the right of the credits, aligned with their last line, in the same item
@@ -790,7 +802,11 @@ with a 404 status, so page transitions run into and out of it.
 below the header and centers the status code as bold display type at
 `clamp(8rem, 30vw, 26rem)` with `-0.06em` tracking, a semibold `text-4xl`,
 `text-6xl` from `md`, heading, a medium `text-xl` `muted-foreground` line of
-copy, and the actions. A 404 reads "This page took a wrong turn" and offers a
+copy, and the actions. A 404 reads "This page scrolled away." over "The link might be old, or we
+moved something. Try our AI content creation services, our web development
+work, or the homepage." The three named destinations are underlined
+`foreground` links to `/services/ai-content-creation`,
+`/services/web-development`, and `/`, which turn `primary` on hover. It offers a
 `dark` Back to home and an `outline` See our work `cta-lg` button. Any other
 error reads "Something went wrong on our side" and offers only Back to home.
 On `app/error.vue` both actions clear the error with `clearError` before
@@ -801,7 +817,7 @@ navigating. The page is
 
 `BrandCard` is the generated 1200 by 630 OG image for every page without its
 own sharing image. It is a dark `foreground` surface with `72px` of padding and
-three rows spread across the height. The top row holds the bold `byroose`
+three rows spread across the height. The top row holds the bold `forrrow`
 wordmark text with `-0.05em` tracking on the left and the site host in muted ink
 on the right. The middle row holds an optional semibold page label in the
 `primary` orange above the bold title, set large with `-0.05em` tracking and
@@ -1145,10 +1161,11 @@ column gap is `3rem`. Below `lg` the title stacks above the copy, which is
 capped at `max-w-md`.
 
 The title is bold with `-0.05em` tracking and `0.82` leading. Its longest line
-measures about `6.8em`. The title is capped at `7.4em` below `lg` and `7.25em`
-from `lg`, so it always wraps into the same four near-equal lines while leaving
-the copy column as much width as possible. From `lg` its size is `text-hero`. Below `lg` it scales to the content width divided by
-`7.6`, so a phone still shows four lines. Each line mask carries `0.22em` of
+measures about `7.7em`. The title is capped at `7.85em`, so it always wraps into
+the same four lines while leaving the copy column as much width as possible.
+From `lg` its size is `text-hero`. Below `lg` it scales to the content width
+divided by `7.9`, so a phone still shows four lines. Recheck the cap and the
+divisor whenever the title copy changes. Each line mask carries `0.22em` of
 block padding, so ascenders and descenders are not clipped at the tight
 leading. A negative bottom margin of twice that amount cancels the padding.
 Only the bottom margin is negative, because adjacent negative block margins
@@ -1159,8 +1176,8 @@ children, and those would each become an item on their own row.
 The description is semibold with `-0.04em` tracking and tight leading, at
 `text-xl` below `lg`. From `lg` it scales with the viewport at
 `clamp(1.0625rem, 1.7vw, 1.75rem)`, about 24px at 1440 wide. It is capped at
-`12.7em`, where ordinary wrapping gives six lines of nearly equal width. The
-same wrap holds from about `12.25em` to `13.1em`, so the cap sits in the middle of
+`15em`, where ordinary wrapping gives five lines of nearly equal width. The
+same wrap holds from about `14.7em` to `15.2em`, so the cap sits in the middle of
 that range. The font and the title both scale with the viewport, and the
 tracking is in `em`, so the wrap is identical at every desktop width and the
 copy column stays wider than the cap down to 1024 wide. Chrome's balanced
@@ -1248,9 +1265,9 @@ the four retained hero cards becomes the featured transition image. Its
 transition starts with the first scroll and runs as one continuous scrubbed
 timeline, so nothing about it ever stops or changes speed abruptly. The hero
 leaves through normal document scrolling while LandingPage's empty transition
-space, one and a half small viewports tall, keeps Studio below the viewport. Below `lg`
+space, one and a half small viewports tall, keeps the next section below the viewport. Below `lg`
 the transition is disabled: the space collapses to zero, the featured card
-stays in its grid position, and the hero scrolls straight into Studio. The featured card offsets that
+stays in its grid position, and the hero scrolls straight into the next section. The featured card offsets that
 document movement as it leaves its rotated grid position, reaches the viewport
 center, and expands to fit within 92 percent of the viewport width and 82 percent
 of its height by the end of the transition space. Every property follows a
@@ -1267,7 +1284,7 @@ beyond its fitted size, 1.3 viewport heights after the transition space ends.
 It starts at rest, reaches the fitted size at the end of the transition space,
 keeps a slow matching growth across that point, and settles as the card leaves the top of
 the viewport. The growth window stays short so the card never covers the
-Studio statement entering below it. All hero cards remain 4:3 in the grid. The featured
+next section entering below it. All hero cards remain 4:3 in the grid. The featured
 card alone transitions to the source image's native 16:9 ratio while it expands.
 
 `useHomeHeroScrollMotion` owns this behavior. It starts only after
@@ -1275,7 +1292,7 @@ card alone transitions to the source image's native 16:9 ratio while it expands.
 scroller, animates the featured card's transform and aspect ratio, and lets its
 scoped GSAP media context remove the inline styles during route cleanup. Reduced
 motion and screens below `lg` collapse the empty transition space and keep the
-standard hero and Studio flow without scaling or changing the card ratio.
+standard hero and the next section's flow without scaling or changing the card ratio.
 
 Keep the featured card on two-dimensional transforms with `force3D: false` and
 do not apply a persistent `will-change` hint. Promoting the card while it is
@@ -1284,6 +1301,10 @@ the scroll transition enlarges it.
 
 ### Studio section reveal
 
+The home page does not currently render the Studio section. LandingPage keeps
+it disabled, so the hero leads straight into the work section. The Studio
+section and its ribbon below stay documented for when it returns.
+
 Render the Studio statement and both copy paragraphs through the shared
 `SplitText` component with word masks. When the Studio section reaches 82
 percent of the viewport, each statement word rises from 115 percent below its
@@ -1291,7 +1312,11 @@ mask over `0.8s` with `power3.out` easing and a `0.03s` stagger. The recipe
 lives in `app/lib/word-reveal.ts`, which the services panels share.
 
 The statement is start-aligned, so its large display lines keep natural word
-spacing. The copy paragraphs are justified so every full line ends on the
+spacing. It is capped at `20.85em`, where ordinary wrapping gives six lines of
+nearly equal width. The same wrap holds only from about `20.75em` to `21em`, so
+recheck the cap whenever the statement copy changes. From `lg` it is inset from
+the left edge by the space left beside the cap, up to `8%` of the section width,
+so it sits closer to the center on wide screens while staying start-aligned. The copy paragraphs are justified so every full line ends on the
 same edge, while a short final line stays start-aligned. Justification still
 applies after splitting because each masked word is an inline block and the
 split keeps the spaces between words, which the browser stretches.
@@ -1463,17 +1488,19 @@ shows it complete without drawing it.
 
 ### Work section
 
-The work section centers its heading, currently "What we've done", and gives
-each case study its own full-width row. The heading keeps `section-title` for
+The work section centers its heading, currently "Case studies", and gives
+each case study its own full-width row. It follows the hero directly, so it
+opens with two and a half times `spacing-section` of top padding, about 360px
+at 1440 wide, which gives the hero's featured image room to settle before the
+heading arrives. The heading keeps `section-title` for
 its weight but overrides the font size and tracking in the component's own
 scoped block. This heading is deliberately oversized: its clamp runs past
 `text-hero`, so the section opens at display
 scale. The phrase always sets on one line through `white-space: nowrap`. The
 title adds `0.15em` of word spacing, because the tight title tracking otherwise
-pulls the words together. With it the line is about `7.53em` wide, so the
-clamp's floor is `2rem`, which lets `11.6vw` set the size on phones and keeps
-the line inside the column, down to about `315px` wide, instead of
-overflowing it. Promote that clamp to a token
+pulls the words together. With it the line is about `5.44em` wide, so `11.6vw`
+keeps it well inside the column at every width, and the `2rem` floor only
+applies on the narrowest phones. Promote that clamp to a token
 if a second section ever wants the same step. From `md` the row is a `3fr 2fr` grid, so the media takes
 sixty percent of the width and the copy takes forty, and both columns align to
 the top of the row rather than to each other's center. On phones the row stacks
@@ -1481,12 +1508,32 @@ to one column. Case study cards carry no surface color of their own, so the
 canvas grain stays visible behind them and the image is the only filled shape in
 the row.
 
-The copy column reads title, description, then a results row. The title is bold
-in the same `foreground` ink as the section heading at `text-5xl`, `text-6xl`
-from `md`, and `5rem` from `xl`, with `leading-none` and `-0.045em` tracking.
+The copy column reads title, description, the optional live link or service
+link, the services, then a results row. Each card describes the problem the
+project solved rather than what the project is: the title is a short headline,
+and the description explains why it was built. The title is the `title` prop, falling back to the client name, and
+is bold in the same `foreground` ink as the section heading at `text-4xl`,
+`text-5xl` from `md`, and `text-6xl` from `xl`, with `0.95` leading,
+`-0.045em` tracking, and balanced wrapping, because a headline runs to several
+lines in the forty percent column.
 Its `0.12em` of bottom padding keeps descenders inside its reveal mask. The
 description is `font-medium` `brand-subtle` copy at `text-xl`, `text-2xl` from
 `md`, with `leading-tight`, `-0.03em` tracking, and a `36ch` measure.
+
+The optional `serviceLink` takes a label and an internal path, such as the
+matching service page, and renders the shared `ArrowLink` in
+the same slot and layer as the live link. Inside the card both links size to
+their label, capped at the column width, instead of the link's default `20rem`
+cap, so a longer label is never clipped.
+
+The services sit `1.75rem` below the link, or below the description when there
+is no link, as a wrapping list of pills with a `0.625rem` gap, `0.75rem` from
+`md`. Each pill is fully rounded on a `foreground/8` fill, with `px-6 py-3.5`
+and semibold `text-xl` type, `text-2xl` from `md`, at `leading-none` and
+`-0.03em` tracking. They are deliberately large enough to read at a glance. The
+card takes them through its optional `categories` prop, and WorkSection passes
+each project's `categories` from its data file, so the pills always match the
+project page. The list reveals with the rest of the copy as one line.
 
 The card's optional `results` prop takes a list of value and label pairs,
 currently two per case study that has them. A card without results, such as
@@ -1512,7 +1559,7 @@ color belongs to the number and not to the sentence that explains it.
 
 Each case image is its project's cover image, or the poster of a video cover,
 with the project's own alternative text. The section shows only real projects,
-currently UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in that order.
+currently UGC Creator, Sygen, and Cartoon, in that order.
 
 The section heading is a `SplitText` character reveal. It splits into words and
 characters with a mask on every character. The word wrappers stay inline
@@ -1600,7 +1647,7 @@ The complete case study card is the hover surface for one shared trailing
 tooltip. WorkSection owns the active image and keeps one TrailingTooltip mounted
 through Nuxt's shared teleport target, so the follower is not clipped by the
 landing wrapper or card media. The card is always an article. A card with an
-`href`, such as ZEEL AI Studio or Sygen, adds a NuxtLink that covers the whole card,
+`href`, such as Sygen, adds a NuxtLink that covers the whole card,
 named by the client in `sr-only` text, and the card shows the focus ring while
 that link has keyboard focus. A card with a `liveUrl` adds the shared
 `LiveLink` `2rem` below the description, revealed with the other lines in a
@@ -1651,6 +1698,18 @@ image is never removed by an older tween. The reveal runs only when the tooltip
 was already open before the image changed. Opening from a closed state, and
 reduced motion, both replace the thumbnail in one step instead, so a stale
 project image never shows while the panel is wiping open.
+
+Every case card names its project in the tooltip, "View" followed by the
+project's short name and "Case", such as "View Sygen Case", on the home case
+studies, the Work route grid, and the call to action marquee. When the label
+changes while the tooltip stays open, it swaps like a header navigation link:
+the outgoing label slides up out of a clipping mask while the incoming one
+slides up from just below it, over `0.65s` on the shared `nav-link-slide`
+curve, and the label's width eases to the new text over the same time. The
+outgoing label leaves the layout during the swap, so the tooltip never holds
+the width of both. The mask adds `0.15em` of block padding so descenders clear
+it. Opening from a closed state, and reduced motion, set the new label in one
+step.
 
 A new layer never shows before its image has loaded. It stays invisible while
 it loads, and only then reveals over the previous layer or, when opening from a
@@ -1811,18 +1870,17 @@ top of the viewport for one and a half viewport heights and scrubs its title
 against that pin. Its triggers use a `refreshPriority` of `-1`, so they
 measure after the work section's pin above them.
 
-The intro panel centers its heading, currently "What can we do for You?", on two
-lines at `clamp(3rem, 10vw, 12rem)`, with each line held to one line through
-`white-space: nowrap`. Each line is its own `SplitText` word split, and the
-closing "You?" is a separate split so it can carry a `WaveUnderline` in the
-brand orange `primary` color directly below it. Screen readers get the phrase from an
+The intro panel centers its heading, currently "AI Content and Website
+Services", on two lines, "AI Content and" and "Website Services", at
+`clamp(2.25rem, 10vw, 12rem)`, with each line held to one line through
+`white-space: nowrap`. The `2.25rem` floor keeps "Website Services" inside the
+column down to 320 wide. Each line is its own `SplitText` word
+split, and the title carries no underline. Screen readers get the phrase from an
 `sr-only` copy. Every word starts invisible,
 blurred, and small, at `0` opacity, `blur(16px)`, and `0.6` scale, and
 grows to full opacity, no blur, and its resting size. The words resolve one
-after another in reading order. Once the scrub reaches the end of the
-"You?" reveal, the underline draws itself under the word on its own timing,
-and scrolling back above that point erases it. The pin holds the finished title for
-a short beat before releasing it. Reduced motion shows the underline drawn.
+after another in reading order. The pin holds the finished title for
+a short beat before releasing it. Reduced motion shows the title at rest.
 
 Each service panel stacks its title at `text-service`, a description below
 it, and an image below that. The panels use a narrower gutter than the
@@ -1852,9 +1910,9 @@ image spans the full content width at the source's natural `1456 / 816`
 ratio, so it is never cropped to fit the viewport.
 
 The left third holds a square service link, the Services hero's link frame
-repeated at a larger scale. It is a `NuxtLink` to the service's section on the
-`/services` route, named "Explore AI Content Creation" or "Explore Website
-Development" through `aria-label`, and it shares the hero link's
+repeated at a larger scale. It is a `NuxtLink` to the service's own page,
+`/services/ai-content-creation` or `/services/web-development`, named "See AI content creation services" or "See web
+development services" through `aria-label`, and it shares the hero link's
 `inset-arrow-link` focus ring, `inset-arrow-surface` grey, and
 `inset-arrow-icon` glyph. From `md` it is exactly as tall as the description:
 it stretches to the height of the grid row it shares with the description,
@@ -1865,7 +1923,9 @@ the type. Its corners are `7.5%` of its size and its glyph sits inside
 `17.5%` of padding, the hero frame's proportions. Its top is level with the
 description's first line. Below `md` it is hidden, so phones show the title
 and the description without it. Hovering it opens the services section's TrailingTooltip in its
-text-only form, "More Details" with an arrow up right glyph and no thumbnail.
+text-only form, "More about" followed by the service name and "service", such
+as "More about Website Development service", with an arrow up right glyph and
+no thumbnail.
 
 The link keeps its full size from the start, so the layout never moves. Its
 grey `service-link-surface` is clipped from the right by
@@ -1922,9 +1982,9 @@ word space, so the heading still reads "AI Content Creation". Every title
 stays on one line with the frame open from `md` up, and phones keep the same
 two lines whether it is open or closed. The title still anchors the description reveal: when the title
 reaches 60 percent of the viewport, the description rises line by line from
-`SplitText` line masks with a `0.1s` stagger set through
+`SplitText` line masks with a `0.075s` stagger set through
 `lineRevealStagger` in `app/lib/word-reveal.ts`. Each description line takes
-`1.5s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
+`1.1s` to rise with `power3` easing, which GSAP reads as `power3.out`, set
 through `lineRevealDuration` and `lineRevealEase`. The blog card titles share
 the same three values. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest.
@@ -1958,10 +2018,11 @@ The image never reaches its full layout size. Entry and exit live on two nested
 elements, the link for the bottom origin entry and its wrapper for the top
 origin exit, so the transform origins never fight.
 
-Each image is a `NuxtLink` to its service's section on the `/services` route,
-`/services#ai-content-creation` or `/services#website-development`, named for
+Each image is a `NuxtLink` to its service's own page,
+`/services/ai-content-creation` or `/services/web-development`, named for
 its service through `aria-label`. Hovering it opens the services section's TrailingTooltip
-at its `compact` size in its text-only form with the label "More Details". The images are decorative
+at its `compact` size in its text-only form with the label "More about"
+followed by the service name and "service". The images are decorative
 placeholders from `public/images/hero` and will be replaced with real service
 media.
 
@@ -2039,7 +2100,63 @@ backdrop rise and curve. It displays the intro title words, the
 descriptions, the open service links, and the images at rest, and the dark
 panel keeps a flat backdrop without the lead.
 
+### Journey section
+
+The journey section is the shared `ProcessSection`, which takes its title and
+steps as props. The home page uses it for "Working Process", and the AI content
+creation page repeats it after its story blocks for "AI Content Creation
+Process", with the same layout and motion. The `uppercase` prop sets the title
+in capitals and defaults to `true`; both pages currently set it to `false`. The
+`titleReveal` prop chooses a `chars` or `words` title reveal and defaults to
+`chars`; the AI content page uses `words`. On the home page it follows the
+services section under a full-width title. It opens with two and a half times
+`spacing-section` of top padding, about 360px at 1440 wide, so the title stands
+well clear of the services panel's dark curve. The title is bold, `0.86`
+leading, and `-0.05em` tracking, sized at `11.2cqi` of its container and fitted
+to one line through `useFitText`. It reveals once as it reaches 85 percent of
+the viewport, either character by character with the shared `addCharReveal`
+recipe that the "Case studies" title uses, or word by word with the shared
+word reveal and a `0.08s` stagger. Each character or word mask carries `0.25em`
+of block padding, so descenders are not
+clipped at the tight leading. Reduced motion shows the title at rest.
+
+The steps sit `4rem` below the title, `6rem` from `md` and `8rem` from `xl`, in one continuous full-bleed `canvas-shade` panel, the grey of
+the Work and About listing sections, rather than in separate cards. It is an
+ordered list of four steps that combine the web development and AI content
+processes: Discovery, Strategy and concept, Design and production, and Launch
+and measure. From `md` each row is two columns, `1.05fr` and `1fr`. The copy
+column sits inside the page gutter and is itself two columns, `8rem`, `11rem`
+from `xl`, for the step label and the rest for the title and description, all
+aligned to the top. A 16:10 image fills the right column edge to edge, flush
+with the viewport's right edge, and stretches to the row's full height, so the
+images of neighbouring rows meet with no gap. From `md` a `current/10` hairline
+divides the copy columns of neighbouring rows only, so no line crosses between
+the images. Below `md` the label sits above the title and the full-width image
+stacks under the copy.
+
+The step label reads "Step", a small round dot, and the two-digit number, set
+in sentence case `font-mono` `text-xs` with `0.08em` tracking in `text-current/70`.
+The dot is a `size-1` `rounded-full` shape rather than a character, and is
+hidden from assistive technology. The label does not animate.
+The images are decorative, with empty alternative text, and load lazily.
+
+The title is a bold H3 at `text-4xl`, `text-5xl` from `md`, and `text-6xl`
+from `xl`, with balanced wrapping and `-0.045em` tracking. The description sits
+`1.5rem` below it, `2rem` from `md`, in `font-medium` `text-current/70` at
+`text-xl`, `text-2xl` from `md`, held to `36ch`.
+
+When a row reaches 82 percent of the viewport, its title reveals character by
+character with the shared `addCharReveal` recipe at a `0.02s` stagger, each
+character mask padded `0.12em` so descenders are not clipped. The description
+lines rise `0.2s` later with the hero description's line reveal,
+`lineRevealDuration` on `lineRevealEase` with a `0.075s` stagger. The images do
+not animate. Reduced motion shows everything at rest.
+
 ### Why Choose Us section
+
+The home page does not currently render the Why Choose Us section. LandingPage
+keeps it disabled and shows the Journey section in its place, under the
+"Working Process" title. The section stays documented for when it returns.
 
 The Why Choose Us section opens with its title, "Why Choose Us", written in
 title case at the user's request, without uppercase, on one line that always
@@ -2114,8 +2231,8 @@ Each card reveals once when its wrapper's top reaches 82 percent of the
 viewport. The card rises `160px` to rest over `1.2s` on `power3.out`, without
 a fade or a clip, and its transform is cleared at the end. The wrapper is the
 trigger, so the card's own movement never shifts its start. `0.2s` into the
-rise, the text follows with the shared line reveal timing, `1.5s`, `power3`,
-and a `0.1s` stagger: the number rises as one line from its clipping
+rise, the text follows with the shared line reveal timing, `1.1s`, `power3`,
+and a `0.075s` stagger: the number rises as one line from its clipping
 paragraph, the title rises word by word from its `SplitText` word masks, and
 the description rises line by line from its line masks, starting one stagger
 step per title word later. The two notes rise line by line the same way from
@@ -2184,7 +2301,7 @@ so the focus ring and the rollover are never cut.
 The cards themselves do not animate, so the tinted surfaces and the images are
 always at rest. Only their text reveals, from each card's own trigger at the
 same 82 percent line. The title rises line by line from its `SplitText` line
-masks with the services description timing, `1.5s`, `power3`, and a `0.1s` stagger, and
+masks with the services description timing, `1.1s`, `power3`, and a `0.075s` stagger, and
 the meta row rises as one line from its clipping wrapper one stagger step after
 the last title line. Cards that share a layout row, measured by their
 `offsetTop` when they enter, start their text `0.15s` apart, so the desktop row
@@ -2219,7 +2336,19 @@ keyboard focus shows the same state, and reduced motion switches between the
 two states without the transition.
 
 The Blog route reuses the Work route's fitted listing hero and rounded grey
-listing section. Its article heading shows the live article count and, because
+listing section. Its hero title "Our Blog" paints at `27.15cqi` and its
+description reads "What we're learning about AI content that stops the scroll,
+websites that keep people, and the numbers in between." The category pages
+`/blog/ai-content` and `/blog/web-development` share the layout with their own
+titles, "AI Content" at `22.3cqi` and "Web Development" at `12.44cqi`, each
+measured so the first paint matches the fitted size, and their own
+descriptions. Beside the article count, from `md`, sit All, AI Content, and Web
+Development links in the Work filter button style: `cta-lg` pills with a `2px`
+foreground border at `text-2xl`, `dark` for the current page and transparent
+`outline` otherwise. Below `md` they wrap under the count. They navigate to
+their pages instead of filtering in place, and they rise one after another
+after the count with the navigation stagger. A category with no articles shows
+"No articles in this category yet." Its article heading shows the live article count and, because
 it shares `useBlogMotion` with the home section, it must split into characters
 and rises character by character like the home title. Its
 cards use the same responsive BlogCard grid and interaction as the home section:
@@ -2244,6 +2373,13 @@ the larger one, which would add `0.16em` to every line pitch, so only the
 bottom margin is negative and cancels both paddings, and the title shifts up by
 `0.16em`. The line pitch therefore matches the declared leading.
 
+The accordion holds eight questions that follow the home keyword map, from what
+an AI content agency does to cost, reporting, and the 90-day minimum. The
+section title is the H2 and each question is an H3 through the accordion
+header, so the outline stays nested. The answers state no prices or fixed start
+dates until real figures are confirmed. The same questions feed the FAQPage
+structured data.
+
 Each item is a question row and a collapsible answer. The question is
 `font-medium` at `text-xl`, `text-2xl` from `md`, and `text-3xl` from `xl`,
 with `-0.03em` tracking, and the row's block padding grows from `py-7` to
@@ -2258,7 +2394,7 @@ one grid cell, one of them rotated `90` degrees to form a plus. Opening an item
 turns that bar back to the left, so the plus becomes a minus.
 
 The title rises line by line from `SplitText` line masks with the services
-description timing, `1.5s`, `power3`, and a `0.1s` stagger, when it reaches 82
+description timing, `1.1s`, `power3`, and a `0.075s` stagger, when it reaches 82
 percent of the viewport. When the accordion reaches the same line, each item's
 question and icon rise together from their own masks, and its divider draws
 from the left, with items `0.08s` apart. The title uses `autoSplit`. A re-split
@@ -2276,7 +2412,11 @@ reveal at rest and switches items instantly.
 
 The questions and answers are placeholder copy until the real policies are
 confirmed. FaqSection is a shared component, and the Contact route renders the
-same section below its hero.
+same section below its hero. A route can pass its own `title` and `items`, as
+the AI content creation page does with "AI content creation questions" after its
+process section and the web development page with "Web development FAQ". An
+item may carry an optional `link`, which renders as an `ArrowLink` `1.5rem`
+below the answer, `2rem` from `md`, and opens and closes with it.
 
 ### Contact page
 
@@ -2345,14 +2485,52 @@ scroll reveal can play.
 
 ### About page
 
-The About route stacks four sections: a centered hero, a grey team section, a
-trust section, and a brands section, followed by the site call to action and
-the site footer.
+The About route stacks six sections: a centered hero, a combined section, a
+grey team section, an approach section, a trust section, and a brands section,
+followed by the site call to action and the site footer.
+
+`AboutApproachSection` shows how forrrow works with clients. Its H2, "How we
+work with clients", is centered at `clamp(2.5rem, 7vw, 7rem)`, bold with
+`-0.05em` tracking and `0.88` leading, and rises word by word from `SplitText`
+word masks with the shared word reveal and a `0.08s` stagger when it reaches 82
+percent of the viewport. Three left-aligned text items follow `6rem` below,
+`9rem` from `md` and `12rem` from `xl`, each a bold title over a `font-medium`
+description and held to `30rem`. From `md` the list is centered and held to
+`64rem`, `68rem` from `xl`, so "Small team, senior hands" on the left and "AI
+for speed, humans for taste" on the right of one row sit near the center, and
+"Numbers over opinions" is centered below them. Phones stack them. Each item's title
+and description rise from their masks with the shared word reveal, `0.12s`
+apart, when the item reaches 82 percent of the viewport. Reduced motion shows
+everything at rest. The section opens with `2.5` times `spacing-section` and
+ends with `spacing-section`.
+
+`AboutCombinedSection` explains why forrrow joins AI content creation and web
+development. Its H2, "Why we combined AI content creation and web
+development", is centered at `clamp(2.25rem, 5.5vw, 5.5rem)`, smaller
+than the other About section titles, bold with `-0.05em` tracking and `0.88`
+leading, balanced and held to `14em`, so it breaks into two lines on desktop and
+three on phones. Its lines are a `SplitText` line split in masks with the
+section titles' `0.2em` padding and `-0.4em` bottom margin, and they rise with
+the same title reveal. Two `AboutStatement` paragraphs follow at `text-xl`,
+`text-2xl` from `md` and `text-3xl` from `xl`, held to `26em` and centered as
+a block under the title, with their lines aligned left. The first sits `3.5rem` below the title,
+`5rem` from `md` and `6rem` from `xl`, the second `1.5rem` below it, `2rem` from
+`md`, and each rises line by line like the trust and brands statements. It sits on the canvas between the
+hero and the team section, with `spacing-section` above and below.
 
 The hero fills the first screen below the header except for
 `--about-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the rounded top of the team
 section shows at the bottom of the first screen. It centers the "Welcome to"
-and "byroose" title above a three line description, `5rem` below the title and
+title above a three line description, held to `36ch` and widened to `80ch`
+from `lg` so the founding story stays on three balanced lines, with the
+forrrow logo in place of the second line's text. The logo is a `currentColor` span masked by `/logo.svg`,
+`0.74em` tall, the measured height of the bold lowercase "forrrow" it replaces,
+and sits on the text baseline, so it takes the title's color and blend. Screen
+readers still hear "Welcome to forrrow" from the heading label. The team,
+trust, and brands section titles, "Who are the forrrow founders", "Why people
+trust forrrow", and "Why brands choose forrrow", render the brand name as the
+same logo at the same `0.74em`, next to their underlined word. Body copy keeps
+the name as text. The description sits `5rem` below the title and
 `7rem` from `md`, which keeps the descender of the y clear. The title and the call
 to action title use `AboutTitle` at its `display` size,
 `clamp(3.5rem, 11vw, 12rem)`. The section titles use its `section` size,
@@ -2373,7 +2551,7 @@ the image frame one by one, because a transform or opacity on the content
 itself would isolate the blended text from the trail behind it. It reaches zero opacity as the hero leaves the top of the viewport, so
 the team section appears to arrive faster and covers it.
 
-The "byroose" line opens a 16:9 image frame before the word, the same frame the
+The "forrrow" line opens a 16:9 image frame before the word, the same frame the
 Services hero sets before "Websites": `0.8em` tall, `0.06em` below the
 baseline, with `0.06em` corners, and its width and `0.12em` end margin
 multiplied by `--about-title-inset-open`. It holds an `ImageCycle` of the four
@@ -2393,7 +2571,7 @@ random tilt of up to `10` degrees. It lands from `1.3` scale over `0.6s` on
 the pointer's last movement while it turns to a new random tilt. `0.1s` after
 the throw it shrinks to zero over `0.3s` on `back.in(1.5)`. The images are the
 seven files in `public/images/work`, cycled in order, in `rounded-xl` 3:4
-frames `clamp(9rem, 15vw, 16rem)` wide. They paint behind the hero text and
+frames `clamp(6rem, 10vw, 11rem)` wide. They paint behind the hero text and
 below the team section. The title text and the description are set in
 `background` with `mix-blend-difference`, as the Services dark section intro
 is, so they read black over the canvas and invert over a passing image, and
@@ -2409,15 +2587,17 @@ absent on touch devices and under reduced motion.
 
 The team section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, so it slides over the hero.
-"Who stands behind byroose" sits on the left with a primary orange wave under
-"behind". Two 5:6 portraits with a name and a role follow: Ruzan Darbinyan,
-Co-Founder & Creative Director, on the right, and Razmik Matinyan, Co-Founder &
-Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width
-from `md`. The name and the role share the section's ink. Ruzan's portrait reuses
+"Who are the forrrow founders" sits on the left with a primary orange wave
+under "founders". Two 5:6 portraits with a name and a role follow: Ruzan
+Darbinyan, Co-Founder and Creative Director, on the right, and Razmik Matinyan,
+Co-Founder and Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width
+from `md`. From `md`, both cards also step in from the page edge by
+`clamp(2rem, 8vw, 9rem)`, Ruzan's from the right and Razmik's from the left. The name and the role share the section's ink. Ruzan's portrait, with the alt text "Ruzan Darbinyan, co-founder and creative
+director of forrrow", reuses
 `public/images/founder.jpg`. A member without a `portrait` shows the striped
 `MediaPlaceholder` until a photo exists.
 
-A round `ribbon` `cta-icon` action with an arrow up right glyph sits to the
+A round `yellow` `cta-icon` action with an arrow up right glyph sits to the
 right of each name and role, centered on both, and rises with them. Hovering
 it runs the CTA rollover. Hovering anywhere on a card opens the text-only
 TrailingTooltip, "More Info" with an arrow up right glyph, set in title case at
@@ -2432,14 +2612,16 @@ the viewport height less `2rem`. The body scrolls inside the panel with
 `data-lenis-prevent` while the page's smooth scroll is locked. From `md` it is a
 `5fr 6fr` grid: the 5:6 portrait on the left, and on the right the name with one
 word per line, then a row with the role on the left and round `background`
-social links on the right, then the bio paragraphs. Below `md` everything
+social links on the right, then the bio paragraphs and an optional
+`ArrowLink` `2rem` below them, `2.5rem` from `md`, sized to its label at
+`text-lg`, `text-2xl` from `md`. Ruzan's links to "See AI content creation
+services" and Razmik's to "See web development services". Below `md` everything
 stacks. Each social link opens in a new tab and is named "{name} on {network}".
 The close action is a round `yellow` `cta-icon` in the top right corner whose
 close glyph scales in place on hover. Opening focuses the dialog itself rather
 than the close action, so a pointer open never shows the close action in its
 covered or focus state, and Tab reaches it first. Escape, the overlay, and the
-close action all close the dialog, and focus returns to the card action. The
-bios are working copy to be replaced.
+close action all close the dialog, and focus returns to the card action.
 
 The trust and brands sections share `AboutSectionHeading`: the title on the
 left and a 5:6 `ImageCycle` frame on the right, centered on the title from
@@ -2450,7 +2632,7 @@ heading a statement takes the right two thirds of the row from `md`. The
 statements use `AboutStatement`, which owns that placement, semibold at `text-2xl`,
 `text-4xl` from `md`, and `text-5xl` from `2xl`, with `0.95` leading and
 `-0.04em` tracking, and they rise line by line with the services description
-timing, `1.5s`, `power3`, and a `0.1s` stagger.
+timing, `1.1s`, `power3`, and a `0.075s` stagger.
 
 Two lines draw themselves with the scroll on larger screens, as the home Studio
 ribbon and work line do. Both were drawn as two layers of one 1440 wide frame
@@ -2464,7 +2646,13 @@ runtime x scales by the live width and y maps between the matching live
 section lines, so each line keeps its place against the content at every
 breakpoint. The team artwork's top line sits at `-120` instead of `0`, which
 lowers the line by about `120` pixels at 1440 wide so its top curve clears the
-section's top edge instead of being cut by it.
+section's top edge instead of being cut by it. Its bottom line sits at `1960` instead of
+`1768`, below the path's lowest point plus half the stroke, so the line's end
+stays whole inside the section instead of being cut by its bottom edge. The
+team section adds `2.25` times `spacing-section` of bottom padding to match, so
+the line keeps its drawn proportions. The approach section that follows opens
+with `2.5` times `spacing-section` of top padding, a deliberately large pause
+after the grey team section.
 
 The team line, Layer 1, is a `DrawnLine` with `text-ribbon` at full strength
 inside the team section, so it paints above the grey surface and below the
@@ -2493,9 +2681,10 @@ the `lg` breakpoint the drawn lines are hidden.
 
 ### Services page
 
-The Services route stacks a centered hero, a grey statement section, a light
-AI Content Creation section, and a dark Website Development section, followed
-by the site call to action and the site footer.
+The Services route is a hub. It stacks a centered hero, a grey statement
+section, a light AI Content Creation summary, and a dark Website Development
+summary, followed by the site call to action and the site footer. Each summary
+links to that service's own page, so each service can rank on its own.
 
 The hero repeats the About hero's frame: it fills the first screen below the
 header except for `--services-hero-peek`, `clamp(3rem, 9svh, 6rem)`, so the
@@ -2504,9 +2693,9 @@ It has no description. The title sets "We create", "AI Content and", and
 "Websites" on three centered lines, with a link frame after "We" and an image
 frame before "Websites". It is bold with `-0.05em` tracking and `0.88` leading,
 in the same padded line masks as `AboutTitle`. The hero is an inline-size
-container, and the title sets `min(15.5cqi, 26svh)`. The longest line, "AI
-Content and", measures about `6.2em` with its frames open, so `15.5cqi` sets it
-across about 96 percent of the content width at every width, and the `26svh`
+container, and the title sets `min(12.5cqi, 21svh)`. The longest line, "AI
+Content and", measures about `6.2em` with its frames open, so `12.5cqi` sets it
+across about 78 percent of the content width at every width, and the `21svh`
 cap keeps the three lines inside the first screen on short, wide viewports.
 Every line stays on one line. If the phrase changes, measure its longest line
 again and update the size. The `h1` is an `sr-only`
@@ -2534,12 +2723,9 @@ share. Hovering it opens the hero's text-only TrailingTooltip, "About"
 with an arrow up right glyph, and keyboard focus shows the standard ring.
 
 The image frame is 16:9 and shows an `ImageCycle` that cuts through four images
-from `public/images/hero` every `750ms`, the way the About section headings do.
-The images are decorative and load eagerly. From `lg` the slider is not inside
-the frame: it is a page-level layer that sits exactly on the frame at the top
-of the page and becomes the first AI Content Creation block's image, as
-described below. Below `lg` there is no flight, so the frame holds its own
-`ImageCycle` of the same images and stays in the hero.
+from `public/images/hero` every `750ms`, the way the About section headings do,
+at every width. The images are decorative and load eagerly. Under reduced
+motion the cycle holds its first image.
 
 The title rises with the About hero timing at the page transition's reveal
 point, or after the fonts load on a direct request. `0.5s` later, while the
@@ -2558,66 +2744,125 @@ does. Its statement spans the full content width, semibold at `text-3xl`,
 `text-5xl` from `md`, and `text-6xl` from `xl`, with `0.95` leading and
 `-0.04em` tracking, and its line masks carry `0.12em` above and `0.18em` below
 like `AboutStatement`. When the text reaches 82 percent of the viewport its
-lines rise once with the services description timing, `1.5s`, `power3`, and a
-`0.1s` stagger. Every word also starts at `0.2` opacity and is scrubbed to full
+lines rise once with the services description timing, `1.1s`, `power3`, and a
+`0.075s` stagger. Every word also starts at `0.2` opacity and is scrubbed to full
 opacity in reading order, from when the text top reaches 65 percent of the
 viewport until its bottom reaches the viewport middle, with about three words
 fading in at a time, so the read part of the statement stays dark while the
-rest waits in grey. Reduced motion shows the title, both open frames with a
-still first image in the image frame, and the statement at full opacity,
+rest waits in grey. The statement reads "Buy AI content, web development, or
+both", followed by the promise that one team works to one brief. Reduced
+motion shows the title, both open frames with a still first image in the image
+frame, and the statement at full opacity,
 without the rise, the drift, or the scrub.
 
 The AI Content Creation section sits on the white `background` canvas, like
 the hero. It carries the `ai-content-creation` id and the Website Development
-section the `website-development` id, so the home service links can open them. Its intro repeats the home services panel: the title in bold
-`text-service` with `-0.045em` tracking on the left, and the description below
-it in the home service description style, two thirds wide and aligned right
-from `md`. Three blocks follow, Reels, Videos, and Images with AI, stacked
-`0.75rem` apart inside the page gutter. Each block has
-`clamp(1.5rem, 3vw, 3rem)` corners, `clamp(1rem, 2.5vw, 2rem)` padding, and its
-own light tint, `brand-pink-tint`, `brand-blue-tint`, and `brand-green-tint`.
-From `md` a block splits into two columns: the left holds the `section-title`
-title at `0.88` leading at the top, then the description, semibold
-`brand-subtle`, darker than `muted-foreground` for contrast on the tints, at `text-lg` and `text-xl` from `md` with `1.15` leading and `-0.02em` tracking, `2rem`
-below the title and `3rem` from `md`. The right holds a 4:3 media slot with
-`rounded-2xl` corners. Below `md` the media follows the text. The Videos block
-shows one image and the Images block cycles four work images. When a block
-reaches 82 percent of the viewport, its title rises word by word from its word
-masks and its description rises line by line from its line masks, both with
-the services description timing, `1.5s`, `power3`, and a `0.1s` stagger.
+section the `website-development` id, so a link can open either section.
+Each section is a summary, not a list of offers. Its intro repeats the home
+services panel: the title in bold `text-service` with `-0.045em` tracking on
+the left, and the description below it in the home service description style,
+two thirds wide and aligned right from `md`. Under the description, `2.5rem`
+below and `3.5rem` from `md`, sits the shared `ArrowLink` to the service's own
+page, "See AI content creation services" or "See web development services",
+sized to its label. The title and description rise line by line with the
+services description timing, `1.1s`, `power3`, and a `0.075s` stagger, and the
+link rises from its mask `0.3s` later with the word reveal timing. The light AI
+Content Creation section ends with twice `spacing-section` of bottom padding,
+so there is a large gap before the dark Website Development section. The dark
+section ends with `spacing-section`.
 
-Below `lg` the Reels block cycles the four Services hero images in its own
-slot, the same images the hero frame shows. From `lg` that cycle is hidden and
-the slot receives the hero slider, which flies there with the scroll: from the top of the page until the slot's
-center reaches the viewport's center, the slider's position, size, and corner
-radius move linearly from the hero frame to the slot. Because the page scrolls
-at the same time, the slider barely moves on screen. It leaves the fading hero
-title, grows to the slot's size, and the statement section and the AI Content
-Creation intro, both above it at `z-10`, slide over it. It sits at `z-5`, above
-the blocks, so the Reels block arrives under it as it lands. While the hero
-frame is still opening, the slider follows its width and its `1.3` to `1`
-scale. Reduced motion from `lg` places the slider in the Reels slot at rest.
+The Website Development section repeats the layout on a dark `foreground`
+surface with `background` ink. Its description names the range of work, from
+landing pages to full websites and custom web platforms. The dark surface is
+revealed like the home services dark panel: as the section's top enters the
+viewport it grows from a rounded `32px` point at the bottom center of the
+viewport to the full width, over `0.8` of a viewport of scroll. The surface
+marks the header as dark. As in the home dark panel, the intro title,
+description, and link are set in `background`, and the title and description
+use `mix-blend-difference`, so they read black over the light canvas and turn
+light where the dark surface has grown behind them.
 
-The Website Development section repeats the AI Content Creation layout on a
-dark `foreground` surface with `background` ink. Its intro title is "Website
-Development" with the home Website Development description, and its three
-blocks, "Designed and coded from scratch", "Sites that sell and scale", and
-"Connected and easy to find", cover custom design and code, the kinds of sites
-built, and CRM, API, and technical SEO work. They sit on `brand-orange-deep`,
-`brand-violet-deep`, and `brand-yellow-deep`, with descriptions in
-`background` at 75 percent. The dark surface is revealed like the home
-services dark panel: as the section's top enters the viewport it grows from a
-rounded `32px` point at the bottom center of the viewport to the full width,
-over `0.8` of a viewport of scroll. It rises behind the page content, so the
-last AI Content Creation block stays on top of it. The surface marks the
-header as dark. As in the home dark panel, the intro title and description
-are set in `background` with `mix-blend-difference`, so they read black over
-the light canvas and turn light where the dark surface has grown behind them.
+The light site call to action follows with a straight edge below the dark
+surface. The dark surface extends one pixel below the section, under the call
+to action, so the fractional smooth scroll offset never opens a gap at the
+seam.
 
-The site call to action follows on the same dark surface, so the two read as
-one dark block that ends in a straight edge above the footer. The dark surface
-extends one pixel below the section, under the call to action, so the
-fractional smooth scroll offset never opens a light hairline at the seam.
+### Service pages
+
+Each service has its own route under `/services`, so it can rank on its own.
+`/services/ai-content-creation` is built; `/services/web-development` is still
+a placeholder heading. Both stay out of search through `unlistedRoute` until
+their content ships.
+
+A service page opens with `ServiceHero`, which repeats the home hero layout.
+From `lg` it is a two-column grid with a `3rem` column gap: the description and
+the dark `cta-lg` Start a project action sit in the flexible left column, and
+the H1 sits in an auto-width right column. Below `lg` the title stacks above
+the copy, which is capped at `max-w-md`. The H1 is bold with `-0.05em` tracking
+and `0.88` leading at `clamp(2.5rem, 7.4vw, 8rem)`, capped at `9.2em`. The
+description is semibold `foreground` with `-0.04em` tracking, at `text-xl`
+below `lg` and `clamp(1.0625rem, 1.5vw, 1.5rem)` from `lg`, held to `17em`. At
+the page transition's reveal point, or after the fonts load on a direct
+request, the title lines rise from their masks with the line reveal timing and
+the About title's `0.1s` stagger, the description lines follow `0.3s` later,
+and the action rises after the last line. The title, description, and action
+stay hidden until the reveal starts, and the motion places every line at its
+start offset before showing them, so the text never flashes in its final place
+first. The title line masks carry `0.12em` above and `0.18em` below, and
+`0.12em` on each side cancelled by a matching negative margin, so letters that
+overhang their box, such as the tail of a "j", are not clipped. The
+description masks `0.1em` and `0.2em`, cancelled by a negative bottom margin
+only, because negative top and bottom margins of adjacent masks would collapse
+and grow the hero when the text splits. The title shifts up `0.24em` to match.
+Reduced motion shows the hero at rest. The hero has no parallax.
+
+`ServiceCardsSection` follows on a dark `foreground` surface with
+`clamp(1.5rem, 3vw, 3rem)` corners on all four sides at `z-10`, set `3rem`
+below the hero, `5rem` from `md` and `6rem` from `xl`, so the light
+canvas shows around it before the next section, and marks the header as dark.
+Its centered H2 keeps `section-title` and reveals word by word with the shared
+word reveal and a `0.08s` stagger when it reaches 82 percent of the viewport.
+Below it the cards sit in a row of four from `lg`, two from `md`, and a stack
+below `md`. Each card is a `rounded-2xl` `surface-*` tone with `p-6`, `p-8`
+from `xl`, a `4:5` ratio from `md`, and a minimum height of `18rem` on phones.
+It carries a two-digit number at the top in bold `text-6xl`, `text-7xl` from
+`xl`, with `-0.05em` tracking, and its H3 title and description
+at the bottom. The cards tilt by `-3deg`, `2.5deg`, `-2deg`, and `3deg` in
+turn, at 40 percent of that on phones so they stay inside the gutter, and from
+`lg` every second card sits `4rem` lower. A decorative white `6px` line in an
+SVG hidden from assistive technology curves behind the row from `lg`.
+Each list item holds an inner surface that carries the tone and the tilt, so
+the pop-in scale on the item never fights the hover. With hover and a fine
+pointer, the hovered card straightens to `0deg`, scales to `1.05`, and rises
+above its neighbors, over `0.5s` on the `cubic-bezier(0.19, 1, 0.22, 1)` ease
+the blog cards use. Reduced motion switches the hover without a transition. Do not
+give the path `vector-effect: non-scaling-stroke`, because DrawSVG then
+measures the dash in the wrong units and the line draws with gaps.
+
+When the row reaches 75 percent of the viewport, the line draws from left to
+right over `1s` at a constant speed, and each card pops in from `0` scale
+`0.1s` before the line reaches its center, on `elastic.out(1, 0.6)` over
+`1.1s`, so it overshoots past full size and settles back. The cards are hidden
+until their pop starts. Reduced motion shows the title, the line, and the cards
+at rest. The AI content cards use green, pink, blue, and the brand orange.
+
+`ServiceStorySection` follows on the light canvas after twice
+`spacing-section` of space. It stacks story blocks inside the page gutter,
+`7rem` apart, `10rem` from `md` and `12rem` from `xl`. Each block holds a
+`text-section` H2 at `0.95` leading with balanced wrapping, a `font-medium`
+`foreground` description in the same ink as the title, at `text-xl`,
+`text-2xl` from `md`, held to `40ch`,
+and an optional `ArrowLink`. Every block is start-aligned. From `lg` a block
+with the `start` offset begins 12 percent from the left edge, and a `middle`
+block begins 55 percent from the left edge and is held to 40 percent of the
+width. Below `lg` both sit at the left edge. When a block reaches 82 percent of
+the viewport, its title lines rise from their masks with the line reveal timing
+and a `0.1s` stagger,
+its description lines rise `0.3s` later with the line reveal timing, and the
+link rises after the last line. Reduced motion shows the blocks at rest.
+
+The AI content creation page closes with the shared `ProcessSection` for its
+four step process, described under Journey section.
 
 ### Work page
 
@@ -2627,7 +2872,7 @@ action that also closes the Services route, followed by the site footer.
 From `lg` the hero repeats the Services hero's frame: it fills the first screen
 below the header except for `--listing-hero-peek`, `clamp(3rem, 9svh, 6rem)`,
 so the rounded top of the projects section shows at the bottom of the first
-screen. Its content fills that space. The title sets "Our Work" on one line
+screen. Its content fills that space. The Work title sets "Case studies" on one line
 across the full content width at the top, and the description sits at the
 bottom of the space below it, in the right half of a two-column grid with a
 `4rem` column gap and a `3.5rem` row gap. Below `lg` the hero has no minimum
@@ -2639,7 +2884,8 @@ Services hero, with each word and each of its characters an inline block
 inside it. Separate characters drop the font's kerning pairs, which the
 measured size accounts for. The content is an inline-size container, and the title sets
 `calc(var(--work-hero-title-size) * var(--fit-text-scale, 1))`. The
-`--work-hero-title-size` of `23.71cqi` is measured from the phrase, so the
+`--work-hero-title-size` is measured from the phrase, `23.71cqi` by default
+for a phrase as wide as "Our Work" and `18.13cqi` for "Case studies", so the
 first paint already sits at the edge, and `useFitText` corrects the scale
 whenever the title's box resizes, as it does for the Why Choose Us title. The title
 is `w-max` with `0.05em` of end padding, so its box includes the last letter's
@@ -2650,9 +2896,9 @@ the line box, and `0.2em` cut it off while the reveal clip was on. The project
 hero title mask uses the same padding. A `0.2em`
 bottom margin cancels the mask's negative margin, so the description never
 crowds the letters on phones. The `h1` is an `sr-only` copy of the phrase and
-the visual line is hidden from assistive technology. The description, "Reels that stop the scroll. Visuals
-directed like a shoot. Websites designed and coded from scratch. The proof is
-in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
+the visual line is hidden from assistive technology. The Work description, "Our studio projects and tools,
+each one a test of the pipeline behind our client work: AI content that stops
+the scroll and websites built from scratch.", is semibold at `text-2xl`, `text-4xl` from `md`, and
 `text-5xl` from `2xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
 measure, in line masks that carry `0.12em` above and `0.18em` below. Each mask
 cancels that padding with negative margins, and the description becomes a flex
@@ -2722,7 +2968,7 @@ edges rather than flush with them. The categories and their services come
 from `app/lib/projects.ts`. The images are `object-cover` crops of 16:9 or
 portrait sources, requested at `sm:1024px md:1024px lg:768px xl:1024px 2xl:1536px`
 with `densities="x1"`, which covers the 4:3 crop and the hover scale. The
-listing shows only real projects, UGC Creator, Sygen, Cartoon, and ZEEL AI Studio, in
+listing shows only real projects, UGC Creator, Sygen, and Cartoon, in
 that order. Each card takes an `href`, so the whole card renders as a NuxtLink
 to its project page, and a card without one stays an article. The pointer
 cursor marks the link surface, as on the home case study cards. A linked card shows the focus ring and
@@ -2730,7 +2976,8 @@ the hover image scale on keyboard focus.
 
 Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
 the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
-TrailingTooltip in its text-only form, "View Project" with an arrow up right
+TrailingTooltip in its text-only form, "View" followed by the project name
+and "Case", such as "View UGC Creator Case", with an arrow up right
 glyph. The scale applies only to `(hover: hover)` pointers and switches without
 the transition under reduced motion. A card with a `video` keeps its image at
 rest and stacks the shared `HoverVideo` over it, a muted, looping,
@@ -2818,11 +3065,15 @@ size and weight so the link takes them from its surrounding text, as the
 footer credit does. The copy and the underline are brand orange, `primary`, so hovering
 swaps the ink label for an orange one. The header's Start a project action
 and the menu control drop uppercase too. On hover or visible keyboard focus,
-`useNavLinkMotion` scales the label to zero toward its top center while the copy scales up from zero at its
-bottom center, and a one-pixel underline below the label draws outward from its
-center. All three share the More works action's `0.7s` `power4.inOut` timing,
-and leaving reverses them. The copy and the underline rest at zero scale in CSS
-so they never flash before hydration. Reduced motion switches states instantly.
+`useNavLinkMotion` slides the label up out of a clipping mask while the copy
+slides up from just below it, with no scaling, and a one-pixel underline below
+the label draws outward from its center. All three run over `0.65s` on
+`cubic-bezier(0.16, 1, 0.35, 1)`, so the motion starts at once, and leaving
+reverses them. The mask sets the labels at `1.25` leading so the two words pass
+close together while descenders still clear it, and the link adds `0.15em` of
+vertical padding so its height and the underline position stay the same. The copy
+rests one line below in CSS and the underline at zero scale, so neither flashes
+before hydration. Reduced motion switches states instantly.
 
 The header rises into place piece by piece when a page loads, with no opacity
 change. The logo, every navigation link, the Start a project action, and the

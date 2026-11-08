@@ -1,12 +1,12 @@
 # Content and SEO guide
 
-This guide defines how byroose speaks and how public content should support organic discovery without losing its human voice.
+This guide defines how forrrow speaks and how public content should support organic discovery without losing its human voice.
 
 ## Brand idea
 
-byroose helps brands turn noise into a clear signal. AI content creation and web development work together so the brand can earn attention, explain its value, and create measurable action.
+forrrow helps brands turn noise into a clear signal. AI content creation and web development work together so the brand can earn attention, explain its value, and create measurable action.
 
-byroose offers exactly two services: AI content creation and web development. AI content creation covers visuals, video, reels, and site imagery produced through an AI pipeline with human editing. Web development covers design, build, and handover. Do not describe strategy, positioning, naming, or paid media as services. Write both service names in sentence case.
+forrrow offers exactly two services: AI content creation and web development. AI content creation covers visuals, video, reels, and site imagery produced through an AI pipeline with human editing. Web development covers design, build, and handover. Do not describe strategy, positioning, naming, or paid media as services. Write both service names in sentence case.
 
 The core expression is:
 
@@ -16,11 +16,11 @@ Use this idea as a filter, not as a phrase that must appear everywhere.
 
 ## Slogan
 
-The byroose slogan is:
+The forrrow slogan is:
 
 > From seen to chosen
 
-It names the journey byroose takes a brand on: from being noticed to being the
+It names the journey forrrow takes a brand on: from being noticed to being the
 one the audience picks. The core expression above is the internal filter for
 writing. The slogan is the public line that sums up the promise.
 
@@ -40,7 +40,7 @@ Do not assume every reader understands agency terminology. Explain the business 
 
 ## Voice
 
-The byroose voice is:
+The forrrow voice is:
 
 - Clear and direct
 - Confident without arrogance
@@ -49,7 +49,7 @@ The byroose voice is:
 - Specific without unnecessary jargon
 - Human, concise, and useful
 
-Prefer a sharp concrete statement over abstract agency language. Explain what changes for the client, how byroose contributes, and why the result matters.
+Prefer a sharp concrete statement over abstract agency language. Explain what changes for the client, how forrrow contributes, and why the result matters.
 
 ## Writing rules
 
@@ -60,7 +60,7 @@ Prefer a sharp concrete statement over abstract agency language. Explain what ch
 - Keep paragraphs focused on one idea.
 - Vary sentence length, but remove filler.
 - Use contractions when they make the sentence more natural.
-- Write byroose in lowercase unless it begins a system-defined field that cannot preserve the brand styling.
+- Write forrrow in lowercase unless it begins a system-defined field that cannot preserve the brand styling.
 - Use AI-assisted, not AI powered, when accuracy requires human involvement to remain clear.
 - Avoid exclamation marks unless the moment genuinely needs one.
 - Avoid vague superlatives such as best, revolutionary, world-class, and game-changing unless evidence supports the claim.
@@ -105,6 +105,37 @@ Before drafting a public page:
 
 Do not force a keyword into every heading or paragraph. Use the main phrase naturally in the title, H1, introduction, and other relevant locations only when it reads well.
 
+## Keyword map
+
+Each page targets one primary keyword in its title, H1, introduction, and at
+least one H2 where it reads naturally. Confirm search volumes in a keyword tool
+before a page launches.
+
+| Page | URL | Primary keyword | Secondary keywords | Search intent |
+| --- | --- | --- | --- | --- |
+| Home | / | AI content and web development agency | AI content creation agency, web development agency [City] | Find an agency |
+| Services | /services | AI content and web development services | content marketing services, website development services | Compare services |
+| AI content | /services/ai-content-creation | AI content creation agency | AI UGC ads, AI video ads, AI product photography, AI reels for brands | Hire for content |
+| Websites | /services/web-development | web development agency | landing page development, conversion-focused web development, website development [City] | Hire for a website |
+| Work | /work | AI content and web development case studies | AI marketing case study, web development portfolio | Check proof |
+| About | /about | AI creative agency [City] | AI content team, forrrow founders | Check credibility |
+| Blog | /blog | AI content marketing blog | AI marketing tips, landing page tips | Learn |
+| Blog category | /blog/ai-content | AI content creation blog | AI videos, UGC ads, hooks | Learn |
+| Blog category | /blog/web-development | landing page design blog | website structure, web development tips | Learn |
+| Contact | /contact | contact AI content agency | hire AI content agency, contact forrrow | Get in touch |
+
+Each blog category has its own URL so it can rank as a topic hub, and its H1,
+title, and description name that topic.
+
+[City] stands for the market forrrow wants to rank in. /services is a hub of
+short summaries that link to the two service pages, so each service can rank
+on its own. The two service URLs are planned routes. Until they ship, the hub
+links to them in advance.
+
+The home hero title is the H1 and the site description in `app/lib/site.ts` is
+the home meta description, the site description, and the Organization
+description.
+
 ## Page structure
 
 Each indexable page should normally include:
@@ -147,7 +178,7 @@ A service page should explain:
 
 - Who the service is for
 - The problem it addresses
-- What byroose does
+- What forrrow does
 - What the engagement may include
 - How the process works
 - What outcomes can reasonably be expected
@@ -188,9 +219,9 @@ Label estimates and time ranges. Confirm metrics, dates, client names, and appro
 - Use meaningful social sharing titles and descriptions.
 - Use descriptive image alternative text when an image contributes information.
 
-Every page title gets ` | byroose` appended automatically, so write the page
+Every page title gets ` | forrrow` appended automatically, so write the page
 part without the brand suffix and keep it to about 50 characters, which keeps
-the full title near 60. The page part may still name byroose when it reads
+the full title near 60. The page part may still name forrrow when it reads
 naturally, as the About title does. Edit static page titles and descriptions
 in `app/lib/page-seo.ts`, and a project's in its data file, where an optional
 `seo.title` replaces the visible name and an optional `seo.description` replaces
@@ -205,7 +236,7 @@ AI can help with research, outlines, alternatives, editing, and quality checks. 
 
 - Verify every factual claim
 - Remove invented detail
-- Match the byroose voice
+- Match the forrrow voice
 - Replace generic filler with specific value
 - Check links and names
 - Confirm permissions for client material

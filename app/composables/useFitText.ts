@@ -1,5 +1,7 @@
 import { unrefElement, useResizeObserver } from "@vueuse/core";
 import type { MaybeComputedElementRef } from "@vueuse/core";
+import { toValue } from "vue";
+import type { MaybeRefOrGetter } from "vue";
 
 const fitScaleProperty = "--fit-text-scale";
 const fitTolerance = 0.002;
@@ -17,12 +19,13 @@ function contentWidthOf(element: HTMLElement) {
 }
 
 interface FitTextOptions {
+   fill?: MaybeRefOrGetter<number>;
    maxScale?: number;
 }
 
 export function useFitText(
    text: MaybeComputedElementRef,
-   { maxScale = Number.POSITIVE_INFINITY }: FitTextOptions = {},
+   { fill = 1, maxScale = Number.POSITIVE_INFINITY }: FitTextOptions = {},
 ) {
    let scale = 1;
 
@@ -31,7 +34,7 @@ export function useFitText(
       if (!(element instanceof HTMLElement) || !element.parentElement) return;
 
       const width = element.getBoundingClientRect().width;
-      const available = contentWidthOf(element.parentElement);
+      const available = contentWidthOf(element.parentElement) * toValue(fill);
       if (width <= 0 || available <= 0) return;
 
       const ratio = available / width;

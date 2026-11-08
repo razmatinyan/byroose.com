@@ -4,7 +4,7 @@ Claude Code must follow AGENTS.md and every document it references. This file is
 
 ## Project snapshot
 
-byroose.com is a Nuxt 4 and Vue 3 website for the byroose creative agency. The current application is a responsive landing experience built with TypeScript, Tailwind CSS v4, Shadcn Vue source components, Nuxt Icon with Phosphor, Nuxt Fonts, VueUse, and GSAP.
+forrrow.com is a Nuxt 4 and Vue 3 website for the forrrow creative agency. The current application is a responsive landing experience built with TypeScript, Tailwind CSS v4, Shadcn Vue source components, Nuxt Icon with Phosphor, Nuxt Fonts, VueUse, and GSAP.
 
 ## Required session startup
 
