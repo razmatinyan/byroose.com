@@ -4,7 +4,7 @@ export default defineProject({
    slug: "cartoon",
    name: "Cartoon",
    description:
-      "A short cartoon about a girl who oversleeps on a school day, jumps out of bed, and gets dressed by magic.",
+      "An animated series made with our AI pipeline, to show that brands can own a recurring character without a full animation studio.",
    categories: ["Reel", "Video", "Image"],
    surface: { color: "oklch(0.8892 0.0345 40.68)", ink: "dark" },
    cover: {

@@ -2,6 +2,7 @@
 import { useTemplateRef } from "vue";
 import DrawnLine from "@/components/shared/DrawnLine.vue";
 import { aboutStoryLine } from "@/lib/about-line-path";
+import AboutApproachSection from "./AboutApproachSection.vue";
 import AboutBrandsSection from "./AboutBrandsSection.vue";
 import AboutCombinedSection from "./AboutCombinedSection.vue";
 import AboutHero from "./AboutHero.vue";
@@ -17,6 +18,7 @@ useDrawnLineMotion(storyRoot, aboutStoryLine);
       <AboutHero />
       <AboutCombinedSection />
       <AboutTeamSection />
+      <AboutApproachSection />
       <div ref="storyRoot" class="about-story">
          <DrawnLine class="about-story-line" />
          <AboutTrustSection />

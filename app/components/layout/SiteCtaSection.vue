@@ -8,7 +8,7 @@ import { siteCtaFor } from "@/lib/site-cta";
 import type { SplitTextResult } from "@/lib/split-text";
 
 const route = useRoute();
-const { description, titleLines } = siteCtaFor(route.path);
+const { description, titleLines, titleScale = 1 } = siteCtaFor(route.path);
 const title = titleLines.join(" ");
 const contactRoute = "/contact";
 const actionLabel = "Start a project";
@@ -25,7 +25,7 @@ useSiteCtaMotion(ctaRoot, titleSplits, () =>
 );
 useFitText(
    () => ctaRoot.value?.querySelector<HTMLElement>("[data-site-cta-title]"),
-   { maxScale: 1 },
+   { fill: titleScale, maxScale: 1 },
 );
 const { ready: backgroundReady } = useSiteCtaBackground(ctaRoot, ctaCanvas);
 
@@ -44,6 +44,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
    <section
       ref="ctaRoot"
       class="site-cta section-gutter"
+      :style="{ '--site-cta-title-scale': titleScale }"
       data-header-surface="dark"
    >
       <canvas
@@ -113,7 +114,10 @@ function setDescriptionSplit(parts: SplitTextResult) {
 
 .site-cta-title {
    @apply m-0 w-max max-w-none leading-[0.9] font-bold tracking-[-0.05em];
-   font-size: calc(clamp(1.75rem, 8.6vw, 9.5rem) * var(--fit-text-scale, 1));
+   font-size: calc(
+      clamp(1.75rem, 8.6vw, 9.5rem) * var(--site-cta-title-scale, 1) *
+         var(--fit-text-scale, 1)
+   );
 }
 
 .site-cta-description {

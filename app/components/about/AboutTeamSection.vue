@@ -44,7 +44,7 @@ const members: readonly TeamMember[] = [
       },
       name: "Ruzan Darbinyan",
       portrait: {
-         alt: "Ruzan Darbinyan kicking one leg high beside a lamppost on a sunny street corner",
+         alt: "Ruzan Darbinyan, co-founder and creative director of forrrow",
          height: 1536,
          src: "/images/founder.jpg",
          width: 2048,
@@ -144,6 +144,7 @@ function activateTooltip() {
 
 .about-team {
    @apply relative z-10 rounded-t-[clamp(1.5rem,3vw,3rem)] bg-canvas-shade py-section text-canvas-shade-foreground;
+   padding-bottom: calc(var(--spacing-section) * 2.25);
    --about-member-width: clamp(16rem, 34vw, 32rem);
    --about-member-inset: clamp(2rem, 8vw, 9rem);
 }

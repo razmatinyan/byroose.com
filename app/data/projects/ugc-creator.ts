@@ -4,7 +4,7 @@ export default defineProject({
    slug: "ugc-creator",
    name: "UGC Creator",
    description:
-      "A virtual UGC creator: one consistent face who tries on clothes and films get ready with me videos.",
+      "We built an AI-generated UGC creator to test how far virtual spokespeople can go: the same face, voice, and personality in every video. It's the same pipeline we use for client UGC ads.",
    categories: ["Reel", "Video", "Image"],
    surface: { color: "oklch(0.9127 0.0718 93.54)", ink: "dark" },
    cover: {

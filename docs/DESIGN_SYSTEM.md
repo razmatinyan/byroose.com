@@ -399,7 +399,12 @@ that turns views into leads" on the lines "Get AI content that" and "turns
 views into leads" with no description, so the action follows the title
 directly. The web development route says "Get a website that turns your views
 into leads" on the lines "Get a website that turns" and "your views into
-leads", also with no description. The title is `w-max` and `useFitText` scales it down,
+leads", also with no description. The Work route asks "Want work like this for your brand?" on the lines
+"Want work like this" and "for your brand?", with no description. The About
+route says "Work with an AI
+content and web development agency" on the lines "Work with an AI content" and
+"and web development agency", with no description, and sets `titleScale`
+to `0.85` so its title renders at 85 percent of the shared size. The title is `w-max` and `useFitText` scales it down,
 never up, when its longest line is wider than the content, so a longer route
 title still holds two lines at every width. Below it sits a description in `font-medium`
 `background/70` at `text-xl`, `text-2xl` from `md`, and `text-3xl` from `xl`,
@@ -2457,9 +2462,24 @@ scroll reveal can play.
 
 ### About page
 
-The About route stacks five sections: a centered hero, a combined section, a
-grey team section, a trust section, and a brands section, followed by the site
-call to action and the site footer.
+The About route stacks six sections: a centered hero, a combined section, a
+grey team section, an approach section, a trust section, and a brands section,
+followed by the site call to action and the site footer.
+
+`AboutApproachSection` shows how forrrow works with clients. Its H2, "How we
+work with clients", is centered at `clamp(2.5rem, 7vw, 7rem)`, bold with
+`-0.05em` tracking and `0.88` leading, and rises word by word from `SplitText`
+word masks with the shared word reveal and a `0.08s` stagger when it reaches 82
+percent of the viewport. Three left-aligned text items follow `6rem` below,
+`9rem` from `md` and `12rem` from `xl`, each a bold title over a `font-medium`
+description and held to `30rem`. From `md` the list is centered and held to
+`64rem`, `68rem` from `xl`, so "Small team, senior hands" on the left and "AI
+for speed, humans for taste" on the right of one row sit near the center, and
+"Numbers over opinions" is centered below them. Phones stack them. Each item's title
+and description rise from their masks with the shared word reveal, `0.12s`
+apart, when the item reaches 82 percent of the viewport. Reduced motion shows
+everything at rest. The section opens with `2.5` times `spacing-section` and
+ends with `spacing-section`.
 
 `AboutCombinedSection` explains why forrrow joins AI content creation and web
 development. Its H2, "Why we combined AI content creation and web
@@ -2549,7 +2569,8 @@ under "founders". Two 5:6 portraits with a name and a role follow: Ruzan
 Darbinyan, Co-Founder and Creative Director, on the right, and Razmik Matinyan,
 Co-Founder and Senior Software Engineer, on the left, pulled up by `0.45` of the portrait width
 from `md`. From `md`, both cards also step in from the page edge by
-`clamp(2rem, 8vw, 9rem)`, Ruzan's from the right and Razmik's from the left. The name and the role share the section's ink. Ruzan's portrait reuses
+`clamp(2rem, 8vw, 9rem)`, Ruzan's from the right and Razmik's from the left. The name and the role share the section's ink. Ruzan's portrait, with the alt text "Ruzan Darbinyan, co-founder and creative
+director of forrrow", reuses
 `public/images/founder.jpg`. A member without a `portrait` shows the striped
 `MediaPlaceholder` until a photo exists.
 
@@ -2602,7 +2623,13 @@ runtime x scales by the live width and y maps between the matching live
 section lines, so each line keeps its place against the content at every
 breakpoint. The team artwork's top line sits at `-120` instead of `0`, which
 lowers the line by about `120` pixels at 1440 wide so its top curve clears the
-section's top edge instead of being cut by it.
+section's top edge instead of being cut by it. Its bottom line sits at `1960` instead of
+`1768`, below the path's lowest point plus half the stroke, so the line's end
+stays whole inside the section instead of being cut by its bottom edge. The
+team section adds `2.25` times `spacing-section` of bottom padding to match, so
+the line keeps its drawn proportions. The approach section that follows opens
+with `2.5` times `spacing-section` of top padding, a deliberately large pause
+after the grey team section.
 
 The team line, Layer 1, is a `DrawnLine` with `text-ribbon` at full strength
 inside the team section, so it paints above the grey surface and below the
@@ -2822,7 +2849,7 @@ action that also closes the Services route, followed by the site footer.
 From `lg` the hero repeats the Services hero's frame: it fills the first screen
 below the header except for `--listing-hero-peek`, `clamp(3rem, 9svh, 6rem)`,
 so the rounded top of the projects section shows at the bottom of the first
-screen. Its content fills that space. The title sets "Our Work" on one line
+screen. Its content fills that space. The Work title sets "Case studies" on one line
 across the full content width at the top, and the description sits at the
 bottom of the space below it, in the right half of a two-column grid with a
 `4rem` column gap and a `3.5rem` row gap. Below `lg` the hero has no minimum
@@ -2834,7 +2861,8 @@ Services hero, with each word and each of its characters an inline block
 inside it. Separate characters drop the font's kerning pairs, which the
 measured size accounts for. The content is an inline-size container, and the title sets
 `calc(var(--work-hero-title-size) * var(--fit-text-scale, 1))`. The
-`--work-hero-title-size` of `23.71cqi` is measured from the phrase, so the
+`--work-hero-title-size` is measured from the phrase, `23.71cqi` by default
+for a phrase as wide as "Our Work" and `18.13cqi` for "Case studies", so the
 first paint already sits at the edge, and `useFitText` corrects the scale
 whenever the title's box resizes, as it does for the Why Choose Us title. The title
 is `w-max` with `0.05em` of end padding, so its box includes the last letter's
@@ -2845,9 +2873,9 @@ the line box, and `0.2em` cut it off while the reveal clip was on. The project
 hero title mask uses the same padding. A `0.2em`
 bottom margin cancels the mask's negative margin, so the description never
 crowds the letters on phones. The `h1` is an `sr-only` copy of the phrase and
-the visual line is hidden from assistive technology. The description, "Reels that stop the scroll. Visuals
-directed like a shoot. Websites designed and coded from scratch. The proof is
-in our projects.", is semibold at `text-2xl`, `text-4xl` from `md`, and
+the visual line is hidden from assistive technology. The Work description, "Our studio projects and tools,
+each one a test of the pipeline behind our client work: AI content that stops
+the scroll and websites built from scratch.", is semibold at `text-2xl`, `text-4xl` from `md`, and
 `text-5xl` from `2xl`, with `0.95` leading, `-0.04em` tracking, and a `20em`
 measure, in line masks that carry `0.12em` above and `0.18em` below. Each mask
 cancels that padding with negative margins, and the description becomes a flex

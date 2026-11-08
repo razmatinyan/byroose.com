@@ -42,9 +42,9 @@ export const pageSeo = {
    work: {
       path: "/work",
       name: "Work",
-      title: "Our work: AI content and website projects",
+      title: "AI content and web development case studies",
       description:
-         "Browse forrrow projects: reels, video, and AI imagery alongside websites designed and coded from scratch. Filter by AI content or website development.",
+         "See our AI content and web development work: a virtual UGC creator, an AI animated series, and Sygen, our free color system tool.",
       label: "Work",
    },
    about: {
