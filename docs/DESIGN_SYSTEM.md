@@ -401,7 +401,10 @@ that turns views into leads" on the lines "Get AI content that" and "turns
 views into leads" with no description, so the action follows the title
 directly. The web development route says "Get a website that turns your views
 into leads" on the lines "Get a website that turns" and "your views into
-leads", also with no description. The Work route asks "Want work like this for your brand?" on the lines
+leads", also with no description. Every Blog page, the category pages, and every post ask "Want this done for
+your brand?" on the lines "Want this done" and "for your brand?" with the
+description "We make the AI content and build the website, so nothing leaks
+in between." The Work route asks "Want work like this for your brand?" on the lines
 "Want work like this" and "for your brand?", with no description. The About
 route says "Work with an AI
 content and web development agency" on the lines "Work with an AI content" and
@@ -2316,7 +2319,19 @@ keyboard focus shows the same state, and reduced motion switches between the
 two states without the transition.
 
 The Blog route reuses the Work route's fitted listing hero and rounded grey
-listing section. Its article heading shows the live article count and, because
+listing section. Its hero title "Our Blog" paints at `27.15cqi` and its
+description reads "What we're learning about AI content that stops the scroll,
+websites that keep people, and the numbers in between." The category pages
+`/blog/ai-content` and `/blog/web-development` share the layout with their own
+titles, "AI Content" at `22.3cqi` and "Web Development" at `12.44cqi`, each
+measured so the first paint matches the fitted size, and their own
+descriptions. Beside the article count, from `md`, sit All, AI Content, and Web
+Development links in the Work filter button style: `cta-lg` pills with a `2px`
+foreground border at `text-2xl`, `dark` for the current page and transparent
+`outline` otherwise. Below `md` they wrap under the count. They navigate to
+their pages instead of filtering in place, and they rise one after another
+after the count with the navigation stagger. A category with no articles shows
+"No articles in this category yet." Its article heading shows the live article count and, because
 it shares `useBlogMotion` with the home section, it must split into characters
 and rises character by character like the home title. Its
 cards use the same responsive BlogCard grid and interaction as the home section:

@@ -31,6 +31,18 @@ const routeSiteCta: Readonly<Record<string, SiteCtaCopy>> = {
    },
 };
 
+const blogSiteCta: SiteCtaCopy = {
+   description:
+      "We make the AI content and build the website, so nothing leaks in between.",
+   titleLines: ["Want this done", "for your brand?"],
+};
+
+function isBlogPath(path: string) {
+   return path === "/blog" || path.startsWith("/blog/");
+}
+
 export function siteCtaFor(path: string): SiteCtaCopy {
+   if (isBlogPath(path)) return blogSiteCta;
+
    return routeSiteCta[path] ?? defaultSiteCta;
 }

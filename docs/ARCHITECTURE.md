@@ -103,6 +103,7 @@ app/
     services-anchors.ts
     site.ts
     blog-articles.ts
+    blog-categories.ts
     services-hero.ts
     split-text.ts
     stack-reveal.ts
@@ -163,7 +164,7 @@ package.json
 
 ### Application entry
 
-app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog.vue renders the Blog experience from app/components/blog, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog/index.vue renders the Blog experience from app/components/blog, app/pages/blog/ai-content.vue and app/pages/blog/web-development.vue render its two category pages through the same BlogPage, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -270,11 +271,25 @@ component's role.
 ### Blog components
 
 app/components/blog contains the Blog route's sections. BlogPage composes
-BlogHero and BlogArticlesSection, and app/pages/blog.vue renders it with the
-route metadata. BlogHero supplies the Blog title and description to the shared
-ListingHero. BlogArticlesSection owns the article count heading, renders the
-shared article content from app/lib/blog-articles.ts in a three-column grid from
-`md`, and requests the neutral BlogCard surface. The home BlogSection consumes
+BlogHero and BlogArticlesSection, and app/pages/blog/index.vue renders it with
+the route metadata. Each category page, app/pages/blog/ai-content.vue and
+app/pages/blog/web-development.vue, passes BlogPage its entry from
+`blogCategoryPages` in app/lib/blog-categories.ts as `categoryPage`. That module
+owns each category's content value, link label, hero title words, measured
+first-paint `titleSize`, hero description, and its `pageSeo` entry, and
+`blogCategoryLinks` lists All and both categories for the navigation. Static
+page files take precedence over `app/pages/blog/[slug].vue`, so no post may use
+the slug `ai-content` or `web-development`. BlogHero supplies the Blog title and
+description to the shared ListingHero, or a category's when BlogPage passes
+them. BlogArticlesSection owns the article count heading, keeps only the
+articles of its optional `category`, renders the shared article content from
+app/lib/blog-articles.ts in a three-column grid from `md`, shows an empty
+message when a category has no articles, and requests the neutral BlogCard
+surface. BlogCategoryNav sits beside the count and renders All and the two
+categories as links, not filters, marking the link of the current path with
+`aria-current="page"`. useBlogMotion rises every `data-blog-cta` in the
+heading after the title characters with the navigation stagger, so the same
+hook serves the home section's single action and these links. The home BlogSection consumes
 the same article content with the default tinted BlogCard surface.
 
 ### Legal components
@@ -354,7 +369,8 @@ two-column split from `lg`: the copy on the left and a projects marquee on the
 right. Below `lg` the marquee follows the copy. It reads its title lines and
 description for the current route from `siteCtaFor` in app/lib/site-cta.ts,
 which falls back to the default "Turn your social media views into leads?"
-copy, so a route such as `/services` can ask its own question. An optional
+copy, so a route such as `/services` can ask its own question. `/blog` and
+every path under it share one Blog copy. An optional
 `titleScale` shrinks one route's title, both its base size and the width it
 fits to. The description is optional, and a route without one renders no
 description paragraph. It fits its title to the copy column's width with
@@ -1184,8 +1200,8 @@ a SQLite database at build time through Node's built-in `node:sqlite`
   `content/blog/layout-sample.md` is a draft that shows every element and
   serves as the authoring reference.
 
-The `/blog` listing still shows the placeholder cards from
-`app/lib/blog-articles.ts`. It will read the collection once real posts exist.
+The `/blog` listing and its category pages still show the placeholder cards
+from `app/lib/blog-articles.ts`. It will read the collection once real posts exist.
 
 ## SEO
 

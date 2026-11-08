@@ -120,7 +120,12 @@ before a page launches.
 | Work | /work | AI content and web development case studies | AI marketing case study, web development portfolio | Check proof |
 | About | /about | AI creative agency [City] | AI content team, forrrow founders | Check credibility |
 | Blog | /blog | AI content marketing blog | AI marketing tips, landing page tips | Learn |
+| Blog category | /blog/ai-content | AI content creation blog | AI videos, UGC ads, hooks | Learn |
+| Blog category | /blog/web-development | landing page design blog | website structure, web development tips | Learn |
 | Contact | /contact | contact AI content agency | hire AI content agency, contact forrrow | Get in touch |
+
+Each blog category has its own URL so it can rank as a topic hub, and its H1,
+title, and description name that topic.
 
 [City] stands for the market forrrow wants to rank in. /services is a hub of
 short summaries that link to the two service pages, so each service can rank

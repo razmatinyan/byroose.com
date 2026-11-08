@@ -8,6 +8,7 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   navRevealStagger,
    revealMaskClip,
    wordRevealDuration,
    wordRevealEase,
@@ -79,24 +80,27 @@ export function useBlogMotion(
 
       addCharReveal(timeline, titleChars);
 
-      const ctaMask = heading.querySelector<HTMLElement>(selectors.ctaMask);
-      const cta = heading.querySelector<HTMLElement>(selectors.cta);
-      if (!ctaMask || !cta) return;
+      const ctaMasks = [
+         ...heading.querySelectorAll<HTMLElement>(selectors.ctaMask),
+      ];
+      const ctas = [...heading.querySelectorAll<HTMLElement>(selectors.cta)];
+      if (!ctaMasks.length || !ctas.length) return;
 
-      gsap.set(ctaMask, { clipPath: revealMaskClip });
-      gsap.set(cta, { yPercent: wordRevealOffset });
+      gsap.set(ctaMasks, { clipPath: revealMaskClip });
+      gsap.set(ctas, { yPercent: wordRevealOffset });
       timeline
          .to(
-            cta,
+            ctas,
             {
                clearProps: "transform",
                duration: wordRevealDuration,
                ease: wordRevealEase,
+               stagger: navRevealStagger,
                yPercent: 0,
             },
             titleChars.length * charRevealStagger,
          )
-         .set(ctaMask, { clearProps: "clipPath" });
+         .set(ctaMasks, { clearProps: "clipPath" });
    }
 
    function rowDelay(card: HTMLElement) {

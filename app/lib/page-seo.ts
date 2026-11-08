@@ -58,9 +58,25 @@ export const pageSeo = {
    blog: {
       path: "/blog",
       name: "Blog",
-      title: "Blog: AI content and web development insights",
+      title: "AI Content Marketing & Web Development Blog",
       description:
-         "Read practical forrrow articles about AI content creation, web development, and turning audience attention into action.",
+         "Practical guides on AI content creation, landing page design and turning social media views into leads, from the forrrow team.",
+      label: "Blog",
+   },
+   blogAiContent: {
+      path: "/blog/ai-content",
+      name: "AI content creation articles",
+      title: "AI content creation blog: videos, UGC ads, and hooks",
+      description:
+         "Articles on AI videos, UGC ads, and hooks, and on what's working on each platform, from the team that makes AI content for brands.",
+      label: "Blog",
+   },
+   blogWebDevelopment: {
+      path: "/blog/web-development",
+      name: "Web development and landing page articles",
+      title: "Web development and landing page design blog",
+      description:
+         "Articles on landing page design and website structure, and on making the click from your content feel like a continuation of it.",
       label: "Blog",
    },
    contact: {
