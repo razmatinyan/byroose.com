@@ -416,7 +416,8 @@ lines rise one after the other from their line masks, with the shared word
 reveal, `0.8s` on `power3.out`, and the title line reveal's `0.1s` stagger.
 The description lines then rise with the hero description's line reveal, and
 the action rises after the last line. The line masks carry
-`0.12em` above and `0.18em` below, cancelled by equal negative margins. The action's rise mask clips only
+`0.12em` above, `0.18em` below, and `0.12em` on each side, cancelled by equal
+negative margins, so the tight tracking never cuts the last letter of a line. The action's rise mask clips only
 vertically, so the hover bounce can grow the action past its sides without
 cutting its corners. Reduced motion shows the text and the action at rest.
 

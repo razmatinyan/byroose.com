@@ -213,8 +213,8 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .site-cta-title :deep(.split-text-line-mask) {
-   margin-block: -0.12em -0.18em;
-   padding-block: 0.12em 0.18em;
+   margin: -0.12em -0.12em -0.18em;
+   padding: 0.12em 0.12em 0.18em;
 }
 
 .site-cta-title :deep(.split-text-line) {
