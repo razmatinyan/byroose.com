@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from "vue";
 import { useNow } from "@vueuse/core";
-import { NuxtLink } from "#components";
 import SiteNavLink from "@/components/layout/SiteNavLink.vue";
 import WaveUnderline from "@/components/shared/WaveUnderline.vue";
-import { Button } from "@/components/ui/button";
 import { appIcons } from "@/lib/icons";
 import { siteEmail, siteHeadquartersLabel } from "@/lib/site";
 
@@ -21,6 +19,8 @@ interface SloganLine {
 
 const contactRoute = "/contact";
 const email = siteEmail;
+const description =
+   "forrrow is an AI content and web development agency. We create AI videos and UGC ads that stop the scroll, and build websites that turn views into leads.";
 const headquarters = siteHeadquartersLabel;
 const creditHref = "https://www.linkedin.com/in/razmatinyan/";
 const now = useNow({ interval: 60_000 });
@@ -82,41 +82,26 @@ function scrollToTop() {
       <div ref="footerContent" class="site-footer-content">
          <div class="site-footer-top">
             <div class="site-footer-lead">
-               <p class="section-title site-footer-title">
-                  <span
-                     v-for="line in sloganLines"
-                     :key="line.underlined"
-                     class="site-footer-title-line"
-                  >
-                     {{ line.lead }}
-                     <span class="site-footer-title-underlined">
-                        {{ line.underlined }}
-                        <WaveUnderline
-                           class="site-footer-title-wave"
-                           :animated="false"
-                           :color="line.underlineColor"
-                        />
+               <div class="site-footer-intro">
+                  <p class="section-title site-footer-title">
+                     <span
+                        v-for="line in sloganLines"
+                        :key="line.underlined"
+                        class="site-footer-title-line"
+                     >
+                        {{ line.lead }}
+                        <span class="site-footer-title-underlined">
+                           {{ line.underlined }}
+                           <WaveUnderline
+                              class="site-footer-title-wave"
+                              :animated="false"
+                              :color="line.underlineColor"
+                           />
+                        </span>
                      </span>
-                  </span>
-                  <span
-                     class="site-footer-title-line site-footer-title-action-row"
-                  >
-                     <span class="site-footer-title-action-icon">
-                        <Icon :name="appIcons.arrowRight" aria-hidden="true" />
-                     </span>
-                     <span class="site-footer-title-action">
-                        <Button
-                           class="site-footer-cta"
-                           :as="NuxtLink"
-                           :to="contactRoute"
-                           variant="light"
-                           size="cta-lg"
-                        >
-                           Book a Call
-                        </Button>
-                     </span>
-                  </span>
-               </p>
+                  </p>
+                  <p class="site-footer-description">{{ description }}</p>
+               </div>
 
                <div class="site-footer-email">
                   <p class="site-footer-email-label">Or write directly to</p>
@@ -307,34 +292,8 @@ function scrollToTop() {
    @apply absolute top-full left-0 -mt-[0.04em];
 }
 
-.site-footer-title-action-row {
-   @apply flex gap-[0.1em];
-   width: 4.52em;
-   margin-top: 0.45em;
-}
-
-.site-footer-title-action-icon {
-   @apply grid shrink-0 place-items-center;
-   width: max(2.75rem, 0.546em);
-   height: max(2.75rem, 0.546em);
-}
-
-.site-footer-title-action-icon :deep(svg) {
-   width: 100%;
-   height: 100%;
-}
-
-.site-footer-title-action {
-   @apply flex min-w-0 flex-1 tracking-normal;
-   font-size: 0.78em;
-   height: max(2.75rem, 0.7em);
-}
-
-.site-footer-cta {
-   @apply h-full min-h-0 w-full;
-   gap: 0.6em;
-   padding-inline: 1em;
-   font-size: max(0.25em, 0.875rem);
+.site-footer-description {
+   @apply m-0 mt-10 max-w-[24em] text-lg leading-snug font-semibold tracking-[-0.03em] text-pretty text-muted-foreground md:mt-12 md:text-xl;
 }
 
 .site-footer-email {

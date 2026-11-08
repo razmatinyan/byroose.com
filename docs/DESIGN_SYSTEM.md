@@ -461,7 +461,7 @@ surface, so it carries no
 action.
 
 From `lg` the top row is a two-column grid. The left column stacks the slogan
-title above the email block. The right column holds Navigation, Social Media, and
+title and its description above the email block. The right column holds Navigation, Social Media, and
 Located in as a three-column grid, then aligns the three credit lines with the
 email block at the bottom of the row. Below `lg` the right side stacks under the
 left column. Its link grid drops to two columns below `sm`.
@@ -470,18 +470,15 @@ The title uses `section-title` on two block lines, "From seen" and "to chosen".
 "seen" and "chosen" each carry a static `WaveUnderline` just below the word, as
 wide as the word, with `animated` off so the lines are always present. The
 "seen" line is the `ribbon` green, and the "chosen" line is brand orange
-`primary`. A transparent right-arrow glyph and a
-`cta-lg` "Book a Call" action to `/contact` fill the third row to the `4.52em`
-width of "From seen", with `0.45em` of space above it, which keeps the action
-clear of the wave under "chosen". The glyph is as tall as
-the action, and the action keeps the `light` variant's own white `bg-card`
-surface, so it reads as the lightest shape on the cream footer. Its wrapper is
-`max(2.75rem, 0.7em)` tall, so on desktop the action matches the title scale,
-while on phones it never drops below a comfortable touch target. The left
-column is an inline-size container, and the title sets `min(18cqi, 6.5rem)`,
-about 104px at 1440 wide. The action sets `0.78em` of that. Its label font is
-`0.25em` of the action, with a `0.875rem` floor, and its padding, gap, and glyph
-are all in `em`, so the button scales with the title.
+`primary`. The left column is an inline-size container, and the title sets
+`min(18cqi, 6.5rem)`, about 104px at 1440 wide. The footer has no call to
+action of its own, because the site call to action sits directly above it.
+
+Under the title, `2.5rem` below and `3rem` from `md`, a semibold
+`muted-foreground` description at `text-lg`, `text-xl` from `md`, with
+`-0.03em` tracking and snug leading, held to `24em`, reads "forrrow is an AI
+content and web development agency. We create AI videos and UGC ads that stop
+the scroll, and build websites that turn views into leads."
 
 Below the title, a semibold `muted-foreground` "Or write directly to" label at
 `text-base`, `text-lg` from `md`, with `-0.03em` tracking sits tightly above the
