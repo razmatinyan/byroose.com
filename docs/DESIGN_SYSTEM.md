@@ -801,7 +801,11 @@ with a 404 status, so page transitions run into and out of it.
 below the header and centers the status code as bold display type at
 `clamp(8rem, 30vw, 26rem)` with `-0.06em` tracking, a semibold `text-4xl`,
 `text-6xl` from `md`, heading, a medium `text-xl` `muted-foreground` line of
-copy, and the actions. A 404 reads "This page took a wrong turn" and offers a
+copy, and the actions. A 404 reads "This page scrolled away." over "The link might be old, or we
+moved something. Try our AI content creation services, our web development
+work, or the homepage." The three named destinations are underlined
+`foreground` links to `/services/ai-content-creation`,
+`/services/web-development`, and `/`, which turn `primary` on hover. It offers a
 `dark` Back to home and an `outline` See our work `cta-lg` button. Any other
 error reads "Something went wrong on our side" and offers only Back to home.
 On `app/error.vue` both actions clear the error with `clearError` before
