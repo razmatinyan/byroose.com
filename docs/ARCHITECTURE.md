@@ -66,6 +66,7 @@ app/
     usePageSeo.ts
     usePageTransitionMotion.ts
     useProjectGallery.ts
+    useProjectMarquee.ts
     useServicesHeroMotion.ts
     useServiceCardsMotion.ts
     useServiceHeroMotion.ts
@@ -73,7 +74,6 @@ app/
     useServicesMotion.ts
     useServicesRevealMotion.ts
     useServicesStatementMotion.ts
-    useSiteCtaBackground.ts
     useSiteCtaMotion.ts
     useSiteHeaderMotion.ts
     useSiteMenuMotion.ts
@@ -104,7 +104,6 @@ app/
     site.ts
     blog-articles.ts
     services-hero.ts
-    site-cta-smoke.ts
     split-text.ts
     stack-reveal.ts
     surfaces.ts
@@ -350,17 +349,28 @@ SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, SiteCtaSection, and 
 may use shared components and UI primitives. They should not depend on a landing
 section.
 
-SiteCtaSection is the dark call to action that closes every route. It reads
-its title lines and description for the current route from `siteCtaFor` in
-app/lib/site-cta.ts, which falls back to the default "Turn your social media
-views into leads?" copy, so a route such as `/services` can ask its own
-question. An optional `titleScale` shrinks one route's title, both its base
-size and the width it fits to.
-The description is optional, and a route without one renders no
-description paragraph. It fits its title to the content width with useFitText. The layout renders it inside the main landmark after
-the page, so no page owns a copy. It owns its link to `/contact`
-and reveals through useSiteCtaMotion. Its `ctaCanvas` paints the smoke
-background that useSiteCtaBackground owns. Like the footer, it carries
+SiteCtaSection is the light call to action that closes every route. It is a
+two-column split from `lg`: the copy on the left and a projects marquee on the
+right. Below `lg` the marquee follows the copy. It reads its title lines and
+description for the current route from `siteCtaFor` in app/lib/site-cta.ts,
+which falls back to the default "Turn your social media views into leads?"
+copy, so a route such as `/services` can ask its own question. An optional
+`titleScale` shrinks one route's title, both its base size and the width it
+fits to. The description is optional, and a route without one renders no
+description paragraph. It fits its title to the copy column's width with
+useFitText. The layout renders it inside the main landmark after the page, so
+no page owns a copy. It owns its link to `/contact` and reveals through
+useSiteCtaMotion.
+
+The marquee reads `projects` from app/data/projects, leaves out the project
+whose page is open, and repeats the rest until a set holds at least four
+cards. It renders that set twice for a seamless loop inside a `nav` named "Our
+projects", and each card is a ProjectMarqueeCard linking to `/work/<slug>`.
+Only the first card of each project is focusable and exposed to assistive
+technology, so a keyboard or screen reader meets every project once.
+useProjectMarquee moves the track. Hovering a card shows the shared
+TrailingTooltip with "View Project" through useTrailingTooltip, which loads it
+only on fine-pointer devices. Like the footer, the section carries
 `data-page-transition-follow`, so it leaves with the outgoing page. Because the
 layout persists, the layout keys it and bumps that key through the page
 transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
@@ -379,7 +389,7 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. Cards do not fetch their own page data.
 
 ### Shared components
 
@@ -625,30 +635,23 @@ shown items in. A newer swap
 interrupts an older one, which then stops without applying its update. Reduced
 motion applies the update at once and shows everything at rest.
 
-useSiteCtaMotion owns the site call to action's reveal. It waits for both
-title lines' word splits, then builds one timeline on the title's
-`data-site-cta-title` trigger that rises every word of both lines in reading
-order with the shared word reveal and a `0.12s` stagger, and rises the
-`data-site-cta-action` one stagger step after the last word. The owner passes
-`null` for the description split when the route has no description, and the
-action then follows the title words directly. Reduced motion
-shows the words and the action at rest.
+useSiteCtaMotion owns the site call to action's reveal. It waits for every
+title line's line split, then builds one timeline on the title's
+`data-site-cta-title` trigger that rises the title lines one after the other
+with the shared word reveal and the `titleLineRevealStagger`, then the
+description lines, and rises the `data-site-cta-action` one stagger step after
+the last line. The owner passes `null` for the description split when the
+route has no description, and the action then follows the title lines
+directly. Reduced motion shows the lines and the action at rest.
 
-useSiteCtaBackground owns the site call to action's Three.js smoke background.
-It imports `three` dynamically only once the section comes within a quarter of
-a viewport of the screen, so the library never reaches the server output or
-the main bundle. It reads the section's computed background and text colors,
-creates one WebGLRenderer on the section's canvas, and renders two passes: the
-mouse trail sprites into a half-resolution render target, then a full-section
-backdrop shader that the trail distorts. The frame loop is a GSAP ticker
-callback, so it adds no second animation frame loop, and it runs only while the
-section is near the viewport and motion is allowed. It measures the section
-through a resize observer and tracks pointer movement on the section. Reduced
-motion renders one still frame without the trail. It returns `ready`, which
-fades the canvas in, and releases the renderer, every material, geometry,
-texture, and render target, and the WebGL context through the page
-transition's `deferCleanup`, so a leaving copy keeps its background until it
-has been covered.
+useProjectMarquee owns the site call to action's projects marquee. It
+receives the marquee viewport, its track, and the card count, and loops the
+track by half its length, the length of one set, with a linear GSAP tween at
+`5s` per card in a set. From `lg` the track moves up, and below `lg` it moves
+left. Pointer hover or keyboard focus inside the marquee eases the loop to a
+stop and releases it on leave. The loop plays only while the marquee is within
+a quarter of a viewport of the screen. Reduced motion creates no loop, and the
+mobile row then scrolls natively.
 
 useAboutApproachMotion owns AboutApproachSection's motion. It waits for the
 title's word split, rises the `data-about-approach-title` words with the shared
@@ -823,11 +826,6 @@ app/lib contains pure helpers, shared constants, and stable names.
 - services-anchors.ts owns the Services route's section ids, `servicesAnchors`,
   and `servicesSectionPath`, which builds the `/services#id` path that the home
   services section links to.
-- site-cta-smoke.ts holds the site call to action's smoke background: the
-  noise texture URL, the trail and pixel ratio values in `smokeTrail`, the
-  field contrast, trail push, glow, and grain values in `smokeField`, and the
-  GLSL for the trail sprites and the backdrop. It holds data only, so
-  useSiteCtaBackground stays the only module that imports `three`.
 - split-text.ts defines the stable typed result contract shared by SplitText and its animation consumers.
 - image-parallax.ts holds the shared image parallax values: the `1.3` hold
   scale, the `14` percent travel, and the trigger range. The work case images
@@ -936,9 +934,7 @@ Give an updated image a new file name when it must appear immediately. SVG
 brand assets use the registered `none` provider so they bypass the optimizer,
 which does not process SVG. Repeating decorative textures such as the canvas
 grain tile are the exception. They are referenced by root-relative URL from the
-global stylesheet and do not pass through Nuxt Image. The smoke background's
-`public/images/smoke-noise.avif` is the other exception: it is a WebGL texture
-that Three.js loads by root-relative URL.
+global stylesheet and do not pass through Nuxt Image.
 
 ## Dependency direction
 

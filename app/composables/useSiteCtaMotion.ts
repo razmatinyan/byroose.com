@@ -6,6 +6,7 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   titleLineRevealStagger,
    wordRevealStart,
 } from "@/lib/word-reveal";
 
@@ -20,8 +21,6 @@ const selectors = {
    title: "[data-site-cta-title]",
 } as const;
 
-const titleWordStagger = 0.12;
-
 export function useSiteCtaMotion(
    scope: MotionScope,
    titleSplits: SplitListSource,
@@ -32,7 +31,10 @@ export function useSiteCtaMotion(
    let disposed = false;
    let initialized = false;
 
-   async function initialize(words: HTMLElement[], lines: HTMLElement[]) {
+   async function initialize(
+      titleLines: HTMLElement[],
+      lines: HTMLElement[],
+   ) {
       if (initialized || disposed) return;
 
       initialized = true;
@@ -53,7 +55,7 @@ export function useSiteCtaMotion(
          },
          (context) => {
             if (context.conditions?.reduceMotion) {
-               const shown = [...words, ...lines, ...actions];
+               const shown = [...titleLines, ...lines, ...actions];
                if (shown.length) gsap.set(shown, { visibility: "inherit" });
                return;
             }
@@ -66,9 +68,11 @@ export function useSiteCtaMotion(
                },
             });
 
-            const titleEnd = words.length * titleWordStagger;
+            const titleEnd = titleLines.length * titleLineRevealStagger;
 
-            addWordReveal(timeline, words, { stagger: titleWordStagger });
+            addWordReveal(timeline, titleLines, {
+               stagger: titleLineRevealStagger,
+            });
             addWordReveal(timeline, lines, {
                duration: lineRevealDuration,
                ease: lineRevealEase,
@@ -91,7 +95,7 @@ export function useSiteCtaMotion(
          if (splits.includes(undefined) || description === undefined) return;
 
          return initialize(
-            splits.flatMap((parts) => parts?.words ?? []),
+            splits.flatMap((parts) => parts?.lines ?? []),
             description?.lines ?? [],
          );
       },

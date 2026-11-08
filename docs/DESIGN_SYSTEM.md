@@ -386,8 +386,10 @@ flashes during hydration.
 ## Site call to action
 
 `SiteCtaSection` closes every route, between the page and the footer. It is a
-dark `foreground` section with `background` text that fills at least the
-viewport, centered. Its copy comes from `app/lib/site-cta.ts` by route. The
+light `background` section with `foreground` text that fills at least the
+viewport. From `lg` it splits into two equal columns: the copy on the left,
+left-aligned and centered vertically, and a projects marquee on the right.
+Below `lg` the copy comes first and the marquee follows as a row. Its copy comes from `app/lib/site-cta.ts` by route. The
 default title is "Turn your social media views into leads?" on two
 bold lines, "Turn your social media" and "views into leads?", at
 `clamp(1.75rem, 8.6vw, 9.5rem)` with `0.9` leading and `-0.05em` tracking.
@@ -405,46 +407,34 @@ route says "Work with an AI
 content and web development agency" on the lines "Work with an AI content" and
 "and web development agency", with no description, and sets `titleScale`
 to `0.85` so its title renders at 85 percent of the shared size. The title is `w-max` and `useFitText` scales it down,
-never up, when its longest line is wider than the content, so a longer route
+never up, when its longest line is wider than the copy column, so a longer route
 title still holds two lines at every width. Below it sits a description in `font-medium`
-`background/70` at `text-xl`, `text-2xl` from `md`, and `text-3xl` from `xl`,
-held to `38ch` with balanced wrapping, which sets it on three even lines from
-`md`, then a large `light` Start a project
-action to `/contact` with an arrow right glyph and the hover bounce. It marks
-the header as dark. When the title reaches 82 percent of the viewport, its
-words rise one by one from their word masks in reading order across both
-lines, with the shared word reveal, `0.8s` on `power3.out`, and the blog
-title's `0.12s` stagger. The description lines then rise with the hero
-description's line reveal, and the action rises after the last line. The word masks carry
+`foreground/60` at `text-xl` and `text-2xl` from `md`, held to `38ch` with
+balanced wrapping, then a large `default` Start a project
+action to `/contact` with an arrow right glyph and the hover bounce. When the title reaches 82 percent of the viewport, its
+lines rise one after the other from their line masks, with the shared word
+reveal, `0.8s` on `power3.out`, and the title line reveal's `0.1s` stagger.
+The description lines then rise with the hero description's line reveal, and
+the action rises after the last line. The line masks carry
 `0.12em` above and `0.18em` below, cancelled by equal negative margins. The action's rise mask clips only
 vertically, so the hover bounce can grow the action past its sides without
 cutting its corners. Reduced motion shows the text and the action at rest.
 
-A Three.js smoke background fills the section behind the text. A full-section
-canvas at `-z-10` inside the now `isolate` section paints a drifting value
-noise field, mixed from the section's own `foreground` surface toward its
-`background` ink by up to `0.24`, so the darkest smoke matches the surface and
-the effect follows both themes. The field is cut with a smoothstep between
-`0.26` and `0.62` of its range, so most of the section stays dark and soft grey
-clouds move through it, crossing the section in roughly ten seconds. A
-film grain of `0.08` sits on the final color, one CSS pixel per grain cell, so
-it reads equally on the dark areas and the clouds. It changes about twelve
-times a second through `grainRate`, like the page grain, because a pattern
-that changed every frame would average out to a flat color. The page's own canvas grain
-multiplies a light tile and barely shows on this dark surface, so the section
-needs its own. Moving the mouse over the section leaves a smoke
-trail: every frame the pointer travels a pixel, a soft sprite cut from
-`public/images/smoke-noise.avif` spawns at it, turns, grows, and fades out over
-about two seconds. The trail pushes the noise coordinates themselves by up to
-`0.35` of a noise cell, so the push looks equally strong across the whole
-section, and it lifts the brightness by up to `0.3` of the cloud strength, so
-it still shows over the dark areas. The values live in `smokeField` in
-`app/lib/site-cta-smoke.ts`. The trail renders at half resolution because it
-is only ever sampled as a soft distortion. The canvas fades in over
-`1s` once its first frame is drawn, renders only while the section is near the
-viewport, and never takes the pointer. Reduced motion shows one still frame
-without the trail or the fade. Without WebGL the plain `foreground` surface
-remains.
+The marquee shows every project's cover as a rounded 16:9 card on a `muted`
+ground, with no name or caption, each linking to its project page. On a
+project page it leaves that project out. From `lg` the cards fill the right
+column, up to the page gutter, in one column with a `1.5rem` gap, cut by the
+section's top and bottom edges, and the column scrolls up. Below `lg` the
+cards are `78vw` wide, `48vw` from `sm`, with a `1rem` gap, run from edge to
+edge, and the row scrolls left. Either way the loop crosses one card about
+every `5s`, eases to a stop under the pointer or keyboard focus, and pauses
+off screen. A card's cover does not scale on hover. Instead, on fine-pointer
+devices, the shared `TrailingTooltip` follows the pointer over a card in its
+compact size with an arrow right glyph and "View Project". Covers load
+lazily, and a video cover plays muted and looped only while its card is near
+the screen, fading in over its poster once it plays. Reduced motion stops the
+loop and the videos, keeps the posters, and lets the mobile row scroll by
+hand.
 
 The section follows the outgoing page during a page transition, and a fresh
 copy replaces it once the new page has landed, so it reveals again on every
@@ -2759,10 +2749,10 @@ description, and link are set in `background`, and the title and description
 use `mix-blend-difference`, so they read black over the light canvas and turn
 light where the dark surface has grown behind them.
 
-The site call to action follows on the same dark surface, so the two read as
-one dark block that ends in a straight edge above the footer. The dark surface
-extends one pixel below the section, under the call to action, so the
-fractional smooth scroll offset never opens a light hairline at the seam.
+The light site call to action follows with a straight edge below the dark
+surface. The dark surface extends one pixel below the section, under the call
+to action, so the fractional smooth scroll offset never opens a gap at the
+seam.
 
 ### Service pages
 
