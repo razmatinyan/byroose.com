@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: How we collect, use, and protect your personal data.
-updated: 2026-11-07
+updated: 2026-11-09
 ---
 
 ## Who we are
@@ -34,9 +34,8 @@ We collect as little personal data as we need to run the site, answer you, and d
 
 - **Technical data.** Like any website, our hosting and delivery providers process technical data when your browser requests a page. This includes your IP address, browser and device type, the page you requested, the referring page, and the time of the request. It is used to deliver the site, keep it secure, and diagnose errors.
 - **Abuse protection.** When you send the contact form, we hold your IP address in temporary server memory for up to 10 minutes to limit repeated submissions and block spam.
-- **Your cookie choice.** We store your answer to our cookie notice in a cookie, as described in [Cookies and similar technologies](#cookies-and-similar-technologies).
 
-We do not use analytics, advertising, or tracking tools on forrrow.com. Our fonts and icons are served from our own domain, so loading a page does not send your data to font or icon services.
+We do not use cookies, analytics, advertising, or tracking tools on forrrow.com. Our fonts and icons are served from our own domain, so loading a page does not send your data to font or icon services.
 
 We do not knowingly collect sensitive personal data, such as health information, political opinions, or financial account numbers. Please do not send it to us through the contact form or by email.
 
@@ -48,7 +47,6 @@ We use personal data only for clear, specific purposes:
 - To prepare proposals, agree on scope, and deliver the work you hire us for
 - To send invoices, receive payments, and keep business records
 - To run, protect, and improve forrrow.com, including preventing spam and abuse
-- To remember your cookie choice
 - To meet our legal, tax, and accounting obligations, and to establish or defend legal claims
 
 We do not sell your personal data. We do not use it for automated decisions that have legal or similarly significant effects on you, and we do not add you to a mailing list. If we ever introduce a newsletter, you will only receive it if you sign up for it.
@@ -59,7 +57,7 @@ Where data protection laws such as the EU and UK General Data Protection Regulat
 
 - **Contract.** We process data to take steps you request before an agreement and to perform our agreement with you.
 - **Legitimate interests.** We process data to answer enquiries, run and secure our website, prevent abuse, and manage our business, where those interests are not overridden by your rights.
-- **Consent.** We rely on your consent where the law requires it, for example for any optional cookies we might add in the future. You can withdraw consent at any time.
+- **Consent.** We rely on your consent where the law requires it. You can withdraw consent at any time.
 - **Legal obligation.** We process data when we must keep records or respond to lawful requests from authorities.
 
 ## Client materials and AI tools
@@ -76,13 +74,9 @@ To create content and build websites, our clients share materials with us, such 
 
 ## Cookies and similar technologies
 
-A cookie is a small text file that a website stores in your browser. forrrow.com uses one cookie:
+A cookie is a small text file that a website stores in your browser. forrrow.com does not set any cookies, and it does not use local storage or similar technologies to store information on your device. That is why the site shows no cookie notice.
 
-- **forrrow-cookie-consent.** Stores whether you accepted or declined our cookie notice, so the notice does not appear on every visit. It is set only when you answer the notice and lasts for one year.
-
-This cookie does not identify you and is not used for tracking. We do not set analytics or advertising cookies. If we add any tool that uses optional cookies in the future, it will run only after you choose "Accept all", and we will update this policy first.
-
-You can delete or block cookies in your browser settings at any time. If you delete our cookie, the notice will appear again on your next visit.
+If we ever add a tool that stores information on your device, we will update this policy first and, where the law requires it, ask for your consent before the tool runs.
 
 ## How we share information
 
@@ -109,7 +103,6 @@ We keep personal data only as long as we need it for the purpose we collected it
 - **Client records.** Contracts, project correspondence, and invoices are kept for the length of the engagement and afterwards for as long as accounting, tax, and other legal obligations require.
 - **Client materials.** Project files are kept while we deliver and support the work. You can ask us to delete or return them when the engagement ends, unless we must keep a copy by law.
 - **Abuse protection data.** IP addresses used to limit contact form submissions are cleared from memory within 10 minutes.
-- **Your cookie choice.** The consent cookie expires after one year.
 - **Technical logs.** Our hosting providers keep request logs for a limited period under their own retention schedules, for security and troubleshooting.
 
 ## How we protect information

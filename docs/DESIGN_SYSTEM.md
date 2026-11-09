@@ -188,7 +188,7 @@ The whole page carries a fine, moving grain so flat areas read as printed film
 rather than flat screen color. The texture is `public/images/noise.webp`, a
 256px neutral noise tile stored losslessly. A fixed `body::before` layer in the
 global base layer tiles it at its natural size and sits at `z-999`, above every
-page element, including the header, overlays, the cookie notice, the trailing
+page element, including the header, overlays, the trailing
 tooltip, and the scrollbar. It is `pointer-events-none` and `select-none`, so it
 never intercepts a click, a hover, or a text selection.
 
@@ -341,47 +341,6 @@ as the course card link.
 Icon names that express a repeated meaning belong in `app/lib/icons.ts`. A
 one-time decorative icon may use a direct Phosphor bold name when a semantic
 alias would not improve clarity.
-
-## Cookie notice
-
-`SiteCookieBanner` is a small fixed notice in the bottom left corner of every
-route. It uses the card surface, a border, and `shadow-xl`, because a floating
-overlay is the elevation exception to the borders before shadows rule. On phones
-it spans the viewport inset. From `sm` it settles into a compact panel in the
-corner.
-
-The notice sits at `z-70`, above the featured hero card's `50` scroll
-transition layer, the `z-50` menu panel and trailing tooltip, and the `z-60`
-header, and below the `z-80` overlay scrollbar. The home intro's `70` media
-grid never meets it, because the layout withholds the notice until the intro
-completes.
-
-The notice has two bands. The explanation sits on top in foreground text with
-`leading-snug`, and a `border-border` divider separates it from an action row
-aligned to the end. It has no visible title. The panel and both actions use
-`rounded-xs`, Tailwind's default `0.125rem`, so the notice reads as a crisp
-utility surface rather than a rounded brand card.
-
-It is an `aside` named "Cookie notice" through `aria-label` rather than a
-dialog, because it never traps focus and never blocks the page. Its two actions
-are `sm` buttons: "Decline all" in the `outline` variant and "Accept all" in the
-`dark` variant. The `sm` size keeps them compact and outside the CTA rollover
-and hover bounce, so they use the plain color hover and the shared press
-feedback only.
-
-The notice enters and leaves through a `Transition` with `:css="false"`, driven
-by `useCookieBannerMotion`. It rises `24px` with a slight scale over `0.5s` on
-`power3.out`, and it settles back down over `0.3s` on `power2.in` when answered.
-The transition carries `appear`, so the notice animates on its first paint as
-well as when the home intro finally releases it. Reduced motion resolves both
-directions with `gsap.set`, so the notice still appears and still dismisses
-without travelling.
-
-Accepting writes `accepted` and declining writes `declined` to the
-`forrrow-cookie-consent` cookie for one year. Any future tracking must check for
-`accepted` before it runs. Because the value is read through `useCookie`, the
-server already knows whether to render the notice, so an answered banner never
-flashes during hydration.
 
 ## Site call to action
 
@@ -2606,8 +2565,8 @@ TrailingTooltip, "More Info" with an arrow up right glyph, set in title case at
 the user's request. Clicking the card or the action opens that member's dialog.
 The tooltip closes as the dialog opens.
 
-The member dialog is a centered Shadcn dialog at `z-90`, above the header, the
-cookie notice, and the overlay scrollbar, over a `foreground` overlay at half
+The member dialog is a centered Shadcn dialog at `z-90`, above the header and
+the overlay scrollbar, over a `foreground` overlay at half
 opacity. Its panel is `brand-cream` with `clamp(1.5rem, 3vw, 3rem)` corners, up
 to `72rem` wide and never closer than `1rem` to the viewport edges, and at most
 the viewport height less `2rem`. The body scrolls inside the panel with

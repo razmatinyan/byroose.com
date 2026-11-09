@@ -46,7 +46,6 @@ app/
     useBlogMotion.ts
     useBlogPostHeroMotion.ts
     useContactHeroMotion.ts
-    useCookieBannerMotion.ts
     useDrawnLineMotion.ts
     useFaqMotion.ts
     useFitText.ts
@@ -165,7 +164,7 @@ package.json
 
 ### Application entry
 
-app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, page transition shade, and cookie notice around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog/index.vue renders the Blog experience from app/components/blog, app/pages/blog/ai-content.vue and app/pages/blog/web-development.vue render its two category pages through the same BlogPage, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
+app/pages/[...slug].vue renders SiteErrorView for every unknown route with a 404 status, as a normal page so page transitions run. app/error.vue renders SiteErrorView inside the default layout for other errors. app/app.vue owns the root application shell and renders NuxtLayout around NuxtPage, which receives the page transition hooks from usePageTransitionMotion. app/layouts/default.vue owns the persistent site header, main landmark, site call to action, footer, and page transition shade around every route. app/pages/index.vue owns the home route and composes the landing experience. app/pages/about.vue renders the About experience from app/components/about, app/pages/services.vue renders the Services experience from app/components/services, app/pages/work/index.vue renders the Work experience from app/components/work, each app/pages/work/<slug>.vue renders one Work project through ProjectPage from app/components/project, app/pages/blog/index.vue renders the Blog experience from app/components/blog, app/pages/blog/ai-content.vue and app/pages/blog/web-development.vue render its two category pages through the same BlogPage, and app/pages/contact.vue renders the Contact experience from app/components/contact. app/pages/privacy.vue loads the privacy policy from the `legal` content collection and renders it through LegalPage from app/components/legal. app/pages/courses.vue owns the Courses route as a focused route-level placeholder. The site has no terms and conditions page. Keep app.vue focused on providers, NuxtLayout, and NuxtPage as routes are introduced.
 
 ### Landing components
 
@@ -361,7 +360,7 @@ public. The site email is `contact@hello.forrrow.com` until a
 ### Layout components
 
 app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
-SiteMenuLink, SiteNavLink, SiteCookieBanner, SiteScrollbar, SiteCtaSection, and SiteFooter. Layout components
+SiteMenuLink, SiteNavLink, SiteScrollbar, SiteCtaSection, and SiteFooter. Layout components
 may use shared components and UI primitives. They should not depend on a landing
 section.
 
@@ -394,11 +393,9 @@ layout persists, the layout keys it and bumps that key through the page
 transition's `deferCleanup` whenever `pageKey` changes, so a fresh copy mounts
 after the leaving page has been removed and every route reveals it again.
 
-SiteCookieBanner owns the cookie notice. Its consent value lives in the
-forrrow-cookie-consent cookie through Nuxt's useCookie, so the server and the
-first client render agree on whether the notice is visible and an accepted or
-declined notice never reappears. The layout withholds the banner until the home intro
-reports a complete state, so it never paints over the preloader.
+The site sets no cookies and runs no analytics or tracking, so the layout
+renders no cookie notice. Adding any tool that stores information on the
+visitor's device requires a consent notice and a privacy policy update first.
 
 SiteScrollbar owns the overlay scroll thumb that replaces the hidden root
 scrollbar. It measures native scroll and document geometry only after mount, so
@@ -820,12 +817,6 @@ optional `trigger` element. They animate the parts inside their target but
 listen for pointer and focus changes on the trigger, which defaults to the
 target. ArrowLink uses it when it renders inside a larger link, so the whole
 link drives its motion.
-
-useCookieBannerMotion owns the cookie notice's entrance and exit. It returns the
-three Vue transition hooks that SiteCookieBanner binds, so the component keeps
-its markup and consent intent while the composable owns the tweens, the
-reduced-motion outcome, and tween cleanup. Because the hooks resolve Vue's done
-callback, the notice stays mounted until its exit finishes.
 
 useSmoothScroll is the component-facing contract for the global Lenis instance. It exposes readiness, scrolling, the scroll lock, the scroll reset, refresh behavior, the refresh hold, and scope-cleaned scroll subscriptions without allowing components to create competing Lenis instances. `lock` returns a release function, and Lenis only runs while no lock is held, so the page transition and the home intro can hold the scroll at the same time without either one restarting it early.
 

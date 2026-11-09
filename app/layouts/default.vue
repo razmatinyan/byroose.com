@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, shallowRef, watch } from 'vue'
-import SiteCookieBanner from '@/components/layout/SiteCookieBanner.vue'
 import SiteCtaSection from '@/components/layout/SiteCtaSection.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
@@ -37,7 +36,6 @@ watch(
 			class="page-transition-shade"
 			aria-hidden="true"
 		/>
-		<SiteCookieBanner v-if="layoutIntroState === 'complete'" />
 		<SiteScrollbar />
 	</div>
 </template>
