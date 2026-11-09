@@ -388,11 +388,12 @@ flashes during hydration.
 `SiteCtaSection` closes every route, between the page and the footer. It is a
 light `background` section with `foreground` text that fills at least the
 viewport. From `lg` it splits into two equal columns: the copy on the left,
-left-aligned and centered vertically, and a projects marquee on the right.
+left-aligned and aligned to the top behind only the `page` gutter, so it
+lines up with the top of the projects marquee on the right.
 Below `lg` the copy comes first and the marquee follows as a row. Its copy comes from `app/lib/site-cta.ts` by route. The
 default title is "Turn your social media views into leads?" on two
-bold lines, "Turn your social media" and "views into leads?", at
-`clamp(1.75rem, 8.6vw, 9.5rem)` with `0.9` leading and `-0.05em` tracking.
+bold lines, "Turn your social media" and "views into leads?", at 85
+percent of `clamp(1.75rem, 8.6vw, 9.5rem)` with `0.9` leading and `-0.05em` tracking.
 That is smaller than `text-display`, because the lines are longer than the old
 title's, and the floor keeps "Turn your social media" on one line down to 320
 wide. The Services route asks "Not sure which marketing service you need?"
@@ -408,8 +409,9 @@ in between." The Work route asks "Want work like this for your brand?" on the li
 "Want work like this" and "for your brand?", with no description. The About
 route says "Work with an AI
 content and web development agency" on the lines "Work with an AI content" and
-"and web development agency", with no description, and sets `titleScale`
-to `0.85` so its title renders at 85 percent of the shared size. The title is `w-max` and `useFitText` scales it down,
+"and web development agency", with no description. Every route title
+renders at the shared 85 percent default `titleScale`, which a route can
+override. The title is `w-max` and `useFitText` scales it down,
 never up, when its longest line is wider than the copy column, so a longer route
 title still holds two lines at every width. Below it sits a description in `font-medium`
 `foreground/60` at `text-xl` and `text-2xl` from `md`, held to `38ch` with

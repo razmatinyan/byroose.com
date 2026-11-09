@@ -372,8 +372,8 @@ description for the current route from `siteCtaFor` in app/lib/site-cta.ts,
 which falls back to the default "Turn your social media views into leads?"
 copy, so a route such as `/services` can ask its own question. `/blog` and
 every path under it share one Blog copy. An optional
-`titleScale` shrinks one route's title, both its base size and the width it
-fits to. The description is optional, and a route without one renders no
+`titleScale`, `0.85` by default, sets a route's title size, both its base
+size and the width it fits to. The description is optional, and a route without one renders no
 description paragraph. It fits its title to the copy column's width with
 useFitText. The layout renders it inside the main landmark after the page, so
 no page owns a copy. It owns its link to `/contact` and reveals through

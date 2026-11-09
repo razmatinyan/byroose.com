@@ -13,7 +13,6 @@ export const defaultSiteCta: SiteCtaCopy = {
 const routeSiteCta: Readonly<Record<string, SiteCtaCopy>> = {
    "/about": {
       titleLines: ["Work with an AI content", "and web development agency"],
-      titleScale: 0.85,
    },
    "/services": {
       description:

@@ -23,7 +23,7 @@ const minimumMarqueeCards = 4;
 const marqueeCopies = ["primary", "duplicate"] as const;
 
 const route = useRoute();
-const { description, titleLines, titleScale = 1 } = siteCtaFor(route.path);
+const { description, titleLines, titleScale = 0.85 } = siteCtaFor(route.path);
 const title = titleLines.join(" ");
 const contactRoute = "/contact";
 const actionLabel = "Start a project";
@@ -180,7 +180,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .site-cta-copy {
-   @apply flex min-w-0 flex-col items-start justify-center px-page pt-section pb-12 text-left lg:py-section lg:pr-12;
+   @apply flex min-w-0 flex-col items-start justify-start px-page pt-page pb-12 text-left lg:pb-section lg:pr-12;
 }
 
 .site-cta-title {
