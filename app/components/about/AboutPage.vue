@@ -11,6 +11,8 @@ import AboutTrustSection from "./AboutTrustSection.vue";
 
 const belowFoldHydrationArea = { rootMargin: "100% 0px" };
 
+useSchemaOrg([defineWebPage({ "@type": "AboutPage" })]);
+
 const storyRoot = useTemplateRef<HTMLElement>("storyRoot");
 useDrawnLineMotion(storyRoot, aboutStoryLine);
 </script>

@@ -1300,7 +1300,11 @@ internal links during development and builds.
 - Schema.org identity is an `Organization` with the logo, email, and address.
   Every page gets `WebSite` and `WebPage` nodes. FaqSection turns the home page
   into an `FAQPage` with one `Question` per visible FAQ item, and each
-  service page into one with its own questions. ContactPage
+  service page into one with its own questions. AboutPage marks the About
+  page as an `AboutPage`, and `AboutTeamSection` adds one `Person` per founder
+  from its member list, with the role as `jobTitle`, the social links as
+  `sameAs`, the portrait when there is one, and the organization as
+  `worksFor`. Each `Person` has the id `/about#<name>`. ContactPage
   marks the Contact page as a `ContactPage` and passes `structuredData` as
   `false` to its FaqSection, so the shared questions are marked up only once
   across the site. `ProjectPage`

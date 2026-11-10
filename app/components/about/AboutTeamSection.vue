@@ -4,6 +4,7 @@ import DrawnLine from "@/components/shared/DrawnLine.vue";
 import { aboutTeamLine } from "@/lib/about-line-path";
 import { appIcons } from "@/lib/icons";
 import { servicePagePaths } from "@/lib/services-anchors";
+import { siteUrl } from "@/lib/site";
 import AboutTeamMember from "./AboutTeamMember.vue";
 import type {
    AboutMemberLink,
@@ -92,6 +93,21 @@ const members: readonly TeamMember[] = [
       ],
    },
 ];
+
+const identityId = `${siteUrl}/#identity`;
+
+useSchemaOrg(
+   members.map(({ name, portrait, role, socials }) => ({
+      "@type": "Person",
+      "@id": `${siteUrl}/about#${name.toLowerCase().replaceAll(" ", "-")}`,
+      name,
+      jobTitle: role,
+      url: `${siteUrl}/about`,
+      sameAs: socials.map(({ href }) => href),
+      worksFor: { "@id": identityId },
+      ...(portrait ? { image: new URL(portrait.src, siteUrl).href } : {}),
+   })),
+);
 
 const teamRoot = useTemplateRef<HTMLElement>("teamRoot");
 const { titleRevealed } = useAboutSectionMotion(teamRoot);
