@@ -2094,13 +2094,16 @@ leaves the track. Touch and pen input never show it. Reduced motion drops the
 glide and keeps both pills in place.
 
 Each category shows three one-time packages; none is priced per month. The
-cards sit in a centered column held to `max-w-md` below `lg` and to
-`max-w-6xl` from `lg`, where they form three columns with a `1rem` gap. From
+cards sit in a centered column held to `max-w-xl` below `lg` and to
+`max-w-7xl` from `lg`, where they form three columns with a `1.5rem` gap. From
 `lg` each card spans four rows of the grid through `subgrid`, so the price,
 the action block, and the features start on the same line in every card.
 
 A card is a white `card` block with a `border` outline, `rounded-3xl`, and a
-`0.5rem` inset. It has no separator lines. The featured card swaps only its
+`0.625rem` inset. Its text sits `1rem` further in, `1.5rem` from `md`, with
+generous space between its parts: `2.5rem` above the name from `md`, `4rem`
+above the price, and `2.5rem` above and below the features. It has no
+separator lines. The featured card swaps only its
 outline to `foreground` and carries a fully round "Most popular" badge in
 `foreground` with `background` text, centered on its top edge and half above
 it. Top to bottom, a card shows:

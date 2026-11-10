@@ -98,7 +98,7 @@ const featuresLabel = computed(() =>
 @reference '../../assets/css/tailwind.css';
 
 .pricing-card {
-   @apply relative flex h-full flex-col rounded-3xl border border-border bg-card p-2 text-card-foreground;
+   @apply relative flex h-full flex-col rounded-3xl border border-border bg-card p-2.5 text-card-foreground;
 }
 
 @media (min-width: 64rem) {
@@ -118,7 +118,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-header {
-   @apply px-4 pt-6 md:px-5;
+   @apply px-4 pt-8 md:px-6 md:pt-10;
 }
 
 .pricing-card-title {
@@ -134,11 +134,11 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-description {
-   @apply m-0 mt-2 text-base leading-snug font-medium text-pretty text-current/60;
+   @apply m-0 mt-3 text-base leading-snug font-medium text-pretty text-current/60;
 }
 
 .pricing-card-price {
-   @apply m-0 mt-8 self-end flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 md:px-5;
+   @apply m-0 mt-12 flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 lg:self-end md:mt-16 md:px-6;
 }
 
 .pricing-card-regular {
@@ -150,7 +150,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-action-block {
-   @apply mt-5 flex flex-col gap-2 rounded-2xl bg-canvas-shade p-2 pb-3;
+   @apply mt-6 flex flex-col gap-3 rounded-2xl bg-canvas-shade p-2.5 pb-4;
 }
 
 .pricing-card-action {
@@ -166,7 +166,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-features {
-   @apply flex-1 px-4 pt-6 pb-5 md:px-5;
+   @apply flex-1 px-4 pt-8 pb-8 md:px-6 md:pt-10 md:pb-10;
 }
 
 .pricing-card-features-label {
@@ -174,7 +174,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-list {
-   @apply m-0 mt-4 flex list-none flex-col gap-3 p-0;
+   @apply m-0 mt-5 flex list-none flex-col gap-4 p-0;
 }
 
 .pricing-card-feature {

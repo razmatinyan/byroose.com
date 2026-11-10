@@ -231,11 +231,11 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .pricing-panels {
-   @apply mx-auto w-full max-w-md pt-3 lg:max-w-6xl;
+   @apply mx-auto w-full max-w-xl pt-3 lg:max-w-7xl;
 }
 
 .pricing-grid {
-   @apply m-0 grid list-none grid-cols-1 gap-8 p-0 lg:grid-cols-3 lg:gap-4;
+   @apply m-0 grid list-none grid-cols-1 gap-8 p-0 lg:grid-cols-3 lg:gap-6;
 }
 
 .pricing-grid-item {
