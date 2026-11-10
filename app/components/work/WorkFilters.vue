@@ -80,7 +80,7 @@ function variantFor(id: FilterId) {
 }
 
 .work-filters-count {
-   @apply m-0 overflow-x-visible overflow-y-clip leading-none font-bold tracking-[-0.05em] whitespace-nowrap;
+   @apply m-0 overflow-x-visible overflow-y-clip leading-none font-semibold tracking-[-0.05em] whitespace-nowrap;
    font-size: clamp(2.75rem, 7.5vw, 8rem);
    margin-block: -0.15em;
    padding-block: 0.15em;

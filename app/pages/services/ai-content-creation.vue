@@ -48,13 +48,13 @@ const services: readonly ServiceCard[] = [
 
 const storyBlocks: readonly ServiceStoryBlock[] = [
   {
-    title: "Why our AI content stops the scroll",
+    title: "Why AI Content Stops The Scroll",
     description:
       "AI gives us speed and volume. People give it taste. Our creative director sets the concept and the brand look, AI tools generate options, and human editors choose, fix, and finish every asset. You get content at social media speed that still looks considered.",
     offset: "start",
   },
   {
-    title: "AI content that leads somewhere",
+    title: "AI Content That Leads Somewhere",
     description:
       "Most AI content agencies stop at the post. We also build the landing page it links to, so the viewer lands somewhere that continues what they just watched. That's how views become leads.",
     link: {

@@ -147,6 +147,7 @@ const segmentedLines = computed(() =>
 }
 
 .about-title-section {
+   @apply font-semibold;
    font-size: clamp(2.75rem, 8vw, 8.5rem);
 }
 

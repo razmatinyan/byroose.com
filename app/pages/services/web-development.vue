@@ -48,13 +48,13 @@ const services: readonly ServiceCard[] = [
 
 const storyBlocks: readonly ServiceStoryBlock[] = [
    {
-      title: "Why content-first web development converts better",
+      title: "Why Content-First Web Development Converts Better",
       description:
          "When a visitor taps a reel and lands on a page that looks nothing like it, they leave. We design your website around your content, so the click feels like a continuation, not a restart. That continuity is what turns traffic into enquiries.",
       offset: "start",
    },
    {
-      title: "Built by engineers, not just designers",
+      title: "Built By Engineers, Not Just Designers",
       description:
          "Our co-founder and senior software engineer builds every site, so what you approve in design is exactly what goes live: fast, stable, and easy to maintain.",
       link: {

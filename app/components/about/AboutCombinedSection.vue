@@ -65,7 +65,7 @@ function setStatementSplit(index: number, parts: SplitTextResult) {
 }
 
 .about-combined-title {
-   @apply m-0 mx-auto max-w-[14em] text-center font-bold tracking-[-0.05em] text-balance;
+   @apply m-0 mx-auto max-w-[14em] text-center font-semibold tracking-[-0.05em] text-balance;
    font-size: clamp(2.25rem, 5.5vw, 5.5rem);
    line-height: 0.88;
 }

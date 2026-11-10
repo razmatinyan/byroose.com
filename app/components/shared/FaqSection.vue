@@ -199,7 +199,7 @@ function setAnswerSplit(index: number, parts: SplitTextResult) {
 }
 
 .faq-title {
-	@apply -mt-[0.16em] text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.86];
+	@apply -mt-[0.16em] font-semibold text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.86];
 }
 
 .faq-title :deep(.split-text-line),

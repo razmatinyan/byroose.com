@@ -277,6 +277,7 @@ function scrollToTop() {
 }
 
 .site-footer-title {
+   @apply font-semibold;
    font-size: min(18cqi, 6.5rem);
 }
 

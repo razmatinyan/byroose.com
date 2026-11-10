@@ -94,7 +94,7 @@ function cardNumber(index: number) {
 }
 
 .service-cards-title {
-  @apply text-center text-balance;
+  @apply text-center font-semibold text-balance;
 }
 
 .service-cards-title :deep(.split-text-word),
@@ -160,7 +160,7 @@ function cardNumber(index: number) {
 }
 
 .service-card-title {
-  @apply m-0 text-3xl leading-[0.95] font-bold tracking-[-0.045em] text-balance xl:text-4xl;
+  @apply m-0 text-3xl leading-[0.95] font-semibold tracking-[-0.045em] text-balance xl:text-4xl;
 }
 
 .service-card-description {

@@ -153,7 +153,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-title {
-	@apply m-0 text-service font-bold tracking-[-0.045em] text-balance md:col-span-3;
+	@apply m-0 text-service font-semibold tracking-[-0.045em] text-balance md:col-span-3;
 }
 
 .services-offer-inset {
@@ -177,7 +177,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-description {
-	@apply m-0 mt-4 w-full text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty md:col-span-2 md:col-start-2 md:mt-8 md:text-4xl xl:mt-12 xl:text-5xl 2xl:text-6xl;
+	@apply m-0 mt-4 w-full text-2xl leading-[0.9] font-medium tracking-[-0.04em] text-pretty md:col-span-2 md:col-start-2 md:mt-8 md:text-4xl xl:mt-12 xl:text-5xl 2xl:text-6xl;
 }
 
 .services-offer[data-surface="dark"] .services-offer-title,

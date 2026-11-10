@@ -253,7 +253,7 @@ function deactivate() {
 }
 
 .case-title {
-	@apply m-0 pb-[0.12em] text-4xl leading-[0.95] font-bold tracking-[-0.045em] text-balance md:text-5xl xl:text-6xl;
+	@apply m-0 pb-[0.12em] text-4xl leading-[0.95] font-semibold tracking-[-0.045em] text-balance md:text-5xl xl:text-6xl;
 }
 
 .case-description {

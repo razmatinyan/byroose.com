@@ -80,7 +80,7 @@ function setTitleSplit(parts: SplitTextResult) {
 }
 
 .about-approach-title {
-   @apply m-0 mx-auto max-w-[14em] text-center font-bold tracking-[-0.05em] text-balance;
+   @apply m-0 mx-auto max-w-[14em] text-center font-semibold tracking-[-0.05em] text-balance;
    font-size: clamp(2.5rem, 7vw, 7rem);
    line-height: 0.88;
 }
@@ -122,7 +122,7 @@ function setTitleSplit(parts: SplitTextResult) {
 }
 
 .about-approach-item-title {
-   @apply m-0 text-3xl leading-[0.95] font-bold tracking-[-0.045em] text-balance md:text-4xl xl:text-5xl;
+   @apply m-0 text-3xl leading-[0.95] font-semibold tracking-[-0.045em] text-balance md:text-4xl xl:text-5xl;
    visibility: hidden;
 }
 

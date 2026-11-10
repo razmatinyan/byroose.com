@@ -184,7 +184,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .site-cta-title {
-   @apply m-0 w-max max-w-none leading-[0.9] font-bold tracking-[-0.05em];
+   @apply m-0 w-max max-w-none leading-[0.9] font-semibold tracking-[-0.05em];
    font-size: calc(
       clamp(1.75rem, 8.6vw, 9.5rem) * var(--site-cta-title-scale, 1) *
          var(--fit-text-scale, 1)

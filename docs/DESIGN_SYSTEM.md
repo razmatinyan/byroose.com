@@ -352,7 +352,7 @@ left-aligned and aligned to the top behind only the `page` gutter, so it
 lines up with the top of the projects marquee on the right.
 Below `lg` the copy comes first and the marquee follows as a row. Its copy comes from `app/lib/site-cta.ts` by route. The
 default title is "Turn your social media views into leads?" on two
-bold lines, "Turn your social media" and "views into leads?", at 85
+semibold lines, "Turn your social media" and "views into leads?", at 85
 percent of `clamp(1.75rem, 8.6vw, 9.5rem)` with `0.9` leading and `-0.05em` tracking.
 That is smaller than `text-display`, because the lines are longer than the old
 title's, and the floor keeps "Turn your social media" on one line down to 320
@@ -429,7 +429,7 @@ Located in as a three-column grid, then aligns the three credit lines with the
 email block at the bottom of the row. Below `lg` the right side stacks under the
 left column. Its link grid drops to two columns below `sm`.
 
-The title uses `section-title` on two block lines, "From seen" and "to chosen".
+The title uses `section-title`, set semibold, on two block lines, "From seen" and "to chosen".
 "seen" and "chosen" each carry a static `WaveUnderline` just below the word, as
 wide as the word, with `animated` off so the lines are always present. The
 "seen" line is the `ribbon` green, and the "chosen" line is brand orange
@@ -1454,8 +1454,8 @@ The work section centers its heading, currently "Case studies", and gives
 each case study its own full-width row. It follows the hero directly, so it
 opens with two and a half times `spacing-section` of top padding, about 360px
 at 1440 wide, which gives the hero's featured image room to settle before the
-heading arrives. The heading keeps `section-title` for
-its weight but overrides the font size and tracking in the component's own
+heading arrives. The heading keeps `section-title` but
+sets a semibold weight and overrides the font size and tracking in the component's own
 scoped block. This heading is deliberately oversized: its clamp runs past
 `text-hero`, so the section opens at display
 scale. The phrase always sets on one line through `white-space: nowrap`. The
@@ -1474,7 +1474,7 @@ The copy column reads title, description, the optional live link or service
 link, the services, then a results row. Each card describes the problem the
 project solved rather than what the project is: the title is a short headline,
 and the description explains why it was built. The title is the `title` prop, falling back to the client name, and
-is bold in the same `foreground` ink as the section heading at `text-4xl`,
+is semibold in the same `foreground` ink as the section heading at `text-4xl`,
 `text-5xl` from `md`, and `text-6xl` from `xl`, with `0.95` leading,
 `-0.045em` tracking, and balanced wrapping, because a headline runs to several
 lines in the forty percent column.
@@ -1855,7 +1855,7 @@ selectable, so a drag across the pinned panel never highlights its words.
 The title is left-aligned and starts at the left content edge. The description
 sets at `text-2xl`, `text-4xl` from `md`, `text-5xl` from `xl`, and `text-6xl`
 from `2xl`, in the
-default `foreground` color at weight 600 with `0.9` leading and `-0.04em`
+default `foreground` color at weight 500 with `0.9` leading and `-0.04em`
 tracking. It sits further below the title than the panel's default gap, with a
 top margin of `1rem`, `2rem` from `md`, and `3rem` from `xl`. That leading is
 tighter than the glyphs, so each line mask carries `0.12em` of top and `0.18em`
@@ -2173,7 +2173,7 @@ tall, `2.75rem` from `md`, and truncates a title that does not fit. The stride
 comes from the step count, so any number of steps fills the chart.
 
 Below the chart, `3rem` down and `4rem` from `md`, an ordered list carries the
-steps in one column, two from `md`, and four from `xl`. Each step is a bold H3
+steps in one column, two from `md`, and four from `xl`. Each step is a semibold H3
 at `text-3xl`, `text-4xl` from `md`, with balanced wrapping and `-0.045em`
 tracking, over its description `1rem` below, `1.25rem` from `md`, in
 `font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
@@ -2308,8 +2308,8 @@ action takes the title size as its font size and a diameter of
 `calc(var(--blog-title-leading) * 1em)`, the title's line height, with the
 glyph at `0.4em`. The font size sits on the button itself because the base
 button classes set `text-sm`. The row wraps, so on narrow screens the action
-can drop below the title. The title keeps `section-title` for its weight and
-tracking but sets its own size, `clamp(2.75rem, 9vw, 9rem)`, about 130px at
+can drop below the title. The title keeps `section-title` for its tracking but
+sets a semibold weight and its own size, `clamp(2.75rem, 9vw, 9rem)`, about 130px at
 1440 wide, larger than `text-section`, at `0.92` leading.
 
 Three `BlogCard`s follow in one column below `md` and three columns from `md`.
@@ -2412,7 +2412,7 @@ The FAQ section pairs the "Frequently Asked Questions" title, set in title case
 at the user's request, with a single collapsible accordion. From `lg` it is a
 `5fr 7fr` grid, so the accordion takes the wider right column. Below `lg` the
 title stacks above the accordion. The title keeps `section-title` for its
-weight and tracking but sets `clamp(2.75rem, 7vw, 6.5rem)` at `0.86` leading,
+tracking but sets a semibold weight and `clamp(2.75rem, 7vw, 6.5rem)` at `0.86` leading,
 larger than `text-section`, which sets it on three lines from `lg`. Each line
 mask carries `0.16em` of top and `0.2em` of bottom padding so ascenders and
 descenders stay inside the clip. Adjacent negative block margins collapse into
@@ -2537,11 +2537,11 @@ grey team section, an approach section, a trust section, and a brands section,
 followed by the site call to action and the site footer.
 
 `AboutApproachSection` shows how forrrow works with clients. Its H2, "How we
-work with clients", is centered at `clamp(2.5rem, 7vw, 7rem)`, bold with
+work with clients", is centered at `clamp(2.5rem, 7vw, 7rem)`, semibold with
 `-0.05em` tracking and `0.88` leading, and rises word by word from `SplitText`
 word masks with the shared word reveal and a `0.08s` stagger when it reaches 82
 percent of the viewport. Three left-aligned text items follow `6rem` below,
-`9rem` from `md` and `12rem` from `xl`, each a bold title over a `font-medium`
+`9rem` from `md` and `12rem` from `xl`, each a semibold title over a `font-medium`
 description and held to `30rem`. From `md` the list is centered and held to
 `64rem`, `68rem` from `xl`, so "Small team, senior hands" on the left and "AI
 for speed, humans for taste" on the right of one row sit near the center, and
@@ -2554,7 +2554,7 @@ ends with `spacing-section`.
 `AboutCombinedSection` explains why forrrow joins AI content creation and web
 development. Its H2, "Why we combined AI content creation and web
 development", is centered at `clamp(2.25rem, 5.5vw, 5.5rem)`, smaller
-than the other About section titles, bold with `-0.05em` tracking and `0.88`
+than the other About section titles, semibold with `-0.05em` tracking and `0.88`
 leading, balanced and held to `14em`, so it breaks into two lines on desktop and
 three on phones. Its lines are a `SplitText` line split in masks with the
 section titles' `0.2em` padding and `-0.4em` bottom margin, and they rise with
@@ -2581,7 +2581,8 @@ the name as text. The description sits `5rem` below the title and
 `7rem` from `md`, which keeps the descender of the y clear. The title and the call
 to action title use `AboutTitle` at its `display` size,
 `clamp(3.5rem, 11vw, 12rem)`. The section titles use its `section` size,
-`clamp(2.75rem, 8vw, 8.5rem)`. Every title is bold with `-0.05em` tracking and
+`clamp(2.75rem, 8vw, 8.5rem)`. The `display` size is bold and the `section` size
+semibold. Every title has `-0.05em` tracking and
 `0.88` leading, and each explicit line sits in a mask with `0.2em` of block
 padding, cancelled by a `-0.4em` bottom margin and a `-0.2em` title top margin,
 as the home hero title does. The masks clip only while their lines rise, so the
@@ -2676,7 +2677,7 @@ left and a 5:6 `ImageCycle` frame on the right, centered on the title from
 the More works panel does. "trust" carries a `ribbon` green wave and "choose" a
 primary orange one. Each wave draws once its title has risen. Below each
 heading a statement takes the right two thirds of the row from `md`. The
-statements use `AboutStatement`, which owns that placement, semibold at `text-2xl`,
+statements use `AboutStatement`, which owns that placement, `font-medium` at `text-2xl`,
 `text-4xl` from `md`, and `text-5xl` from `2xl`, with `0.95` leading and
 `-0.04em` tracking, and they rise line by line with the services description
 timing, `1.1s`, `power3`, and a `0.075s` stagger.
@@ -2806,7 +2807,7 @@ The AI Content Creation section sits on the white `background` canvas, like
 the hero. It carries the `ai-content-creation` id and the Website Development
 section the `website-development` id, so a link can open either section.
 Each section is a summary, not a list of offers. Its intro repeats the home
-services panel: the title in bold `text-service` with `-0.045em` tracking on
+services panel: the title in semibold `text-service` with `-0.045em` tracking on
 the left, and the description below it in the home service description style,
 in the right two of three grid columns from `md`. The left column holds the
 home services panel's square arrow link to the service's own page, with the
@@ -2878,7 +2879,7 @@ Reduced motion shows the hero at rest. The hero has no parallax.
 `clamp(1.5rem, 3vw, 3rem)` corners on all four sides at `z-10`, set `3rem`
 below the hero, `5rem` from `md` and `6rem` from `xl`, so the light
 canvas shows around it before the next section, and marks the header as dark.
-Its centered H2 keeps `section-title` and reveals word by word with the shared
+Its centered H2 keeps `section-title`, set semibold, and reveals word by word with the shared
 word reveal and a `0.08s` stagger when it reaches 82 percent of the viewport.
 Below it the cards sit in a row of four from `lg`, two from `md`, and a stack
 below `md`. Each card is a `rounded-2xl` `surface-*` tone with `p-6`, `p-8`
@@ -2907,7 +2908,8 @@ at rest. The AI content cards use green, pink, blue, and the brand orange.
 `ServiceStorySection` follows on the light canvas after twice
 `spacing-section` of space. It stacks story blocks inside the page gutter,
 `7rem` apart, `10rem` from `md` and `12rem` from `xl`. Each block holds a
-`text-section` H2 at `0.95` leading with balanced wrapping, a `font-medium`
+semibold `text-section` H2 at `0.95` leading with balanced wrapping, in title
+case at the user's request, a `font-medium`
 `foreground` description in the same ink as the title, at `text-xl`,
 `text-2xl` from `md`, held to `40ch`,
 and an optional `ArrowLink`. Every block is start-aligned. From `lg` a block
@@ -2979,7 +2981,7 @@ covers it, as the Services hero does.
 The projects section paints the `canvas-shade` grey with
 `clamp(1.5rem, 3vw, 3rem)` top corners at `z-10`, like the Services statement
 section, so it slides over the drifting hero. An `sr-only` "Projects" `h2`
-names it. It opens with the filters: a bold project count, such as
+names it. It opens with the filters: a semibold project count, such as
 "Projects - 8", at display size, `clamp(2.75rem, 7.5vw, 8rem)`, about 108px at
 1440 wide, with `-0.05em` tracking, and a wrapping row of `cta-lg` toggle buttons, All,
 AI Content, and Website Development, `0.5rem` apart. The buttons override the

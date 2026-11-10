@@ -92,7 +92,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-story-title {
-   @apply m-0 text-section leading-[0.95] font-bold tracking-[-0.045em] text-balance;
+   @apply m-0 text-section leading-[0.95] font-semibold tracking-[-0.045em] text-balance;
 }
 
 .service-story-title :deep(.split-text-line),

@@ -310,7 +310,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-title {
-	@apply relative m-0 w-full text-left text-service font-bold tracking-[-0.045em] text-balance md:col-span-3;
+	@apply relative m-0 w-full text-left text-service font-semibold tracking-[-0.045em] text-balance md:col-span-3;
 	--service-title-inset-height: 0.8em;
 	--service-title-inset-width: calc(
 		var(--service-title-inset-height) * 16 / 9
@@ -358,7 +358,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-description {
-	@apply m-0 mt-4 w-full text-left md:col-span-2 md:col-start-2 md:mt-8 xl:mt-12 text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty text-foreground md:text-4xl xl:text-5xl 2xl:text-6xl;
+	@apply m-0 mt-4 w-full text-left md:col-span-2 md:col-start-2 md:mt-8 xl:mt-12 text-2xl leading-[0.9] font-medium tracking-[-0.04em] text-pretty text-foreground md:text-4xl xl:text-5xl 2xl:text-6xl;
 }
 
 .service-description :deep(.split-text-line),

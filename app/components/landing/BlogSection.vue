@@ -88,7 +88,7 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .blog-title {
-	@apply text-(length:--blog-title-size) leading-(--blog-title-leading);
+	@apply font-semibold text-(length:--blog-title-size) leading-(--blog-title-leading);
 }
 
 .blog-title :deep(.split-text-word),

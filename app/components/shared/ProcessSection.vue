@@ -252,7 +252,7 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
 
 .journey-step-title {
    --split-title-tracking: -0.045em;
-   @apply m-0 text-3xl leading-[0.95] font-bold text-balance md:text-4xl;
+   @apply m-0 text-3xl leading-[0.95] font-semibold text-balance md:text-4xl;
 }
 
 .journey-step-title :deep(.split-text-char-mask) {
