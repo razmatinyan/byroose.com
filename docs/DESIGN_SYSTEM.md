@@ -2420,8 +2420,8 @@ the larger one, which would add `0.16em` to every line pitch, so only the
 bottom margin is negative and cancels both paddings, and the title shifts up by
 `0.16em`. The line pitch therefore matches the declared leading.
 
-The accordion holds eight questions that follow the home keyword map, from what
-an AI content agency does to cost, reporting, and the 90-day minimum. The
+The accordion holds seven questions that follow the home keyword map, from what
+an AI content agency does to cost and reporting. The
 section title is the H2 and each question is an H3 through the accordion
 header, so the outline stays nested. The answers state no prices or fixed start
 dates until real figures are confirmed. The same questions feed the FAQPage

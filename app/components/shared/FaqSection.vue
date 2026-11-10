@@ -78,12 +78,6 @@ const defaultFaqs: readonly FaqItem[] = [
 		answer:
 			"One monthly report that follows the whole funnel: which content stopped people, how many came to the website, and how many became leads. Plus what we're keeping, what we're cutting, and why.",
 	},
-	{
-		id: 'commitment',
-		question: 'Why is there a 90-day minimum?',
-		answer:
-			'Because a marketing funnel needs time to learn. The first month sets the baseline, the second tests what works, and by the third you can see which posts bring which leads.',
-	},
 ]
 
 const faqs = computed(() => items ?? defaultFaqs)
