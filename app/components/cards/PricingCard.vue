@@ -33,7 +33,6 @@ const featuresLabel = computed(() =>
    <article
       class="pricing-card"
       :data-featured="plan.featured || undefined"
-      data-pricing-card
    >
       <span v-if="plan.featured" class="pricing-card-badge">
          {{ featuredLabel }}

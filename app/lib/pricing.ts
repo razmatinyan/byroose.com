@@ -130,7 +130,7 @@ export const pricingCategories: readonly PricingCategory[] = [
    },
    {
       id: "combined",
-      label: "Content and web",
+      label: "Both services",
       plans: [
          {
             id: "combined-launch",

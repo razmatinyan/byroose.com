@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { computed, shallowRef, useTemplateRef } from "vue";
+import { computed, shallowRef } from "vue";
 import PricingCard from "@/components/cards/PricingCard.vue";
-import SplitText from "@/components/shared/SplitText.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { pricingCategories } from "@/lib/pricing";
 import type { PricingCategoryId } from "@/lib/pricing";
-import type { SplitTextResult } from "@/lib/split-text";
 
 const title = "Plans and pricing";
 const description =
-   "Start with content, the website, or both. Every package has one fixed price, and we confirm the exact scope after one call.";
+   "Start with content, the website, or both services together. Every package has one fixed price, and we confirm the exact scope after one call.";
 const switcherLabel = "Pricing by service";
 
-const pricingRoot = useTemplateRef<HTMLElement>("pricingRoot");
 const activeCategory = shallowRef<PricingCategoryId>("ai-content");
 const hoveredIndex = shallowRef<number | null>(null);
-const titleSplit = shallowRef<SplitTextResult>();
-const descriptionSplit = shallowRef<SplitTextResult>();
 
 const activeIndex = computed(() =>
    pricingCategories.findIndex(({ id }) => id === activeCategory.value),
@@ -26,11 +21,6 @@ const switcherStyle = computed(() => ({
    "--pricing-tab-active": activeIndex.value,
    "--pricing-tab-hover": hoveredIndex.value ?? activeIndex.value,
 }));
-
-usePricingMotion(pricingRoot, {
-   descriptionSplit,
-   titleSplit,
-});
 
 function isPricingCategory(value: unknown): value is PricingCategoryId {
    return pricingCategories.some(({ id }) => id === value);
@@ -48,35 +38,13 @@ function startHover(index: number, event: PointerEvent) {
 function endHover() {
    hoveredIndex.value = null;
 }
-
-function setTitleSplit(parts: SplitTextResult) {
-   titleSplit.value = parts;
-}
-
-function setDescriptionSplit(parts: SplitTextResult) {
-   descriptionSplit.value = parts;
-}
 </script>
 
 <template>
-   <section id="pricing" ref="pricingRoot" class="pricing section-gutter">
-      <div class="pricing-heading" data-pricing-heading>
-         <SplitText
-            class="section-title pricing-title"
-            as="h2"
-            mask="words"
-            :text="title"
-            type="words"
-            @split="setTitleSplit"
-         />
-         <SplitText
-            class="pricing-description"
-            as="p"
-            mask="lines"
-            :text="description"
-            type="lines"
-            @split="setDescriptionSplit"
-         />
+   <section id="pricing" class="pricing section-gutter">
+      <div class="pricing-heading">
+         <h2 class="pricing-title">{{ title }}</h2>
+         <p class="pricing-description">{{ description }}</p>
       </div>
 
       <Tabs
@@ -85,7 +53,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
          :unmount-on-hide="false"
          @update:model-value="selectCategory"
       >
-         <div class="pricing-switcher-frame" data-pricing-reveal>
+         <div class="pricing-switcher-frame">
             <TabsList
                class="pricing-switcher"
                :style="switcherStyle"
@@ -113,13 +81,12 @@ function setDescriptionSplit(parts: SplitTextResult) {
             </TabsList>
          </div>
 
-         <div class="pricing-panels" data-pricing-panels>
+         <div class="pricing-panels">
             <TabsContent
                v-for="category in pricingCategories"
                :key="category.id"
                class="pricing-panel"
                :value="category.id"
-               data-pricing-panel
             >
                <ul class="pricing-grid">
                   <li
@@ -152,34 +119,11 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .pricing-title {
-   @apply leading-[0.92] tracking-[-0.05em] text-balance;
-}
-
-.pricing-title :deep(.split-text-word),
-.pricing-title :deep(.split-text-word-mask) {
-   display: inline-block;
-}
-
-.pricing-title :deep(.split-text-word-mask) {
-   margin-block: -0.25em;
-   padding-block: 0.25em;
-}
-
-.pricing-title :deep(.split-text-word) {
-   visibility: hidden;
+   @apply m-0 text-display leading-[0.95] font-medium tracking-[-0.06em] text-balance;
 }
 
 .pricing-description {
    @apply m-0 mt-6 max-w-[44ch] text-base leading-snug font-medium text-current/70 md:mt-8 md:text-lg;
-}
-
-.pricing-description :deep(.split-text-line),
-.pricing-description :deep(.split-text-line-mask) {
-   display: block;
-}
-
-.pricing-description :deep(.split-text-line) {
-   visibility: hidden;
 }
 
 .pricing-tabs {
@@ -188,7 +132,6 @@ function setDescriptionSplit(parts: SplitTextResult) {
 
 .pricing-switcher-frame {
    @apply w-full md:w-auto;
-   visibility: hidden;
 }
 
 .pricing-switcher {
@@ -250,20 +193,9 @@ function setDescriptionSplit(parts: SplitTextResult) {
    }
 }
 
-.pricing-grid :deep([data-pricing-card]) {
-   visibility: hidden;
-}
-
 @media (prefers-reduced-motion: reduce) {
    .pricing-switcher-pill {
       transition: none;
-   }
-
-   .pricing-title :deep(.split-text-word),
-   .pricing-description :deep(.split-text-line),
-   .pricing-switcher-frame,
-   .pricing-grid :deep([data-pricing-card]) {
-      visibility: inherit;
    }
 }
 </style>

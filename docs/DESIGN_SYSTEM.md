@@ -2069,14 +2069,15 @@ process. It opens with two and a half times `spacing-section` of top padding,
 so its title stands clear of the services panel's dark curve, and it has no
 bottom padding, because the work process brings its own top padding.
 
-The heading is centered. The title, "Plans and pricing", is a bold H2 at the
-`text-section` size with `0.92` leading, `-0.05em` tracking, and balanced
-wrapping. The description sits `1.5rem` below it, `2rem` from `md`, in
+The heading is centered. The title, "Plans and pricing", is a `font-medium`
+H2 at the `text-display` size with `0.95` leading, `-0.06em` tracking, and
+balanced wrapping. The description sits `1.5rem` below it, `2rem` from `md`, in
 `font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
 `44ch`.
 
 Below the heading, a switcher picks the service: AI content creation, web
-development, or content and web. It is the Reka UI tabs primitive, so it
+development, or both services. The combined tab is named "Both services" so
+it reads as the two services together. It is the Reka UI tabs primitive, so it
 carries the tab roles, arrow key navigation, and the shared focus ring. The
 track is a fully round `canvas-shade` bar with a `0.25rem` inset. Its tabs
 share one equal column width, the widest label's, through an auto-column
@@ -2124,12 +2125,9 @@ it. Top to bottom, a card shows:
   "Everything in" the previous package on the others, each behind a check
   glyph.
 
-When the heading reaches 82 percent of the viewport, the title words rise
-with the line reveal timing and a `0.08s` stagger, the description lines
-follow at `0.3s`, and the switcher rises `48px` and fades in at `0.45s`. When
-the panels reach the same line, the active cards rise `96px` and fade in with
-a `0.1s` stagger. Switching categories swaps the cards at once, without a
-fade or a rise. Reduced motion shows everything at rest.
+The section has no reveal animation. The heading, the switcher, and the cards
+are visible at rest from the server output, and switching categories swaps
+the cards at once. The switcher's pill glide is the only motion.
 
 ### Journey section
 
