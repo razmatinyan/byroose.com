@@ -404,7 +404,7 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one plan from app/lib/pricing.ts: its name, an optional "Most popular" badge, the formatted price with its billing note, the description, the features under "Includes:" or "Everything in <previous plan>, plus:", and a "Book a call" link to the Contact route. Cards do not fetch their own page data.
 
 ### Shared components
 
@@ -412,7 +412,7 @@ app/components/shared contains small project-wide composition patterns such as F
 
 ### UI primitives
 
-app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain forrrow page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label.
+app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain forrrow page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. The tabs primitives, Tabs, TabsList, TabsTrigger, and TabsContent, wrap the Reka UI Tabs with the Shadcn new-york defaults, so a consumer gets roving focus, arrow key navigation, and the tab, tablist, and tabpanel roles, and restyles them through `class`.
 
 Preserve Reka UI integration, attribute forwarding, data-slot values, keyboard behavior, focus behavior, and CVA contracts when modifying this layer.
 
@@ -541,8 +541,24 @@ reveals on its own trigger. It waits for the title, description, and every
 step's title and description splits, and shows everything at rest under
 reduced motion. ProcessSection, in app/components/shared, takes the title,
 description, and steps as props and emits those splits. LandingPage passes the
-"Work Process" steps and renders it after the services section, and both
-service pages pass their own process. LandingPage
+"Work Process" steps and renders it after the pricing section, and both
+service pages pass their own process.
+
+PricingSection, in app/components/landing, renders the home pricing section
+between the services section and the work process. Its plans and categories
+live in app/lib/pricing.ts as typed data: three categories, AI content
+creation, web development, and content and web, each with three plans, a USD
+price, a monthly or project billing, and an optional `featured` flag, plus
+`formatPlanPrice`, a fixed `en-US` formatter that renders the same string on
+the server and the client. The section owns the active category and the
+hovered tab index and passes them to its switcher as CSS custom properties.
+Every panel renders on the server through `unmount-on-hide="false"`, so all
+nine plans ship in the HTML while the inactive panels stay `hidden`.
+LandingPage renders it as `LazyLandingPricingSection` with the same
+`hydrate-on-visible` area as the blog and FAQ sections. usePricingMotion owns
+its heading reveal, the switcher and note rise, the first card rise, and the
+card swap on each category change, and shows everything at rest under reduced
+motion. LandingPage
 currently keeps WhyChooseSection disabled.
 
 useWhyChooseMotion owns the Why Choose Us section's motion: the one-time

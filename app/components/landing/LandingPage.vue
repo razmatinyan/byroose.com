@@ -73,6 +73,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
       <!-- <BrandGrid /> -->
       <WorkSection />
       <ServicesSection />
+      <LazyLandingPricingSection :hydrate-on-visible="belowFoldHydrationArea" />
       <ProcessSection
          id="journey"
          :title="processTitle"

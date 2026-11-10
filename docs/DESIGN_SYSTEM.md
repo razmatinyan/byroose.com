@@ -259,7 +259,8 @@ template.
 ## Component layers
 
 - `components/ui`: source-owned Shadcn primitives. Keep `data-slot`, CVA variants,
-  focus states, disabled states, and attribute forwarding intact.
+  focus states, disabled states, and attribute forwarding intact. The tabs
+  primitive keeps the Shadcn defaults; the pricing switcher restyles it.
 - `components/shared`: small project-wide composition helpers such as section
   headings and media placeholders.
 - `components/cards`: reusable content cards with typed props and semantic
@@ -2061,6 +2062,61 @@ backdrop rise and curve. It displays the intro title words, the
 descriptions, the open service links, and the images at rest, and the dark
 panel keeps a flat backdrop without the lead.
 
+### Pricing section
+
+The home pricing section sits between the services section and the work
+process. It opens with two and a half times `spacing-section` of top padding,
+so its title stands clear of the services panel's dark curve, and it has no
+bottom padding, because the work process brings its own top padding.
+
+The heading is centered. The title, "Plans and pricing", is a bold H2 at the
+`text-section` size with `0.92` leading, `-0.05em` tracking, and balanced
+wrapping. The description sits `1.5rem` below it, `2rem` from `md`, in
+`font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
+`44ch`.
+
+Below the heading, a switcher picks the service: AI content creation, web
+development, or content and web. It is the Reka UI tabs primitive, so it
+carries the tab roles, arrow key navigation, and the shared focus ring. The
+track is a fully round `canvas-shade` bar with a `0.25rem` inset. Its tabs
+share one equal column width, the widest label's, through an auto-column
+grid, so every pill has the same size. Below `md` the track spans the column
+and long labels wrap onto two balanced lines.
+
+Two pills sit behind the labels. The active pill is `foreground` with
+`background` text. The hover pill is `foreground/8`. Each is one tab wide and
+moves only by `translate`, by its index times its own width, over `0.55s` on
+`cubic-bezier(0.22, 1, 0.36, 1)`, so a new selection glides across the track
+instead of jumping. The hover pill rests under the active pill and fades in
+as a mouse enters a tab, so it glides out of the active pill toward the
+hovered tab, follows the mouse from tab to tab, and fades away when the mouse
+leaves the track. Touch and pen input never show it. Reduced motion drops the
+glide and keeps both pills in place.
+
+Each category shows three plan cards, one column below `lg` and three from
+`lg`, with a `1rem` gap. A card is a `rounded-3xl` `canvas-shade` block with
+`1.5rem` of padding, `2rem` from `md`. The featured card is `foreground` with
+`background` text and a fully round "Most popular" badge in `ribbon` green.
+The card stacks the plan name, the price at `text-5xl`, `text-6xl` from `md`,
+with its billing note in `text-current/55`, the description, a `current/15`
+hairline, the feature list with check glyphs, and a full-width `cta-lg`
+"Book a call" link to the Contact route. Plain cards use the `dark` button
+and the featured card uses the orange `default` button. Each feature list
+opens with "Includes:" on the first plan and "Everything in" the previous
+plan on the others. A centered note below the cards gives the currency and
+the 90 day minimum for monthly plans.
+
+The prices are starting points designed for launch and must be confirmed
+before they are treated as final.
+
+When the heading reaches 82 percent of the viewport, the title words rise
+with the line reveal timing and a `0.08s` stagger, the description lines
+follow at `0.3s`, and the switcher and the note rise `48px` and fade in at
+`0.45s`. When the panels reach the same line, the active cards rise `96px` and
+fade in with a `0.1s` stagger. Each switch replays a shorter rise on the new
+cards: `32px` over `0.8s` on `power3.out` with a `0.07s` stagger. Reduced
+motion shows everything at rest and switches without the rise.
+
 ### Journey section
 
 The journey section is the shared `ProcessSection`, which takes its title,
@@ -2073,7 +2129,7 @@ to `true`; every page currently sets it to `false`. The `titleReveal` prop
 chooses a `chars` or `words` title reveal and defaults to `chars`; both service
 pages use `words`. It opens with two and a half times `spacing-section` of top
 padding, about 360px at 1440 wide, so the title stands well clear of the
-services panel's dark curve on the home page.
+section above it.
 
 The heading is aligned to the left of the page gutter. The title is a bold H2
 at the `text-section` size, `0.92` leading, and `-0.05em` tracking, with
