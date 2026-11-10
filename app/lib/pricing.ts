@@ -1,13 +1,12 @@
 export type PricingCategoryId = "ai-content" | "web-development" | "combined";
 
-export type PricingBilling = "monthly" | "project";
-
 export interface PricingPlan {
    id: string;
    name: string;
    price: number;
-   billing: PricingBilling;
+   regularPrice: number;
    description: string;
+   actionLabel: string;
    features: readonly string[];
    featured?: boolean;
 }
@@ -18,11 +17,6 @@ export interface PricingCategory {
    plans: readonly PricingPlan[];
 }
 
-export const pricingBillingNotes: Record<PricingBilling, string> = {
-   monthly: "per month, starting at",
-   project: "one time, starting at",
-};
-
 export const pricingCategories: readonly PricingCategory[] = [
    {
       id: "ai-content",
@@ -31,12 +25,13 @@ export const pricingCategories: readonly PricingCategory[] = [
          {
             id: "content-starter",
             name: "Starter",
-            price: 1500,
-            billing: "monthly",
+            price: 1200,
+            regularPrice: 1500,
             description:
-               "A steady stream of content for one channel, so your brand shows up every week.",
+               "A content pack for one channel that gets your brand moving.",
+            actionLabel: "Book a call",
             features: [
-               "12 short videos or reels a month",
+               "12 short videos or reels",
                "20 AI product images",
                "One social platform",
                "A visual style guide for your brand",
@@ -46,33 +41,34 @@ export const pricingCategories: readonly PricingCategory[] = [
          {
             id: "content-growth",
             name: "Growth",
-            price: 3500,
-            billing: "monthly",
+            price: 2900,
+            regularPrice: 3800,
             featured: true,
             description:
-               "Enough volume to test hooks and formats, and to keep doing more of what works.",
+               "Enough volume to test hooks and formats, and to find what works.",
+            actionLabel: "Schedule a call",
             features: [
-               "30 short videos or reels a month",
+               "30 short videos or reels",
                "60 AI product images",
                "10 UGC style ad variations",
                "Up to three social platforms",
                "Two rounds of edits per asset",
-               "Monthly report and review call",
             ],
          },
          {
             id: "content-scale",
             name: "Scale",
-            price: 7000,
-            billing: "monthly",
+            price: 5900,
+            regularPrice: 7400,
             description:
-               "A dedicated content team for brands that publish and advertise every day.",
+               "A full content library for brands that publish and advertise every day.",
+            actionLabel: "Talk to our team",
             features: [
-               "60 short videos or reels a month",
+               "60 short videos or reels",
                "120 AI product images",
                "30 UGC style ad variations",
                "A dedicated creative director",
-               "Weekly delivery and priority turnaround",
+               "Priority turnaround",
             ],
          },
       ],
@@ -82,14 +78,15 @@ export const pricingCategories: readonly PricingCategory[] = [
       label: "Web development",
       plans: [
          {
-            id: "web-landing",
-            name: "Landing page",
-            price: 2500,
-            billing: "project",
+            id: "web-launch",
+            name: "Launch",
+            price: 2400,
+            regularPrice: 3000,
             description:
-               "One page built to convert, for a launch, a product, or a campaign.",
+               "A focused site that explains your offer and turns visits into leads.",
+            actionLabel: "Book a discovery call",
             features: [
-               "Design and build of one page",
+               "Custom design and build",
                "Responsive and animated",
                "SEO and analytics setup",
                "Two rounds of revisions",
@@ -97,30 +94,32 @@ export const pricingCategories: readonly PricingCategory[] = [
             ],
          },
          {
-            id: "web-website",
-            name: "Website",
-            price: 6000,
-            billing: "project",
+            id: "web-business",
+            name: "Business",
+            price: 5400,
+            regularPrice: 6900,
             featured: true,
             description:
                "A complete site with a CMS, ready to grow with your brand.",
+            actionLabel: "Plan a call with us",
             features: [
-               "Up to eight pages",
                "CMS for your blog or projects",
                "Technical SEO and structured data",
                "Conversion tracking from day one",
+               "Contact and lead forms",
                "30 days of support after launch",
             ],
          },
          {
             id: "web-custom",
-            name: "Custom build",
-            price: 12000,
-            billing: "project",
+            name: "Custom",
+            price: 10900,
+            regularPrice: 13500,
             description:
-               "Larger sites with custom features, integrations, and motion.",
+               "A site with custom features, integrations, and motion.",
+            actionLabel: "Talk through your project",
             features: [
-               "Custom pages and integrations",
+               "Custom features and integrations",
                "Advanced motion and interactions",
                "Performance and accessibility audit",
                "CMS training and handover guide",
@@ -136,46 +135,47 @@ export const pricingCategories: readonly PricingCategory[] = [
          {
             id: "combined-launch",
             name: "Launch",
-            price: 3500,
-            billing: "monthly",
+            price: 3300,
+            regularPrice: 4500,
             description:
-               "A landing page and the content that sends people to it, built to one brief.",
+               "A site and the content that sends people to it, built to one brief.",
+            actionLabel: "Book an intro call",
             features: [
-               "Landing page built in the first month",
-               "Everything in the content Starter plan",
+               "The Launch website",
+               "The Starter content pack",
                "Tracking from first view to lead",
-               "Monthly funnel report",
+               "Funnel report after launch",
             ],
          },
          {
             id: "combined-growth",
             name: "Growth",
-            price: 7500,
-            billing: "monthly",
+            price: 7600,
+            regularPrice: 10700,
             featured: true,
             description:
-               "A full website and a content engine that feed each other every month.",
+               "A complete site and a content library that feed each other.",
+            actionLabel: "Schedule a strategy call",
             features: [
-               "Website of up to eight pages",
-               "Everything in the content Growth plan",
-               "One new campaign page a month",
-               "Conversion tests on key pages",
-               "Monthly report and review call",
+               "The Business website",
+               "The Growth content pack",
+               "Conversion tests on key sections",
+               "Review call after launch",
             ],
          },
          {
             id: "combined-scale",
             name: "Scale",
-            price: 14000,
-            billing: "monthly",
+            price: 15000,
+            regularPrice: 20900,
             description:
-               "One team running your content, your site, and the funnel between them.",
+               "One team building your site, your content, and the funnel between them.",
+            actionLabel: "Let's talk it through",
             features: [
-               "Custom build with integrations",
-               "Everything in the content Scale plan",
-               "Ongoing site updates and new sections",
+               "The Custom website",
+               "The Scale content pack",
                "A dedicated creative director",
-               "Weekly strategy call",
+               "Weekly strategy call during the project",
             ],
          },
       ],
@@ -186,8 +186,13 @@ const priceFormat = new Intl.NumberFormat("en-US", {
    currency: "USD",
    maximumFractionDigits: 0,
    style: "currency",
+   useGrouping: false,
 });
 
 export function formatPlanPrice(price: number) {
    return priceFormat.format(price);
+}
+
+export function planDiscountPercent({ price, regularPrice }: PricingPlan) {
+   return Math.round(((regularPrice - price) / regularPrice) * 100);
 }

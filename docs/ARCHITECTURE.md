@@ -404,7 +404,7 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one plan from app/lib/pricing.ts: its name, an optional "Most popular" badge, the formatted price with its billing note, the description, the features under "Includes:" or "Everything in <previous plan>, plus:", and a "Book a call" link to the Contact route. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one package from app/lib/pricing.ts: its name with the discount percent, an optional "Most popular" badge, the description, the struck regular price beside the package price, its own call label as a link to the Contact route with the saving below it, and the features under "Includes:" or "Everything in <previous package>, plus:". From `lg` it spans four rows of its grid through `subgrid`, so the price, action, and features rows line up across the three cards. Cards do not fetch their own page data.
 
 ### Shared components
 
@@ -547,18 +547,19 @@ service pages pass their own process.
 PricingSection, in app/components/landing, renders the home pricing section
 between the services section and the work process. Its plans and categories
 live in app/lib/pricing.ts as typed data: three categories, AI content
-creation, web development, and content and web, each with three plans, a USD
-price, a monthly or project billing, and an optional `featured` flag, plus
-`formatPlanPrice`, a fixed `en-US` formatter that renders the same string on
-the server and the client. The section owns the active category and the
+creation, web development, and content and web, each with three one-time
+packages with a USD price, a regular price, a call label, and an optional
+`featured` flag, plus `formatPlanPrice`, a fixed `en-US` formatter without
+digit grouping that renders the same string on the server and the client, and
+`planDiscountPercent`. The section owns the active category and the
 hovered tab index and passes them to its switcher as CSS custom properties.
 Every panel renders on the server through `unmount-on-hide="false"`, so all
 nine plans ship in the HTML while the inactive panels stay `hidden`.
 LandingPage renders it as `LazyLandingPricingSection` with the same
 `hydrate-on-visible` area as the blog and FAQ sections. usePricingMotion owns
-its heading reveal, the switcher and note rise, the first card rise, and the
-card swap on each category change, and shows everything at rest under reduced
-motion. LandingPage
+its heading reveal, the switcher rise, and the first card rise, and shows
+everything at rest under reduced motion. Switching categories only toggles the
+panels, without motion. LandingPage
 currently keeps WhyChooseSection disabled.
 
 useWhyChooseMotion owns the Why Choose Us section's motion: the one-time

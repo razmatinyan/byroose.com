@@ -9,10 +9,8 @@ import type { SplitTextResult } from "@/lib/split-text";
 
 const title = "Plans and pricing";
 const description =
-   "Start with content, the website, or both. Every plan has a starting price, and we confirm the exact scope after one call.";
+   "Start with content, the website, or both. Every package has one fixed price, and we confirm the exact scope after one call.";
 const switcherLabel = "Pricing by service";
-const note =
-   "Prices in USD. Monthly plans run for at least 90 days, so the funnel has time to learn.";
 
 const pricingRoot = useTemplateRef<HTMLElement>("pricingRoot");
 const activeCategory = shallowRef<PricingCategoryId>("ai-content");
@@ -30,7 +28,6 @@ const switcherStyle = computed(() => ({
 }));
 
 usePricingMotion(pricingRoot, {
-   activeCategory,
    descriptionSplit,
    titleSplit,
 });
@@ -139,8 +136,6 @@ function setDescriptionSplit(parts: SplitTextResult) {
             </TabsContent>
          </div>
       </Tabs>
-
-      <p class="pricing-note" data-pricing-reveal>{{ note }}</p>
    </section>
 </template>
 
@@ -236,23 +231,26 @@ function setDescriptionSplit(parts: SplitTextResult) {
 }
 
 .pricing-panels {
-   @apply w-full;
+   @apply mx-auto w-full max-w-md pt-3 lg:max-w-6xl;
 }
 
 .pricing-grid {
-   @apply m-0 grid list-none grid-cols-1 gap-4 p-0 lg:grid-cols-3;
+   @apply m-0 grid list-none grid-cols-1 gap-8 p-0 lg:grid-cols-3 lg:gap-4;
 }
 
 .pricing-grid-item {
    @apply min-w-0;
 }
 
-.pricing-grid :deep([data-pricing-card]) {
-   visibility: hidden;
+@media (min-width: 64rem) {
+   .pricing-grid-item {
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+      @apply grid gap-y-0;
+   }
 }
 
-.pricing-note {
-   @apply m-0 mt-8 max-w-[60ch] text-center text-sm font-medium text-balance text-current/55 md:mt-10;
+.pricing-grid :deep([data-pricing-card]) {
    visibility: hidden;
 }
 
@@ -264,8 +262,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
    .pricing-title :deep(.split-text-word),
    .pricing-description :deep(.split-text-line),
    .pricing-switcher-frame,
-   .pricing-grid :deep([data-pricing-card]),
-   .pricing-note {
+   .pricing-grid :deep([data-pricing-card]) {
       visibility: inherit;
    }
 }

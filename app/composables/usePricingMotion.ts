@@ -1,6 +1,5 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
-import { usePreferredReducedMotion } from "@vueuse/core";
 import type { SplitTextResult } from "@/lib/split-text";
 import {
    addWordReveal,
@@ -15,7 +14,6 @@ type SplitSource = MaybeRefOrGetter<SplitTextResult | undefined>;
 type ScrollTriggerPlugin = typeof import("gsap/ScrollTrigger").ScrollTrigger;
 
 interface PricingMotionTargets {
-   activeCategory: MaybeRefOrGetter<string>;
    descriptionSplit: SplitSource;
    titleSplit: SplitSource;
 }
@@ -34,21 +32,15 @@ const descriptionDelay = 0.3;
 const switcherDelay = 0.45;
 const riseOffset = 48;
 const cardStagger = 0.1;
-const cardSwapOffset = 32;
-const cardSwapDuration = 0.8;
-const cardSwapStagger = 0.07;
-const cardSwapEase = "power3.out";
 
 export function usePricingMotion(
    scope: MotionScope,
-   { activeCategory, descriptionSplit, titleSplit }: PricingMotionTargets,
+   { descriptionSplit, titleSplit }: PricingMotionTargets,
 ) {
-   const { createContext, createMatchMedia, gsap, loadPlugin } = useGsap();
+   const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
-   const preferredMotion = usePreferredReducedMotion();
    let disposed = false;
    let initialized = false;
-   let swapContext: gsap.Context | null = null;
 
    function queryAll(root: HTMLElement, selector: string) {
       return [...root.querySelectorAll<HTMLElement>(selector)];
@@ -176,29 +168,6 @@ export function usePricingMotion(
       await refresh();
    }
 
-   function swapCards() {
-      const root = toValue(scope);
-      if (!root || preferredMotion.value === "reduce") return;
-
-      swapContext ??= createContext(() => {}, scope);
-      swapContext?.add(() => {
-         const cards = queryAll(root, selectors.activeCards);
-         gsap.killTweensOf(cards);
-         gsap.fromTo(
-            cards,
-            { autoAlpha: 0, y: cardSwapOffset },
-            {
-               autoAlpha: 1,
-               clearProps: "transform,opacity",
-               duration: cardSwapDuration,
-               ease: cardSwapEase,
-               stagger: cardSwapStagger,
-               y: 0,
-            },
-         );
-      });
-   }
-
    watch(
       () => [toValue(titleSplit), toValue(descriptionSplit)] as const,
       ([title, description]) => {
@@ -206,15 +175,6 @@ export function usePricingMotion(
          return initialize();
       },
       { flush: "post", immediate: true },
-   );
-
-   watch(
-      () => toValue(activeCategory),
-      () => {
-         if (!import.meta.client || disposed) return;
-         swapCards();
-      },
-      { flush: "post" },
    );
 
    onScopeDispose(() => {

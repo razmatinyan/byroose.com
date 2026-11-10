@@ -2093,29 +2093,40 @@ hovered tab, follows the mouse from tab to tab, and fades away when the mouse
 leaves the track. Touch and pen input never show it. Reduced motion drops the
 glide and keeps both pills in place.
 
-Each category shows three plan cards, one column below `lg` and three from
-`lg`, with a `1rem` gap. A card is a `rounded-3xl` `canvas-shade` block with
-`1.5rem` of padding, `2rem` from `md`. The featured card is `foreground` with
-`background` text and a fully round "Most popular" badge in `ribbon` green.
-The card stacks the plan name, the price at `text-5xl`, `text-6xl` from `md`,
-with its billing note in `text-current/55`, the description, a `current/15`
-hairline, the feature list with check glyphs, and a full-width `cta-lg`
-"Book a call" link to the Contact route. Plain cards use the `dark` button
-and the featured card uses the orange `default` button. Each feature list
-opens with "Includes:" on the first plan and "Everything in" the previous
-plan on the others. A centered note below the cards gives the currency and
-the 90 day minimum for monthly plans.
+Each category shows three one-time packages; none is priced per month. The
+cards sit in a centered column held to `max-w-md` below `lg` and to
+`max-w-6xl` from `lg`, where they form three columns with a `1rem` gap. From
+`lg` each card spans four rows of the grid through `subgrid`, so the price,
+the action block, and the features start on the same line in every card.
 
-The prices are starting points designed for launch and must be confirmed
-before they are treated as final.
+A card is a white `card` block with a `border` outline, `rounded-3xl`, and a
+`0.5rem` inset. It has no separator lines. The featured card swaps only its
+outline to `foreground` and carries a fully round "Most popular" badge in
+`foreground` with `background` text, centered on its top edge and half above
+it. Top to bottom, a card shows:
+
+- The package name, bold at `text-3xl`, beside a round discount pill such as
+  "20% off" in `primary` on `primary/10`, then the description in
+  `text-current/60`.
+- The regular price, struck through in `text-current/30` at `text-2xl`,
+  `text-3xl` from `md`, beside the package price, bold at `text-6xl`,
+  `text-5xl` from `lg`, and `text-6xl` again from `xl`. Prices have no
+  thousands separator, such as `$1200`.
+- A `rounded-2xl` `canvas-shade` block that holds a full-width `dark`
+  `cta-lg` link to the Contact route without an icon, and the saving below
+  it, such as "Save $300 on the regular price". Each package has its own
+  label for the same action, such as "Book a call", "Schedule a call", or
+  "Talk to our team", and the link's accessible name adds the package name.
+- The features, opening with "Includes:" on the first package and
+  "Everything in" the previous package on the others, each behind a check
+  glyph.
 
 When the heading reaches 82 percent of the viewport, the title words rise
 with the line reveal timing and a `0.08s` stagger, the description lines
-follow at `0.3s`, and the switcher and the note rise `48px` and fade in at
-`0.45s`. When the panels reach the same line, the active cards rise `96px` and
-fade in with a `0.1s` stagger. Each switch replays a shorter rise on the new
-cards: `32px` over `0.8s` on `power3.out` with a `0.07s` stagger. Reduced
-motion shows everything at rest and switches without the rise.
+follow at `0.3s`, and the switcher rises `48px` and fades in at `0.45s`. When
+the panels reach the same line, the active cards rise `96px` and fade in with
+a `0.1s` stagger. Switching categories swaps the cards at once, without a
+fade or a rise. Reduced motion shows everything at rest.
 
 ### Journey section
 
