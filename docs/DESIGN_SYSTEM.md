@@ -2071,7 +2071,7 @@ bottom padding, because the work process brings its own top padding.
 
 The heading is centered. The title, "Plans and pricing", is a `font-medium`
 H2 at the `text-display` size with `0.95` leading, `-0.06em` tracking, and
-balanced wrapping. The description sits `1.5rem` below it, `2rem` from `md`, in
+balanced wrapping. The description sits `2rem` below it, `3rem` from `md`, in
 `font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
 `44ch`.
 
@@ -2081,8 +2081,10 @@ it reads as the two services together. It is the Reka UI tabs primitive, so it
 carries the tab roles, arrow key navigation, and the shared focus ring. The
 track is a fully round `canvas-shade` bar with a `0.25rem` inset. Its tabs
 share one equal column width, the widest label's, through an auto-column
-grid, so every pill has the same size. Below `md` the track spans the column
-and long labels wrap onto two balanced lines.
+grid, so every pill has the same size. Each tab is `font-medium`, at least
+`3.25rem` tall, and from `md` `4rem` tall at `text-lg` with `2.5rem` of side
+padding. Below `md` the track spans the column and long labels wrap onto two
+balanced lines at `text-sm`.
 
 Two pills sit behind the labels. The active pill is `foreground` with
 `background` text. The hover pill is `foreground/8`. Each is one tab wide and
@@ -2109,11 +2111,12 @@ outline to `foreground` and carries a fully round "Most popular" badge in
 `foreground` with `background` text, centered on its top edge and half above
 it. Top to bottom, a card shows:
 
-- The package name, bold at `text-3xl`, beside a round discount pill such as
+- The package name, semibold at `text-3xl` and `text-4xl` from `md`, beside a
+  round `text-sm` discount pill such as
   "20% off" in `primary` on `primary/10`, then the description in
-  `text-current/60`.
+  `text-current/60` at `text-lg`.
 - The regular price, struck through in `text-current/30` at `text-2xl`,
-  `text-3xl` from `md`, beside the package price, bold at `text-6xl`,
+  `text-3xl` from `md`, beside the package price, semibold at `text-6xl`,
   `text-5xl` from `lg`, and `text-6xl` again from `xl`. Prices have no
   thousands separator, such as `$1200`.
 - A `rounded-2xl` `canvas-shade` block that holds a full-width `dark`
@@ -2122,8 +2125,8 @@ it. Top to bottom, a card shows:
   label for the same action, such as "Book a call", "Schedule a call", or
   "Talk to our team", and the link's accessible name adds the package name.
 - The features, opening with "Includes:" on the first package and
-  "Everything in" the previous package on the others, each behind a check
-  glyph.
+  "Everything in" the previous package on the others, each at `text-lg`
+  behind a check glyph. The saving line and the list label use `text-base`.
 
 The section has no reveal animation. The heading, the switcher, and the cards
 are visible at rest from the server output, and switching categories swaps

@@ -113,7 +113,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-badge {
-   @apply absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground px-3 py-1 text-xs font-semibold whitespace-nowrap text-background;
+   @apply absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground px-3.5 py-1 text-sm font-semibold whitespace-nowrap text-background;
 }
 
 .pricing-card-header {
@@ -125,15 +125,15 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-name {
-   @apply m-0 text-3xl leading-tight font-bold tracking-[-0.04em];
+   @apply m-0 text-3xl leading-tight font-semibold tracking-[-0.04em] md:text-4xl;
 }
 
 .pricing-card-discount {
-   @apply rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary;
+   @apply rounded-full bg-primary/10 px-3 py-0.5 text-sm font-semibold text-primary;
 }
 
 .pricing-card-description {
-   @apply m-0 mt-3 text-base leading-snug font-medium text-pretty text-current/60;
+   @apply m-0 mt-3 text-lg leading-snug font-medium text-pretty text-current/60;
 }
 
 .pricing-card-price {
@@ -145,7 +145,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-amount {
-   @apply text-6xl leading-none font-bold tracking-[-0.05em] tabular-nums lg:text-5xl xl:text-6xl;
+   @apply text-6xl leading-none font-semibold tracking-[-0.05em] tabular-nums lg:text-5xl xl:text-6xl;
 }
 
 .pricing-card-action-block {
@@ -157,7 +157,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-saving {
-   @apply m-0 text-center text-sm font-medium text-current/60;
+   @apply m-0 text-center text-base font-medium text-current/60;
 }
 
 .pricing-card-saving strong {
@@ -169,7 +169,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-features-label {
-   @apply m-0 text-sm font-semibold;
+   @apply m-0 text-base font-semibold;
 }
 
 .pricing-card-list {
@@ -177,10 +177,10 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-feature {
-   @apply flex items-start gap-3 text-base leading-snug font-medium;
+   @apply flex items-start gap-3 text-lg leading-snug font-medium;
 }
 
 .pricing-card-check {
-   @apply mt-0.5 size-4 shrink-0;
+   @apply mt-1 size-4.5 shrink-0;
 }
 </style>

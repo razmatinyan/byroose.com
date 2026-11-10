@@ -123,7 +123,7 @@ function endHover() {
 }
 
 .pricing-description {
-   @apply m-0 mt-6 max-w-[44ch] text-base leading-snug font-medium text-current/70 md:mt-8 md:text-lg;
+   @apply m-0 mt-8 max-w-[44ch] text-base leading-snug font-medium text-current/70 md:mt-12 md:text-lg;
 }
 
 .pricing-tabs {
@@ -166,7 +166,7 @@ function endHover() {
 }
 
 .pricing-switcher :deep(.pricing-switcher-tab) {
-   @apply relative min-h-11 rounded-full bg-transparent px-3 py-2 text-sm leading-tight font-semibold whitespace-normal text-balance text-foreground/65 transition-colors duration-300 hover:text-foreground md:min-h-13 md:px-7 md:text-base md:whitespace-nowrap;
+   @apply relative min-h-13 rounded-full bg-transparent px-3 py-2 text-sm leading-tight font-medium whitespace-normal text-balance text-foreground/65 transition-colors duration-300 hover:text-foreground md:min-h-16 md:px-10 md:text-lg md:whitespace-nowrap;
 }
 
 .pricing-switcher :deep(.pricing-switcher-tab[data-state="active"]) {
