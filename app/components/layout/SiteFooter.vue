@@ -42,7 +42,7 @@ const sloganLines: SloganLine[] = [
 
 const navigationLinks: FooterLink[] = [
    { href: "/", label: "Home" },
-   { href: "/work", label: "Works" },
+   { href: "/work", label: "Work" },
    { href: "/services", label: "Services" },
    { href: "/about", label: "About" },
    { href: "/blog", label: "Blog" },
