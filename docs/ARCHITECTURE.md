@@ -621,11 +621,14 @@ does. It returns `revealed`, which lifts the hero's hidden CSS rest state.
 useServicesRevealMotion owns the scroll reveals of ServicesOfferSection. It waits for every `data-services-reveal-text` split,
 then rises each text's lines, or its words when it is split into words only,
 once with the shared line reveal timing when it enters, and rises every `data-services-reveal-rise` item once with the word
-reveal timing. When the scope has a `data-services-reveal-backdrop` layer, it
+reveal timing, and opens every `data-services-reveal-inset` square link once
+by tweening its `--services-offer-inset-open` clip to `1` on the swap ease while
+its `data-services-reveal-inset-content` settles from the hero inset scale. When
+the scope has a `data-services-reveal-backdrop` layer, it
 extends the layer one viewport above the section and scrubs its clip path from
 a rounded point at the bottom center of the viewport to the full width, over
 `0.8` of a viewport of scroll, as useServicesMotion does for the home dark
-panel. Reduced motion shows the text and the backdrop at rest.
+panel. Reduced motion shows the text, the square links, and the backdrop at rest.
 
 useServicesStatementMotion owns the Services statement. It waits for the
 statement's line and word split, rises the lines once with the shared line

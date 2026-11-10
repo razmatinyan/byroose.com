@@ -1,6 +1,11 @@
 import { nextTick, onScopeDispose, toValue, watch } from "vue";
 import type { MaybeRefOrGetter } from "vue";
+import {
+   servicesHeroInsetContentScale,
+   servicesHeroInsetDuration,
+} from "@/lib/services-hero";
 import type { SplitTextResult } from "@/lib/split-text";
+import { swapEase } from "@/lib/swap-timing";
 import {
    addWordReveal,
    lineRevealDuration,
@@ -18,10 +23,13 @@ type SplitListSource = MaybeRefOrGetter<
 
 const selectors = {
    backdrop: "[data-services-reveal-backdrop]",
+   inset: "[data-services-reveal-inset]",
+   insetContent: "[data-services-reveal-inset-content]",
    rise: "[data-services-reveal-rise]",
    text: "[data-services-reveal-text]",
 } as const;
 
+const insetOpenProperty = "--services-offer-inset-open";
 const backdropLeadProperty = "--services-reveal-backdrop-lead";
 const backdropRiseLength = 0.8;
 const backdropRadius = 32;
@@ -80,6 +88,29 @@ export function useServicesRevealMotion(
       });
    }
 
+   function openInset(inset: HTMLElement) {
+      const content = inset.querySelector<HTMLElement>(selectors.insetContent);
+      const reveal = { duration: servicesHeroInsetDuration, ease: swapEase };
+      const timeline = gsap.timeline({
+         scrollTrigger: {
+            once: true,
+            start: wordRevealStart,
+            trigger: inset,
+         },
+      });
+
+      timeline.to(inset, { ...reveal, [insetOpenProperty]: 1 }, 0);
+
+      if (content) {
+         timeline.fromTo(
+            content,
+            { scale: servicesHeroInsetContentScale },
+            { ...reveal, scale: 1 },
+            0,
+         );
+      }
+   }
+
    function riseBackdrop(root: HTMLElement, backdrop: HTMLElement) {
       gsap.set(root, { [backdropLeadProperty]: 1 });
 
@@ -120,6 +151,7 @@ export function useServicesRevealMotion(
       const texts = queryAll(root, selectors.text);
       const rises = queryAll(root, selectors.rise);
       const backdrop = root.querySelector<HTMLElement>(selectors.backdrop);
+      const insets = queryAll(root, selectors.inset);
 
       createMatchMedia(
          {
@@ -138,6 +170,7 @@ export function useServicesRevealMotion(
                revealText(text, textParts[index] ?? []),
             );
             rises.forEach(revealRise);
+            insets.forEach(openInset);
          },
          scope,
       );

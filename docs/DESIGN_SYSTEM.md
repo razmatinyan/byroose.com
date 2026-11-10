@@ -2731,12 +2731,23 @@ section the `website-development` id, so a link can open either section.
 Each section is a summary, not a list of offers. Its intro repeats the home
 services panel: the title in bold `text-service` with `-0.045em` tracking on
 the left, and the description below it in the home service description style,
-two thirds wide and aligned right from `md`. Under the description, `2.5rem`
-below and `3.5rem` from `md`, sits the shared `ArrowLink` to the service's own
-page, "See AI content creation services" or "See web development services",
-sized to its label. The title and description rise line by line with the
-services description timing, `1.1s`, `power3`, and a `0.075s` stagger, and the
-link rises from its mask `0.3s` later with the word reveal timing. The light AI
+in the right two of three grid columns from `md`. The left column holds the
+home services panel's square arrow link to the service's own page, with the
+same sizing, `inset-arrow` surface and glyph, `0.5em` inset, focus ring, and
+hidden state below `md`: from `md` it is exactly as tall as the description
+and its top is level with the first line. Hovering it opens a text-only
+TrailingTooltip, "More about" followed by the section title and "service".
+Under the description, `2.5rem` below and `3.5rem` from `md`, sits the shared
+`ArrowLink` to the same page, "See AI content creation services" or "See web
+development services", sized to its label, so phones keep a visible link. The
+title and description rise line by line with the services description timing,
+`1.1s`, `power3`, and a `0.075s` stagger, and the link rises from its mask
+`0.3s` later with the word reveal timing. The square link's grey surface is
+clipped from the right by `--services-offer-inset-open`, which rests at `0`,
+and opens from its left edge as it reaches 82 percent of the viewport, level
+with the description, over `1.1s` on the swap ease while its glyph settles
+from `1.3` scale, as on the home page. Keyboard focus and reduced motion show
+it open. The light AI
 Content Creation section ends with twice `spacing-section` of bottom padding,
 so there is a large gap before the dark Website Development section. The dark
 section ends with `spacing-section`.

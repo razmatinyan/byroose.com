@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { shallowRef, useTemplateRef } from "vue";
+import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import ArrowLink from "@/components/shared/ArrowLink.vue";
 import SplitText from "@/components/shared/SplitText.vue";
+import { appIcons } from "@/lib/icons";
 import type { ServicesAnchor } from "@/lib/services-anchors";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -21,13 +22,30 @@ const {
    title: string;
 }>();
 
+const TrailingTooltip = defineAsyncComponent(
+   () => import("@/components/shared/TrailingTooltip.vue"),
+);
+
 const offerRoot = useTemplateRef<HTMLElement>("offerRoot");
 const textSplits = shallowRef<(SplitTextResult | undefined)[]>([
    undefined,
    undefined,
 ]);
 
+const {
+   active: tooltipActive,
+   hide: hideTooltip,
+   label: tooltipLabel,
+   shouldLoad: shouldLoadTooltip,
+   show: showTooltip,
+   size: tooltipSize,
+} = useTrailingTooltip();
+
 useServicesRevealMotion(offerRoot, textSplits);
+
+function showServiceTooltip() {
+   showTooltip("", `More about ${title} service`, "compact");
+}
 
 function setTextSplit(index: number, parts: SplitTextResult) {
    textSplits.value = textSplits.value.with(index, parts);
@@ -58,23 +76,51 @@ function setTextSplit(index: number, parts: SplitTextResult) {
             type="lines"
             @split="setTextSplit(0, $event)"
          />
-         <div class="services-offer-summary">
-            <SplitText
-               class="services-offer-description"
-               data-services-reveal-text
-               as="p"
-               mask="lines"
-               :text="description"
-               type="lines"
-               @split="setTextSplit(1, $event)"
-            />
-            <div class="services-offer-link-mask">
-               <div class="services-offer-link" data-services-reveal-rise>
-                  <ArrowLink :to="linkTo" :label="linkLabel" />
-               </div>
+         <NuxtLink
+            class="services-offer-inset inset-arrow-link"
+            data-services-reveal-inset
+            :to="linkTo"
+            :aria-label="linkLabel"
+            @click="hideTooltip"
+            @pointerenter="showServiceTooltip"
+            @pointerleave="hideTooltip"
+         >
+            <span class="services-offer-inset-surface inset-arrow-surface">
+               <span
+                  class="services-offer-inset-content"
+                  data-services-reveal-inset-content
+               >
+                  <Icon
+                     class="inset-arrow-icon"
+                     :name="appIcons.arrowUpRight"
+                     aria-hidden="true"
+                  />
+               </span>
+            </span>
+         </NuxtLink>
+         <SplitText
+            class="services-offer-description"
+            data-services-reveal-text
+            as="p"
+            mask="lines"
+            :text="description"
+            type="lines"
+            @split="setTextSplit(1, $event)"
+         />
+         <div class="services-offer-link-mask">
+            <div class="services-offer-link" data-services-reveal-rise>
+               <ArrowLink :to="linkTo" :label="linkLabel" />
             </div>
          </div>
       </div>
+
+      <TrailingTooltip
+         v-if="shouldLoadTooltip"
+         :active="tooltipActive"
+         :icon="appIcons.arrowUpRight"
+         :label="tooltipLabel"
+         :size="tooltipSize"
+      />
    </section>
 </template>
 
@@ -99,7 +145,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-intro {
-   @apply flex flex-col pt-section;
+   @apply grid grid-cols-1 justify-items-start pt-section md:grid-cols-3;
 }
 
 .services-offer[data-surface="light"] .services-offer-intro {
@@ -107,15 +153,31 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-title {
-   @apply m-0 text-service font-bold tracking-[-0.045em] text-balance;
+   @apply m-0 text-service font-bold tracking-[-0.045em] text-balance md:col-span-3;
 }
 
-.services-offer-summary {
-   @apply mt-4 flex w-full flex-col items-start md:mt-8 md:w-2/3 md:self-end xl:mt-12;
+.services-offer-inset {
+   @apply relative hidden shrink-0 rounded-[7.5%] md:col-start-1 md:mt-8 md:ml-[0.5em] md:block md:aspect-square md:self-stretch md:text-4xl xl:mt-12 xl:text-5xl 2xl:text-6xl;
+   --services-offer-inset-open: 0;
+}
+
+.services-offer-inset:focus-visible {
+   --services-offer-inset-open: 1;
+}
+
+.services-offer-inset-surface {
+   @apply absolute inset-0 overflow-hidden rounded-[inherit];
+   clip-path: inset(
+      0 calc((1 - var(--services-offer-inset-open)) * 100%) 0 0 round 7.5%
+   );
+}
+
+.services-offer-inset-content {
+   @apply grid size-full place-items-center p-[17.5%];
 }
 
 .services-offer-description {
-   @apply m-0 w-full text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty md:text-4xl xl:text-5xl 2xl:text-6xl;
+   @apply m-0 mt-4 w-full text-2xl leading-[0.9] font-semibold tracking-[-0.04em] text-pretty md:col-span-2 md:col-start-2 md:mt-8 md:text-4xl xl:mt-12 xl:text-5xl 2xl:text-6xl;
 }
 
 .services-offer[data-surface="dark"] .services-offer-title,
@@ -124,7 +186,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 }
 
 .services-offer-link-mask {
-   @apply mt-10 overflow-hidden p-1 md:mt-14;
+   @apply mt-10 overflow-hidden p-1 md:col-span-2 md:col-start-2 md:mt-14;
 }
 
 .services-offer-link {
@@ -147,6 +209,12 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 
 .services-offer :deep(.split-text-line) {
    visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .services-offer-inset {
+      --services-offer-inset-open: 1;
+   }
 }
 
 </style>
