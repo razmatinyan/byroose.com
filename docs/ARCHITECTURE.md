@@ -545,7 +545,8 @@ description, and steps as props and emits those splits. LandingPage passes the
 service pages pass their own process.
 
 PricingSection, in app/components/shared, renders the pricing section on the
-home page, the Services hub, and both service pages. Its plans and categories
+home page, the Services hub, both service pages, the Work route and every
+project page, the About route, the Contact route, and the Blog routes. Its plans and categories
 live in app/lib/pricing.ts as typed data: three categories, AI content
 creation, web development, and both services, each with three one-time
 packages with a USD price, a regular price, a call label, and an optional
@@ -565,7 +566,15 @@ Development panel with `combined` and a `pb-section` class, because nothing
 follows it before the site call to action, and the AI content creation and
 web development pages between their story blocks and their process with
 `ai-content` or `web-development` and `clearCurve` off, because the story
-section already ends with section spacing. The section has no
+section already ends with section spacing. WorkPage, BlogPage, which also
+renders the blog category pages, ProjectPage, and BlogPostPage render it last,
+just before the site call to action, and AboutPage after its story block, all
+with the default tab, `clearCurve` off, and spacing classes that suit the
+section above: `py-section` after the grey projects and articles panels and
+after the Next Project block, and `pb-section` where the section above already
+ends with spacing. On About it also takes `relative bg-background`, so the
+story's drawn line passes under it as it passed under the call to action.
+ContactPage renders it between the hero and the FAQ with `pb-section`. The section has no
 reveal motion: its heading, switcher, and cards render at rest from the server,
 and switching categories only toggles the panels. LandingPage
 currently keeps WhyChooseSection disabled.

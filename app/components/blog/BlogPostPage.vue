@@ -5,6 +5,8 @@ import BlogNextPost from "./BlogNextPost.vue";
 import BlogPostAside from "./BlogPostAside.vue";
 import BlogPostHero from "./BlogPostHero.vue";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 export interface BlogNextPostSummary {
    title: string;
    path: string;
@@ -54,6 +56,11 @@ useSchemaOrg([
       </article>
 
       <BlogNextPost v-if="nextPost" :title="nextPost.title" :path="nextPost.path" :cover="nextPost.cover" />
+      <LazySharedPricingSection
+         class="pb-section"
+         :clear-curve="false"
+         :hydrate-on-visible="belowFoldHydrationArea"
+      />
    </div>
 </template>
 

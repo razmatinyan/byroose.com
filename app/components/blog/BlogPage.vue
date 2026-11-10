@@ -3,6 +3,8 @@ import type { BlogCategoryPage } from "@/lib/blog-categories";
 import BlogArticlesSection from "./BlogArticlesSection.vue";
 import BlogHero from "./BlogHero.vue";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 const { categoryPage } = defineProps<{
    categoryPage?: BlogCategoryPage;
 }>();
@@ -18,6 +20,11 @@ const { categoryPage } = defineProps<{
       />
       <BlogHero v-else />
       <BlogArticlesSection :category="categoryPage?.category" />
+      <LazySharedPricingSection
+         class="py-section"
+         :clear-curve="false"
+         :hydrate-on-visible="belowFoldHydrationArea"
+      />
    </div>
 </template>
 

@@ -10,6 +10,8 @@ import ProjectImageViewer from "./ProjectImageViewer.vue";
 import ProjectMedia from "./ProjectMedia.vue";
 import ProjectNext from "./ProjectNext.vue";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 const TrailingTooltip = defineAsyncComponent(
    () => import("@/components/shared/TrailingTooltip.vue"),
 );
@@ -93,6 +95,11 @@ useSchemaOrg([
       </div>
       <ProjectBlocks :blocks="project.blocks" />
       <ProjectNext v-if="nextProject" :project="nextProject" />
+      <LazySharedPricingSection
+         class="py-section"
+         :clear-curve="false"
+         :hydrate-on-visible="belowFoldHydrationArea"
+      />
       <ProjectImageViewer v-model:index="viewerIndex" :items="galleryItems" />
       <TrailingTooltip
          v-if="shouldLoadVideoHint"

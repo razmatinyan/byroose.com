@@ -3,6 +3,8 @@ import { shallowRef } from "vue";
 import ContactHero from "@/components/contact/ContactHero.vue";
 import FaqSection from "@/components/shared/FaqSection.vue";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 const heroRevealed = shallowRef(false);
 
 useSchemaOrg([defineWebPage({ "@type": "ContactPage" })]);
@@ -15,6 +17,11 @@ function releaseFaqReveal() {
 <template>
    <div class="contact-page">
       <ContactHero @revealed="releaseFaqReveal" />
+      <LazySharedPricingSection
+         class="pb-section"
+         :clear-curve="false"
+         :hydrate-on-visible="belowFoldHydrationArea"
+      />
       <FaqSection :reveal-ready="heroRevealed" :structured-data="false" />
    </div>
 </template>

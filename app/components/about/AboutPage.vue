@@ -9,6 +9,8 @@ import AboutHero from "./AboutHero.vue";
 import AboutTeamSection from "./AboutTeamSection.vue";
 import AboutTrustSection from "./AboutTrustSection.vue";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 const storyRoot = useTemplateRef<HTMLElement>("storyRoot");
 useDrawnLineMotion(storyRoot, aboutStoryLine);
 </script>
@@ -24,6 +26,11 @@ useDrawnLineMotion(storyRoot, aboutStoryLine);
          <AboutTrustSection />
          <AboutBrandsSection data-drawn-line-anchor />
       </div>
+      <LazySharedPricingSection
+         class="relative bg-background pb-section"
+         :clear-curve="false"
+         :hydrate-on-visible="belowFoldHydrationArea"
+      />
    </div>
 </template>
 

@@ -2064,7 +2064,14 @@ panel keeps a flat backdrop without the lead.
 
 ### Pricing section
 
-The pricing section appears on four routes, each opening on its relevant tab.
+The pricing section appears on every main route. The Work, Blog, and About
+routes, every project page, every blog category page, and every blog post
+place it last, just before the site call to action, and the Contact route
+places it between the hero and the FAQ, all on the page canvas and opening on
+AI content creation. Where the section above ends on a surface, such as the
+grey projects and articles panels or the Next Project block, it adds
+`spacing-section` above and below; otherwise it adds it below only. The home
+page and the services routes open on their relevant tab.
 The home page places it between the services section and the work process and
 opens on AI content creation. The Services hub places it after the Website
 Development panel and opens on both services. The AI content creation and web
