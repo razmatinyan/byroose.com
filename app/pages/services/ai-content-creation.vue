@@ -66,29 +66,23 @@ const storyBlocks: readonly ServiceStoryBlock[] = [
 ];
 
 const processTitle = "AI Content Creation Process";
+const processDescription =
+  "Each stage overlaps the next, so your content moves from first brief to publishing without waiting on hand-offs.";
 const processSteps: readonly ProcessStep[] = [
   {
-    number: "01",
     title: "Discovery",
-    image: "/images/hero/1.png",
     body: "We learn your brand, your audience, and your goals.",
   },
   {
-    number: "02",
     title: "Concept and brand look",
-    image: "/images/hero/5.png",
     body: "We define the hooks, formats, and visual style.",
   },
   {
-    number: "03",
     title: "Production",
-    image: "/images/hero/2.png",
     body: "AI generation, then human direction and editing.",
   },
   {
-    number: "04",
     title: "Publish and measure",
-    image: "/images/hero/6.png",
     body: "We track which content brings visitors and leads, and make more of what works.",
   },
 ];
@@ -122,6 +116,7 @@ const faqs: readonly FaqItem[] = [
     <ServiceStorySection :blocks="storyBlocks" />
     <ProcessSection
       :title="processTitle"
+      :description="processDescription"
       :steps="processSteps"
       :uppercase="false"
       title-reveal="words"

@@ -530,15 +530,19 @@ the service's own page from `servicePagePaths`. The composable waits until the i
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
 
-useJourneyMotion owns the journey section's motion: the one-time character
-reveal of the `data-journey-title` heading beneath the services section's
-exiting dark curve, and for each `data-journey-step` row the character reveal
-of its title and the line reveal of its description. It waits for the title
-split and every step's title and description splits, and shows everything at
-rest under reduced motion. ProcessSection, in app/components/shared, takes the
-title and the steps as props and emits those splits. LandingPage passes the
-"Working process" steps and renders it after the services section, and the AI
-content creation page passes its own process. LandingPage
+useJourneyMotion owns the journey section's motion: the one-time reveal of the
+`data-journey-heading` title and description beneath the services section's
+exiting dark curve, and one chart timeline that draws the `data-journey-line`
+columns, raises the `data-journey-number` labels, and wipes in the
+`data-journey-bar` bars in overlapping waves when the `data-journey-chart`
+enters. From `md` the same timeline continues into each `data-journey-step`
+title and description so the text overlaps the bars; below `md` each step
+reveals on its own trigger. It waits for the title, description, and every
+step's title and description splits, and shows everything at rest under
+reduced motion. ProcessSection, in app/components/shared, takes the title,
+description, and steps as props and emits those splits. LandingPage passes the
+"Work Process" steps and renders it after the services section, and both
+service pages pass their own process. LandingPage
 currently keeps WhyChooseSection disabled.
 
 useWhyChooseMotion owns the Why Choose Us section's motion: the one-time
@@ -704,7 +708,7 @@ element, which the component's own font size must multiply. An optional
 `maxScale` caps the multiplier, so short text stops growing at the base size
 and only longer text shrinks to fit. An optional `fill` fraction
 fits the text to that share of the width instead, which SiteCtaSection sets
-from the route's `titleScale`. ProcessSection and WhyChooseSection use it for their titles,
+from the route's `titleScale`. WhyChooseSection uses it for its title,
 WorkHero for its title, and ProjectHero for the project name with a
 `maxScale` of `1`.
 

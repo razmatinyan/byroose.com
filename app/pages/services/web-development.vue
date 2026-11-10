@@ -66,29 +66,23 @@ const storyBlocks: readonly ServiceStoryBlock[] = [
 ];
 
 const processTitle = "Our web development process";
+const processDescription =
+   "Each stage overlaps the next, so your site moves from first review to launch without waiting on hand-offs.";
 const processSteps: readonly ProcessStep[] = [
    {
-      number: "01",
       title: "Discovery",
-      image: "/images/hero/1.png",
       body: "We review your current site, your content, and your goals.",
    },
    {
-      number: "02",
       title: "Structure and copy",
-      image: "/images/hero/5.png",
       body: "Pages, offers, and calls to action, mapped to search and to your funnel.",
    },
    {
-      number: "03",
       title: "Design",
-      image: "/images/hero/2.png",
       body: "Layouts built around your content and brand.",
    },
    {
-      number: "04",
       title: "Development and launch",
-      image: "/images/hero/6.png",
       body: "A fast, accessible site, with tracking in place from day one.",
    },
 ];
@@ -126,6 +120,7 @@ const faqs: readonly FaqItem[] = [
       <ServiceStorySection :blocks="storyBlocks" />
       <ProcessSection
          :title="processTitle"
+         :description="processDescription"
          :steps="processSteps"
          :uppercase="false"
          title-reveal="words"

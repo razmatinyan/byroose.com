@@ -17,6 +17,7 @@ type SplitListSource = MaybeRefOrGetter<
 >;
 
 interface JourneyMotionTargets {
+   descriptionSplit: SplitSource;
    stepBodySplits: SplitListSource;
    stepTitleSplits: SplitListSource;
    titleSplit: SplitSource;
@@ -28,63 +29,138 @@ interface StepParts {
    titleChars: HTMLElement[];
 }
 
+interface ChartParts {
+   bars: HTMLElement[];
+   chart: HTMLElement;
+   lines: HTMLElement[];
+   numbers: HTMLElement[];
+}
+
 const selectors = {
+   bar: "[data-journey-bar]",
+   chart: "[data-journey-chart]",
+   heading: "[data-journey-heading]",
+   line: "[data-journey-line]",
+   number: "[data-journey-number]",
    step: "[data-journey-step]",
-   title: "[data-journey-title]",
 } as const;
 
 const refreshPriority = -2;
-const titleRevealStart = "top 85%";
-const stepCharStagger = 0.02;
+const headingRevealStart = "top 85%";
 const titleWordStagger = 0.08;
+const descriptionDelay = 0.3;
+const stepCharStagger = 0.02;
 const stepBodyDelay = 0.2;
+const lineDrawDuration = 1.2;
+const lineDrawEase = "power3.inOut";
+const lineStagger = 0.04;
+const numberDelay = 0.35;
+const numberStagger = 0.03;
+const numberOffset = 60;
+const barsDelay = 0.5;
+const barStagger = 0.15;
+const barHiddenClip = "inset(0 100% 0 0)";
+const barShownClip = "inset(0 0% 0 0)";
+const stepsDelay = 0.9;
+const stepStagger = 0.12;
 
 export function useJourneyMotion(
    scope: MotionScope,
-   { stepBodySplits, stepTitleSplits, titleSplit }: JourneyMotionTargets,
+   {
+      descriptionSplit,
+      stepBodySplits,
+      stepTitleSplits,
+      titleSplit,
+   }: JourneyMotionTargets,
 ) {
    const { createMatchMedia, gsap, loadPlugin } = useGsap();
    const { refresh } = useSmoothScroll();
    let disposed = false;
    let initialized = false;
 
-   function revealTitle(title: SplitTextResult, trigger: HTMLElement) {
-      const timeline = gsap.timeline({
-         scrollTrigger: {
-            once: true,
-            refreshPriority,
-            start: titleRevealStart,
-            trigger,
-         },
+   function createTimeline(trigger: HTMLElement, start = wordRevealStart) {
+      return gsap.timeline({
+         scrollTrigger: { once: true, refreshPriority, start, trigger },
       });
-
-      if (!title) return;
-
-      if (title.chars.length) {
-         addCharReveal(timeline, title.chars);
-         return;
-      }
-
-      addWordReveal(timeline, title.words, { stagger: titleWordStagger });
    }
 
-   function revealStep({ bodyLines, step, titleChars }: StepParts) {
-      const timeline = gsap.timeline({
-         scrollTrigger: {
-            once: true,
-            refreshPriority,
-            start: wordRevealStart,
-            trigger: step,
-         },
+   function revealHeading(
+      trigger: HTMLElement,
+      title: SplitTextResult,
+      description: SplitTextResult,
+   ) {
+      const timeline = createTimeline(trigger, headingRevealStart);
+
+      if (title?.chars.length) addCharReveal(timeline, title.chars);
+      else addWordReveal(timeline, title?.words ?? [], {
+         stagger: titleWordStagger,
       });
 
-      addCharReveal(timeline, titleChars, { stagger: stepCharStagger });
+      addWordReveal(timeline, description?.lines ?? [], {
+         duration: lineRevealDuration,
+         ease: lineRevealEase,
+         position: descriptionDelay,
+         stagger: lineRevealStagger,
+      });
+   }
+
+   function addStepReveal(
+      timeline: gsap.core.Timeline,
+      { bodyLines, titleChars }: StepParts,
+      position: number,
+   ) {
+      addCharReveal(timeline, titleChars, {
+         position,
+         stagger: stepCharStagger,
+      });
       addWordReveal(timeline, bodyLines, {
          duration: lineRevealDuration,
          ease: lineRevealEase,
-         position: stepBodyDelay,
+         position: position + stepBodyDelay,
          stagger: lineRevealStagger,
       });
+   }
+
+   function revealChart({ bars, chart, lines, numbers }: ChartParts) {
+      const timeline = createTimeline(chart);
+
+      timeline
+         .fromTo(
+            lines,
+            { scaleY: 0 },
+            {
+               duration: lineDrawDuration,
+               ease: lineDrawEase,
+               scaleY: 1,
+               stagger: lineStagger,
+            },
+            0,
+         )
+         .fromTo(
+            numbers,
+            { autoAlpha: 0, yPercent: numberOffset },
+            {
+               autoAlpha: 1,
+               duration: lineRevealDuration,
+               ease: lineRevealEase,
+               stagger: numberStagger,
+               yPercent: 0,
+            },
+            numberDelay,
+         )
+         .fromTo(
+            bars,
+            { clipPath: barHiddenClip },
+            {
+               clipPath: barShownClip,
+               duration: lineRevealDuration,
+               ease: lineRevealEase,
+               stagger: barStagger,
+            },
+            barsDelay,
+         );
+
+      return timeline;
    }
 
    function showAll(elements: HTMLElement[]) {
@@ -93,6 +169,7 @@ export function useJourneyMotion(
 
    async function initialize(
       heading: SplitTextResult,
+      description: SplitTextResult,
       titleParts: readonly SplitTextResult[],
       bodyParts: readonly SplitTextResult[],
    ) {
@@ -104,9 +181,16 @@ export function useJourneyMotion(
       if (!ScrollTrigger || disposed) return;
 
       const root = toValue(scope);
-      const title = root?.querySelector<HTMLElement>(selectors.title);
-      if (!root || !title) return;
+      const headingBlock = root?.querySelector<HTMLElement>(selectors.heading);
+      const chart = root?.querySelector<HTMLElement>(selectors.chart);
+      if (!root || !headingBlock || !chart) return;
 
+      const chartParts: ChartParts = {
+         bars: [...root.querySelectorAll<HTMLElement>(selectors.bar)],
+         chart,
+         lines: [...root.querySelectorAll<HTMLElement>(selectors.line)],
+         numbers: [...root.querySelectorAll<HTMLElement>(selectors.number)],
+      };
       const steps = [
          ...root.querySelectorAll<HTMLElement>(selectors.step),
       ].map<StepParts>((step, index) => ({
@@ -117,14 +201,16 @@ export function useJourneyMotion(
 
       createMatchMedia(
          {
-            motion: "(prefers-reduced-motion: no-preference)",
+            narrow: "(prefers-reduced-motion: no-preference) and (max-width: 767.98px)",
             reduceMotion: "(prefers-reduced-motion: reduce)",
+            wide: "(prefers-reduced-motion: no-preference) and (min-width: 768px)",
          },
          (context) => {
             if (context.conditions?.reduceMotion) {
                showAll([
                   ...(heading?.chars ?? []),
                   ...(heading?.words ?? []),
+                  ...(description?.lines ?? []),
                   ...steps.flatMap(({ bodyLines, titleChars }) => [
                      ...titleChars,
                      ...bodyLines,
@@ -133,8 +219,23 @@ export function useJourneyMotion(
                return;
             }
 
-            revealTitle(heading, title);
-            steps.forEach(revealStep);
+            revealHeading(headingBlock, heading, description);
+            const chartTimeline = revealChart(chartParts);
+
+            if (context.conditions?.wide) {
+               steps.forEach((step, index) =>
+                  addStepReveal(
+                     chartTimeline,
+                     step,
+                     stepsDelay + index * stepStagger,
+                  ),
+               );
+               return;
+            }
+
+            steps.forEach((step) =>
+               addStepReveal(createTimeline(step.step), step, 0),
+            );
          },
          scope,
       );
@@ -146,12 +247,14 @@ export function useJourneyMotion(
       () =>
          [
             toValue(titleSplit),
+            toValue(descriptionSplit),
             toValue(stepTitleSplits),
             toValue(stepBodySplits),
          ] as const,
-      ([title, stepTitles, stepBodies]) => {
+      ([title, description, stepTitles, stepBodies]) => {
          if (
             title === undefined ||
+            description === undefined ||
             stepTitles.includes(undefined) ||
             stepBodies.includes(undefined)
          ) {
@@ -160,6 +263,7 @@ export function useJourneyMotion(
 
          return initialize(
             title,
+            description,
             stepTitles.filter((parts) => parts !== undefined),
             stepBodies.filter((parts) => parts !== undefined),
          );

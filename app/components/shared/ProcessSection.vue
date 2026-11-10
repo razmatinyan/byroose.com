@@ -4,26 +4,31 @@ import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
 export interface ProcessStep {
-   number: string;
    title: string;
-   image: string;
    body: string;
 }
 
 const {
    title,
+   description,
    steps,
    uppercase = true,
    titleReveal = "chars",
 } = defineProps<{
    title: string;
+   description: string;
    steps: readonly ProcessStep[];
    uppercase?: boolean;
    titleReveal?: "chars" | "words";
 }>();
 
+const timelineColumns = Array.from({ length: 12 }, (_, index) =>
+   String(index + 1).padStart(2, "0"),
+);
+
 const journeyRoot = useTemplateRef<HTMLElement>("journeyRoot");
 const titleSplit = shallowRef<SplitTextResult>();
+const descriptionSplit = shallowRef<SplitTextResult>();
 const stepTitleSplits = shallowRef<(SplitTextResult | undefined)[]>(
    steps.map(() => undefined),
 );
@@ -31,13 +36,19 @@ const stepBodySplits = shallowRef<(SplitTextResult | undefined)[]>(
    steps.map(() => undefined),
 );
 
-useFitText(() =>
-   journeyRoot.value?.querySelector<HTMLElement>("[data-journey-title]"),
-);
-useJourneyMotion(journeyRoot, { stepBodySplits, stepTitleSplits, titleSplit });
+useJourneyMotion(journeyRoot, {
+   descriptionSplit,
+   stepBodySplits,
+   stepTitleSplits,
+   titleSplit,
+});
 
 function setTitleSplit(parts: SplitTextResult) {
    titleSplit.value = parts;
+}
+
+function setDescriptionSplit(parts: SplitTextResult) {
+   descriptionSplit.value = parts;
 }
 
 function setStepTitleSplit(index: number, parts: SplitTextResult) {
@@ -51,21 +62,63 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
 
 <template>
    <section ref="journeyRoot" class="journey">
-      <div class="journey-heading section-gutter">
+      <div class="journey-heading section-gutter" data-journey-heading>
          <SplitText
             class="journey-title"
             :class="{ uppercase, 'split-title': titleReveal === 'chars' }"
             as="h2"
-            data-journey-title
             :data-title-reveal="titleReveal"
             :mask="titleReveal"
             :text="title"
             :type="titleReveal === 'chars' ? 'words,chars' : 'words'"
             @split="setTitleSplit"
          />
+         <SplitText
+            class="journey-description"
+            as="p"
+            mask="lines"
+            :text="description"
+            type="lines"
+            @split="setDescriptionSplit"
+         />
       </div>
 
-      <div class="journey-panel">
+      <div class="journey-body section-gutter">
+         <div
+            class="journey-chart"
+            :style="{ '--journey-step-count': steps.length }"
+            aria-hidden="true"
+            data-journey-chart
+         >
+            <div class="journey-columns">
+               <span
+                  v-for="column in timelineColumns"
+                  :key="column"
+                  class="journey-column"
+               >
+                  <span class="journey-column-line" data-journey-line />
+                  <span class="journey-column-number" data-journey-number>
+                     {{ column }}
+                  </span>
+               </span>
+               <span
+                  class="journey-column-line journey-column-line-end"
+                  data-journey-line
+               />
+            </div>
+            <div class="journey-bars">
+               <span
+                  v-for="(step, index) in steps"
+                  :key="step.title"
+                  class="journey-bar"
+                  :style="{ '--journey-step-index': index }"
+                  data-journey-bar
+               >
+                  {{ step.title }}
+               </span>
+            </div>
+         </div>
+
          <ol class="journey-steps">
             <li
                v-for="(step, index) in steps"
@@ -73,44 +126,22 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
                class="journey-step"
                data-journey-step
             >
-               <div class="journey-step-copy section-gutter">
-                  <p class="journey-step-label">
-                     Step
-                     <span class="journey-step-dot" aria-hidden="true" />
-                     {{ step.number }}
-                  </p>
-                  <div class="journey-step-text">
-                     <SplitText
-                        class="split-title journey-step-title"
-                        as="h3"
-                        mask="chars"
-                        :text="step.title"
-                        type="words,chars"
-                        @split="setStepTitleSplit(index, $event)"
-                     />
-                     <SplitText
-                        class="journey-step-body"
-                        as="p"
-                        mask="lines"
-                        :text="step.body"
-                        type="lines"
-                        @split="setStepBodySplit(index, $event)"
-                     />
-                  </div>
-               </div>
-               <div class="journey-step-media">
-                  <NuxtImg
-                     class="journey-step-image"
-                     :src="step.image"
-                     alt=""
-                     width="1456"
-                     height="816"
-                     sizes="sm:768px md:896px xl:1024px"
-                     densities="x1"
-                     loading="lazy"
-                     draggable="false"
-                  />
-               </div>
+               <SplitText
+                  class="split-title journey-step-title"
+                  as="h3"
+                  mask="chars"
+                  :text="step.title"
+                  type="words,chars"
+                  @split="setStepTitleSplit(index, $event)"
+               />
+               <SplitText
+                  class="journey-step-body"
+                  as="p"
+                  mask="lines"
+                  :text="step.body"
+                  type="lines"
+                  @split="setStepBodySplit(index, $event)"
+               />
             </li>
          </ol>
       </div>
@@ -126,14 +157,12 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
 }
 
 .journey-heading {
-   container-type: inline-size;
+   @apply flex flex-col items-start;
 }
 
 .journey-title {
-   --journey-title-size: 11.2cqi;
    --split-title-tracking: -0.05em;
-   @apply m-0 w-max pe-[0.05em] leading-[0.86] font-bold whitespace-nowrap;
-   font-size: calc(var(--journey-title-size) * var(--fit-text-scale, 1));
+   @apply m-0 pe-[0.05em] text-section leading-[0.92] font-bold text-balance;
 }
 
 .journey-title :deep(.split-text-char-mask),
@@ -155,49 +184,75 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
    visibility: hidden;
 }
 
-.journey-panel {
-   @apply mt-16 bg-canvas-shade text-canvas-shade-foreground md:mt-24 xl:mt-32;
+.journey-description {
+   @apply m-0 mt-6 max-w-[44ch] text-base leading-snug font-medium text-current/70 md:mt-8 md:text-lg;
+}
+
+.journey-description :deep(.split-text-line),
+.journey-description :deep(.split-text-line-mask),
+.journey-step-body :deep(.split-text-line),
+.journey-step-body :deep(.split-text-line-mask) {
+   display: block;
+}
+
+.journey-description :deep(.split-text-line),
+.journey-step-body :deep(.split-text-line) {
+   visibility: hidden;
+}
+
+.journey-body {
+   @apply mt-14 md:mt-20 xl:mt-24;
+}
+
+.journey-chart {
+   --journey-bar-span: 60%;
+   @apply relative md:[--journey-bar-span:37.5%];
+}
+
+.journey-columns {
+   @apply absolute inset-0 grid grid-cols-12;
+}
+
+.journey-column {
+   @apply relative;
+}
+
+.journey-column-line {
+   @apply absolute inset-y-0 start-0 origin-top border-s border-dashed border-current/15;
+}
+
+.journey-column-line-end {
+   @apply start-auto end-0;
+}
+
+.journey-column-number {
+   @apply absolute inset-x-0 bottom-3 text-center text-[0.625rem] leading-none font-medium text-current/35 md:bottom-4 md:text-xs;
+}
+
+.journey-bars {
+   @apply relative flex flex-col gap-2 pt-5 pb-12 md:gap-3 md:pt-7 md:pb-16;
+}
+
+.journey-bar {
+   @apply block h-9 truncate bg-foreground px-3 text-sm leading-9 font-semibold tracking-[-0.02em] text-background md:h-11 md:px-4 md:text-base md:leading-11;
+   width: var(--journey-bar-span);
+   margin-inline-start: calc(
+      (100% - var(--journey-bar-span)) /
+         max(var(--journey-step-count) - 1, 1) * var(--journey-step-index)
+   );
 }
 
 .journey-steps {
-   @apply m-0 list-none p-0;
+   @apply m-0 mt-12 grid list-none gap-x-8 gap-y-10 p-0 md:mt-16 md:grid-cols-2 xl:grid-cols-4;
 }
 
 .journey-step {
-   @apply grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)];
-}
-
-.journey-step-copy {
-   @apply grid min-w-0 content-start gap-y-5 py-8 md:grid-cols-[8rem_minmax(0,1fr)] md:py-10 xl:grid-cols-[11rem_minmax(0,1fr)] xl:py-12;
-}
-
-.journey-step + .journey-step .journey-step-copy {
-   @apply md:border-t md:border-current/10;
-}
-
-.journey-step-label {
-   @apply m-0 flex items-center gap-2 self-start text-xs leading-none font-medium tracking-[0.08em] text-current/70 md:pt-3 xl:pt-4;
-}
-
-.journey-step-dot {
-   @apply size-1 rounded-full bg-current;
-}
-
-.journey-step-text {
    @apply flex min-w-0 flex-col items-start;
-}
-
-.journey-step-media {
-   @apply aspect-16/10 w-full self-stretch overflow-hidden;
-}
-
-.journey-step-image {
-   @apply size-full object-cover select-none;
 }
 
 .journey-step-title {
    --split-title-tracking: -0.045em;
-   @apply m-0 text-4xl leading-[0.95] font-bold text-balance md:text-5xl xl:text-6xl;
+   @apply m-0 text-3xl leading-[0.95] font-bold text-balance md:text-4xl;
 }
 
 .journey-step-title :deep(.split-text-char-mask) {
@@ -206,15 +261,6 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
 }
 
 .journey-step-body {
-   @apply m-0 mt-6 max-w-[36ch] text-xl leading-tight font-semibold tracking-[-0.03em] text-current/70 md:mt-8 md:text-2xl;
-}
-
-.journey-step-body :deep(.split-text-line),
-.journey-step-body :deep(.split-text-line-mask) {
-   display: block;
-}
-
-.journey-step-body :deep(.split-text-line) {
-   visibility: hidden;
+   @apply m-0 mt-4 max-w-[36ch] text-base leading-snug font-medium text-current/70 md:mt-5 md:text-lg;
 }
 </style>

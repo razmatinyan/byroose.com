@@ -12,30 +12,24 @@ import StudioSection from "./StudioSection.vue";
 import WhyChooseSection from "./WhyChooseSection.vue";
 import WorkSection from "./WorkSection.vue";
 
-const processTitle = "Working Process";
+const processTitle = "Work Process";
+const processDescription =
+   "Content and web move through the same four stages, and each stage overlaps the next, so nothing waits on a hand-off.";
 const processSteps: readonly ProcessStep[] = [
    {
-      number: "01",
       title: "Discovery",
-      image: "/images/hero/1.png",
       body: "We learn your brand, your audience, and your goals, and review your current site and content.",
    },
    {
-      number: "02",
       title: "Strategy and concept",
-      image: "/images/hero/5.png",
       body: "We map pages, offers, and calls to action to search and to your funnel, and define the hooks, formats, and visual style for your content.",
    },
    {
-      number: "03",
       title: "Design and production",
-      image: "/images/hero/2.png",
       body: "Layouts built around your content and brand, and AI-generated content that is directed and edited by humans.",
    },
    {
-      number: "04",
       title: "Launch and measure",
-      image: "/images/hero/6.png",
       body: "A fast, accessible site with tracking from day one. We follow which content brings visitors and leads, and make more of what works.",
    },
 ];
@@ -82,6 +76,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
       <ProcessSection
          id="journey"
          :title="processTitle"
+         :description="processDescription"
          :steps="processSteps"
          :uppercase="false"
       />

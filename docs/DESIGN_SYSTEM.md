@@ -2063,61 +2063,70 @@ panel keeps a flat backdrop without the lead.
 
 ### Journey section
 
-The journey section is the shared `ProcessSection`, which takes its title and
-steps as props. The home page uses it for "Working Process", and the AI content
-creation page repeats it after its story blocks for "AI Content Creation
-Process", with the same layout and motion. The `uppercase` prop sets the title
-in capitals and defaults to `true`; both pages currently set it to `false`. The
-`titleReveal` prop chooses a `chars` or `words` title reveal and defaults to
-`chars`; the AI content page uses `words`. On the home page it follows the
-services section under a full-width title. It opens with two and a half times
-`spacing-section` of top padding, about 360px at 1440 wide, so the title stands
-well clear of the services panel's dark curve. The title is bold, `0.86`
-leading, and `-0.05em` tracking, sized at `11.2cqi` of its container and fitted
-to one line through `useFitText`. It reveals once as it reaches 85 percent of
-the viewport, either character by character with the shared `addCharReveal`
-recipe that the "Case studies" title uses, or word by word with the shared
-word reveal and a `0.08s` stagger. Each character or word mask carries `0.25em`
-of block padding, so descenders are not
-clipped at the tight leading. Reduced motion shows the title at rest.
+The journey section is the shared `ProcessSection`, which takes its title,
+description, and steps as props. The home page uses it for "Work Process",
+and the AI content creation and web development pages repeat it after their
+story blocks for "AI Content Creation Process" and "Our web development
+process", each with its own one or two sentence description, with the same
+layout and motion. The `uppercase` prop sets the title in capitals and defaults
+to `true`; every page currently sets it to `false`. The `titleReveal` prop
+chooses a `chars` or `words` title reveal and defaults to `chars`; both service
+pages use `words`. It opens with two and a half times `spacing-section` of top
+padding, about 360px at 1440 wide, so the title stands well clear of the
+services panel's dark curve on the home page.
 
-The steps sit `4rem` below the title, `6rem` from `md` and `8rem` from `xl`, in one continuous full-bleed `canvas-shade` panel, the grey of
-the Work and About listing sections, rather than in separate cards. It is an
-ordered list of four steps that combine the web development and AI content
-processes: Discovery, Strategy and concept, Design and production, and Launch
-and measure. From `md` each row is two columns, `1.05fr` and `1fr`. The copy
-column sits inside the page gutter and is itself two columns, `8rem`, `11rem`
-from `xl`, for the step label and the rest for the title and description, all
-aligned to the top. A 16:10 image fills the right column edge to edge, flush
-with the viewport's right edge, and stretches to the row's full height, so the
-images of neighbouring rows meet with no gap. From `md` a `current/10` hairline
-divides the copy columns of neighbouring rows only, so no line crosses between
-the images. Below `md` the label sits above the title and the full-width image
-stacks under the copy.
+The heading is aligned to the left of the page gutter. The title is a bold H2
+at the `text-section` size, `0.92` leading, and `-0.05em` tracking, with
+balanced wrapping, so it stays on one line on wide screens and wraps on small
+ones. The description sits `1.5rem` below it, `2rem` from `md`, in
+`font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
+`44ch`.
 
-The step label reads "Step", a small round dot, and the two-digit number, set
-in sentence case `font-mono` `text-xs` with `0.08em` tracking in `text-current/70`.
-The dot is a `size-1` `rounded-full` shape rather than a character, and is
-hidden from assistive technology. The label does not animate.
-The images are decorative, with empty alternative text, and load lazily.
+The timeline sits `3.5rem` below the heading, `5rem` from `md` and `6rem` from
+`xl`, inside the page gutter on the page background, with no panel and no
+images. It is a decorative chart, hidden from assistive technology, of twelve
+equal columns divided by `current/15` dashed hairlines, each numbered `01` to
+`12` at its foot in medium sans `current/35`, `0.625rem` and `text-xs` from
+`md`. Over the columns one bar per step steps down in an equal staircase: every
+bar has the same width, `60%` of the chart and `37.5%` from `md`, and each
+starts an equal stride further right so the first bar starts at the left edge,
+the last ends at the right edge, and neighbouring bars overlap. A bar is a
+`foreground` block with the step title in semibold `background` text, `2.25rem`
+tall, `2.75rem` from `md`, and truncates a title that does not fit. The stride
+comes from the step count, so any number of steps fills the chart.
 
-The title is a bold H3 at `text-4xl`, `text-5xl` from `md`, and `text-6xl`
-from `xl`, with balanced wrapping and `-0.045em` tracking. The description sits
-`1.5rem` below it, `2rem` from `md`, in `font-medium` `text-current/70` at
-`text-xl`, `text-2xl` from `md`, held to `36ch`.
+Below the chart, `3rem` down and `4rem` from `md`, an ordered list carries the
+steps in one column, two from `md`, and four from `xl`. Each step is a bold H3
+at `text-3xl`, `text-4xl` from `md`, with balanced wrapping and `-0.045em`
+tracking, over its description `1rem` below, `1.25rem` from `md`, in
+`font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
+`36ch`. A step takes only a title and a description.
 
-When a row reaches 82 percent of the viewport, its title reveals character by
-character with the shared `addCharReveal` recipe at a `0.02s` stagger, each
-character mask padded `0.12em` so descenders are not clipped. The description
-lines rise `0.2s` later with the hero description's line reveal,
-`lineRevealDuration` on `lineRevealEase` with a `0.075s` stagger. The images do
-not animate. Reduced motion shows everything at rest.
+The heading reveals once as it reaches 85 percent of the viewport. The title
+reveals either character by character with the shared `addCharReveal` recipe
+that the "Case studies" title uses, or word by word with the shared word reveal
+and a `0.08s` stagger, and each character or word mask carries `0.25em` of
+block padding so descenders are not clipped. The description lines rise `0.3s`
+in, overlapping the title, with the line reveal timing.
+
+When the chart reaches 82 percent of the viewport, one timeline plays its parts
+as overlapping waves. The dashed column lines draw down from the top in
+`1.2s` on `power3.inOut` with a `0.04s` stagger. At `0.35s` the column numbers
+fade and rise from `60%` below with the line reveal timing and a `0.03s`
+stagger. At `0.5s` the bars wipe in from the left through a clip path with the
+line reveal timing and a `0.15s` stagger. From `md`, the step text joins the
+same timeline at `0.9s`, each step `0.12s` after the last: its title reveals
+character by character at a `0.02s` stagger, each character mask padded
+`0.12em`, and its description lines rise `0.2s` later with the line reveal
+timing and a `0.075s` stagger. Below `md`, where the steps stack well below the
+chart, each step plays the same reveal on its own as it reaches 82 percent of
+the viewport. Reduced motion shows everything at rest.
 
 ### Why Choose Us section
 
 The home page does not currently render the Why Choose Us section. LandingPage
 keeps it disabled and shows the Journey section in its place, under the
-"Working Process" title. The section stays documented for when it returns.
+"Work Process" title. The section stays documented for when it returns.
 
 The Why Choose Us section opens with its title, "Why Choose Us", written in
 title case at the user's request, without uppercase, on one line that always
