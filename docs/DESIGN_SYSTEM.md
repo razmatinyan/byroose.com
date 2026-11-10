@@ -2102,8 +2102,9 @@ cards sit in a centered column held to `max-w-xl` below `lg` and to
 `lg` each card spans four rows of the grid through `subgrid`, so the price,
 the action block, and the features start on the same line in every card.
 
-A card is a white `card` block with a `border` outline, `rounded-3xl`, and a
-`0.625rem` inset. Its text sits `1rem` further in, `1.5rem` from `md`, with
+A card is a white `card` block with a `border` outline, `rounded-xl`, and a
+`0.625rem` inset. Its inner action block subtracts that inset from the radius,
+so the two curves stay concentric. Its text sits `1rem` further in, `1.5rem` from `md`, with
 generous space between its parts: `2.5rem` above the name from `md`, `4rem`
 above the price, and `2.5rem` above and below the features. It has no
 separator lines. The featured card swaps only its
@@ -2115,12 +2116,17 @@ it. Top to bottom, a card shows:
   round `text-sm` discount pill such as
   "20% off" in `primary` on `primary/10`, then the description in
   `text-current/60` at `text-lg`.
-- The regular price, struck through in `text-current/30` at `text-2xl`,
-  `text-3xl` from `md`, beside the package price, semibold at `text-6xl`,
-  `text-5xl` from `lg`, and `text-6xl` again from `xl`. Prices have no
-  thousands separator, such as `$1200`.
-- A `rounded-2xl` `canvas-shade` block that holds a full-width `dark`
-  `cta-lg` link to the Contact route without an icon, and the saving below
+- The regular price in `text-current/40` at `text-2xl`, `text-3xl` from
+  `md`, `text-xl` from `lg`, and `text-3xl` again from `xl`, crossed by a
+  solid `foreground` line `2px` thick and tilted `6deg` that runs `0.15em`
+  past both ends of the number, so the old price reads clearly as struck.
+  Beside it sits the package price, semibold at `text-7xl`, `text-5xl` from
+  `lg`, `text-6xl` from `xl`, and `text-7xl` again from `90rem`, so even a
+  five-digit pair stays on one line. Prices have no thousands separator, such
+  as `$1200`.
+- A `canvas-shade` block that holds a full-width `dark` `cta-lg` link to the
+  Contact route without an icon, whose rollover runs blue, pink, and orange
+  instead of the `dark` variant's green first layer, and the saving below
   it, such as "Save $300 on the regular price". Each package has its own
   label for the same action, such as "Book a call", "Schedule a call", or
   "Talk to our team", and the link's accessible name adds the package name.

@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { NuxtLink } from "#components";
 import { Button } from "@/components/ui/button";
+import type { RolloverTones } from "@/components/ui/button";
 import { appIcons } from "@/lib/icons";
 import { formatPlanPrice, planDiscountPercent } from "@/lib/pricing";
 import type { PricingPlan } from "@/lib/pricing";
@@ -17,6 +18,7 @@ const {
 }>();
 
 const featuredLabel = "Most popular";
+const actionRolloverTones: RolloverTones = ["blue", "pink", "primary"];
 const price = computed(() => formatPlanPrice(plan.price));
 const regularPrice = computed(() => formatPlanPrice(plan.regularPrice));
 const saving = computed(() => formatPlanPrice(plan.regularPrice - plan.price));
@@ -63,6 +65,7 @@ const featuresLabel = computed(() =>
             :as="NuxtLink"
             :to="actionTo"
             variant="dark"
+            :rollover-tones="actionRolloverTones"
             size="cta-lg"
             :aria-label="actionName"
          >
@@ -97,7 +100,7 @@ const featuresLabel = computed(() =>
 @reference '../../assets/css/tailwind.css';
 
 .pricing-card {
-   @apply relative flex h-full flex-col rounded-3xl border border-border bg-card p-2.5 text-card-foreground;
+   @apply relative flex h-full flex-col rounded-xl border border-border bg-card p-2.5 text-card-foreground;
 }
 
 @media (min-width: 64rem) {
@@ -141,15 +144,19 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-regular {
-   @apply text-2xl font-semibold tracking-[-0.04em] text-current/30 md:text-3xl;
+   @apply relative text-2xl font-semibold tracking-[-0.04em] text-current/40 no-underline md:text-3xl lg:text-xl xl:text-3xl;
+}
+
+.pricing-card-regular::after {
+   @apply pointer-events-none absolute top-1/2 -right-[0.15em] -left-[0.15em] h-0.5 -translate-y-1/2 -rotate-6 rounded-full bg-foreground content-[''];
 }
 
 .pricing-card-amount {
-   @apply text-6xl leading-none font-semibold tracking-[-0.05em] tabular-nums lg:text-5xl xl:text-6xl;
+   @apply text-7xl leading-none font-semibold tracking-[-0.05em] tabular-nums lg:text-5xl xl:text-6xl min-[90rem]:text-7xl;
 }
 
 .pricing-card-action-block {
-   @apply mt-6 flex flex-col gap-3 rounded-2xl bg-canvas-shade p-2.5 pb-4;
+   @apply mt-6 flex flex-col gap-3 rounded-[calc(var(--radius-xl)-0.625rem)] bg-canvas-shade p-2.5 pb-4;
 }
 
 .pricing-card-action {
