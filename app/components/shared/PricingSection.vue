@@ -5,12 +5,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { pricingCategories } from "@/lib/pricing";
 import type { PricingCategoryId } from "@/lib/pricing";
 
+const { defaultCategory = "ai-content", clearCurve = true } = defineProps<{
+   defaultCategory?: PricingCategoryId;
+   clearCurve?: boolean;
+}>();
+
 const title = "Plans and pricing";
 const description =
    "Start with content, the website, or both services together. Every package has one fixed price, and we confirm the exact scope after one call.";
 const switcherLabel = "Pricing by service";
 
-const activeCategory = shallowRef<PricingCategoryId>("ai-content");
+const activeCategory = shallowRef<PricingCategoryId>(defaultCategory);
 const hoveredIndex = shallowRef<number | null>(null);
 
 const activeIndex = computed(() =>
@@ -41,7 +46,11 @@ function endHover() {
 </script>
 
 <template>
-   <section id="pricing" class="pricing section-gutter">
+   <section
+      id="pricing"
+      class="pricing section-gutter"
+      :data-clear-curve="clearCurve || undefined"
+   >
       <div class="pricing-heading">
          <h2 class="pricing-title">{{ title }}</h2>
          <p class="pricing-description">{{ description }}</p>
@@ -111,6 +120,9 @@ function endHover() {
 
 .pricing {
    @apply flex w-full flex-col items-center;
+}
+
+.pricing[data-clear-curve] {
    padding-top: calc(var(--spacing-section) * 2.5);
 }
 

@@ -11,6 +11,8 @@ import type { ServiceStoryBlock } from "@/components/services/ServiceStorySectio
 import { servicePagePaths } from "@/lib/services-anchors";
 import { pageSeo } from "@/lib/page-seo";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 usePageSeo(pageSeo.webDevelopment);
 
 const heroTitle =
@@ -118,6 +120,11 @@ const faqs: readonly FaqItem[] = [
       <ServiceHero :title="heroTitle" :description="heroDescription" />
       <ServiceCardsSection :title="servicesTitle" :cards="services" />
       <ServiceStorySection :blocks="storyBlocks" />
+      <LazySharedPricingSection
+         :clear-curve="false"
+         default-category="web-development"
+         :hydrate-on-visible="belowFoldHydrationArea"
+      />
       <ProcessSection
          :title="processTitle"
          :description="processDescription"

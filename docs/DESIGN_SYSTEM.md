@@ -2064,10 +2064,18 @@ panel keeps a flat backdrop without the lead.
 
 ### Pricing section
 
-The home pricing section sits between the services section and the work
-process. It opens with two and a half times `spacing-section` of top padding,
-so its title stands clear of the services panel's dark curve, and it has no
-bottom padding, because the work process brings its own top padding.
+The pricing section appears on four routes, each opening on its relevant tab.
+The home page places it between the services section and the work process and
+opens on AI content creation. The Services hub places it after the Website
+Development panel and opens on both services. The AI content creation and web
+development pages place it between the story blocks and the process and open
+on their own service. Below a dark services curve, on the home page and the
+hub, it opens with two and a half times `spacing-section` of top padding so
+its title stands clear of the curve. On the service pages it has no top
+padding, because the story section above already ends with `spacing-section`.
+It has no bottom padding, because the process section brings its own top
+padding, except on the hub, where it is the last section and adds
+`spacing-section` before the site call to action.
 
 The heading is centered. The title, "Plans and pricing", is a `font-medium`
 H2 at the `text-display` size with `0.95` leading, `-0.06em` tracking, and

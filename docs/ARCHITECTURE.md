@@ -544,19 +544,28 @@ description, and steps as props and emits those splits. LandingPage passes the
 "Work Process" steps and renders it after the pricing section, and both
 service pages pass their own process.
 
-PricingSection, in app/components/landing, renders the home pricing section
-between the services section and the work process. Its plans and categories
+PricingSection, in app/components/shared, renders the pricing section on the
+home page, the Services hub, and both service pages. Its plans and categories
 live in app/lib/pricing.ts as typed data: three categories, AI content
 creation, web development, and both services, each with three one-time
 packages with a USD price, a regular price, a call label, and an optional
 `featured` flag, plus `formatPlanPrice`, a fixed `en-US` formatter without
 digit grouping that renders the same string on the server and the client, and
-`planDiscountPercent`. The section owns the active category and the
+`planDiscountPercent`. Its `defaultCategory` prop picks the tab that opens first and defaults to
+`ai-content`, and its `clearCurve` prop, `true` by default, adds the tall top
+padding that clears a dark services curve above it. The section owns the
+active category and the
 hovered tab index and passes them to its switcher as CSS custom properties.
 Every panel renders on the server through `unmount-on-hide="false"`, so all
 nine plans ship in the HTML while the inactive panels stay `hidden`.
-LandingPage renders it as `LazyLandingPricingSection` with the same
-`hydrate-on-visible` area as the blog and FAQ sections. The section has no
+Every page renders it as `LazySharedPricingSection` with the same
+`hydrate-on-visible` area as the blog and FAQ sections: LandingPage between
+the services section and the work process, ServicesPage after the Website
+Development panel with `combined` and a `pb-section` class, because nothing
+follows it before the site call to action, and the AI content creation and
+web development pages between their story blocks and their process with
+`ai-content` or `web-development` and `clearCurve` off, because the story
+section already ends with section spacing. The section has no
 reveal motion: its heading, switcher, and cards render at rest from the server,
 and switching categories only toggles the panels. LandingPage
 currently keeps WhyChooseSection disabled.

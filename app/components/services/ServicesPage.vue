@@ -4,6 +4,8 @@ import ServicesHero from "./ServicesHero.vue";
 import ServicesOfferSection from "./ServicesOfferSection.vue";
 import ServicesStatementSection from "./ServicesStatementSection.vue";
 
+const belowFoldHydrationArea = { rootMargin: "100% 0px" };
+
 const services = [
    {
       anchor: servicesAnchors.aiContent,
@@ -34,6 +36,11 @@ const services = [
          v-for="service in services"
          :key="service.anchor"
          v-bind="service"
+      />
+      <LazySharedPricingSection
+         class="pb-section"
+         default-category="combined"
+         :hydrate-on-visible="belowFoldHydrationArea"
       />
    </div>
 </template>
