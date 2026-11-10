@@ -55,6 +55,7 @@ visual and accessibility review.
 | `ribbon`                                                          | Fresh green, `oklch(0.82 0.16 135)`                             | The decorative Studio ribbon stroke                                                                                                             |
 | `ribbon-shade`                                                    | Deeper green, `oklch(0.66 0.15 142)`                            | The ribbon's shading where it passes under itself                                                                                               |
 | `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface                                                                                                                        |
+| `primary-difference`                                              | Light blue, `oklch(0.7562 0.1504 229.81)`                       | Ink that a `difference` blend over the canvas turns into `primary`, for the blended header navigation hover copy only                          |
 | `destructive`                                                     | Alert red                                                       | Destructive and error actions only                                                                                                              |
 | `border`, `input`, and `ring`                                     | Semantic controls                                               | Boundaries, fields, and focus indicators                                                                                                        |
 
@@ -451,8 +452,8 @@ The lead column uses the larger `gap-16`, `gap-20` from `md`, rhythm.
 Column titles are bold `h2` labels in the ink `paper-foreground` at `text-xl`,
 `text-2xl` from `md`, with no uppercase and no border. Every footer link, including the email, the
 column links, and the credit, is a `SiteNavLink`, so it shares the header
-navigation's hover: the label scales away while its orange copy scales up and
-the underline draws from the center. The email, the column links, and the
+navigation's hover: the label slides up out of its mask while its orange copy
+slides up from below. The email, the column links, and the
 location share `site-footer-item-text`: semibold at `text-xl`, `text-2xl` from
 `md`, with `leading-tight` and `-0.03em` tracking. The links use the `inherit`
 size so they take it, and list items sit only `0.125rem` apart. Navigation lists
@@ -1074,9 +1075,6 @@ and it leaves with the outgoing page and footer, so the old header lifts, shrink
 and darkens with the page it belonged to. In the same frame the real header jumps
 to the viewport bottom and rises with the incoming page, so it lands at the top
 of the new page. The header stays at `z-60` above the incoming page throughout.
-While it is off screen it switches to its full state, because the incoming page
-always lands at the top. A compact header therefore never lands compact and then
-expands.
 
 Overlays that belong to the leaving page carry `data-page-transition-overlay`.
 The expanded site menu panel is the current one. If an overlay is visible at
@@ -3082,18 +3080,17 @@ edge.
 
 ### Header motion
 
-The site header has full and compact sticky states. The full state, with the
-primary navigation, exists only at the top of the page. The header compacts once
-the reader has scrolled `96px` down and stays compact while they scroll back up,
-returning to full only within `24px` of the top. The logo stays visible in both
-states. The compact state keeps the Start a project action visible and pairs it
-with a single responsive SiteMenu control labelled "Menu" in normal case. The
-control uses the same dark action surface, `radius-action` corners, and `44px`
-height as the CTA, with a fixed `w-26` width. Its glyph is two horizontal
+The site header keeps one sticky state at every scroll position. From `lg` the
+primary navigation, the logo, and the Start a project action all stay in place
+while the page scrolls, and none of them hides until the footer reveal described
+below. Below `lg` the primary navigation is not shown and the header pairs the
+Start a project action with a single responsive SiteMenu control labelled
+"Menu" in normal case. The control is hidden from `lg`, so desktop never shows
+it. The control uses the same dark action surface, `radius-action` corners, and
+`44px` height as the CTA, with a fixed `w-26` width. Its glyph is two horizontal
 one-pixel lines with no tile behind them that morph into an X when expanded.
 The control has no hover motion, only the shared press feedback. Activating it
-opens its own menu and never restores the primary navigation. There is no
-separate mobile dropdown.
+opens its own menu.
 
 A mouse pointer entering the control also opens the menu. A menu opened this
 way closes once the pointer has stayed outside both the control and the panel
@@ -3127,34 +3124,40 @@ While the site footer is revealed by scrolling, the header actions and the
 logo fade out with it. The opacity of the actions container and the logo layer
 follows the footer reveal progress from one to zero, and both become hidden
 once the footer is fully at rest, so the invisible controls cannot be clicked
-or focused. The primary navigation does not fade. The actions and the logo stay
-fully visible while the menu is open,
+or focused. The primary navigation layer fades and hides the same way. The
+actions, the navigation, and the logo stay fully visible while the menu is open,
 and on a route so short that the footer already starts inside the first screen,
 because then the reveal is not driven by scrolling. Reduced motion has no
-footer reveal, so the actions and the logo never fade.
+footer reveal, so the actions, the navigation, and the logo never fade.
 
 The primary navigation is plain text: no surface, padding, or shadow on the
 `nav` or its links. It lists Home, Work, Services, About, Blog, and Contact.
-Each `SiteNavLink` sets its label in semibold at `text-lg`, in the title case
+`SiteNavServices` renders the Services link, which also opens the services
+popover described in Services navigation popover.
+Each `SiteNavLink` sets its label in medium weight at `text-lg`, in the title case
 of the nav labels rather than uppercase, and stacks a hidden copy in the same
 grid cell. Its `size` prop defaults to `lg`. The `inherit` size drops the
 size and weight so the link takes them from its surrounding text, as the
-footer credit does. The copy and the underline are brand orange, `primary`, so hovering
-swaps the ink label for an orange one. The header's Start a project action
+footer credit does. The copy is brand orange, `primary`, so hovering
+swaps the ink label for an orange one. In the header the resting label is
+painted in `background` and the copy in `primary-difference`, because the
+navigation blends like the logo. `primary-difference` is the color that a
+`difference` blend over the `background` canvas turns into `primary`, so the
+copy still reads as brand orange on the canvas. Over a dark block it reads as a
+light blue instead. The header's Start a project action
 and the menu control drop uppercase too. On hover or visible keyboard focus,
 `useNavLinkMotion` slides the label up out of a clipping mask while the copy
-slides up from just below it, with no scaling, and a one-pixel underline below
-the label draws outward from its center. All three run over `0.65s` on
-`cubic-bezier(0.16, 1, 0.35, 1)`, so the motion starts at once, and leaving
-reverses them. The mask sets the labels at `1.25` leading so the two words pass
-close together while descenders still clear it, and the link adds `0.15em` of
-vertical padding so its height and the underline position stay the same. The copy
-rests one line below in CSS and the underline at zero scale, so neither flashes
-before hydration. Reduced motion switches states instantly.
+slides up from just below it, with no scaling and no underline. Both run over
+`0.65s` on `cubic-bezier(0.16, 1, 0.35, 1)`, so the motion starts at once, and
+leaving reverses them. The mask sets the labels at `leading-none` so the two
+words travel one em apart and pass close together, and adds `0.1em` of bottom
+padding to its clip so descenders still clear it. The link adds `0.25em` of top
+and `0.2em` of bottom padding, so its overall height is unchanged. The copy
+rests one line below in CSS, so it never flashes before hydration. Reduced motion switches states instantly.
 
 The header rises into place piece by piece when a page loads, with no opacity
 change. The logo, every navigation link, the Start a project action, and the
-compact menu control rise from 115 percent below their masks with the shared
+menu control below `lg` rise from 115 percent below their masks with the shared
 `addWordReveal` recipe, `0.8s` on `power3.out`, with the `navRevealStagger` of
 `0.08s` from `app/lib/word-reveal.ts`. They play in visual order from left to
 right, read from their measured positions by `getHeaderRevealParts`, which
@@ -3181,7 +3184,8 @@ crawlable and opens in a new tab on a modified click. A plain click always
 follows the link, so on the home route it scrolls the home page back to the
 top like any other link to the current page.
 
-The header logo reads on every surface through `mix-blend-mode: difference`.
+The header logo and the primary navigation read on every surface through
+`mix-blend-mode: difference`.
 It is painted in the `background` token, so it shows as black on the canvas and
 as off-white over dark blocks, the way the dark services panel text does. Saturated
 surfaces invert it to their complement, so it reads cyan over orange. A sticky header always forms its own stacking context, and a blended
@@ -3195,8 +3199,52 @@ isolates it. The logo is a `span` masked with `public/logo.svg` and filled with
 ratio repeats the SVG's `680 / 192` viewBox, so update both together when the
 logo artwork changes, or the masked mark is letterboxed inside its box. The link's
 `aria-label` names it. `SiteHeader` disables attribute inheritance and binds
-`$attrs` to both roots, so `data-home-intro-header` reaches the header and the
-logo layer, and the home intro hides both until it reveals them.
+`$attrs` to all three roots, so `data-home-intro-header` reaches the header, the
+navigation layer, and the logo layer, and the home intro hides them until it
+reveals them.
+
+The primary navigation follows the same rule. It lives in a fixed
+`site-nav-layer`, shown from `lg`, that spans the viewport at `z-60` with the
+header's `px-page py-4` padding around a `44px` row and centers the `nav`. The
+layer blends with `mix-blend-mode: difference` and paints the resting labels in
+`background`, so the links read as black on the canvas and off-white over dark
+blocks. A fixed layer is always its own stacking context, so a child cannot
+blend separately, which is why the hover copy uses `primary-difference`. The layer ignores the pointer and only the `nav` takes it. It renders
+before the header so the keyboard reaches the links before the Start a project
+action, and the sticky header ignores the pointer except for its actions group,
+so it never covers the links. The services popover is portaled to the body, so
+it never blends.
+
+### Services navigation popover
+
+The header's Services item is a normal `SiteNavLink` to `/services` that also
+opens a popover built on the source-owned Shadcn Popover primitive. The link is
+the popover's anchor rather than its trigger, so a click or a tap always
+follows the link. It carries `aria-expanded` and, while open, `aria-controls`
+pointing at the service list. The content sits `6px` below it, centered, on the
+grey `canvas-shade` surface with `rounded-2xl` corners, a `p-1.5` inset, and no
+shadow, and stacks two links vertically: AI content creation to
+`/services/ai-content-creation` and Web development to
+`/services/web-development`, from `servicePagePaths`. Each link starts with a decorative service image, the same art the home
+Services section uses for that service, `public/images/hero/5.png` and
+`6.png`, in a `w-16` box that stretches to the full height of its text, cropped
+with `object-cover` and rounded with `rounded-lg`, followed by the semibold service name at
+`text-xl` with a one-line `muted-foreground` description at `text-base` under
+it. On mouse hover a `foreground/8` pill with `rounded-xl` corners glides
+between the two links on the pricing switcher's `0.55s`
+`cubic-bezier(0.22, 1, 0.36, 1)` translate and fades in and out over `0.3s`,
+and it stays where it was last when it hides. Reduced motion moves it
+instantly. Links show the focus ring on visible keyboard focus. The popover
+fades, scales, and slides over `200ms` both when it opens and when it closes.
+
+A mouse pointer entering the Services link opens the popover, and it closes once
+the pointer has been outside both the link and the content for `200ms`. Visible
+keyboard focus on the link also opens it, Arrow Down moves focus to the first
+service link, and focus leaving both the link and the list closes it. Opening
+never moves focus and closing never focuses the link, so a hover close never
+shows its focus ring. Escape closes it and, when focus is inside the list,
+returns focus to the Services link. Choosing a link or any route change closes
+it.
 
 Drive header state from the shared Lenis scroll subscription and animate it with
 the component-scoped GSAP toolkit. Keep transitions quick, interruptible, and
@@ -3219,7 +3267,7 @@ tight stagger after the overshoot, keeping
 the content itself steady while the panel settles.
 Closing reverses the same sequence so the content and panel move immediately on
 the same short timeline, matching the opening speed as the panel swooshes down
-and left into the control. Keep the panel behind the compact header actions so
+and left into the control. Keep the panel behind the header actions so
 the Start a project action and close control remain visible. The Start a project
 action switches from the dark to the default variant on the same reactive open
 state, with its color transition timed to the panel expansion.
@@ -3246,21 +3294,7 @@ browser blocks and warns about `aria-hidden` on an ancestor of the focused
 element. Let short viewports scroll its content
 without handing those gestures to the page's Lenis instance.
 
-The Start a project action and the navigation control share one slot on desktop,
-because the full state slides the action across the space the control occupies in
-the compact state. The action's server-rendered `translate-x-28` offset therefore
-equals the control's fixed width plus the `0.5rem` gap. Offset the two rather than running them in step, so one is
-still travelling while the other scales. Entering the compact state starts the
-action moving back and begins scaling the control up from zero shortly after.
-Entering the full state starts the control scaling down to zero and sends the
-action into the slot shortly after. Keep the ease strength in mind when tuning
-these offsets, because a strong out ease finishes most of its visible travel in
-the first third of its duration and turns an intended overlap back into a
-sequence. The full state deliberately uses a gentle ease on the control so it is
-still visibly shrinking while the action travels. The residual overlap is safe
-because the control paints above the action and both use the same dark action
-surface. Scale the control rather than drifting it, and animate it with a plain
-tween from its current value so a reversal mid transition stays continuous. Keep the header surface transparent in both
+Keep the header surface transparent in both
 states. The landing wrapper uses horizontal clipping so it does not create a
 competing scroll container that breaks sticky positioning.
 

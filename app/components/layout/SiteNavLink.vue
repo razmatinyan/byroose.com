@@ -34,7 +34,6 @@ useNavLinkMotion(link)
 				{{ label }}
 			</span>
 		</span>
-		<span class="site-nav-link-line" data-nav-line aria-hidden="true" />
 	</NuxtLink>
 </template>
 
@@ -42,15 +41,15 @@ useNavLinkMotion(link)
 @reference '../../assets/css/tailwind.css';
 
 .site-nav-link {
-	@apply relative inline-grid rounded-xs py-[0.15em] text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
+	@apply relative inline-grid rounded-xs pt-[0.25em] pb-[0.2em] text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
 }
 
 .site-nav-link-lg {
-	@apply text-lg font-semibold;
+	@apply text-lg font-medium;
 }
 
 .site-nav-link-mask {
-	@apply grid overflow-clip leading-[1.25];
+	@apply grid overflow-clip pb-[0.1em] leading-none;
 }
 
 .site-nav-link-label {
@@ -61,11 +60,5 @@ useNavLinkMotion(link)
 .site-nav-link-label-copy {
 	@apply text-primary;
 	transform: translateY(100%);
-}
-
-.site-nav-link-line {
-	@apply pointer-events-none absolute top-full left-0 h-px w-full bg-primary;
-	transform: scaleX(0);
-	transform-origin: 50% 50%;
 }
 </style>

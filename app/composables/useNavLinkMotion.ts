@@ -5,7 +5,6 @@ import { registerSlideEase, slideDuration } from '@/lib/slide-ease'
 
 const labelSelector = '[data-nav-label]'
 const labelCopySelector = '[data-nav-label-copy]'
-const lineSelector = '[data-nav-line]'
 
 export function useNavLinkMotion(target: MaybeComputedElementRef) {
 	const { createMatchMedia, gsap, loadPlugin } = useGsap()
@@ -33,8 +32,7 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 				const label = element.querySelector<HTMLElement>(labelSelector)
 				const labelCopy =
 					element.querySelector<HTMLElement>(labelCopySelector)
-				const line = element.querySelector<HTMLElement>(lineSelector)
-				if (!label || !labelCopy || !line) return
+				if (!label || !labelCopy) return
 
 				const animated = Boolean(context.conditions?.motion)
 				const shared = { force3D: false, overwrite: 'auto' as const }
@@ -49,7 +47,6 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 
 				gsap.set(label, { yPercent: 0 })
 				gsap.set(labelCopy, { y: 0, yPercent: 100 })
-				gsap.set(line, { scaleX: 0 })
 
 				const settle = (next: boolean) => {
 					if (next === hovered) return
@@ -57,7 +54,6 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 					hovered = next
 					gsap.to(label, { ...tween, yPercent: next ? -100 : 0 })
 					gsap.to(labelCopy, { ...tween, yPercent: next ? 0 : 100 })
-					gsap.to(line, { ...tween, scaleX: next ? 1 : 0 })
 				}
 
 				const sync = () => settle(pointerInside || focusVisible)
@@ -93,7 +89,7 @@ export function useNavLinkMotion(target: MaybeComputedElementRef) {
 					element.removeEventListener('pointerenter', handlePointerEnter)
 					element.removeEventListener('pointerleave', handlePointerLeave)
 
-					const targets = [label, labelCopy, line]
+					const targets = [label, labelCopy]
 					gsap.killTweensOf(targets)
 					gsap.set(targets, { clearProps: 'transform' })
 				}

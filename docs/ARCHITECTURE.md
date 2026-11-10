@@ -360,7 +360,7 @@ public. The site email is `contact@hello.forrrow.com` until a
 ### Layout components
 
 app/components/layout contains site-wide structure such as SiteHeader, SiteMenu,
-SiteMenuLink, SiteNavLink, SiteScrollbar, SiteCtaSection, and SiteFooter. Layout components
+SiteMenuLink, SiteNavLink, SiteNavServices, SiteScrollbar, SiteCtaSection, and SiteFooter. Layout components
 may use shared components and UI primitives. They should not depend on a landing
 section.
 
@@ -412,7 +412,7 @@ app/components/shared contains small project-wide composition patterns such as F
 
 ### UI primitives
 
-app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain forrrow page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. The tabs primitives, Tabs, TabsList, TabsTrigger, and TabsContent, wrap the Reka UI Tabs with the Shadcn new-york defaults, so a consumer gets roving focus, arrow key navigation, and the tab, tablist, and tabpanel roles, and restyles them through `class`.
+app/components/ui contains source-owned Shadcn Vue primitives. These components own generic behavior, accessibility, states, sizes, slots, and variants. They must not contain forrrow page copy or feature-specific data. The dialog primitives wrap the Reka UI Dialog: DialogContent portals itself with its overlay, keeps the Shadcn close button behind a `showCloseButton` prop that defaults to `true`, and accepts an `overlayClass`. Input, Textarea, and Label are the Shadcn new-york form primitives: Input and Textarea bind `v-model` through `useVModel` and style `aria-invalid`, and Label wraps the Reka UI Label. The tabs primitives, Tabs, TabsList, TabsTrigger, and TabsContent, wrap the Reka UI Tabs with the Shadcn new-york defaults, so a consumer gets roving focus, arrow key navigation, and the tab, tablist, and tabpanel roles, and restyles them through `class`. The popover primitives, Popover, PopoverTrigger, PopoverAnchor, and PopoverContent, wrap the Reka UI Popover with the Shadcn new-york defaults. PopoverContent portals itself, defaults to `align="center"` and a `sideOffset` of `4`, and sits at `z-70`, above the header. SiteNavServices owns the header's Services link, which anchors the services popover, the popover's hover and keyboard focus open modes, and its two service links.
 
 Preserve Reka UI integration, attribute forwarding, data-slot values, keyboard behavior, focus behavior, and CVA contracts when modifying this layer.
 
@@ -768,18 +768,14 @@ keep their own TrailingTooltip instance. `show` takes an optional image, so a
 text-only tooltip opens without one, and an optional fourth argument sets
 the icon mark shown on the left of the label when there is no image.
 
-useSiteHeaderMotion owns the site header's full and compact state transitions,
-the top-of-page scroll thresholds, and responsive animation states. It also
-owns the header reveal on routes other than home and the `navRevealed` flag
+useSiteHeaderMotion owns the header reveal on routes other than home and the `navRevealed` flag
 that lifts the hidden CSS rest state of the links, the logo, and the actions
 once a reveal has finished, whether it ran there or in the home intro. It
 exports `getHeaderRevealParts`, which collects the `data-home-intro-nav-item`
-links and `data-header-rise` targets from the header and logo layer in visual
+links and `data-header-rise` targets from the header, navigation layer, and logo layer in visual
 order along with their `data-header-rise-mask` wrappers, so both reveals rise
-the same pieces. When a page transition reaches its `moving` phase, it switches the header to
-its full state, because the real header is off screen and the incoming page
-lands at the top. It composes
-useGsap and useSmoothScroll so the layout component remains focused on header
+the same pieces. The header has no scroll states. It composes
+useGsap so the layout component remains focused on header
 structure and navigation content. It also returns the header root ref, so the
 header can hand it to useHeaderSurface without registering a second template
 ref with the same key.
@@ -795,7 +791,7 @@ such as the services backdrop, only counts once it actually reaches the probe.
 Mark the painted surface rather than a transparent wrapper, because a wrapper's
 box is hit even where nothing dark is painted.
 
-useSiteMenuMotion owns the compact navigation panel's trigger-relative fixed
+useSiteMenuMotion owns the menu panel's trigger-relative fixed
 geometry, measured from the trigger's untransformed layout bounds, translated two-stage scale reveal, staggered content entrance,
 two-line toggle morph, resize correction, and reduced-motion states. It closes
 the panel instantly while a page transition is active. SiteMenu
@@ -809,8 +805,7 @@ return on hover and visible keyboard focus. Both composables scope their GSAP wo
 to their consuming layout components.
 
 useNavLinkMotion owns the primary navigation link hover: the resting label
-slides up out of its mask while its copy slides up from below, and an
-underline draws outward from its center, all on a `nav-link-slide` CustomEase
+slides up out of its mask while its copy slides up from below, both on a `nav-link-slide` CustomEase
 of `cubic-bezier(0.16, 1, 0.35, 1)` over `0.65s`. app/lib/slide-ease.ts owns
 that ease and duration, so TrailingTooltip's label swap moves on the same curve. It tracks pointer and visible keyboard focus together and
 resolves instantly under reduced motion. SiteNavLink owns the markup.
@@ -819,7 +814,7 @@ useHoverBounce owns the hover and press scale states of action surfaces. It
 receives a target plus optional hover and press behavior, composes useGsap, and
 keeps its listeners and tweens inside a motion media context. The button
 primitive calls it only when its `bounceOnHover` prop is set, then enables press
-feedback for every size and hover bounce for call to action sizes, and SiteMenu enables press feedback only on the compact navigation
+feedback for every size and hover bounce for call to action sizes, and SiteMenu enables press feedback only on the menu
 control. This leaves generic markup, variant contracts, and
 accessibility behavior in their owning components.
 

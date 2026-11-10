@@ -7,17 +7,9 @@ import {
 	revealMaskClip,
 } from '@/lib/word-reveal'
 
-type HeaderMode = 'compact' | 'full'
-
-const fullModeScrollLimit = 24
-const compactModeScrollStart = 96
 const navItemSelector = '[data-home-intro-nav-item]'
 const riseSelector = '[data-header-rise]'
 const riseMaskSelector = '[data-header-rise-mask]'
-
-interface HeaderMotionOptions {
-	immediate?: boolean
-}
 
 function resolveElement(target: MaybeComputedElementRef): HTMLElement | null {
 	const element = unrefElement(target)
@@ -40,16 +32,11 @@ export function getHeaderRevealParts(roots: readonly Element[]) {
 }
 
 export function useSiteHeaderMotion() {
-	const headerMode = shallowRef<HeaderMode>('full')
 	const navRevealed = shallowRef(false)
 	const headerRoot = useTemplateRef<HTMLElement>('headerRoot')
-	const primaryNavigation = useTemplateRef<HTMLElement>('primaryNavigation')
+	const navLayer = useTemplateRef<HTMLElement>('navLayer')
 	const logoLayer = useTemplateRef<HTMLElement>('logoLayer')
-	const headerCta = useTemplateRef<HTMLElement>('headerCta')
-	const menuButton = useTemplateRef<HTMLElement>('menuButton')
-	const { createContext, createMatchMedia, gsap } = useGsap()
-	const { onScroll } = useSmoothScroll()
-	const { phase: transitionPhase } = usePageTransition()
+	const { createContext, gsap } = useGsap()
 	const introState = useHomeIntroState()
 	const route = useRoute()
 
@@ -58,8 +45,11 @@ export function useSiteHeaderMotion() {
 	})
 
 	function revealNavigation() {
-		const roots = [resolveElement(headerRoot), resolveElement(logoLayer)]
-			.filter(root => root !== null)
+		const roots = [
+			resolveElement(headerRoot),
+			resolveElement(navLayer),
+			resolveElement(logoLayer),
+		].filter(root => root !== null)
 		const { items, masks } = getHeaderRevealParts(roots)
 		const reduceMotion = window.matchMedia(
 			'(prefers-reduced-motion: reduce)',
@@ -86,160 +76,9 @@ export function useSiteHeaderMotion() {
 		if (route.path !== '/' || introState.value === 'complete') {
 			revealNavigation()
 		}
-
-		createMatchMedia(
-			{
-				desktop: '(min-width: 64rem)',
-				mobile: '(max-width: 63.999rem)',
-				reduceMotion: '(prefers-reduced-motion: reduce)',
-			},
-			context => {
-				const cta = resolveElement(headerCta)
-				const navigation = resolveElement(primaryNavigation)
-				const menu = resolveElement(menuButton)
-
-				if (!cta || !navigation || !menu) return
-
-				const desktop = Boolean(context.conditions?.desktop)
-				const reduceMotion = Boolean(context.conditions?.reduceMotion)
-				const menuOffset = menu.offsetWidth + 8
-				let activeTimeline: gsap.core.Timeline | null = null
-
-				function setImmediateState(mode: HeaderMode) {
-					const compact = mode === 'compact'
-
-					gsap.set(navigation, {
-						autoAlpha: desktop && compact ? 0 : 1,
-						pointerEvents: desktop && compact ? 'none' : 'auto',
-						yPercent: desktop && compact ? -135 : 0,
-					})
-					gsap.set(cta, {
-						x: desktop && !compact ? menuOffset : 0,
-					})
-					gsap.set(menu, {
-						autoAlpha: desktop && !compact ? 0 : 1,
-						pointerEvents: desktop && !compact ? 'none' : 'auto',
-						scale: desktop && !compact ? 0 : 1,
-					})
-				}
-
-				const setHeaderMode = (
-					mode: HeaderMode,
-					{ immediate = false }: HeaderMotionOptions = {},
-				): void => {
-					if (mode === headerMode.value && !immediate) return
-
-					headerMode.value = mode
-					activeTimeline?.kill()
-
-					if (immediate || reduceMotion || !desktop) {
-						setImmediateState(mode)
-						return
-					}
-
-					activeTimeline = gsap.timeline({
-						defaults: { overwrite: 'auto' },
-					})
-
-					if (mode === 'compact') {
-						activeTimeline.to(
-							navigation,
-							{
-								autoAlpha: 0,
-								duration: 0.24,
-								ease: 'power4.out',
-								pointerEvents: 'none',
-								yPercent: -135,
-							},
-							0,
-						)
-						activeTimeline.to(
-							cta,
-							{
-								duration: 0.28,
-								ease: 'power4.out',
-								x: 0,
-							},
-							0,
-						)
-						activeTimeline.to(
-							menu,
-							{
-								autoAlpha: 1,
-								duration: 0.3,
-								ease: 'back.out(1.7)',
-								pointerEvents: 'auto',
-								scale: 1,
-							},
-							0.1,
-						)
-						return
-					}
-
-					activeTimeline.to(
-						menu,
-						{
-							autoAlpha: 0,
-							duration: 0.3,
-							ease: 'power4.out',
-							pointerEvents: 'none',
-							scale: 0,
-						},
-						0,
-					)
-					activeTimeline.to(
-						cta,
-						{
-							duration: 0.3,
-							ease: 'power2.out',
-							x: menuOffset,
-						},
-						0.05,
-					)
-					activeTimeline.to(
-						navigation,
-						{
-							autoAlpha: 1,
-							duration: 0.3,
-							ease: 'power4.out',
-							pointerEvents: 'auto',
-							yPercent: 0,
-						},
-						0.04,
-					)
-				}
-
-				setHeaderMode(headerMode.value, { immediate: true })
-
-				const stopTransitionWatch = watch(transitionPhase, phase => {
-					if (phase === 'moving') setHeaderMode('full', { immediate: true })
-				})
-
-				const unsubscribe = onScroll(lenis => {
-					const scroll = Math.max(0, lenis.animatedScroll)
-
-					if (scroll <= fullModeScrollLimit) {
-						setHeaderMode('full')
-						return
-					}
-
-					if (scroll >= compactModeScrollStart) {
-						setHeaderMode('compact')
-					}
-				})
-
-				return () => {
-					unsubscribe()
-					stopTransitionWatch()
-					activeTimeline?.kill()
-				}
-			},
-			headerRoot,
-		)
 	})
 
 	return {
-		headerMode: readonly(headerMode),
 		headerRoot,
 		navRevealed: readonly(navRevealed),
 	}

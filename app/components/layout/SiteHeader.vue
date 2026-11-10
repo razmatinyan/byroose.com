@@ -5,6 +5,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { NuxtLink } from "#components";
 import SiteMenu from "@/components/layout/SiteMenu.vue";
 import SiteNavLink from "@/components/layout/SiteNavLink.vue";
+import SiteNavServices from "@/components/layout/SiteNavServices.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
 
 defineOptions({ inheritAttrs: false });
@@ -14,10 +15,12 @@ interface NavItem {
    label: string;
 }
 
+const servicesHref = "/services";
+
 const defaultNavItems: NavItem[] = [
    { href: "/", label: "Home" },
    { href: "/work", label: "Work" },
-   { href: "/services", label: "Services" },
+   { href: servicesHref, label: "Services" },
    { href: "/about", label: "About" },
    // { href: '/courses', label: 'Courses' },
    { href: "/blog", label: "Blog" },
@@ -38,7 +41,7 @@ const resolvedNavItems = computed(() => navItems ?? defaultNavItems);
 const menuOpen = shallowRef(false);
 const headerCtaVariant = computed(() => (menuOpen.value ? "default" : "dark"));
 const isDesktop = useMediaQuery("(min-width: 64rem)");
-const { headerMode, headerRoot, navRevealed } = useSiteHeaderMotion();
+const { headerRoot, navRevealed } = useSiteHeaderMotion();
 const headerActions = useTemplateRef<HTMLElement>("headerActions");
 const { onDarkSurface } = useHeaderSurface(headerRoot, headerActions);
 const footerRevealProgress = useFooterRevealProgress();
@@ -64,46 +67,58 @@ function handleLogoClick() {
    closeMenu();
 }
 
-watch([headerMode, isDesktop], ([mode, desktop]) => {
-   if (mode === "full" && desktop) closeMenu();
+watch(isDesktop, (desktop) => {
+   if (desktop) closeMenu();
 });
 </script>
 
 <template>
+   <div
+      ref="navLayer"
+      class="site-nav-layer"
+      v-bind="$attrs"
+      :style="footerFadeStyle"
+   >
+      <nav
+         id="primary-navigation"
+         class="site-nav"
+         aria-label="Main navigation"
+         :data-nav-revealed="navRevealed || undefined"
+      >
+         <span
+            v-for="item in resolvedNavItems"
+            :key="item.href"
+            class="site-nav-item"
+         >
+            <SiteNavServices
+               v-if="item.href === servicesHref"
+               :href="item.href"
+               :label="item.label"
+               data-home-intro-nav-item
+            />
+            <SiteNavLink
+               v-else
+               :href="item.href"
+               :label="item.label"
+               data-home-intro-nav-item
+            />
+         </span>
+      </nav>
+   </div>
+
    <header
       ref="headerRoot"
       class="site-header"
       v-bind="$attrs"
-      :data-header-mode="headerMode"
       :data-header-revealed="navRevealed || undefined"
    >
       <div class="site-header-inner">
-         <nav
-            id="primary-navigation"
-            ref="primaryNavigation"
-            class="site-nav"
-            aria-label="Main navigation"
-            :data-nav-revealed="navRevealed || undefined"
-         >
-            <span
-               v-for="item in resolvedNavItems"
-               :key="item.href"
-               class="site-nav-item"
-            >
-               <SiteNavLink
-                  :href="item.href"
-                  :label="item.label"
-                  data-home-intro-nav-item
-               />
-            </span>
-         </nav>
-
          <div
             ref="headerActions"
             class="site-header-actions"
             :style="footerFadeStyle"
          >
-            <span ref="headerCta" class="site-header-cta-wrap">
+            <span class="site-header-cta-wrap">
                <span class="site-header-rise-mask" data-header-rise-mask>
                   <span class="site-header-rise" data-header-rise>
                      <Button
@@ -123,7 +138,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
                </span>
             </span>
 
-            <span ref="menuButton" class="site-menu-button-wrap">
+            <span class="site-menu-button-wrap">
                <span class="site-header-rise-mask" data-header-rise-mask>
                   <span class="site-header-rise" data-header-rise>
                      <SiteMenu
@@ -164,7 +179,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 @reference '../../assets/css/tailwind.css';
 
 .site-header {
-   @apply sticky top-0 z-60 isolate;
+   @apply pointer-events-none sticky top-0 z-60 isolate;
 }
 
 .site-header-inner {
@@ -184,9 +199,20 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
    mask: url("/logo.svg") center / contain no-repeat;
 }
 
+.site-nav-layer {
+   @apply pointer-events-none fixed inset-x-0 top-0 z-60 hidden h-11 box-content items-center justify-center px-page py-4 mix-blend-difference lg:flex;
+}
+
 .site-nav {
-   @apply hidden items-center gap-6 lg:col-start-2 lg:row-start-1 lg:flex xl:gap-8;
-   will-change: transform, opacity;
+   @apply pointer-events-auto flex items-center gap-6 xl:gap-8;
+}
+
+.site-nav :deep(.site-nav-link) {
+   @apply text-background;
+}
+
+.site-nav :deep(.site-nav-link-label-copy) {
+   @apply text-primary-difference;
 }
 
 .site-nav-item {
@@ -195,7 +221,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
    padding: 0.25em;
 }
 
-.site-nav:not([data-nav-revealed]) [data-home-intro-nav-item] {
+.site-nav:not([data-nav-revealed]) :deep([data-home-intro-nav-item]) {
    visibility: hidden;
 }
 
@@ -210,7 +236,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-header-actions {
-   @apply relative col-start-2 row-start-1 flex items-center justify-self-end gap-2 lg:col-start-3;
+   @apply pointer-events-auto relative col-start-2 row-start-1 flex items-center justify-self-end gap-2 lg:col-start-3;
 }
 
 .site-header-cta-wrap,
@@ -220,7 +246,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-header-cta-wrap {
-   @apply relative z-30 lg:translate-x-28;
+   @apply relative z-30;
 }
 
 .site-header-cta {
@@ -239,7 +265,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
 }
 
 .site-menu-button-wrap {
-   @apply relative z-20 lg:pointer-events-none lg:invisible;
+   @apply relative z-20 lg:hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -248,7 +274,7 @@ watch([headerMode, isDesktop], ([mode, desktop]) => {
       transition-duration: 0ms;
    }
 
-   .site-nav:not([data-nav-revealed]) [data-home-intro-nav-item],
+   .site-nav:not([data-nav-revealed]) :deep([data-home-intro-nav-item]),
    .site-header:not([data-header-revealed]) [data-header-rise],
    .site-logo-layer:not([data-header-revealed]) [data-header-rise] {
       visibility: inherit;
