@@ -1885,8 +1885,8 @@ the type. Its corners are `7.5%` of its size and its glyph sits inside
 `17.5%` of padding, the hero frame's proportions. Its top is level with the
 description's first line. Below `md` it is hidden, so phones show the title
 and the description without it. Hovering it opens the services section's TrailingTooltip in its
-text-only form, "More about" followed by the service name and "service", such
-as "More about Website Development service", with an arrow up right glyph and
+text-only form, "More about" followed by the service name, such
+as "More about Website Development", with an arrow up right glyph and
 no thumbnail.
 
 The link keeps its full size from the start, so the layout never moves. Its
@@ -2814,7 +2814,7 @@ home services panel's square arrow link to the service's own page, with the
 same sizing, `inset-arrow` surface and glyph, `0.5em` inset, focus ring, and
 hidden state below `md`: from `md` it is exactly as tall as the description
 and its top is level with the first line. Hovering it opens a text-only
-TrailingTooltip, "More about" followed by the section title and "service".
+TrailingTooltip, "More about" followed by the section title.
 Under the description, `2.5rem` below and `3.5rem` from `md`, sits the shared
 `ArrowLink` to the same page, "See AI content creation services" or "See web
 development services", sized to its label, so phones keep a visible link. The
