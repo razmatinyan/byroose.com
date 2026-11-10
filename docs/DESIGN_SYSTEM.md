@@ -2663,9 +2663,9 @@ It has no description. The title sets "We create", "AI Content and", and
 "Websites" on three centered lines, with a link frame after "We" and an image
 frame before "Websites". It is bold with `-0.05em` tracking and `0.88` leading,
 in the same padded line masks as `AboutTitle`. The hero is an inline-size
-container, and the title sets `min(12.5cqi, 21svh)`. The longest line, "AI
-Content and", measures about `6.2em` with its frames open, so `12.5cqi` sets it
-across about 78 percent of the content width at every width, and the `21svh`
+container, and the title sets `min(10.5cqi, 18svh)`. The longest line, "AI
+Content and", measures about `6.2em` with its frames open, so `10.5cqi` sets it
+across about 65 percent of the content width at every width, and the `18svh`
 cap keeps the three lines inside the first screen on short, wide viewports.
 Every line stays on one line. If the phrase changes, measure its longest line
 again and update the size. The `h1` is an `sr-only`

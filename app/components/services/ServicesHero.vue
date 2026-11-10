@@ -121,7 +121,7 @@ function showAboutTooltip() {
 
 .services-hero-title {
    @apply font-bold tracking-[-0.05em];
-   font-size: min(12.5cqi, 21svh);
+   font-size: min(10.5cqi, 18svh);
    line-height: 0.88;
    margin-top: -0.2em;
    --services-hero-inset-height: 0.8em;
