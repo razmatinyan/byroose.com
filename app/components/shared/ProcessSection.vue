@@ -157,12 +157,12 @@ function setStepBodySplit(index: number, parts: SplitTextResult) {
 }
 
 .journey-heading {
-   @apply flex flex-col items-start;
+   @apply flex flex-col items-center text-center;
 }
 
 .journey-title {
    --split-title-tracking: -0.05em;
-   @apply m-0 pe-[0.05em] text-section leading-[0.92] font-bold text-balance;
+   @apply m-0 pe-[0.05em] text-hero leading-[0.9] font-semibold text-balance;
 }
 
 .journey-title :deep(.split-text-char-mask),

@@ -2152,12 +2152,12 @@ pages use `words`. It opens with two and a half times `spacing-section` of top
 padding, about 360px at 1440 wide, so the title stands well clear of the
 section above it.
 
-The heading is aligned to the left of the page gutter. The title is a bold H2
-at the `text-section` size, `0.92` leading, and `-0.05em` tracking, with
-balanced wrapping, so it stays on one line on wide screens and wraps on small
-ones. The description sits `1.5rem` below it, `2rem` from `md`, in
-`font-medium` `text-current/70` at `text-base`, `text-lg` from `md`, held to
-`44ch`.
+The heading is centered in the page gutter, and both the title and the
+description are center aligned. The title is a semibold H2 at the `text-hero`
+size, `0.9` leading, and `-0.05em` tracking, with balanced wrapping, so a long
+title breaks into even centered lines. The description sits `1.5rem` below it,
+`2rem` from `md`, in `font-medium` `text-current/70` at `text-base`, `text-lg`
+from `md`, held to `44ch`.
 
 The timeline sits `3.5rem` below the heading, `5rem` from `md` and `6rem` from
 `xl`, inside the page gutter on the page background, with no panel and no
