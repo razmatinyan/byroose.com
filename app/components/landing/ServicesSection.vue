@@ -277,7 +277,10 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 
 .service-panel {
 	@apply relative px-[clamp(1rem,2vw,1.5rem)] pt-section;
-	padding-bottom: calc(var(--service-runway, 0) * 100svh);
+	padding-bottom: max(
+		var(--spacing-section),
+		calc(var(--service-runway, 0) * 100svh)
+	);
 }
 
 .service-panel-dark .service-title,

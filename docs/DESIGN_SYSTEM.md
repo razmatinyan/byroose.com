@@ -1916,7 +1916,9 @@ At 1440 by
 reveal and the image scale stretch across the longer distance. That speed is
 constant across the whole panel. The content never slows down further while
 the image scales, because a slowdown under a scaling image reads as the page
-dragging. Reduced motion drops the runway.
+dragging. Reduced motion and touch devices drop the runway, and the panel then
+keeps one `spacing-section` of bottom padding, so its image never meets the
+next panel's dark backdrop.
 
 Because the content moves, its own elements cannot serve as ScrollTrigger
 triggers. Every text and image trigger is therefore a scroll position computed
