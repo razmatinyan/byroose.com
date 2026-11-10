@@ -70,7 +70,7 @@ function serviceTitle({ titleLead, titleTrail }: Service) {
 }
 
 function showServiceTooltip(service: Service) {
-	showTooltip("", `More about ${serviceTitle(service)} service`, "compact");
+	showTooltip("", `More about ${serviceTitle(service)}`, "compact");
 }
 
 const servicesRoot = useTemplateRef<HTMLElement>("servicesRoot");
