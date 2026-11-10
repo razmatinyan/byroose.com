@@ -103,8 +103,9 @@ sitemap and `llms.txt` automatically.
 
 Search and sharing metadata is configured in `nuxt.config.ts` and set per page
 through `usePageSeo`. The site serves `/robots.txt`, `/sitemap.xml`, and
-`/llms.txt`, and every page gets a canonical link, Open Graph tags, and
-Schema.org data. Every page, share image, and text route is
+`/llms.txt`, and every page gets a canonical link, Open Graph tags, a large X
+card, and Schema.org data. Sitemap dates come from the Git history, so build
+from a full clone. Every page, share image, and text route is
 prerendered at build time. See
 [Architecture](docs/ARCHITECTURE.md#seo) for how each part is produced.
 

@@ -980,8 +980,9 @@ The default scroller is the browser window. This keeps native scrolling, sticky 
 public contains source assets served from root-relative URLs, including images,
 the logo, favicon, and robots file. Render images through NuxtImg or NuxtPicture
 so Nuxt Image owns responsive sizing and optimization. Raster images go through
-the Vercel provider, which emits WebP and only accepts widths listed in
-`image.screens`, because that list becomes the Vercel image size allowlist.
+the Vercel provider, which emits WebP at the central `image.quality` of 80 and
+only accepts widths listed in `image.screens`, because that list becomes the
+Vercel image size allowlist.
 Optimized images are cached for one day through `image.vercel.minimumCacheTTL`,
 so a replaced image can stay stale for returning visitors until that expires.
 Give an updated image a new file name when it must appear immediately. SVG
@@ -1066,7 +1067,7 @@ Nitro uses its default dependency handling: the build bundles what it can and
 traces the remaining server dependencies into `.output/server/node_modules`.
 Do not set `nitro.noExternals`. It made every unresolved optional import fail
 the build, and the hosts gain nothing from it: Vercel traces dependencies
-itself, and the Cloudflare preset bundles everything for Workers by default.
+itself, and the Node server runs from the traced `.output/server/node_modules`.
 
 ## Work projects
 
@@ -1256,28 +1257,41 @@ internal links during development and builds.
 - The SEO utilities add the canonical link, `og:url`, `og:site_name`,
   `og:type`, and a `max-image-preview` robots tag to every page, and append
   ` | forrrow` to every title. Page titles are therefore written without the
-  brand. The site emits no `twitter:*` tags: X builds link previews from Open
-  Graph, and unhead flags those tags as deprecated. `seo.automaticTwitterTags:
-  false` stops the SEO utilities from inferring them, and
-  `ogImage.includeTwitter: false` stops the OG image module from adding them.
+  brand. `app.head` in `nuxt.config.ts` adds `og:locale` as `en_US` and
+  `twitter:card` as `summary_large_image` to every page. That card type is the
+  only `twitter:*` tag the site emits, because it has no Open Graph equivalent
+  and without it X shows a small preview. X reads the title, description, and
+  image from Open Graph, and unhead flags the duplicated tags as deprecated, so
+  `seo.automaticTwitterTags: false` stops the SEO utilities from inferring them
+  and `ogImage.includeTwitter: false` stops the OG image module from adding
+  them.
 - `app/lib/page-seo.ts` holds the title, description, and OG label of each
   indexable static page, so the pages and `llms.txt` share one copy.
 - `usePageSeo` in `app/composables/usePageSeo.ts` sets the title, description,
-  and Open Graph title and description. Given an image, it shares
-  that image with its absolute URL, size, and alternative text. Otherwise it
-  renders the `BrandCard` OG image with the title and an optional label. Every
-  indexable page calls it, and `ProjectPage` passes `getProjectCoverImage`,
-  the cover image or the poster of a video cover.
+  Open Graph title and description, and `og:type`, which is `website` unless
+  the page passes `article`. Given an image, it shares that image with its
+  absolute URL, size, and alternative text. Otherwise it renders the
+  `BrandCard` OG image with the title and an optional label, and gives it the
+  alternative text `forrrow: <title>`. Every indexable page calls it.
+  `ProjectPage` passes the `article` type and `getProjectCoverImage`, the cover
+  image or the poster of a video cover, and `BlogPostPage` passes the `article`
+  type with the post date as `article:published_time`.
 - `app/components/OgImage/BrandCard.takumi.vue` is the generated 1200 by 630
   card, rendered by Takumi in Switzer, which Nuxt Fonts registers globally for
   the renderer. Its colors come from `app/lib/og-image-theme.ts`, because CSS
   variables do not reach the renderer. `zeroRuntime` renders every card once
   at build time into a static `/_og/s/` PNG and ships no renderer with the
-  server. The Cloudflare Pages preset does not generate these PNGs yet, see
-  Known gaps.
+  server.
 - The sitemap lists every indexable route, including each Work project page
   as soon as its page file exists. robots.txt allows every crawler and links
-  the sitemap.
+  the sitemap. Each entry carries a `lastmod` date. `config/page-lastmod.ts`
+  reads it at build time from the last Git commit that touched the files that
+  own the page's content, such as the page file, its feature components, and,
+  for a Work project, its data file and media folder. Shared sections are left
+  out so a footer or pricing change does not date every page. A build without
+  Git history omits these dates. A blog post's `lastmod` is its `date`
+  frontmatter. Add a new static page to the route list in
+  `config/page-lastmod.ts`.
 - The Courses placeholder sets `robots: false`
   and `ogImage: false` through route rules, so they send `noindex, nofollow`
   in a meta tag and an `X-Robots-Tag` header, stay out of the sitemap, and get
@@ -1299,17 +1313,9 @@ internal links during development and builds.
 
 ### Known gaps
 
-- Built with `NITRO_PRESET=cloudflare_pages`, pages reference their `/_og/s/`
-  share images but the PNGs are not generated. The Node preset generates them.
-  The likely cause is that the Cloudflare preset expects Takumi's Wasm build,
-  `@takumi-rs/wasm`, which is not installed. Resolve this before moving to
-  Cloudflare Pages.
-- Nuxt Image uses the `vercel` provider, which works only on Vercel. Choose a
-  Cloudflare provider or build-time optimization before the move.
-- On Cloudflare Pages, a blog URL that was not prerendered reaches the Worker,
-  where Nuxt Content needs a D1 database binding. Without one an unknown post
-  likely errors instead of answering 404. Add a D1 binding or a 404 fallback
-  for unknown `/blog/` paths before the move.
+- Nuxt Image uses the `vercel` provider, which works only on Vercel. The site
+  will move to a VPS running the Node server, so switch to the `ipx` provider
+  with WebP output before that move.
 - The Contact rate limit is an in-memory map, so each server instance counts
   on its own and a cold start resets it. Move it to shared storage if abuse
   gets past it.

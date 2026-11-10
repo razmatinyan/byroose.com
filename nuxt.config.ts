@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
 import { listPublishedPosts } from "./config/blog-posts";
+import { listPageLastmods } from "./config/page-lastmod";
 import {
    siteDescription,
    siteEmail,
@@ -19,7 +20,11 @@ export default defineNuxtConfig({
    app: {
       head: {
          htmlAttrs: { lang: "en" },
-         meta: [{ name: "theme-color", content: "#131110" }],
+         meta: [
+            { name: "theme-color", content: "#131110" },
+            { property: "og:locale", content: "en_US" },
+            { name: "twitter:card", content: "summary_large_image" },
+         ],
          link: [{ rel: "icon", href: "/logo-small-dark.svg", sizes: "any" }],
       },
    },
@@ -38,10 +43,13 @@ export default defineNuxtConfig({
    },
 
    sitemap: {
-      urls: publishedPosts.map((post) => ({
-         loc: post.path,
-         lastmod: post.date,
-      })),
+      urls: [
+         ...listPageLastmods(),
+         ...publishedPosts.map((post) => ({
+            loc: post.path,
+            lastmod: post.date,
+         })),
+      ],
    },
 
    content: {
@@ -190,6 +198,7 @@ export default defineNuxtConfig({
 
    image: {
       provider: "vercel",
+      quality: 80,
       vercel: {
          formats: ["image/webp"],
          minimumCacheTTL: 86400,

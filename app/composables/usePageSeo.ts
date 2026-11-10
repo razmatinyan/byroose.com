@@ -1,4 +1,4 @@
-import { siteUrl } from "@/lib/site";
+import { siteName, siteUrl } from "@/lib/site";
 
 export interface PageSeoImage {
    src: string;
@@ -12,22 +12,33 @@ export interface PageSeo {
    description: string;
    label?: string;
    image?: PageSeoImage;
+   type?: "website" | "article";
+   publishedTime?: string;
 }
 
 function absoluteUrl(path: string) {
    return new URL(path, siteUrl).href;
 }
 
-export function usePageSeo({ title, description, label, image }: PageSeo) {
+export function usePageSeo({
+   title,
+   description,
+   label,
+   image,
+   type = "website",
+   publishedTime,
+}: PageSeo) {
    useSeoMeta({
       title,
       description,
       ogTitle: title,
       ogDescription: description,
+      ogType: type,
+      articlePublishedTime: publishedTime,
    });
 
    if (!image) {
-      defineOgImage("BrandCard", { title, label });
+      defineOgImage("BrandCard", { title, label }, { alt: `${siteName}: ${title}` });
       return;
    }
 

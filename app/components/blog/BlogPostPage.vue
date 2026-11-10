@@ -23,6 +23,8 @@ usePageSeo({
    description: post.description,
    label: post.category,
    image: post.cover,
+   type: "article",
+   publishedTime: post.date,
 });
 
 useSchemaOrg([

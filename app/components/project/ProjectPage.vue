@@ -60,6 +60,7 @@ usePageSeo({
    description,
    label: "Case study",
    image: coverImage,
+   type: "article",
 });
 
 useSchemaOrg([
