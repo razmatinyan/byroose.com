@@ -41,9 +41,10 @@ const resolvedNavItems = computed(() => navItems ?? defaultNavItems);
 const menuOpen = shallowRef(false);
 const headerCtaVariant = computed(() => (menuOpen.value ? "default" : "dark"));
 const isDesktop = useMediaQuery("(min-width: 64rem)");
-const { headerRoot, navRevealed } = useSiteHeaderMotion();
+const { headerRoot, logoLayer, navRevealed } = useSiteHeaderMotion();
 const headerActions = useTemplateRef<HTMLElement>("headerActions");
 const { onDarkSurface } = useHeaderSurface(headerRoot, headerActions);
+const { onDarkSurface: logoOnDarkSurface } = useHeaderSurface(logoLayer, logoLayer);
 const footerRevealProgress = useFooterRevealProgress();
 const footerFadeStyle = computed<CSSProperties | undefined>(() => {
    const progress = footerRevealProgress.value;
@@ -160,6 +161,7 @@ watch(isDesktop, (desktop) => {
       v-bind="$attrs"
       :style="footerFadeStyle"
       :data-header-revealed="navRevealed || undefined"
+      :data-on-dark="logoOnDarkSurface || undefined"
    >
       <span class="site-header-rise-mask" data-header-rise-mask>
          <NuxtLink
@@ -195,8 +197,18 @@ watch(isDesktop, (desktop) => {
 }
 
 .site-logo {
-   @apply block aspect-[680/192] h-7 bg-background sm:h-8.5;
+   @apply block aspect-[767/146] h-[1.3rem] sm:h-[1.55rem];
+   --site-logo-mark-ink: var(--color-primary-difference);
+   background: linear-gradient(
+      to right,
+      var(--site-logo-mark-ink) calc(146.5 / 767 * 100%),
+      var(--color-background) calc(146.5 / 767 * 100%)
+   );
    mask: url("/logo.svg") center / contain no-repeat;
+}
+
+.site-logo-layer[data-on-dark] .site-logo {
+   --site-logo-mark-ink: var(--color-primary);
 }
 
 .site-nav-layer {

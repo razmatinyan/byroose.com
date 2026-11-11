@@ -80,6 +80,7 @@ export function useSiteHeaderMotion() {
 
 	return {
 		headerRoot,
+		logoLayer,
 		navRevealed: readonly(navRevealed),
 	}
 }

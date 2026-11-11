@@ -55,7 +55,7 @@ visual and accessibility review.
 | `ribbon`                                                          | Fresh green, `oklch(0.82 0.16 135)`                             | The decorative Studio ribbon stroke                                                                                                             |
 | `ribbon-shade`                                                    | Deeper green, `oklch(0.66 0.15 142)`                            | The ribbon's shading where it passes under itself                                                                                               |
 | `ribbon-foreground`                                               | Near-black ink                                                  | Text on a `ribbon` surface                                                                                                                        |
-| `primary-difference`                                              | Light blue, `oklch(0.7562 0.1504 229.81)`                       | Ink that a `difference` blend over the canvas turns into `primary`, for the blended header navigation hover copy only                          |
+| `primary-difference`                                              | Light blue, `oklch(0.7562 0.1504 229.81)`                       | Ink that a `difference` blend over the canvas turns into `primary`, for the blended header navigation hover copy and the header logomark only                          |
 | `destructive`                                                     | Alert red                                                       | Destructive and error actions only                                                                                                              |
 | `border`, `input`, and `ring`                                     | Semantic controls                                               | Boundaries, fields, and focus indicators                                                                                                        |
 
@@ -3196,8 +3196,16 @@ header's `z-60` and repeats the header's `py-4` padding around a `44px` row, so
 it stays level with the actions. The layer must stay free of any ancestor that
 isolates it. The logo is a `span` masked with `public/logo.svg` and filled with
 `bg-background`, because an image cannot take a theme color. The span's aspect
-ratio repeats the SVG's `680 / 192` viewBox, so update both together when the
-logo artwork changes, or the masked mark is letterboxed inside its box. The link's
+ratio repeats the SVG's `767 / 146` viewBox, so update both together when the
+logo artwork changes, or the masked mark is letterboxed inside its box. The
+span is filled with a hard-stop gradient that switches from the logomark ink to
+`background` at `146.5` viewBox units, in the empty gap between the circles and
+the wordmark, so no second fill sits under the circles' anti-aliased edges. The
+logomark ink stays inside the blend and is `primary-difference`, so the circles read as brand orange on the canvas. The
+logo layer runs its own `useHeaderSurface` probe and, over a
+`data-header-surface="dark"` block, sets `data-on-dark` to switch the ink to
+`primary`, because a `difference` blend over near black keeps the ink close to
+its own color. The link's
 `aria-label` names it. `SiteHeader` disables attribute inheritance and binds
 `$attrs` to all three roots, so `data-home-intro-header` reaches the header, the
 navigation layer, and the logo layer, and the home intro hides them until it
