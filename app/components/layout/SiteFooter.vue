@@ -237,7 +237,7 @@ function scrollToTop() {
          <div class="site-footer-brand">
             <NuxtImg
                class="site-footer-logo"
-               src="/logo.svg"
+               src="/logo-name.svg"
                alt="forrrow"
                width="680"
                height="192"
