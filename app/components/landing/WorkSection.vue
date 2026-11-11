@@ -27,7 +27,6 @@ interface CaseStudy {
    imageScale?: number;
    liveUrl?: string;
    results?: readonly { label: string; value: string }[];
-   revealTones: readonly SurfaceTone[];
    serviceLink?: { label: string; to: string };
    title: string;
    tone: SurfaceTone;
@@ -48,7 +47,6 @@ const caseStudies: CaseStudy[] = [
       imageAlt:
          "The AI UGC creator getting ready in a yellow sweatshirt, wide-leg jeans, and a brown suede bag",
       imageScale: 1.05,
-      revealTones: ["yellow", "primary"],
       serviceLink: {
          label: "Explore AI content creation",
          to: servicePagePaths.aiContent,
@@ -68,7 +66,6 @@ const caseStudies: CaseStudy[] = [
          "Sygen home page on a desktop monitor, turning the brand color #2F5BEA into brand, neutral, and status scales",
       imageScale: 1.1,
       liveUrl: "https://sygenn.vercel.app/",
-      revealTones: ["primary", "pink"],
       title: "Sygen: a free color system generator built by forrrow",
       tone: "pink",
    },
@@ -82,7 +79,6 @@ const caseStudies: CaseStudy[] = [
       imageAlt:
          "The cartoon character in a grey knit sweater, leopard print cargo pants, yellow sneakers, and a black crossbody bag",
       imageScale: 1.05,
-      revealTones: ["pink", "green"],
       title: "AI animated series: character content at social media speed",
       tone: "green",
       video: "/images/work/cartoon/cover.mp4",

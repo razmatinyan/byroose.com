@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, shallowRef } from "vue";
 import PricingCard from "@/components/cards/PricingCard.vue";
+import PricingFlexibleCard from "@/components/cards/PricingFlexibleCard.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { pricingCategories } from "@/lib/pricing";
 import type { PricingCategoryId } from "@/lib/pricing";
@@ -110,6 +111,8 @@ function endHover() {
                   </li>
                </ul>
             </TabsContent>
+
+            <PricingFlexibleCard class="pricing-flexible-card" />
          </div>
       </Tabs>
    </section>
@@ -186,15 +189,19 @@ function endHover() {
 }
 
 .pricing-panels {
-   @apply mx-auto w-full max-w-xl pt-3 lg:max-w-7xl;
+   @apply mx-auto w-full max-w-xl pt-12 lg:max-w-7xl;
 }
 
 .pricing-grid {
-   @apply m-0 grid list-none grid-cols-1 gap-8 p-0 lg:grid-cols-3 lg:gap-6;
+   @apply m-0 grid list-none grid-cols-1 gap-16 p-0 lg:grid-cols-3 lg:gap-6;
+}
+
+.pricing-flexible-card {
+   @apply mt-16 lg:mt-6;
 }
 
 .pricing-grid-item {
-   @apply min-w-0;
+   @apply isolate min-w-0;
 }
 
 @media (min-width: 64rem) {

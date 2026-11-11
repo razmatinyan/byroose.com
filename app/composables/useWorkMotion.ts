@@ -7,7 +7,6 @@ import {
    imageParallaxShiftFor,
    imageParallaxStart,
 } from "@/lib/image-parallax";
-import { addStackReveal } from "@/lib/stack-reveal";
 import type { SplitTextResult } from "@/lib/split-text";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
@@ -21,7 +20,6 @@ const selectors = {
    case: "[data-work-case]",
    caseList: "[data-work-case-list]",
    image: "[data-work-case-image]",
-   layer: "[data-work-case-layer]",
    more: "[data-work-more]",
    morePanel: "[data-work-more-panel]",
    reveal: "[data-work-case-reveal]",
@@ -30,7 +28,6 @@ const selectors = {
 const revealStart = "top 90%";
 const lineDuration = 0.8;
 const lineStagger = 0.08;
-const linesAtMedia = 0.1;
 const caseListLag = 0.7;
 const caseListFadeStart = 0.3;
 
@@ -125,17 +122,12 @@ export function useWorkMotion(
 
    function revealCase(caseElement: HTMLElement) {
       const image = caseElement.querySelector<HTMLElement>(selectors.image);
-      const layers = [
-         ...caseElement.querySelectorAll<HTMLElement>(selectors.layer),
-      ];
       const lines = [
          ...caseElement.querySelectorAll<HTMLElement>(selectors.reveal),
       ];
 
       if (image) parallaxImage(image, caseElement);
-      if (!layers.length && !lines.length) return;
-
-      gsap.set(layers, { scale: 0 });
+      if (!lines.length) return;
 
       const timeline = gsap.timeline({
          scrollTrigger: {
@@ -145,12 +137,7 @@ export function useWorkMotion(
          },
       });
 
-      addStackReveal(timeline, layers);
-      const coveredLayers = layers.slice(0, -1);
-      if (coveredLayers.length) timeline.set(coveredLayers, { autoAlpha: 0 }, ">");
-      if (lines.length) {
-         revealLines(timeline, lines, timeline.duration() * linesAtMedia);
-      }
+      revealLines(timeline, lines, 0);
    }
 
    function handOffToPanel(root: HTMLElement) {

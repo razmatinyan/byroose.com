@@ -404,7 +404,7 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one package from app/lib/pricing.ts: its name with the discount percent, an optional "Most popular" badge, the description, the struck regular price beside the package price, its own call label as a link to the Contact route with the saving below it, and the features under "Includes:" or "Everything in <previous package>, plus:". From `lg` it spans four rows of its grid through `subgrid`, so the price, action, and features rows line up across the three cards. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one package from app/lib/pricing.ts: its name with the discount percent, an optional "Most popular" band on a brand orange frame that wraps the card, the description, the struck regular price beside the package price, its own call label as a link to the Contact route with the saving below it, and the features under "Includes:" or "Everything in <previous package>, plus:". From `lg` it spans four rows of its grid through `subgrid`, so the price, action, and features rows line up across the three cards. PricingFlexibleCard renders the flexible package block below the package grid on every pricing tab, with a call to plan a flexible package on the Contact route and no price. Cards do not fetch their own page data.
 
 ### Shared components
 
@@ -465,12 +465,11 @@ GSAP media context only when the section's size changes. Reduced motion keeps th
 through CSS.
 
 useWorkMotion owns the work section: the centered title characters, each
-case study's stacked media reveal, its scrubbed image parallax, and the
-staggered rise of its masked text lines. WorkSection supplies the section scope
+case study's scrubbed image parallax, and the staggered rise of its masked
+text lines. The case study images have no entry reveal. WorkSection supplies the section scope
 and the title split; the case study card supplies the `data-work-case`,
-`data-work-case-layer`, `data-work-case-image`, and `data-work-case-reveal`
-hooks the composable resolves inside that scope. One timeline per card carries
-both the media reveal and the text lines, so their relative timing cannot drift. Reduced motion resolves the
+`data-work-case-image`, and `data-work-case-reveal` hooks the composable
+resolves inside that scope. Reduced motion resolves the
 title to visible characters and leaves every card in its resting state. It also
 owns the handoff from the last card to the MoreWorksPanel. It slows and fades
 the `data-work-case-list` element and brings in the `data-work-more-panel`
@@ -900,8 +899,8 @@ app/lib contains pure helpers, shared constants, and stable names.
   reuses the `nav-link-slide` CustomEase from a loaded CustomEase plugin.
   useNavLinkMotion and TrailingTooltip share it.
 - stack-reveal.ts owns the shared stacked scale-up recipe. It appends the lead
-  and follower tweens to a timeline it is handed, so the home preloader and the
-  work section's media reveal keep identical timing from one definition. It
+  and follower tweens to a timeline it is handed, so the home preloader keeps its
+  timing in one definition. It
   never queries the DOM or creates its own timeline, which keeps trigger and
   lifecycle ownership with the calling composable.
 - scroll-curve.ts owns `sampleCurve` and `curveEase`. They read cubic Hermite

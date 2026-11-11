@@ -1539,46 +1539,21 @@ its mask over `0.9s` with `power3.out` easing and a `0.035s` stagger, so the
 title types itself in from left to right. That recipe lives in
 `app/lib/char-reveal.ts`.
 
-Each case study reveals from its own trigger at the same line. The media frame
-fills with the preloader's stack reveal: three elements stacked on the frame all
-scale up from zero around their own center, two of them empty brand-color
-layers, with the image arriving as the third and last. Both the preloader and
-this section run that recipe through `addStackReveal` in
-`app/lib/stack-reveal.ts`, so the lead element scales over one second with
-`power3.out`, the rest start a third of a second later, and the group carries a
-`0.12s` stagger. Change the timing there and both reveals move together.
+Each case study reveals its text from its own trigger at the same line. The
+media frame has no reveal: the image sits in the frame from the server output,
+with no colored layers in front of it.
 
-Each case study gets its own two-color sequence through the card's
-`revealTones` prop, resolved through the same `surface-*` map as the result
-highlights. The sequences are all different, and each one ends on the card's own
-`tone`, so the color that lands immediately before the image is the color the
-result numbers wear.
+The card, its covering link, and the frame use `rounded-xl` corners. The frame
+shapes itself with `clip-path: inset(0 round var(--radius-xl))` alongside its
+radius and `overflow: hidden`, so the image never pokes past the curve. Keep the
+clip's radius token equal to the frame's radius class.
 
-The card, its covering link, and the frame use `rounded-xl` corners. Layers
-bleed one pixel past the frame and inherit its radius, and the frame shapes
-itself with `clip-path: inset(0 round var(--radius-xl))` alongside its radius
-and `overflow: hidden`, so the resting surface never survives as a hairline
-rim around the final layer. Keep the clip's radius token equal to the frame's
-radius class. Once the reveal ends, `useWorkMotion` hides every layer but the
-last with `autoAlpha: 0`, because the image covers them and their color would
-otherwise tint the antialiased pixels along the frame's edges and corners. DOM order is the paint order, so the image
-wrapper must stay last. The colored layers rest at `scale(0)` in CSS because
-they are decorative, which keeps a solid color block off the card before the
-motion initializes and without JavaScript. The image wrapper carries no CSS rest
-state, so the image itself is always present in the server output.
-
-The text lines share the card's timeline rather than running their own
-trigger. In document order they are the title, the description, and each
-result's value then label. They start a tenth of the way into the media reveal,
-so the copy is already arriving while the colored layers are still landing, and they rise
-from their masks over `0.8s` with a `0.08s` stagger. The position is read from
-the timeline's own duration after the stack tweens are added, so retiming the
-stack moves the text with it. The image inside the frame is held at `1.3` scale and scrubbed
+The text lines run on one timeline per card. In document order they are the
+title, the description, and each result's value then label, and they rise from
+their masks over `0.8s` with a `0.08s` stagger. The image inside the frame is held at `1.3` scale and scrubbed
 from `-14` to `14` percent as the card crosses the viewport, with the values
 shared through `app/lib/image-parallax.ts`, so it travels in
-the same direction as the scroll and lags behind its frame. The reveal and the parallax are on
-different elements: the image's layer wrapper owns the entry scale and the image
-inside it owns the parallax, so neither fights the other. Keep the scale ahead
+the same direction as the scroll and lags behind its frame. Keep the scale ahead
 of the shift: the image only has `(scale - 1) / 2` of overflow on each edge, so
 raising the travel without raising the scale exposes the frame.
 A card can lower its scale through the optional `imageScale` prop when the
@@ -2122,10 +2097,15 @@ A card is a white `card` block with a `border` outline, `rounded-xl`, and a
 so the two curves stay concentric. Its text sits `1rem` further in, `1.5rem` from `md`, with
 generous space between its parts: `2.5rem` above the name from `md`, `4rem`
 above the price, and `2.5rem` above and below the features. It has no
-separator lines. The featured card swaps only its
-outline to `foreground` and carries a fully round "Most popular" badge in
-`foreground` with `background` text, centered on its top edge and half above
-it. Top to bottom, a card shows:
+separator lines. The featured card swaps its outline to `primary` and sits
+inside a `primary` frame that reads as a wrapper: the frame runs `0.375rem`
+past its sides and bottom and rises `2.75rem` above it as a full-width band
+that carries a centered semibold "Most popular" label in `primary-foreground`.
+The frame's radius adds its inset to `rounded-xl`, so the curves stay
+concentric. It is absolutely positioned behind the card at `-z-1`, and each
+grid item is `isolate`, so the card keeps the same size and `subgrid` rows as
+its neighbors. To give the band room, the panels have `3rem` of top padding and
+the single-column grid below `lg` has a `4rem` gap. Top to bottom, a card shows:
 
 - The package name, semibold at `text-3xl` and `text-4xl` from `md`, beside a
   round `text-sm` discount pill such as
@@ -2148,6 +2128,17 @@ it. Top to bottom, a card shows:
 - The features, opening with "Includes:" on the first package and
   "Everything in" the previous package on the others, each at `text-lg`
   behind a check glyph. The saving line and the list label use `text-base`.
+
+Below the package grid, outside the category tabs so it shows for every
+category, sits the `PricingFlexibleCard`: a full-width white `card` block with
+a `border` outline and `rounded-xl`, `4rem` below the grid below `lg` and
+`1.5rem` from `lg`. Its content is centered: a round "Flexible Package" pill in
+`canvas-shade` at `text-lg`, `text-xl` from `md`, with `tracking-tight`, a semibold title held to
+`14ch` at `text-4xl` and `text-6xl` from `md`, a `tracking-tight` description
+in `text-current/60` that opens with a bold `foreground` lead, and a `dark`
+`cta-lg` link to the Contact route with the package cards' rollover tones,
+enlarged locally to `min-h-16`, `text-2xl` from `sm`, and at least `20rem`
+wide. It describes a flexible scope and never names a price.
 
 The section has no reveal animation. The heading, the switcher, and the cards
 are visible at rest from the server output, and switching categories swaps

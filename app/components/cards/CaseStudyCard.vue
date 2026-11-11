@@ -21,7 +21,6 @@ const {
 	imageScale,
 	liveUrl,
 	results,
-	revealTones = ["yellow", "primary"],
 	serviceLink,
 	title,
 	tone = "primary",
@@ -37,7 +36,6 @@ const {
 	imageScale?: number;
 	liveUrl?: string;
 	results?: readonly { label: string; value: string }[];
-	revealTones?: readonly SurfaceTone[];
 	serviceLink?: { label: string; to: string };
 	title?: string;
 	tone?: SurfaceTone;
@@ -78,41 +76,31 @@ function deactivate() {
 		</NuxtLink>
 
 		<div class="case-media">
-			<span
-				v-for="revealTone in revealTones"
-				:key="revealTone"
-				data-work-case-layer
-				aria-hidden="true"
-				:class="cn('case-layer', surfaceTones[revealTone])"
-			/>
-
-			<div data-work-case-layer class="case-image-layer">
-				<span class="case-image-zoom">
-					<span
-						data-work-case-image
-						:data-work-case-image-scale="imageScale"
-						class="case-image"
-					>
-						<NuxtImg
-							class="case-image-media"
-							:src="image"
-							:alt="imageAlt"
-							width="1456"
-							height="816"
-							sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
-							densities="x1"
-							loading="lazy"
-							draggable="false"
-						/>
-						<HoverVideo
-							v-if="video"
-							class="case-image-media"
-							:src="video"
-							:active="hovered"
-						/>
-					</span>
+			<span class="case-image-zoom">
+				<span
+					data-work-case-image
+					:data-work-case-image-scale="imageScale"
+					class="case-image"
+				>
+					<NuxtImg
+						class="case-image-media"
+						:src="image"
+						:alt="imageAlt"
+						width="1456"
+						height="816"
+						sizes="sm:896px md:1024px lg:768px xl:1024px 2xl:1536px"
+						densities="x1"
+						loading="lazy"
+						draggable="false"
+					/>
+					<HoverVideo
+						v-if="video"
+						class="case-image-media"
+						:src="video"
+						:active="hovered"
+					/>
 				</span>
-			</div>
+			</span>
 		</div>
 
 		<div class="case-body">
@@ -202,16 +190,6 @@ function deactivate() {
 .case-media {
 	@apply relative aspect-4/3 w-full overflow-hidden rounded-xl bg-muted;
 	clip-path: inset(0 round var(--radius-xl));
-}
-
-.case-layer,
-.case-image-layer {
-	@apply pointer-events-none absolute -inset-px;
-	border-radius: inherit;
-}
-
-.case-layer {
-	transform: scale(0);
 }
 
 .case-image-zoom {

@@ -32,12 +32,9 @@ const featuresLabel = computed(() =>
 </script>
 
 <template>
-   <article
-      class="pricing-card"
-      :data-featured="plan.featured || undefined"
-   >
-      <span v-if="plan.featured" class="pricing-card-badge">
-         {{ featuredLabel }}
+   <article class="pricing-card" :data-featured="plan.featured || undefined">
+      <span v-if="plan.featured" class="pricing-card-frame">
+         <span class="pricing-card-badge">{{ featuredLabel }}</span>
       </span>
 
       <header class="pricing-card-header">
@@ -112,11 +109,18 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card[data-featured] {
-   @apply border-foreground;
+   --pricing-card-frame: 0.375rem;
+   --pricing-card-badge: 2.75rem;
+}
+
+.pricing-card-frame {
+   @apply pointer-events-none absolute -z-1 flex justify-center rounded-[calc(var(--radius-xl)+var(--pricing-card-frame))] bg-brand-blue text-primary-foreground;
+   inset: calc(var(--pricing-card-badge) * -1)
+      calc(var(--pricing-card-frame) * -1) calc(var(--pricing-card-frame) * -1);
 }
 
 .pricing-card-badge {
-   @apply absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground px-3.5 py-1 text-sm font-semibold whitespace-nowrap text-background;
+   @apply flex h-(--pricing-card-badge) items-center text-2xl font-semibold tracking-tight whitespace-nowrap;
 }
 
 .pricing-card-header {
@@ -132,11 +136,11 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-discount {
-   @apply rounded-full bg-primary/10 px-3 py-0.5 text-sm font-semibold text-primary;
+   @apply rounded-full bg-primary/10 px-3 py-0.5 text-lg font-semibold text-primary;
 }
 
 .pricing-card-description {
-   @apply m-0 mt-3 text-lg leading-snug font-medium text-pretty text-current/60;
+   @apply m-0 mt-3 text-lg leading-snug font-medium text-pretty text-current/60 tracking-tight;
 }
 
 .pricing-card-price {
@@ -164,7 +168,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-saving {
-   @apply m-0 text-center text-base font-medium text-current/60;
+   @apply m-0 text-center text-lg font-medium text-current/60 tracking-tight;
 }
 
 .pricing-card-saving strong {
@@ -176,7 +180,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-features-label {
-   @apply m-0 text-base font-semibold;
+   @apply m-0 text-lg font-semibold tracking-tight;
 }
 
 .pricing-card-list {
@@ -184,7 +188,7 @@ const featuresLabel = computed(() =>
 }
 
 .pricing-card-feature {
-   @apply flex items-start gap-3 text-lg leading-snug font-medium;
+   @apply flex items-start gap-3 text-xl leading-snug font-medium tracking-tight;
 }
 
 .pricing-card-check {
