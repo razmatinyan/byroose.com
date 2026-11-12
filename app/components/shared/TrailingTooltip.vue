@@ -9,6 +9,7 @@ import {
 	useTemplateRef,
 	watch,
 } from "vue";
+import BrandLogomark from "@/components/shared/BrandLogomark.vue";
 import { whenImageLoaded } from "@/composables/useImagesLoaded";
 import type { TrailingTooltipSize } from "@/composables/useTrailingTooltip";
 import { registerSlideEase, slideDuration } from "@/lib/slide-ease";
@@ -27,16 +28,16 @@ interface LabelLayer {
 
 const {
 	active = false,
-	icon,
 	image = "",
 	label = "See Full Project",
+	mark = false,
 	preload = [],
 	size = "default",
 } = defineProps<{
 	active?: boolean;
-	icon?: string;
 	image?: string;
 	label?: string;
+	mark?: boolean;
 	preload?: readonly string[];
 	size?: TrailingTooltipSize;
 }>();
@@ -58,7 +59,7 @@ const layers = ref<TooltipLayer[]>([]);
 const labelLayers = ref<LabelLayer[]>([{ id: 0, text: label }]);
 const currentLabelId = computed(() => labelLayers.value.at(-1)?.id);
 const resizesSmoothly = ref(false);
-const showsMark = computed(() => Boolean(icon) && !image);
+const showsMark = computed(() => mark && !image);
 const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 const { createMatchMedia, gsap, loadPlugin } = useGsap();
 let nextLayerId = 0;
@@ -286,12 +287,10 @@ onScopeDispose(() => {
 			aria-hidden="true"
 		>
 			<span
-				v-if="showsMark && icon"
+				v-if="showsMark"
 				class="trailing-tooltip-mark inset-arrow-surface"
 			>
-				<span class="trailing-tooltip-mark-content">
-					<Icon class="inset-arrow-icon" :name="icon" />
-				</span>
+				<BrandLogomark class="trailing-tooltip-logomark" />
 			</span>
 			<span v-if="layers.length" ref="media" class="trailing-tooltip-media">
 				<NuxtImg
@@ -378,11 +377,11 @@ onScopeDispose(() => {
 }
 
 .trailing-tooltip-mark {
-	@apply block size-12 shrink-0 overflow-hidden rounded-[7.5%] text-primary;
+	@apply block size-9 shrink-0 overflow-hidden rounded-[15%] p-1.5 text-primary;
 }
 
-.trailing-tooltip-mark-content {
-	@apply grid size-full place-items-center p-[17.5%];
+.trailing-tooltip-logomark {
+	@apply block size-full;
 }
 
 .trailing-tooltip[data-media="false"] {
@@ -407,15 +406,15 @@ onScopeDispose(() => {
 }
 
 .trailing-tooltip[data-mark="true"] {
-	@apply gap-3 p-2 pr-6;
+	@apply gap-3;
 }
 
 .trailing-tooltip[data-size="compact"][data-mark="true"] {
-	@apply gap-2.5 p-1.5 pr-4;
+	@apply gap-2.5;
 }
 
 .trailing-tooltip[data-size="compact"] .trailing-tooltip-mark {
-	@apply size-9;
+	@apply size-6 p-1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -431,6 +430,7 @@ onScopeDispose(() => {
 		transition:
 			width var(--tooltip-resize),
 			height var(--tooltip-resize),
+			padding var(--tooltip-resize),
 			border-radius var(--tooltip-resize);
 	}
 

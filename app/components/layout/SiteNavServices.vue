@@ -3,6 +3,7 @@ import { computed, nextTick, shallowRef, useId, useTemplateRef, watch } from 'vu
 import type { ComponentPublicInstance } from 'vue'
 import { useTimeoutFn } from '@vueuse/core'
 import SiteNavLink from '@/components/layout/SiteNavLink.vue'
+import BrandLogomark from '@/components/shared/BrandLogomark.vue'
 import {
 	Popover,
 	PopoverAnchor,
@@ -26,13 +27,13 @@ const services = [
 		href: servicePagePaths.aiContent,
 		label: 'AI content creation',
 		description: 'AI videos, UGC ads, and visuals',
-		image: '/images/hero/5.png',
+		markClass: 'text-primary',
 	},
 	{
 		href: servicePagePaths.web,
 		label: 'Web development',
 		description: 'Websites and landing pages that convert',
-		image: '/images/hero/6.png',
+		markClass: 'text-brand-blue',
 	},
 ] as const
 
@@ -203,16 +204,12 @@ watch(
 						:to="service.href"
 						@click="setOpen(false)"
 					>
-						<NuxtImg
-							class="site-nav-service-image"
-							:src="service.image"
-							alt=""
-							width="1456"
-							height="816"
-							sizes="128px"
-							loading="lazy"
-							draggable="false"
-						/>
+						<span class="site-nav-service-mark-box">
+							<BrandLogomark
+								class="site-nav-service-mark"
+								:class="service.markClass"
+							/>
+						</span>
 						<span class="site-nav-service-text">
 							<span class="site-nav-service-label">
 								{{ service.label }}
@@ -260,8 +257,12 @@ watch(
 	@apply flex items-stretch gap-3 rounded-xl px-3 py-2.5 pr-6 outline-none focus-visible:ring-2 focus-visible:ring-ring/50;
 }
 
-.site-nav-service-image {
-	@apply h-auto w-16 shrink-0 self-stretch rounded-lg object-cover;
+.site-nav-service-mark-box {
+	@apply flex size-12 shrink-0 items-start justify-end self-center p-2;
+}
+
+.site-nav-service-mark {
+	@apply size-5;
 }
 
 @media (prefers-reduced-motion: reduce) {

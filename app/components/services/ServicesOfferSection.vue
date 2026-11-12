@@ -2,7 +2,7 @@
 import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import ArrowLink from "@/components/shared/ArrowLink.vue";
 import SplitText from "@/components/shared/SplitText.vue";
-import { appIcons } from "@/lib/icons";
+import BrandLogomark from "@/components/shared/BrandLogomark.vue";
 import type { ServicesAnchor } from "@/lib/services-anchors";
 import type { SplitTextResult } from "@/lib/split-text";
 
@@ -90,11 +90,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 						class="services-offer-inset-content"
 						data-services-reveal-inset-content
 					>
-						<Icon
-							class="inset-arrow-icon"
-							:name="appIcons.arrowUpRight"
-							aria-hidden="true"
-						/>
+						<BrandLogomark class="inset-arrow-icon" />
 					</span>
 				</span>
 			</NuxtLink>
@@ -117,7 +113,7 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 		<TrailingTooltip
 			v-if="shouldLoadTooltip"
 			:active="tooltipActive"
-			:icon="appIcons.arrowUpRight"
+			mark
 			:label="tooltipLabel"
 			:size="tooltipSize"
 		/>
@@ -170,6 +166,10 @@ function setTextSplit(index: number, parts: SplitTextResult) {
 	clip-path: inset(
 		0 calc((1 - var(--services-offer-inset-open)) * 100%) 0 0 round 7.5%
 	);
+}
+
+.services-offer[data-surface="dark"] .services-offer-inset-surface {
+	@apply bg-background/10;
 }
 
 .services-offer-inset-content {

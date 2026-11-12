@@ -7,7 +7,6 @@ import {
 } from "vue";
 import ProjectCard from "@/components/cards/ProjectCard.vue";
 import type { ProjectImage } from "@/components/cards/ProjectCard.vue";
-import { appIcons } from "@/lib/icons";
 import { projectCategoryServices } from "@/lib/projects";
 import type { ProjectCategory, ProjectService } from "@/lib/projects";
 import WorkFilters from "./WorkFilters.vue";
@@ -143,7 +142,7 @@ function activateTooltip({ name }: Project) {
 		<TrailingTooltip
 			v-if="shouldLoadTooltip"
 			:active="tooltipActive"
-			:icon="appIcons.arrowUpRight"
+			mark
 			:size="tooltipSize"
 			:label="tooltipLabel"
 		/>

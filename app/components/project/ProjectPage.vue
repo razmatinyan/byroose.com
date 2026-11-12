@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { defineAsyncComponent, shallowRef } from "vue";
-import { appIcons } from "@/lib/icons";
 import { getProjectCoverImage, getProjectGallery } from "@/lib/projects";
 import type { Project, ProjectMedia as ProjectMediaItem } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
@@ -47,7 +46,7 @@ function openMedia(media: ProjectMediaItem) {
 }
 
 function showVideoHint() {
-   showTooltip("", videoHintLabel, "default", appIcons.speakerHigh);
+   showTooltip("", videoHintLabel, "default", true);
 }
 
 provideProjectGallery({ open: openMedia, showVideoHint, hideVideoHint });
@@ -105,7 +104,7 @@ useSchemaOrg([
       <TrailingTooltip
          v-if="shouldLoadVideoHint"
          :active="videoHintActive"
-         :icon="appIcons.speakerHigh"
+         mark
          :label="videoHintLabel"
       />
    </article>

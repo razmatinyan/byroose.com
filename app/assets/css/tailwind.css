@@ -324,7 +324,7 @@
    }
 
    .inset-arrow-icon {
-      @apply block size-full scale-[1.5];
+      @apply block size-full;
    }
 
    .section-intro {

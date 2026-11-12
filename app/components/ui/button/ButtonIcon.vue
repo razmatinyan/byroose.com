@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { computed } from 'vue'
+import BrandLogomark from '@/components/shared/BrandLogomark.vue'
 import { appIcons } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
 const {
 	class: className,
-	icon = appIcons.arrowUpRight,
+	icon,
 	size = 'default',
 	tone = 'plain',
 } = defineProps<{
@@ -17,6 +18,7 @@ const {
 }>()
 
 const glyphSize = computed(() => (size === 'sm' ? 'size-4' : 'size-5'))
+const logomarkSize = computed(() => (size === 'sm' ? 'size-3' : 'size-4'))
 const slidesHorizontally = computed(() => icon === appIcons.arrowRight)
 const scalesInPlace = computed(() => icon === appIcons.close)
 const glyphAxis = computed(() => {
@@ -46,10 +48,12 @@ const glyphAxis = computed(() => {
 	>
 		<slot>
 			<span class="button-icon-glyph" data-rollover-glyph>
-				<Icon :name="icon" :class="glyphSize" />
+				<Icon v-if="icon" :name="icon" :class="glyphSize" />
+				<BrandLogomark v-else :class="logomarkSize" />
 			</span>
 			<span class="button-icon-glyph" data-rollover-glyph-copy>
-				<Icon :name="icon" :class="glyphSize" />
+				<Icon v-if="icon" :name="icon" :class="glyphSize" />
+				<BrandLogomark v-else :class="logomarkSize" />
 			</span>
 		</slot>
 	</span>

@@ -2,7 +2,6 @@
 import { defineAsyncComponent, shallowRef } from "vue";
 import ArrowLink from "@/components/shared/ArrowLink.vue";
 import HoverVideo from "@/components/shared/HoverVideo.vue";
-import { appIcons } from "@/lib/icons";
 import { getProjectCoverImage } from "@/lib/projects";
 import type { Project } from "@/lib/projects";
 
@@ -83,7 +82,7 @@ function deactivateTooltip() {
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
-         :icon="appIcons.arrowUpRight"
+         mark
          :label="tooltipLabel"
       />
    </section>

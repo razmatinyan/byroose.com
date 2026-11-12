@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import {
-	computed,
-	defineAsyncComponent,
-	shallowRef,
-	useTemplateRef,
-} from "vue";
+import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
-import { appIcons } from "@/lib/icons";
+import BrandLogomark from "@/components/shared/BrandLogomark.vue";
 import { servicePagePaths } from "@/lib/services-anchors";
 import type { ServicePagePath } from "@/lib/services-anchors";
 import { servicesHeroImages } from "@/lib/services-hero";
@@ -89,10 +84,6 @@ const {
 	show: showTooltip,
 	size: tooltipSize,
 } = useTrailingTooltip();
-
-const tooltipIcon = computed(() =>
-	tooltipImage.value ? undefined : appIcons.arrowUpRight,
-);
 
 useServicesMotion(servicesRoot, {
 	descriptionSplits,
@@ -191,11 +182,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 				>
 					<span class="service-link-surface inset-arrow-surface">
 						<span class="service-link-content" data-service-link-content>
-							<Icon
-								class="inset-arrow-icon"
-								:name="appIcons.arrowUpRight"
-								aria-hidden="true"
-							/>
+							<BrandLogomark class="inset-arrow-icon" />
 						</span>
 					</span>
 				</NuxtLink>
@@ -241,7 +228,7 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 		<TrailingTooltip
 			v-if="shouldLoadTooltip"
 			:active="tooltipActive"
-			:icon="tooltipIcon"
+			mark
 			:image="tooltipImage"
 			:label="tooltipLabel"
 			:preload="tooltipPreload"
@@ -354,6 +341,10 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 	clip-path: inset(
 		0 calc((1 - var(--service-link-open)) * 100%) 0 0 round 7.5%
 	);
+}
+
+.service-panel-dark .service-link-surface {
+	@apply bg-background/10;
 }
 
 .service-link-content {

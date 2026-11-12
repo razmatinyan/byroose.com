@@ -3,7 +3,7 @@ import { useIntervalFn } from "@vueuse/core";
 import { shallowRef, useTemplateRef, watch } from "vue";
 import type { ComponentPublicInstance } from "vue";
 import SplitText from "@/components/shared/SplitText.vue";
-import { appIcons } from "@/lib/icons";
+import BrandLogomark from "@/components/shared/BrandLogomark.vue";
 import type { SplitTextResult } from "@/lib/split-text";
 
 interface MoreWorksImage {
@@ -178,13 +178,13 @@ function openWorks(event: MouseEvent) {
                         class="more-works-action-glyph"
                         data-arrow-swap-glyph
                      >
-                        <Icon :name="appIcons.arrowUpRight" />
+                        <BrandLogomark />
                      </span>
                      <span
                         class="more-works-action-glyph"
                         data-arrow-swap-glyph-copy
                      >
-                        <Icon :name="appIcons.arrowUpRight" />
+                        <BrandLogomark />
                      </span>
                   </span>
                </NuxtLink>

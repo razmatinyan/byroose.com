@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, useTemplateRef } from "vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
-import { appIcons } from "@/lib/icons";
+import BrandLogomark from "@/components/shared/BrandLogomark.vue";
 import { servicesHeroImages } from "@/lib/services-hero";
 
 const TrailingTooltip = defineAsyncComponent(
@@ -73,10 +73,7 @@ function showAboutTooltip() {
                      ><span
                         class="services-hero-inset-content services-hero-link-content"
                         data-services-hero-inset-content
-                        ><Icon
-                           class="inset-arrow-icon"
-                           :name="appIcons.arrowUpRight"
-                           aria-hidden="true" /></span></NuxtLink
+                        ><BrandLogomark class="inset-arrow-icon" /></span></NuxtLink
                   ><span
                      v-else-if="line.inset === 'media'"
                      class="services-hero-inset services-hero-media"
@@ -100,7 +97,7 @@ function showAboutTooltip() {
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
-         :icon="appIcons.arrowUpRight"
+         mark
          :label="aboutLabel"
       />
    </section>

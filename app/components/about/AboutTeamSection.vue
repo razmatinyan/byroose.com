@@ -149,7 +149,7 @@ function activateTooltip() {
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
-         :icon="appIcons.arrowUpRight"
+         mark
          :label="tooltipLabel"
       />
    </section>

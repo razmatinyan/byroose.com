@@ -7,7 +7,6 @@ import ugcCreator from "@/data/projects/ugc-creator";
 import type { ProjectCategory } from "@/lib/projects";
 import MoreWorksPanel from "./MoreWorksPanel.vue";
 import WorkLine from "./WorkLine.vue";
-import { appIcons } from "@/lib/icons";
 import { servicePagePaths } from "@/lib/services-anchors";
 import SplitText from "@/components/shared/SplitText.vue";
 import type { SplitTextResult } from "@/lib/split-text";
@@ -92,9 +91,9 @@ const titleSplit = shallowRef<SplitTextResult>();
 const {
    active: tooltipActive,
    hide: deactivateTooltip,
-   icon: tooltipIcon,
    image: tooltipImage,
    label: tooltipLabel,
+   mark: tooltipMark,
    shouldLoad: shouldLoadTooltip,
    show: showTooltip,
    size: tooltipSize,
@@ -108,7 +107,7 @@ function setTitleSplit(parts: SplitTextResult) {
 }
 
 function activateTooltip(label: string) {
-   showTooltip("", label, "compact", appIcons.arrowRight);
+   showTooltip("", label, "compact", true);
 }
 </script>
 
@@ -145,7 +144,7 @@ function activateTooltip(label: string) {
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
-         :icon="tooltipIcon"
+         :mark="tooltipMark"
          :image="tooltipImage"
          :label="tooltipLabel"
          :preload="tooltipPreload"

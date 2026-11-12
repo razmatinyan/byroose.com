@@ -274,6 +274,16 @@ Props use Vue's reactive destructuring syntax. Static primitive defaults can be
 declared directly in the destructure. Array and object defaults can also use
 native destructuring defaults. Do not use `withDefaults`.
 
+### Brand logomark
+
+`BrandLogomark` renders the six-circle logomark from `public/logomark.svg` as
+an inline SVG filled with `currentColor`, so a consumer sets its color with a
+semantic text token such as `text-primary` or `text-brand-blue` and its size
+with size utilities. Use it wherever the mark needs a theme or brand color, and
+keep `public/logomark.svg` for places that need a file. Update both together
+when the artwork changes. The SVG is decorative and stays outside the
+accessibility tree.
+
 ### Wave underline
 
 `WaveUnderline` is the shared decorative SVG for a thick repeating wave that
@@ -321,7 +331,11 @@ rendering never depends on the public Iconify API. Phosphor glyphs are filled
 paths, so adjust their weight by choosing the variant, never with
 `stroke-width`.
 
-`ButtonIcon` owns the icon tone and icon-size contract. The default `plain` tone
+`ButtonIcon` owns the icon tone and icon-size contract. Without an `icon` it
+renders the `BrandLogomark` in the action's text color, so every CTA that
+keeps the default shows the logomark instead of a Phosphor arrow. The
+logomark sits a step smaller than a glyph, `size-4` by default and `size-3` at
+`sm`. The default `plain` tone
 renders the bare glyph directly after the label, with no background and no tile
 padding. Its box is exactly the glyph size, `size-5` by default and `size-4` at
 `sm`, and it does not clip its overflow, so the rollover glyph swap is clipped
@@ -377,7 +391,7 @@ never up, when its longest line is wider than the copy column, so a longer route
 title still holds two lines at every width. Below it sits a description in `font-medium`
 `foreground/60` at `text-xl` and `text-2xl` from `md`, held to `38ch` with
 balanced wrapping, then a large `default` Start a project
-action to `/contact` with an arrow right glyph and the hover bounce. When the title reaches 82 percent of the viewport, its
+action to `/contact` with the logomark and the hover bounce. When the title reaches 82 percent of the viewport, its
 lines rise one after the other from their line masks, with the shared word
 reveal, `0.8s` on `power3.out`, and the title line reveal's `0.1s` stagger.
 The description lines then rise with the hero description's line reveal, and
@@ -397,7 +411,7 @@ edge, and the row scrolls left. Either way the loop crosses one card about
 every `5s`, eases to a stop under the pointer or keyboard focus, and pauses
 off screen. A card's cover does not scale on hover. Instead, on fine-pointer
 devices, the shared `TrailingTooltip` follows the pointer over a card in its
-compact size with an arrow right glyph and "View" followed by the project
+compact size with the brand orange logomark and "View" followed by the project
 name and "Case", such as "View Cartoon Case". Covers load
 lazily, and a video cover plays muted and looped only while its card is near
 the screen, fading in over its poster once it plays. Reduced motion stops the
@@ -564,8 +578,7 @@ content, not a site token, and is the one place a raw color reaches a
 component.
 
 The whole block is one link to the next project. Hovering it shows the shared
-TrailingTooltip in its text-only form, "Next Project" with an arrow up right
-glyph. A video cover shows its poster at rest and plays muted inside the
+TrailingTooltip in its text-only form, "Next Project" with the brand orange logomark. A video cover shows its poster at rest and plays muted inside the
 frame through the shared `HoverVideo` while the block is hovered, loading
 none of the video before then. From `md` it is a `9fr` and `11fr` grid with a `2.5rem` column gap, so
 the next project's cover takes about 45 percent of the width as a `4/3`
@@ -617,7 +630,7 @@ viewer on click or keyboard activation. The item sits in a full-width button
 with a pointer cursor, a `rounded-lg` focus ring, and the label "View full
 size", or "Watch with sound" for a video, followed by its alt text. Hovering a
 video opens the page's TrailingTooltip in its text-only form, "Watch with
-sound" with a speaker high glyph.
+sound" with the brand orange logomark.
 
 The viewer is a full-screen Dialog over a `foreground/90` overlay. The image
 shows at its intrinsic size and only shrinks to fit the viewport, never grows,
@@ -1658,18 +1671,15 @@ tooltip has no persistent `will-change` promotion, so its settled text remains
 sharp. Reduced motion removes the movement delay and clip transition.
 
 The tooltip also has a text-only form. Without an image it renders no
-thumbnail frame and switches to `px-5 py-3` padding. An `icon` passed instead
-of an image takes the thumbnail's place on the left of the label as a square
-mark styled like the home service link: the `inset-arrow-surface` grey, a
-brand orange `primary` glyph in `inset-arrow-icon`, `7.5%` corners, and a
-`17.5%` inset. That inset lives on an inner content box that fills the mark,
-as in the service link, because percentage padding resolves against the
-containing block's width and would otherwise grow with the whole tooltip and
-collapse the glyph. The mark is `size-12` with `p-2 pr-6` tooltip padding and a
-`gap-3`, or `size-9` with `p-1.5 pr-4` and `gap-2.5` in the compact size. An
-image always wins over an icon. The About team cards use it for "More Info",
+thumbnail frame and switches to `px-5 py-3` padding. The `mark` prop, set
+instead of an image, puts a square mark in the thumbnail's place on the left
+of the label: an `inset-arrow-surface` grey square with `15%` corners that holds a brand orange `primary` `BrandLogomark` inside a small inset. The mark
+is `size-9` with a `p-1.5` inset and a `gap-3`, or `size-6` with `p-1` and
+`gap-2.5` in the compact size, slightly taller than the label text, and the tooltip keeps
+its text-only padding. An
+image always wins over the mark. The About team cards use it for "More Info",
 the Services hero link for "About", and the Work project cards for "View
-Project", all with an arrow up right glyph. Passing an
+Project", all with the logomark. Passing an
 empty image drops every thumbnail layer, so a tooltip that switches from an
 image target to a text-only one, such as a home case study card and its
 Visit Live link, never keeps the previous thumbnail.
@@ -1694,7 +1704,7 @@ circle of `clamp(9rem, 15vw, 15rem)` in the canvas `background` color. The
 page's grain overlay textures it like the canvas, so it reads as a piece of the
 canvas pushed up into the dark panel. A negative bottom margin of
 half its size sits its center on the panel's bottom edge. The panel clips its
-own overflow, so only the top half shows. The arrow up right glyph sits in that
+own overflow, so only the top half shows. The `BrandLogomark` sits in that
 visible half, a quarter of the way down the circle.
 
 On hover the circle runs its own `useArrowSwapHover` rather than the CTA bounce
@@ -1849,7 +1859,9 @@ repeated at a larger scale. It is a `NuxtLink` to the service's own page,
 `/services/ai-content-creation` or `/services/web-development`, named "See AI content creation services" or "See web
 development services" through `aria-label`, and it shares the hero link's
 `inset-arrow-link` focus ring, `inset-arrow-surface` grey, and
-`inset-arrow-icon` glyph. From `md` it is exactly as tall as the description:
+`inset-arrow-icon` logomark. On the dark Web development panel its surface
+turns `background/10`, a dark grey a step lighter than the `foreground` panel.
+From `md` it is exactly as tall as the description:
 it stretches to the height of the grid row it shares with the description,
 `aspect-square` makes it as wide as it is tall, and `justify-self-start` keeps
 the column from stretching its width instead. It sits `0.5em` of the
@@ -1859,7 +1871,7 @@ the type. Its corners are `7.5%` of its size and its glyph sits inside
 description's first line. Below `md` it is hidden, so phones show the title
 and the description without it. Hovering it opens the services section's TrailingTooltip in its
 text-only form, "More about" followed by the service name, such
-as "More about Website Development", with an arrow up right glyph and
+as "More about Website Development", with the brand orange logomark and
 no thumbnail.
 
 The link keeps its full size from the start, so the layout never moves. Its
@@ -2307,7 +2319,7 @@ services panel inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
 `md`, and `py-24` from `xl`. The heading row pairs the "Our Blog" title,
 set in title case at the user's request, with a round `dark` `cta-icon` action
 that routes to `/blog`, aligned to the row's bottom edge. The action holds only
-the arrow up right glyph and keeps the CTA rollover, and its `aria-label`,
+the logomark and keeps the CTA rollover, and its `aria-label`,
 "All articles", names the link. It is as tall as the title: the heading sets
 `--blog-title-size` and `--blog-title-leading`, the title uses both, and the
 action takes the title size as its font size and a diameter of
@@ -2505,10 +2517,10 @@ corners, no shadow, `1.25rem` of inline padding, and `text-xl` copy,
 are `h-14`, `h-16` from `md`. The textarea is at least `10rem` tall, `12rem`
 from `md`, and resizes vertically. Errors sit under their control in
 `destructive` text, and the control takes the primitive's `aria-invalid`
-ring. The submit action is a `dark` `cta-lg` Button with the arrow up right
-glyph pushed to the far edge, full width below `sm` and half the form from
+ring. The submit action is a `dark` `cta-lg` Button with the logomark
+pushed to the far edge, full width below `sm` and half the form from
 `sm`. While a submit runs it reads "Sending", stays disabled at full opacity,
-and swaps its arrow for the Lucide `loader-circle` spinner, which turns with
+and swaps its logomark for the Lucide `loader-circle` spinner, which turns with
 `animate-spin` and holds still under reduced motion. The arrow stays mounted
 and only hides, so the rollover keeps its glyphs after a submit. A polite
 status line under the action offers the site email after a failure.
@@ -2576,7 +2588,7 @@ The hero fills the first screen below the header except for
 section shows at the bottom of the first screen. It centers the "Welcome to"
 title above a three line description, held to `36ch` and widened to `80ch`
 from `lg` so the founding story stays on three balanced lines, with the
-forrrow logo in place of the second line's text. The logo is a `currentColor` span masked by `/logo.svg`,
+forrrow logo in place of the second line's text. The logo is a `currentColor` span masked by the wordmark-only `/logo-name.svg`, with its `594 / 146` aspect ratio,
 `0.74em` tall, the measured height of the bold lowercase "forrrow" it replaces,
 and sits on the text baseline, so it takes the title's color and blend. Screen
 readers still hear "Welcome to forrrow" from the heading label. The team,
@@ -2651,10 +2663,10 @@ director of forrrow", reuses
 `public/images/founder.jpg`. A member without a `portrait` shows the striped
 `MediaPlaceholder` until a photo exists.
 
-A round `yellow` `cta-icon` action with an arrow up right glyph sits to the
+A round `yellow` `cta-icon` action with the logomark sits to the
 right of each name and role, centered on both, and rises with them. Hovering
 it runs the CTA rollover. Hovering anywhere on a card opens the text-only
-TrailingTooltip, "More Info" with an arrow up right glyph, set in title case at
+TrailingTooltip, "More Info" with the brand orange logomark, set in title case at
 the user's request. Clicking the card or the action opens that member's dialog.
 The tooltip closes as the dialog opens.
 
@@ -2767,14 +2779,12 @@ uncovered from its center outward while the centered line spreads around it.
 
 The link frame is a square `NuxtLink` to `/about` on the `canvas-shade` grey of
 the statement section below, named "About" through `aria-label`. It holds a
-brand orange `primary` arrow up right glyph that fills the frame inside
-`0.14em` of padding. The Phosphor bold arrow spans only about three fifths of
-its box, so the glyph scales to `1.5`, which brings the arrow itself most of
-the way to the padding. The focus ring lives in the global
+brand orange `primary` `BrandLogomark` that fills the frame inside
+`0.14em` of padding. The focus ring lives in the global
 `inset-arrow-link` class group, the grey in `inset-arrow-surface`, and the
-glyph's scale in `inset-arrow-icon`, which the home service links
-share. Hovering it opens the hero's text-only TrailingTooltip, "About"
-with an arrow up right glyph, and keyboard focus shows the standard ring.
+logomark's full-size fill in `inset-arrow-icon`, which the home service links
+and the Services offer insets share. Hovering it opens the hero's text-only TrailingTooltip, "About"
+with the brand orange logomark, and keyboard focus shows the standard ring.
 
 The image frame is 16:9 and shows an `ImageCycle` that cuts through four images
 from `public/images/hero` every `750ms`, the way the About section headings do,
@@ -2831,7 +2841,8 @@ clipped from the right by `--services-offer-inset-open`, which rests at `0`,
 and opens from its left edge as it reaches 82 percent of the viewport, level
 with the description, over `1.1s` on the swap ease while its glyph settles
 from `1.3` scale, as on the home page. Keyboard focus and reduced motion show
-it open. The light AI
+it open. In the dark Website Development section the surface is
+`background/10`, as on the home page's dark panel. The light AI
 Content Creation section ends with twice `spacing-section` of bottom padding,
 so there is a large gap before the dark Website Development section. The dark
 section ends with `spacing-section`.
@@ -3043,8 +3054,8 @@ the hover image scale on keyboard focus.
 Hovering a card scales its image to `1.06` inside the frame over `0.8s` on
 the tooltip's `cubic-bezier(0.19, 1, 0.22, 1)` curve and opens the section's
 TrailingTooltip in its text-only form, "View" followed by the project name
-and "Case", such as "View UGC Creator Case", with an arrow up right
-glyph. The scale applies only to `(hover: hover)` pointers and switches without
+and "Case", such as "View UGC Creator Case", with the brand orange logomark.
+The scale applies only to `(hover: hover)` pointers and switches without
 the transition under reduced motion. A card with a `video` keeps its image at
 rest and stacks the shared `HoverVideo` over it, a muted, looping,
 decorative video whose source is set on the first hover, so the page loads
@@ -3224,10 +3235,10 @@ pointing at the service list. The content sits `6px` below it, centered, on the
 grey `canvas-shade` surface with `rounded-2xl` corners, a `p-1.5` inset, and no
 shadow, and stacks two links vertically: AI content creation to
 `/services/ai-content-creation` and Web development to
-`/services/web-development`, from `servicePagePaths`. Each link starts with a decorative service image, the same art the home
-Services section uses for that service, `public/images/hero/5.png` and
-`6.png`, in a `w-16` box that stretches to the full height of its text, cropped
-with `object-cover` and rounded with `rounded-lg`, followed by the semibold service name at
+`/services/web-development`, from `servicePagePaths`. Each link starts with a square `size-12` box with no surface of its own,
+centered against its text, that holds a `size-5` `BrandLogomark` in
+its top right corner, inset by `p-2`. The mark is `primary` orange for AI
+content creation and `brand-blue` for Web development. The semibold service name follows at
 `text-xl` with a one-line `muted-foreground` description at `text-base` under
 it. On mouse hover a `foreground/8` pill with `rounded-xl` corners glides
 between the two links on the pricing switcher's `0.55s`

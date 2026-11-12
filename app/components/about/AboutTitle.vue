@@ -184,7 +184,7 @@ const segmentedLines = computed(() =>
    @apply inline-block bg-current align-baseline;
    aspect-ratio: 594 / 146;
    height: 0.74em;
-   mask: url("/logo.svg") center / contain no-repeat;
+   mask: url("/logo-name.svg") center / contain no-repeat;
 }
 
 .about-title-underlined {

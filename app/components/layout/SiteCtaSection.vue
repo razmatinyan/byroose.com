@@ -10,7 +10,6 @@ import ProjectMarqueeCard from "@/components/cards/ProjectMarqueeCard.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { projects } from "@/data/projects";
-import { appIcons } from "@/lib/icons";
 import type { Project } from "@/lib/projects";
 import { siteCtaFor } from "@/lib/site-cta";
 import type { SplitTextResult } from "@/lib/split-text";
@@ -132,7 +131,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
                >
                   {{ actionLabel }}
                   <template #icon>
-                     <ButtonIcon :icon="appIcons.arrowRight" />
+                     <ButtonIcon />
                   </template>
                </Button>
             </span>
@@ -165,7 +164,7 @@ function setDescriptionSplit(parts: SplitTextResult) {
       <TrailingTooltip
          v-if="shouldLoadTooltip"
          :active="tooltipActive"
-         :icon="appIcons.arrowRight"
+         mark
          :size="tooltipSize"
          :label="tooltipLabel"
       />
