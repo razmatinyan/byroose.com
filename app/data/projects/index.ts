@@ -1,4 +1,4 @@
-import type { Project } from "@/lib/projects";
+import type { Project } from "../../lib/projects";
 import cartoon from "./cartoon";
 import sygen from "./sygen";
 import ugcCreator from "./ugc-creator";

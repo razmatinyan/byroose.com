@@ -1,4 +1,4 @@
-import type { SurfaceTone } from "@/lib/surfaces";
+import type { SurfaceTone } from "./surfaces";
 
 export type ProjectService = "ai-content" | "website-development";
 

@@ -1,4 +1,4 @@
-import { defineProject } from "@/lib/projects";
+import { defineProject } from "../../lib/projects";
 
 export default defineProject({
    slug: "cartoon",

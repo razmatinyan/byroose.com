@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
 import { listPublishedPosts } from "./config/blog-posts";
+import {
+   imageFormat,
+   imageQuality,
+   listInteractiveImageRoutes,
+} from "./config/image-routes";
 import { listPageLastmods } from "./config/page-lastmod";
 import {
    siteDescription,
@@ -103,8 +108,8 @@ export default defineNuxtConfig({
             "/sitemap.xml",
             "/llms.txt",
             ...publishedPosts.map((post) => post.path),
+            ...listInteractiveImageRoutes(),
          ],
-         ignore: ["/_vercel"],
       },
    },
 
@@ -197,11 +202,10 @@ export default defineNuxtConfig({
    ],
 
    image: {
-      provider: "vercel",
-      quality: 80,
-      vercel: {
-         formats: ["image/webp"],
-         minimumCacheTTL: 86400,
+      provider: "ipxStatic",
+      quality: imageQuality,
+      ipxStatic: {
+         modifiers: { format: imageFormat },
       },
       none: {},
       screens: {
@@ -214,12 +218,6 @@ export default defineNuxtConfig({
          "portrait-2x": 896,
          viewer: 2560,
       },
-      // format: ['webp'],
-      // ipx: {
-      // 	modifiers: {
-      // 		format: 'webp',
-      // 	},
-      // },
    },
 
    shadcn: {

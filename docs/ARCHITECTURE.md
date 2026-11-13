@@ -974,12 +974,24 @@ The default scroller is the browser window. This keeps native scrolling, sticky 
 public contains source assets served from root-relative URLs, including images,
 the logo, favicon, and robots file. Render images through NuxtImg or NuxtPicture
 so Nuxt Image owns responsive sizing and optimization. Raster images go through
-the Vercel provider, which emits WebP at the central `image.quality` of 80 and
-only accepts widths listed in `image.screens`, because that list becomes the
-Vercel image size allowlist.
-Optimized images are cached for one day through `image.vercel.minimumCacheTTL`,
-so a replaced image can stay stale for returning visitors until that expires.
-Give an updated image a new file name when it must appear immediately. SVG
+the `ipxStatic` provider, which writes every variant into `.output/public/_ipx`
+at build time as WebP at the central quality of 80. Because every route is
+prerendered, the output works on any static or edge host, including Vercel,
+Cloudflare, and a plain Node server, without a runtime image optimizer.
+`config/image-routes.ts` owns `imageQuality` and `imageFormat`, which
+nuxt.config.ts reads.
+
+The build only generates the variants that appear in prerendered HTML. An image
+that renders only after an interaction needs its variant added to the prerender
+routes, which `listInteractiveImageRoutes` in `config/image-routes.ts` does for
+two cases: the square 448px and 896px thumbnails of every raster file under
+`public/images` for the trailing tooltip, and the 1024px, 1536px, and 2560px
+variants of every project gallery image for the project image viewer. The About
+member dialog reuses the `sizes` of the member card portrait so it reads the
+variants the page already loaded. A new interaction-only image must follow one
+of these patterns, or its variants return 404 in production. The config loads
+`app/data/projects` and `app/lib/projects.ts` outside Nuxt, so those files and
+their imports use relative paths instead of the `@/` alias. SVG
 brand assets use the registered `none` provider so they bypass the optimizer,
 which does not process SVG. Repeating decorative textures such as the canvas
 grain tile are the exception. They are referenced by root-relative URL from the
@@ -1052,8 +1064,8 @@ Do not introduce global state for convenience.
 Every route is prerendered at build time. The `/**` route rule sets
 `prerender: true`, and Nitro prerenders `/`, `/robots.txt`, `/sitemap.xml`,
 and `/llms.txt`, follows every internal link, and adds every page file,
-including Work project pages that nothing links to yet. It ignores
-`/_vercel` image URLs, which only Vercel serves. A new page therefore ships as
+including Work project pages that nothing links to yet. It also prerenders the
+interaction-only image variants described in Public assets. A new page therefore ships as
 static HTML without any configuration. Code that reads request data at
 runtime does not work on a prerendered route.
 
@@ -1311,9 +1323,6 @@ internal links during development and builds.
 
 ### Known gaps
 
-- Nuxt Image uses the `vercel` provider, which works only on Vercel. The site
-  will move to a VPS running the Node server, so switch to the `ipx` provider
-  with WebP output before that move.
 - The Contact rate limit is an in-memory map, so each server instance counts
   on its own and a cold start resets it. Move it to shared storage if abuse
   gets past it.

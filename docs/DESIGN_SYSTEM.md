@@ -835,7 +835,8 @@ unless a source needs an intentional override. Keep vector brand assets as SVG
 and render them with `provider="none"`.
 
 Every width an image requests, including its 2x density, must be a value in
-`image.screens`, or the Vercel provider rounds it up and warns. Give every
+`image.screens`, so responsive candidates stay on the shared breakpoints and the
+build does not generate one-off variants. Give every
 `sizes` entry a screen key, such as `sm:100vw md:448px`. A bare entry like
 `100vw` is resolved against a 1px screen and produces a useless 1px candidate.
 When a fixed slot needs a width that is not a breakpoint, add it to `screens`
@@ -843,6 +844,12 @@ under a descriptive key, as the 448px slots of the trailing tooltip and the more
 works frame do with `portrait` and `portrait-2x`, and the project image viewer does
 with `viewer` at 2560px. Repeating CSS background textures are the exception and are
 described in Canvas grain.
+
+Image variants are generated at build time from prerendered HTML. An image that
+only renders after an interaction, such as in a dialog, viewer, or hover
+tooltip, must have its variants listed in `config/image-routes.ts`, or it
+returns 404 in production. Public assets in docs/ARCHITECTURE.md describes the
+covered cases.
 
 The browser picks a candidate once, from the `sizes` value multiplied by the
 device pixel ratio. It never looks at crops or transforms. An image whose

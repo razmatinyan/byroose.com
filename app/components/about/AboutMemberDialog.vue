@@ -67,7 +67,7 @@ function focusDialog(event: Event) {
                :alt="portrait.alt"
                :width="portrait.width"
                :height="portrait.height"
-               sizes="sm:640px md:768px"
+               sizes="sm:1280px md:1024px lg:1280px xl:1536px"
                densities="x1"
                loading="eager"
                draggable="false"
