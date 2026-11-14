@@ -61,7 +61,8 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 				<BlogCard
 					v-for="(article, index) in blogArticles"
 					:key="article.title"
-					v-bind="article"
+					:image="article.image"
+					:title="article.title"
 					:href="blogRoute"
 					@title-split="setCardTitleSplit(index, $event)"
 				/>

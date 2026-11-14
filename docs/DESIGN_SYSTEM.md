@@ -2319,24 +2319,14 @@ sets a semibold weight and its own size, `clamp(2.75rem, 9vw, 9rem)`, about 130p
 1440 wide, larger than `text-section`, at `0.92` leading.
 
 Three `BlogCard`s follow in one column below `md` and three columns from `md`.
-Each card is a `NuxtLink`. Its default `tinted` surface is painted with a
-`surface-*` utility through its `tone` prop, which accepts `pink`, `yellow`,
-and `green`, used in that order.
-The card is `rounded-2xl` with `p-3`, so its `rounded-xl` image sits inset in
-the tint. It carries a soft `shadow-xl` in `foreground` at 10 percent, at the
-user's request, so the tinted cards lift off the grey panel. This is a
-deliberate exception to the borders before shadows rule. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
-placeholder with an empty alt, because the title names the link. Below it come
-the title and a meta row that pairs the category pill on the left with the
-publishing date on the right. The title is semibold at `text-2xl`, `text-xl`
+Each card is a `NuxtLink` with no background, padding, or shadow: the
+`rounded-xl` image sits directly on the panel with only the title below it,
+and the title takes the panel's foreground. The card shows no category or
+date. The card keeps `rounded-xl` so its focus
+ring follows the image corners. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
+placeholder with an empty alt, because the title names the link. The title is semibold at `text-2xl`, `text-xl`
 from `md`, `text-3xl` from `lg`, and `text-4xl` from `xl`, with `0.95` leading
-and `-0.045em` tracking. The meta row tracks at `-0.02em`. The pill uses
-`bg-current/10`, so it tints itself from the card's foreground on every
-surface. The date is a `time` element whose label comes from
-`formatPublishDate`. The meta row sits at the bottom of the card through
-`mt-auto`, so the rows align across cards with titles of different lengths. It
-is `text-xs` from `md` until `xl`, which keeps the date beside the pill from
-1024 wide. On narrower three-column cards the date wraps below the pill.
+and `-0.045em` tracking.
 
 `useBlogMotion` reveals the section. When the heading row reaches 82 percent of
 the viewport, the title rises character by character from its `SplitText` word
@@ -2351,13 +2341,11 @@ wrapper is clipped to `inset(0)` while the inner `data-blog-cta` block rises
 from `115` percent, and both the clip and the transform are cleared at the end
 so the focus ring and the rollover are never cut.
 
-The cards themselves do not animate, so the tinted surfaces and the images are
-always at rest. Only their text reveals, from each card's own trigger at the
+The cards themselves do not animate, so the images are always at rest. Only
+their titles reveal, from each card's own trigger at the
 same 82 percent line. The title rises line by line from its `SplitText` line
-masks with the services description timing, `1.1s`, `power3`, and a `0.075s` stagger, and
-the meta row rises as one line from its clipping wrapper one stagger step after
-the last title line. Cards that share a layout row, measured by their
-`offsetTop` when they enter, start their text `0.15s` apart, so the desktop row
+masks with the services description timing, `1.1s`, `power3`, and a `0.075s` stagger. Cards that share a layout row, measured by their
+`offsetTop` when they enter, start their titles `0.15s` apart, so the desktop row
 reads as a stagger while stacked phone cards each reveal as they arrive
 without waiting. The title splits into lines and
 words with every word an inline block, so the browser never breaks inside a
@@ -2369,8 +2357,7 @@ one shows them at rest. Reduced motion shows the title, the action, and every
 card at rest without any reveal.
 
 Hovering a card blurs only its image, to `12px`, and brings a "Read Article"
-action into the center of the image. The title, the meta row, and the tinted
-surface stay sharp. The image also scales to `1.1` while it blurs, so the
+action into the center of the image. The title stays sharp. The image also scales to `1.1` while it blurs, so the
 blur never softens the edges of its rounded frame, which clips it. The action
 is the shared `dark` `cta-lg` button rendered as a `span` with an arrow right
 glyph, inside an overlay on the image frame that is hidden from assistive
@@ -2404,10 +2391,9 @@ after the count with the navigation stagger. A category with no articles shows
 "No articles in this category yet." Its article heading shows the live article count and, because
 it shares `useBlogMotion` with the home section, it must split into characters
 and rises character by character like the home title. Its
-cards use the same responsive BlogCard grid and interaction as the home section:
-one column below `md` and three columns from `md`. It passes the `neutral`
-surface, which uses the card background and foreground tokens instead of a
-brand tone. The home section keeps the default tinted surface.
+cards use the same responsive BlogCard grid, surfaceless layout, and
+interaction as the home section: one column below `md` and three columns from
+`md`.
 
 The articles, dates, and images are placeholders until real posts exist, and
 every card links to `/blog`.

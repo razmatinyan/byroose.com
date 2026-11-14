@@ -284,13 +284,12 @@ description to the shared ListingHero, or a category's when BlogPage passes
 them. BlogArticlesSection owns the article count heading, keeps only the
 articles of its optional `category`, renders the shared article content from
 app/lib/blog-articles.ts in a three-column grid from `md`, shows an empty
-message when a category has no articles, and requests the neutral BlogCard
-surface. BlogCategoryNav sits beside the count and renders All and the two
+message when a category has no articles. BlogCategoryNav sits beside the count and renders All and the two
 categories as links, not filters, marking the link of the current path with
 `aria-current="page"`. useBlogMotion rises every `data-blog-cta` in the
 heading after the title characters with the navigation stagger, so the same
 hook serves the home section's single action and these links. The home BlogSection consumes
-the same article content with the default tinted BlogCard surface.
+the same article content and BlogCard.
 
 ### Legal components
 
@@ -404,7 +403,7 @@ useSmoothScroll rather than writing the scroll position itself.
 
 ### Card components
 
-app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard exposes tinted and neutral surfaces so the home and Blog route can share one layout without sharing the same color treatment. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one package from app/lib/pricing.ts: its name with the discount percent, an optional "Most popular" band on a brand orange frame that wraps the card, the description, the struck regular price beside the package price, its own call label as a link to the Contact route with the saving below it, and the features under "Includes:" or "Everything in <previous package>, plus:". From `lg` it spans four rows of its grid through `subgrid`, so the price, action, and features rows line up across the three cards. PricingFlexibleCard renders the flexible package block below the package grid on every pricing tab, with a call to plan a flexible package on the Contact route and no price. Cards do not fetch their own page data.
+app/components/cards contains reusable content presentation such as case studies, projects, courses, articles, reasons, and statistics. Cards receive typed content and variants through props. BlogCard has no surface of its own, an image with the title and meta below it, so the home and Blog route share one layout on their own backgrounds. ProjectMarqueeCard renders one project's cover as a link to its page for the site call to action's marquee. It loads its image lazily and, for a video cover, sets the video's source and plays it muted only while the card is within half a viewport of the screen, pausing it once it leaves. Reduced motion keeps the poster. Its `duplicate` prop hides a repeated card from assistive technology and the tab order. PricingCard renders one package from app/lib/pricing.ts: its name with the discount percent, an optional "Most popular" band on a brand orange frame that wraps the card, the description, the struck regular price beside the package price, its own call label as a link to the Contact route with the saving below it, and the features under "Includes:" or "Everything in <previous package>, plus:". From `lg` it spans four rows of its grid through `subgrid`, so the price, action, and features rows line up across the three cards. PricingFlexibleCard renders the flexible package block below the package grid on every pricing tab, with a call to plan a flexible package on the Contact route and no price. Cards do not fetch their own page data.
 
 ### Shared components
 
@@ -592,7 +591,7 @@ and emits its title and description splits.
 
 useBlogMotion owns the blog section's reveal: the heading's title characters and
 the `data-blog-cta` action rising from its `data-blog-cta-mask`, and for each
-`data-blog-card` the title line rise and the `data-blog-card-meta` rise. The
+`data-blog-card` the title line rise. The
 cards themselves stay at rest. Cards that share a layout row are staggered from
 their measured `offsetTop` when they enter. It waits for the title's character split
 and every card title's line split, rebuilds a card's reveal when its title
@@ -934,7 +933,7 @@ app/lib contains pure helpers, shared constants, and stable names.
   the mask cuts only above and below and never the last letter's overhang.
 - utils.ts contains pure class and value helpers. `formatPublishDate` formats
   an ISO date in fixed `en-US` long style at UTC, so the server and the client
-  render the same blog card date.
+  render the same blog post and legal page dates.
 
 Library modules must not access the DOM, Vue lifecycle, request state, or component instances.
 

@@ -50,9 +50,9 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
       <ul v-if="articles.length" class="blog-articles-grid">
          <li v-for="(article, index) in articles" :key="article.title">
             <BlogCard
-               v-bind="article"
+               :image="article.image"
+               :title="article.title"
                href="/blog"
-               surface="neutral"
                @title-split="setCardTitleSplit(index, $event)"
             />
          </li>

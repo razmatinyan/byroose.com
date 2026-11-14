@@ -40,7 +40,6 @@ interface CardReveal {
 
 const selectors = {
    card: "[data-blog-card]",
-   cardMeta: "[data-blog-card-meta]",
    cta: "[data-blog-cta]",
    ctaMask: "[data-blog-cta-mask]",
    heading: "[data-blog-heading]",
@@ -115,7 +114,6 @@ export function useBlogMotion(
       if (!scrollTriggerPlugin) return;
 
       const { card, titleLines } = parts;
-      const meta = card.querySelector<HTMLElement>(selectors.cardMeta);
       const timeline = gsap.timeline({
          onStart: () => revealedCards.add(card),
          paused: true,
@@ -126,20 +124,6 @@ export function useBlogMotion(
          ease: lineRevealEase,
          stagger: lineRevealStagger,
       });
-
-      if (meta) {
-         gsap.set(meta, { yPercent: wordRevealOffset });
-         timeline.to(
-            meta,
-            {
-               clearProps: "transform",
-               duration: lineRevealDuration,
-               ease: lineRevealEase,
-               yPercent: 0,
-            },
-            titleLines.length * lineRevealStagger,
-         );
-      }
 
       const trigger = scrollTriggerPlugin.create({
          once: true,
