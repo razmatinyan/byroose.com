@@ -506,25 +506,25 @@ WorkSection feeds them to the same TrailingTooltip the case cards use.
 
 useServicesMotion owns the services section's motion: the pinned intro panel's
 blurred word reveal and, for each `data-service-panel`, the slowed travel of
-the children of its `data-service-content` block, the description line rise
-anchored to the static service title, and the scrubbed bottom origin image entry
-and top origin image exit, which meet when the image frame crosses the viewport
-center. The content keeps one constant slowed speed throughout, so the section
-never slows down further while its image scales. It also owns the scrubbed rise of a dark panel's
-`data-service-backdrop` from the viewport bottom center, and its curved
-exit that reaches down toward the journey title as the panel leaves. Because the content block moves, those triggers are
-scroll positions computed from untransformed layout rather than trigger
-elements. On touch devices its media context drops the slowed travel, the
-scrubbed image scale, and the backdrop rise, so the content stays in place, the dark backdrop
-is shown at rest, and each image scales in once from a trigger on its frame.
+the children of its `data-service-content` block, and the description line rise
+anchored to the static service title. The content keeps one constant slowed
+speed throughout. The panels have no images. It also owns the dark panel's card rise, a scrubbed
+scale of its `data-service-card`, which holds the dark fill and the content,
+from a rounded `0.92` scale to full bleed, the pin and blur of the panel it covers, which skips the slowed travel,
+and the dark panel's curved exit that reaches down toward the journey title as
+the panel leaves. Because the content block moves, those triggers are scroll
+positions computed from untransformed layout rather than trigger elements. On
+touch devices its media context drops the slowed travel, the card scale, and
+the pin, so the content stays in place and the dark panel is shown at rest.
 The same text timeline opens each panel's `data-service-title-inset` and
 `data-service-link` by tweening their `--service-title-inset-open` and
 `--service-link-open` properties, and settles their
 `data-service-title-inset-content` and `data-service-link-content` from the
-hero inset's content scale. The slowed travel moves the `data-service-title`
+hero inset's content scale, and raises each panel's `data-service-rise` route
+link `0.3s` after the description starts. The slowed travel moves the `data-service-title`
 through `top` and the other content children through a transform, so the
 title's blended text fragments stay unisolated. ServicesSection owns the copy, the
-service links, the image links, and the tooltip handlers. Both links route to
+square service links and their tooltip handlers. Each link routes to
 the service's own page from `servicePagePaths`. The composable waits until the intro
 lines and every description have reported their splits.
 Reduced motion resolves every reveal to visible content without the pin.
@@ -786,7 +786,7 @@ callback, on resize, and on `page:transition:finish`, it hit tests the center of
 element with `document.elementsFromPoint`, skips everything inside the header,
 and resolves the first element that is or sits inside a marked surface. Hit
 testing respects `clip-path`, so a surface that is still clipping its way in,
-such as the services backdrop, only counts once it actually reaches the probe.
+such as the services dark card, only counts once it actually reaches the probe.
 Mark the painted surface rather than a transparent wrapper, because a wrapper's
 box is hit even where nothing dark is painted.
 
@@ -978,6 +978,9 @@ the `ipxStatic` provider, which writes every variant into `.output/public/_ipx`
 at build time as WebP at the central quality of 80. Because every route is
 prerendered, the output works on any static or edge host, including Vercel,
 Cloudflare, and a plain Node server, without a runtime image optimizer.
+The dev server never registers the `/_ipx` route for `ipxStatic`, so a
+`$development` override in nuxt.config.ts switches the dev server to the live
+`ipx` provider with the same WebP format. Both providers build the same URLs.
 `config/image-routes.ts` owns `imageQuality` and `imageFormat`, which
 nuxt.config.ts reads.
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent, shallowRef, useTemplateRef } from "vue";
+import ArrowLink from "@/components/shared/ArrowLink.vue";
 import ImageCycle from "@/components/shared/ImageCycle.vue";
 import SplitText from "@/components/shared/SplitText.vue";
 import BrandLogomark from "@/components/shared/BrandLogomark.vue";
@@ -16,7 +17,6 @@ const TrailingTooltip = defineAsyncComponent(
 interface Service {
 	path: ServicePagePath;
 	description: string;
-	image: string;
 	linkLabel: string;
 	surface: "canvas" | "dark";
 	titleImages: readonly ServicesImage[];
@@ -32,7 +32,6 @@ const servicesData: Service[] = [
 		path: servicePagePaths.aiContent,
 		description:
 			"Content people stop for. AI videos, reels, UGC ads, and AI product photography, directed and edited by humans.",
-		image: "/images/hero/5.png",
 		linkLabel: "See AI content creation services",
 		surface: "canvas",
 		titleImages: servicesHeroImages,
@@ -43,7 +42,6 @@ const servicesData: Service[] = [
 		path: servicePagePaths.web,
 		description:
 			"A website that feels like the post they just tapped. From conversion-focused landing pages to full websites and custom web platforms, designed around your content.",
-		image: "/images/hero/6.png",
 		linkLabel: "See web development services",
 		surface: "dark",
 		titleImages: [
@@ -57,8 +55,6 @@ const servicesData: Service[] = [
 ];
 
 const titleInsetSizes = "sm:448px";
-
-const tooltipPreload = servicesData.map((service) => service.image);
 
 function serviceTitle({ titleLead, titleTrail }: Service) {
 	return `${titleLead}${titleTrail}`;
@@ -136,90 +132,67 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			class="service-panel"
 			:class="{ 'service-panel-dark': service.surface === 'dark' }"
 			data-service-panel
+			:data-service-surface="service.surface"
 		>
 			<div
-				v-if="service.surface === 'dark'"
-				class="service-backdrop"
-				data-service-backdrop
-				aria-hidden="true"
+				class="service-card"
+				data-service-card
+				:data-header-surface="service.surface === 'dark' ? 'dark' : undefined"
 			>
 				<div
-					class="service-backdrop-surface"
-					data-service-backdrop-surface
+					v-if="service.surface === 'dark'"
+					class="service-curve"
+					data-service-curve
 					data-header-surface="dark"
+					aria-hidden="true"
 				/>
-				<div
-					class="service-backdrop-curve"
-					data-service-backdrop-curve
-					data-header-surface="dark"
-				/>
-			</div>
-			<div class="service-content" data-service-content>
-				<h3 class="service-title" data-service-title>
-					<span class="service-title-text">{{ service.titleLead }}</span
-					><span
-						class="service-title-inset"
-						data-service-title-inset
-						aria-hidden="true"
+				<div class="service-content" data-service-content>
+					<h3 class="service-title" data-service-title>
+						<span class="service-title-text">{{ service.titleLead }}</span
 						><span
-							class="service-title-inset-content"
-							data-service-title-inset-content
-							><ImageCycle
-								class="service-title-images"
-								:images="service.titleImages"
-								:sizes="titleInsetSizes" /></span></span
-					><span class="service-title-text">{{ service.titleTrail }}</span>
-				</h3>
+							class="service-title-inset"
+							data-service-title-inset
+							aria-hidden="true"
+							><span
+								class="service-title-inset-content"
+								data-service-title-inset-content
+								><ImageCycle
+									class="service-title-images"
+									:images="service.titleImages"
+									:sizes="titleInsetSizes" /></span></span
+						><span class="service-title-text">{{ service.titleTrail }}</span>
+					</h3>
 
-				<NuxtLink
-					class="service-link inset-arrow-link"
-					data-service-link
-					:to="service.path"
-					:aria-label="service.linkLabel"
-					@click="hideTooltip"
-					@pointerenter="showServiceTooltip(service)"
-					@pointerleave="hideTooltip"
-				>
-					<span class="service-link-surface inset-arrow-surface">
-						<span class="service-link-content" data-service-link-content>
-							<BrandLogomark class="inset-arrow-icon" />
+					<NuxtLink
+						class="service-link inset-arrow-link"
+						data-service-link
+						:to="service.path"
+						:aria-label="service.linkLabel"
+						@click="hideTooltip"
+						@pointerenter="showServiceTooltip(service)"
+						@pointerleave="hideTooltip"
+					>
+						<span class="service-link-surface inset-arrow-surface">
+							<span class="service-link-content" data-service-link-content>
+								<BrandLogomark class="inset-arrow-icon" />
+							</span>
 						</span>
-					</span>
-				</NuxtLink>
+					</NuxtLink>
 
-				<SplitText
-					class="service-description"
-					as="p"
-					auto-split
-					mask="lines"
-					:text="service.description"
-					type="lines,words"
-					@split="setDescriptionSplit(index, $event)"
-				/>
+					<SplitText
+						class="service-description"
+						as="p"
+						auto-split
+						mask="lines"
+						:text="service.description"
+						type="lines,words"
+						@split="setDescriptionSplit(index, $event)"
+					/>
 
-				<div class="service-media-frame" data-service-media-frame>
-					<div class="service-media-exit" data-service-media-exit>
-						<NuxtLink
-							class="service-media"
-							data-service-media
-							:to="service.path"
-							:aria-label="`More details about ${serviceTitle(service)}`"
-							@pointerenter="showServiceTooltip(service)"
-							@pointerleave="hideTooltip"
-						>
-							<NuxtImg
-								class="service-image"
-								data-service-image
-								:src="service.image"
-								alt=""
-								width="1456"
-								height="816"
-								sizes="sm:1024px md:1280px lg:1536px"
-								densities="x1"
-								loading="lazy"
-								draggable="false"
-							/>
-						</NuxtLink>
+					<div class="service-route-link-mask">
+						<div class="service-route-link" data-service-rise>
+							<ArrowLink :to="service.path" :label="service.linkLabel" />
+						</div>
 					</div>
 				</div>
 			</div>
@@ -231,7 +204,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 			mark
 			:image="tooltipImage"
 			:label="tooltipLabel"
-			:preload="tooltipPreload"
 			:size="tooltipSize"
 		/>
 	</section>
@@ -263,11 +235,20 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 }
 
 .service-panel {
+	@apply relative;
+}
+
+.service-card {
 	@apply relative px-[clamp(1rem,2vw,1.5rem)] pt-section;
 	padding-bottom: max(
 		var(--spacing-section),
 		calc(var(--service-runway, 0) * 100svh)
 	);
+	transform-origin: 50% 0;
+}
+
+.service-panel-dark .service-card {
+	@apply bg-foreground;
 }
 
 .service-panel-dark .service-title,
@@ -280,18 +261,15 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 	@apply mix-blend-difference;
 }
 
-.service-backdrop {
-	@apply absolute inset-x-0 bottom-0 -z-10;
-	top: calc(var(--service-backdrop-lead, 0) * -100svh);
+.service-panel-dark {
+	@apply z-[1];
 }
 
-.service-backdrop-surface {
-	@apply absolute inset-0 bg-foreground;
-}
-
-.service-backdrop-curve {
+.service-curve {
 	@apply absolute top-full -left-1/4 -mt-px h-[clamp(4rem,10vw,10rem)] w-[150%] origin-top bg-foreground;
-	border-radius: 0 0 50% 50% / 0 0 100% 100%;
+	--service-curve-depth: clamp(4rem, 10vw, 10rem);
+	border-radius: 0 0 50% 50% / 0 0 var(--service-curve-depth)
+		var(--service-curve-depth);
 	transform: scaleY(0);
 }
 
@@ -355,6 +333,23 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 	@apply m-0 mt-4 w-full text-left md:col-span-2 md:col-start-2 md:mt-8 xl:mt-12 text-2xl leading-[0.9] font-medium tracking-[-0.04em] text-pretty text-foreground md:text-4xl xl:text-5xl 2xl:text-6xl;
 }
 
+.service-route-link-mask {
+	@apply mt-6 w-full overflow-hidden p-1 md:col-span-2 md:col-start-2 md:mt-4;
+}
+
+.service-route-link {
+	@apply text-left text-foreground;
+	visibility: hidden;
+}
+
+.service-panel-dark .service-route-link {
+	@apply text-background mix-blend-difference;
+}
+
+.service-route-link :deep(.arrow-link) {
+	@apply w-fit max-w-full;
+}
+
 .service-description :deep(.split-text-line),
 .service-description :deep(.split-text-line-mask) {
 	display: block;
@@ -377,10 +372,6 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 	visibility: hidden;
 }
 
-.service-media-frame {
-	@apply mt-3 w-full md:col-span-3;
-}
-
 @media (prefers-reduced-motion: reduce) {
 	.service-link {
 		--service-link-open: 1;
@@ -389,17 +380,5 @@ function setDescriptionSplit(index: number, parts: SplitTextResult) {
 	.service-title-inset {
 		--service-title-inset-open: 1;
 	}
-}
-
-.service-media-exit {
-	@apply origin-top;
-}
-
-.service-media {
-	@apply block aspect-[1456/816] w-full origin-bottom overflow-hidden rounded-2xl bg-muted;
-}
-
-.service-image {
-	@apply pointer-events-none size-full object-cover select-none;
 }
 </style>

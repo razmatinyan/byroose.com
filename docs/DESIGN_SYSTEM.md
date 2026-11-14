@@ -38,9 +38,8 @@ visual and accessibility review.
 | `brand-cream`                                                     | Warm cream, `#F5EBDD`                                           | Cream brand surfaces                                                                                                                            |
 | `foreground`                                                      | Near-black ink                                                  | Primary text and dark surfaces                                                                                                                  |
 | `card`                                                            | White                                                           | Elevated and contained content                                                                                                                  |
-| `panel`                                                           | Soft sand, `#F5E8D4`                                            | Large panels that sit on the canvas, such as the blog section                                                                                   |
 | `paper`                                                           | Light cream, `#F5EEDE`                                          | The site footer and the first working-process card                                                                                              |
-| `canvas-shade`                                                    | Neutral grey, `oklch(0.955 0 0)`                                | A grey band one step below the canvas, such as the About team section                                                                           |
+| `canvas-shade`                                                    | Neutral grey, `oklch(0.955 0 0)`                                | A grey band one step below the canvas, such as the About team section and the blog panel                                                        |
 | `primary` and `ring`                                              | Orange-red, `#FF3C00`                                           | Primary actions, emphasis, and high-energy sections                                                                                             |
 | `secondary`                                                       | Cobalt blue                                                     | Alternate brand surfaces and supporting emphasis                                                                                                |
 | `brand-green`                                                     | Saturated green, `#0B9E5A`                                      | Positive editorial surfaces and varied content cards                                                                                            |
@@ -81,14 +80,11 @@ either changes. `brand-cream` sits at nearly the same value,
 `oklch(0.9441 0.0215 76.53)`, so do not place a `brand-cream` surface on
 `paper`. `muted` sits a step darker and slightly toward yellow at
 `oklch(0.9208 0.0221 73.14)`, so quiet surfaces stay visible on the canvas.
-`panel` is a soft sand between `brand-cream` and `muted` at
-`oklch(0.935 0.03 79)`, so the blog panel reads as a deliberate block of
-color. It pairs with the ink `panel-foreground`, and in the dark theme both
-match the dark `card` pair. The dark theme uses the cream, `oklch(0.9441 0.0215 76.53)`, for
+The dark theme uses the cream, `oklch(0.9441 0.0215 76.53)`, for
 its foreground, card, popover, accent, and cream foreground tokens. Change
 `brand-cream`, `muted`, and those dark foregrounds together, then recheck
 `muted-foreground`, `brand-soft`, and `brand-subtle` against the canvas and
-`muted`, and recheck them against `panel` and `paper` when those change.
+`muted`, and recheck them against `paper` when it changes.
 `brand-soft` on `muted` is the tightest pair at about 4.75:1.
 
 `canvas-shade` is neutral rather than warm, so it reads as a grey version of
@@ -338,7 +334,7 @@ logomark sits a step smaller than a glyph, `size-4` by default and `size-3` at
 `sm`. The default `plain` tone
 renders the bare glyph directly after the label, with no background and no tile
 padding. Its box is exactly the glyph size, `size-5` by default and `size-4` at
-`sm`, and it does not clip its overflow, so the rollover glyph swap is clipped
+`sm`, and it does not clip its overflow, so the elastic overshoot of the rollover glyph swap is clipped
 by the button edge rather than by the icon box. The glyph uses the action's own
 text color. CTA buttons use `plain`, so the `cta-sm` and
 `cta-lg` sizes use symmetric horizontal padding, `px-4` and `px-5`, with the
@@ -1834,10 +1830,10 @@ grows to full opacity, no blur, and its resting size. The words resolve one
 after another in reading order. The pin holds the finished title for
 a short beat before releasing it. Reduced motion shows the title at rest.
 
-Each service panel stacks its title at `text-service`, a description below
-it, and an image below that. The panels use a narrower gutter than the
+Each service panel stacks its title at `text-service` and a description below
+it, with no image. The panels use a narrower gutter than the
 site-wide `section-gutter`, `clamp(1rem, 2vw, 1.5rem)` instead of
-`spacing-page`, so the title, the description, and the image reach closer to
+`spacing-page`, so the title and the description reach closer to
 the viewport edges. The service names, "AI Content Creation" and
 "Website Development", are set in title case. The intro title is not
 selectable, so a drag across the pinned panel never highlights its words.
@@ -1857,9 +1853,19 @@ spans the full column. From `md` the content is a three-column grid without a
 column gap, and the description takes the right two thirds of the content
 width and ends exactly on the right content edge, so it reads as an editorial
 column from just left of center to the right side. Its text is left-aligned,
-and it uses `text-pretty` so the last line never holds a single word. The
-image spans the full content width at the source's natural `1456 / 816`
-ratio, so it is never cropped to fit the viewport.
+and it uses `text-pretty` so the last line never holds a single word.
+
+Below the description, in the same right two thirds from `md`, a shared
+`ArrowLink` repeats the service link as text, as the Services route offer
+sections do. It reads "See AI content creation services" or "See web
+development services", routes to the service's own page, and sizes to its
+label instead of the link's default `20rem` cap. It sits `1.5rem` below the
+description, `1rem` from `md`, inside an overflow mask with `0.25rem` of
+padding so the focus ring is never cut. The link rises out of that mask on the
+panel's text timeline, `0.3s` after the description starts, with the shared
+word reveal duration and ease. Reduced motion shows it at rest. On the dark Web
+development panel it takes the `background` ink with `mix-blend-difference`,
+like the description.
 
 The left third holds a square service link, the Services hero's link frame
 repeated at a larger scale. It is a `NuxtLink` to the service's own page,
@@ -1891,10 +1897,10 @@ surface rather than the link, so it never cuts the link's focus ring. Visible
 keyboard focus opens it instantly, so a keyboard user never lands on a closed
 link.
 
-Each service panel scrolls slower than the page, so the title, the
-description, and a future video stay on screen together while the video
-grows. While motion is enabled, the panel adds runway below its content
-through `--service-runway`: one viewport height for the slowed travel. The title, the description, and the image frame
+Each service panel scrolls slower than the page, so the title and the
+description stay on screen together longer. The panel before a dark card is
+the exception: it is pinned rather than slowed, as described below. While motion is enabled, the panel adds runway below its content
+through `--service-runway`: one viewport height for the slowed travel. The title, the link, and the description
 slide down together through that runway as the panel crosses the viewport. The shared offset is applied to each child of
 `data-service-content` rather than to the block itself, because a transform on
 the block would make it an isolated group and stop its text from blending with
@@ -1905,15 +1911,13 @@ it does for the About hero title. Both offsets take the same value on the same
 scrubbed timeline, so the title and the rest of the content never drift apart.
 At 1440 by
 900 the content moves about 0.7 times as fast as the scroll, and the text
-reveal and the image scale stretch across the longer distance. That speed is
-constant across the whole panel. The content never slows down further while
-the image scales, because a slowdown under a scaling image reads as the page
-dragging. Reduced motion and touch devices drop the runway, and the panel then
-keeps one `spacing-section` of bottom padding, so its image never meets the
+reveal stretches across the longer distance. That speed is constant across
+the whole panel, because a further slowdown reads as the page dragging. Reduced motion and touch devices drop the runway, and the panel then
+keeps one `spacing-section` of bottom padding, so its description never meets the
 next panel's dark backdrop.
 
 Because the content moves, its own elements cannot serve as ScrollTrigger
-triggers. Every text and image trigger is therefore a scroll position computed
+triggers. Every text trigger is therefore a scroll position computed
 from untransformed layout: `scrollWhen` takes an element's offset inside the
 panel and a viewport line, and returns the scroll position at which that
 element reaches that line once the slowed travel is accounted for. The panel itself is never transformed, so it stays a reliable
@@ -1944,8 +1948,8 @@ reaches 60 percent of the viewport, the description rises line by line from
 through `lineRevealDuration` and `lineRevealEase`. The blog card titles share
 the same three values. Each mask rise uses the
 recipe from `app/lib/word-reveal.ts`: 115 percent below the mask to rest.
-Anchoring to the title keeps the reveal and the dark backdrop rise on the same
-trigger, even though the description sits below the title. The lines and their
+Anchoring to the title keeps every line of the reveal on one trigger, even
+though the description sits below the title. The lines and their
 masks are block elements, because the split emits them as inline spans and a
 transform has no effect on an inline element. The description uses
 `SplitText`'s `autoSplit`, so its lines are split again whenever the fonts
@@ -1961,100 +1965,77 @@ started revealing, the new lines are shown at rest. Otherwise the panel's text
 timeline is killed and rebuilt with the new lines inside the same GSAP media
 context, so it is still reverted with the rest of the section.
 
-The image is scrubbed with the scroll in two phases that meet at the viewport
-center, with no hold between them. It scales up from zero around its bottom
-center from the moment its frame enters the viewport until the frame's center
-reaches the viewport center, easing out with `sine.out` to its peak of `0.8`,
-set through `mediaPeakScale`, while the picture inside settles from `1.3`
-scale to rest. From that same point it scales back down to zero around its top
-center with `sine.in`, finishing as the frame's bottom leaves the top of the
-viewport. Both eases have zero speed at the peak, so the turn from growing to
-shrinking is rounded rather than a sharp corner.
-The image never reaches its full layout size. Entry and exit live on two nested
-elements, the link for the bottom origin entry and its wrapper for the top
-origin exit, so the transform origins never fight.
+Every panel wraps its content in a `data-service-card` element, which carries
+the panel's padding and runway. The panel itself is never transformed, so it
+stays the reference for every computed trigger, while the card is the element
+that moves and scales.
 
-Each image is a `NuxtLink` to its service's own page,
-`/services/ai-content-creation` or `/services/web-development`, named for
-its service through `aria-label`. Hovering it opens the services section's TrailingTooltip
-at its `compact` size in its text-only form with the label "More about"
-followed by the service name and "service". The images are decorative
-placeholders from `public/images/hero` and will be replaced with real service
-media.
+Each service declares a `surface`, mirrored on the panel as
+`data-service-surface`. The Website Development panel uses `dark`, so its card
+is filled with `foreground` and holds the content directly; there is no
+separate backdrop layer. Its title and description are set in `background`,
+and the description and the title's text fragments, but not its image frame,
+use `mix-blend-mode: difference`, which resolves against the card's own fill.
+The dark panel sets `z-index: 1`, so it paints above the pinned panel it
+covers. The card fills the panel including its runway, so the section's
+closing `spacing-section` stays on the canvas before the Why Choose Us section.
 
-Each service declares a `surface`. The Website Development panel uses `dark`,
-so it renders a `foreground` backdrop behind its content. Its title and
-description are set in `background`, and the description and the title's text
-fragments, but not its image frame, use `mix-blend-mode: difference`, so they
-read dark over the canvas and off-white over the backdrop, including the moment the
-rising edge crosses a line. The backdrop covers the panel's full width and
-height, including its runway, and ends at the panel's bottom edge, so the
-section's closing `spacing-section` stays on the canvas before the Why Choose
-Us section. The backdrop sits at `-z-10`, so the previous panel's content still
-paints above the dark surface while the two overlap.
+The blend only works while nothing between the text and the card forms an
+isolated group. Keep `data-service-content` free of `isolation`, `z-index`
+stacking, opacity below one, filters, and transforms. Motion that moves the
+text must transform the text elements themselves, and the title, whose blended
+fragments sit inside it, must move without a transform.
 
-The blend only works while nothing between the text and the canvas forms an
-isolated group. Keep the section, the panel, and `data-service-content` free of
-`isolation`, `z-index` stacking, opacity below one, filters, and transforms.
-Motion that moves the text must transform the text elements themselves, and
-the title, whose blended fragments sit inside it, must move without a
-transform.
+The dark card scales up over the panel before it, content included. A scrubbed
+tween on the card runs from the moment the panel's top edge enters the
+viewport bottom until it reaches the viewport top. It scales the card from
+`cardStartScale`, `0.92`, to `1` around its top center, and resolves its corner
+radius from `32px`, set through `cardRadius`, to zero, so the card reaches full
+bleed with square corners exactly when its top edge meets the viewport top.
+The title, description, and links scale with it as one surface.
 
-The backdrop rises from the bottom center of the viewport just ahead of the
-panel's text. `backdropRevealDelay` in `useServicesMotion` places its start
-between the moment the panel top enters the viewport bottom, at `0`, and the
-title and description reveal, at `1`, which begins when the title reaches 60
-percent of the viewport through the shared `textRevealStart` position. It
-currently sits at `0.7`, closer to the text reveal. A scrubbed
-`clip-path` inset with a `32px` corner radius then grows from zero to the full
-viewport over `0.8` of a viewport height of scroll, set through
-`backdropRiseLength`, so the dark top edge climbs at 1.25 times the scroll
-speed. Raise that length to slow the growth and lower it to quicken it. It is anchored to the viewport bottom throughout, so it
-reads as one card scaling up from the bottom center, and its radius resolves to
-zero as it fills the screen. The backdrop extends one viewport above the panel
-through `--service-backdrop-lead`, and the final inset keeps the dark surface
-starting exactly where the viewport top was when the rise completed. The tween
-uses a linear ease because the bottom anchor depends on the clip moving in step
-with the scroll.
+The panel before a card, AI Content Creation, is pinned instead of slowed. It
+gets a `100svh` minimum height and no runway, and a ScrollTrigger pin without
+pin spacing holds it in place from the moment its bottom edge reaches the
+viewport bottom until the card's top edge reaches the viewport top. Over that
+same range its `data-service-content` block blurs to `coveredBlur`, `16px`, and
+fades to zero opacity on a `power1.out` ease, so it recedes while the card
+rises over it. Because its content does not travel, its text reveal starts
+when its title reaches 60 percent of the viewport, measured from the title
+itself.
 
-The backdrop is a wrapper around two layers. `data-service-backdrop-surface`
-carries the dark fill and the rise clip. `data-service-backdrop-curve` hangs
-from the wrapper's bottom edge: a half ellipse 150 percent of the panel width,
-centered so its sides run past the viewport, `clamp(4rem, 10vw, 10rem)` tall,
-and resting at `scaleY(0)` from its top edge. The rest state is a plain CSS
+The dark card owns one more layer, `data-service-curve`, which hangs from its
+bottom edge: a shape 150 percent of the panel width, centered so its sides run
+past the viewport, whose bottom is a half ellipse `clamp(4rem, 10vw, 10rem)`
+deep. It rests at `scaleY(0)` from its top edge. The rest state is a plain CSS
 `transform` rather than Tailwind's `scale-y-0`, because that utility writes the
 separate `scale` property, which would stack with the transform GSAP writes.
 
-As the reader leaves the panel, one scrubbed timeline grows the curve
-to full height and moves the whole wrapper so the curve's tip travels down
-through the section's closing `spacing-section`. The wrapper's offset is the
-closing space times `backdropExitReach` minus the curve's height, so the tip
-reaches that share of the closing space by the end. At `1` the tip ends at the
-services section's bottom edge, one `spacing-section` above the Why Choose Us
-title it spawns.
-Lower the reach to leave more canvas between them. The tip never passes the
-section's bottom edge, so it never covers the Why Choose Us section. The landing wrapper's horizontal clip hides the
-curve where it runs past the viewport. The timeline starts at the image's
-peak, the shared `mediaCenteredAt` position where the image begins to scale
-down, so the curve and the image exit begin together. It ends when the panel's
-bottom edge reaches the viewport top.
+As the reader leaves the panel, a scrubbed tween sizes the curve to the
+section's closing space times `curveExitReach` and grows it from `scaleY(0)` to
+full height, so its tip travels down through the closing `spacing-section`.
+The ellipse depth is a fixed length, so the taller shape keeps the same curved
+bottom above a straight-sided fill. At `1` the tip ends at the services
+section's bottom edge, one `spacing-section` above the Why Choose Us title it
+spawns. Lower the reach to leave more canvas between them. The tip never
+passes the section's bottom edge, so it never covers the Why Choose Us
+section. The landing wrapper's horizontal clip hides the curve where it runs
+past the viewport. The tween starts at the `contentEndCenteredAt` position,
+when the bottom of the `data-service-content` block crosses the viewport
+center. It ends when the panel's bottom edge reaches the viewport top.
 
 Touch devices, matched by `(hover: none) and (pointer: coarse)`, keep the
 intro pin, the description reveal, and the backdrop curve, but drop the slowed
-travel, the runway, the scrubbed image scale, and the backdrop rise. The content scrolls
-at page speed like normal content. Each image scales up once from zero around
-its bottom center, with the picture inside settling from `1.3` to rest, over
-`1.2s` on `power3.out` when its frame top reaches 85 percent of the viewport. It
-then stays at full size in place. The dark backdrop is revealed from the start
-without the lead, so it begins at the panel top as a flat surface. The text
+travel, the runway, the card scale, and the pinned blur of the covered panel.
+The content scrolls at page speed like normal content. The dark panel is shown
+from the start as a flat full-width surface. The text
 reveal starts when the title reaches 60 percent of the viewport, measured from
 the title itself because nothing moves it, and the curve starts when the panel
 bottom reaches the viewport bottom.
 
-Reduced motion drops the intro pin, every reveal, the image scale, and the
-backdrop rise and curve. It displays the intro title words, the
-descriptions, the open service links, and the images at rest, and the dark
-panel keeps a flat backdrop without the lead.
+Reduced motion drops the intro pin, every reveal, the card scale, the pin, and
+the curve. It displays the intro title words, the descriptions, and the open
+service links at rest, and the dark card rests at full width.
 
 ### Pricing section
 
@@ -2318,10 +2299,10 @@ text at rest.
 
 ### Blog section
 
-The blog section is a warm sand panel on the canvas. The section takes the
+The blog section is a grey `canvas-shade` panel on the canvas. The section takes the
 services panel inset, `clamp(1rem, 2vw, 1.5rem)`, on both sides and
-`spacing-section` below it before the FAQ. Inside, a `bg-panel` panel with
-`text-panel-foreground` and
+`spacing-section` below it before the FAQ. Inside, a `bg-canvas-shade` panel with
+`text-canvas-shade-foreground` and
 `rounded-2xl` corners holds the `section-gutter` and `py-16`, `py-20` from
 `md`, and `py-24` from `xl`. The heading row pairs the "Our Blog" title,
 set in title case at the user's request, with a round `dark` `cta-icon` action
@@ -2343,7 +2324,7 @@ Each card is a `NuxtLink`. Its default `tinted` surface is painted with a
 and `green`, used in that order.
 The card is `rounded-2xl` with `p-3`, so its `rounded-xl` image sits inset in
 the tint. It carries a soft `shadow-xl` in `foreground` at 10 percent, at the
-user's request, so the tinted cards lift off the sand panel. This is a
+user's request, so the tinted cards lift off the grey panel. This is a
 deliberate exception to the borders before shadows rule. The image is a decorative 4:3 `object-cover` crop of a 16:9 hero
 placeholder with an empty alt, because the title names the link. Below it come
 the title and a meta row that pairs the category pill on the left with the
@@ -3119,7 +3100,7 @@ Any menu close during a page transition is instant.
 
 Both header actions share the dark action surface, so over a dark block they
 gain a one-pixel `background/20` border that keeps their outline readable. The
-dark blocks are the More works panel and the services backdrop surface and
+dark blocks are the More works panel and the services dark card and
 curve, each marked with `data-header-surface="dark"`.
 `useHeaderSurface` sets the state from what is actually behind the header
 actions. The menu control receives it through its `bordered` prop and fades its
@@ -3345,20 +3326,21 @@ The `cta-sm` and `cta-lg` button sizes also run a masked three-stage rollover.
 The size variant makes the button a clipped positioning host. The primitive
 renders an independent layer group with three surfaces below the button and an
 independent text grid containing the original and copied labels. On hover the
-original label travels up and out while the layers sweep up in sequence. Each
+original label scales away into its top right corner while the layers sweep up in sequence. Each
 layer starts at `94%` scale around its bottom-center origin and grows to full
-size during its existing rise. The copied label follows the final layer into the
-center. Leaving reverses the layer order and returns the layers to their smaller
-hidden state while the original label returns with the same elastic character.
+size during its existing rise. The copied label grows in from its bottom left
+corner. Leaving reverses the layer order and returns the layers to their smaller
+hidden state while the copy shrinks back into its bottom left corner and the
+original label grows back out of its top right corner.
 
-The text grid follows an axis-angle motion contract. At rest the copied label is
-`2em` below the original, rotated `-30deg` around a `1 1 0.5` axis, and hidden.
-On rollover the original moves to `-2em`, rotates to `-60deg` around a
-`1 1 0.45` axis, and fades out. The copy starts after `0.1s`, then translates to
-zero, rotates to zero, and fades in. Translation uses the approved elastic
-`CustomEase` over `0.75s`, rotation uses the smooth curve over `0.5s`, and
-opacity and color settle over `0.2s`. The elastic curve overshoots in both
-directions, so the outgoing and returning original label both have a visible pop.
+The text grid and the glyph follow one scale swap contract. Both labels and
+both glyphs share one grid cell. The original rests at full scale with a top
+right `transform-origin`, and the copy rests at `scale(0)` with a bottom left
+`transform-origin`, which CSS sets before the composable mounts. On each swap
+the outgoing element shrinks to zero with the smooth `CustomEase` over `0.5s`
+from the start, and the incoming element grows to full size with the approved
+elastic `CustomEase` over `0.75s` after `0.1s`. Color settles over `0.2s`. The
+elastic curve overshoots, so whichever element arrives has a visible pop.
 
 The rollover tweens the icon slot's text color together with the original
 label, from the resting color to the copied label's color, so a `plain` glyph
@@ -3370,39 +3352,25 @@ such as a Work filter that becomes pressed, rests in its new variant's ink.
 The icon box stays put. CTA buttons pass their `ButtonIcon` through the named
 `icon` slot, which renders after the layers and is positioned so it paints above
 them. The icon box renders only when that slot is filled, so a CTA without an
-icon, such as a Work filter, reserves no gap for one. Only the glyph animates. `ButtonIcon` renders its glyph twice into the same
-grid cell and parks the second copy below and to the left of the button. The
-rollover host clips both glyphs, so the swap travels across the whole button
-instead of being cut out around the icon: the original leaves along the arrow's
-45 degree diagonal through the upper right edge while the copy arrives at rest
-from the lower left. The travel on each axis equals the host's `clientHeight`,
-read when each swap starts, so the parked copy always sits fully outside the
-host whatever its size. Before the composable mounts, CSS parks the copy at
-`translate(-300%, 300%)`, which is already outside every CTA size. Both glyphs
-are ordinary spans rather than the raw SVG, which keeps their transforms
-predictable. The independent text grid keeps both labels aligned, so
-the copied label does not need an icon-width reserve.
-
-An arrow right glyph swaps horizontally instead. `ButtonIcon` marks its box
-with `data-rollover-glyph-axis="x"` and the `button-icon-slide` class, which
-clips the box to the glyph. The original slides out through the right edge of
-that box while the copy, parked one box width to the left, slides in to rest.
-The travel is the box's `clientWidth`, read when each swap starts. Because the
-icon box itself clips, the copy never crosses the label on its way in.
-
-A close glyph scales in place instead. `ButtonIcon` marks its box with
-`data-rollover-glyph-axis="scale"` and the `button-icon-scale` class, which
-parks the copy at `scale(0)`. On rollover the original shrinks to zero while the
-copy grows to full size in the same spot, and leaving reverses both. Every
-other glyph keeps the diagonal swap.
+icon, such as a Work filter, reserves no gap for one. Only the glyph animates.
+`ButtonIcon` renders its glyph twice into the same grid cell, and the two
+glyphs run the same scale swap as the labels: the original shrinks into its top
+right corner while the copy grows from its bottom left corner. Every glyph,
+including the arrow right and close icons, uses this swap. Both glyphs are
+ordinary spans rather than the raw SVG, which keeps their transforms
+predictable. The independent text grid keeps both labels aligned, so the copied
+label does not need an icon-width reserve.
 
 Render the swap in the template rather than cloning a node at runtime. The icon
 lives inside a Vue-managed subtree, so an injected copy is not guaranteed to
 survive a re-render of the icon.
 
-`useHoverRollover` owns the motion. The layers and glyphs retain their shared
-`power3.out` timing while each text property uses its approved custom curve and
-duration. Each new timeline tweens from the current values, so a fast pointer
+`useHoverRollover` owns the motion. The layers rest one full layer below and
+to the left of the host, at `0.94` scale from their bottom left corner, and
+travel diagonally from the bottom left to the top right to cover it, returning
+the same way when the rollover ends. The layers keep their shared
+`power3.out` timing while the label and glyph scale swap uses its approved
+custom curves and durations. Each new timeline tweens from the current values, so a fast pointer
 never jumps. Reduced motion switches between the two complete states with
 `gsap.set` instead of travelling. Pointer and keyboard state are tracked together,
 so a `:focus-visible` control shows the same covered state as a hovered one. A
@@ -3492,9 +3460,10 @@ These invariants keep this working:
   because the absolutely positioned layers paint above every static sibling
   regardless of document order.
 - GSAP parses an element's computed `transform` into its own pixel translation
-  before it tweens. The layers start below through a CSS `transform`, so the first
-  GSAP call must set `y: 0` alongside `yPercent`. Without it the parsed pixel
-  offset survives and the layers stay below the button for the whole animation.
+  before it tweens. The layers start below and to the left through a CSS
+  `transform`, so the first GSAP call must set `x: 0` and `y: 0` alongside
+  `xPercent` and `yPercent`. Without it the parsed pixel offset survives and the
+  layers stay outside the button for the whole animation.
 
 ## Design-system change workflow
 

@@ -220,6 +220,15 @@ export default defineNuxtConfig({
       },
    },
 
+   $development: {
+      image: {
+         provider: "ipx",
+         ipx: {
+            modifiers: { format: imageFormat },
+         },
+      },
+   },
+
    shadcn: {
       prefix: "Ui",
       componentDir: "@/components/ui",

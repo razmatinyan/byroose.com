@@ -11,6 +11,8 @@ import {
    lineRevealDuration,
    lineRevealEase,
    lineRevealStagger,
+   wordRevealDuration,
+   wordRevealEase,
 } from "@/lib/word-reveal";
 
 type MotionScope = MaybeRefOrGetter<HTMLElement | null | undefined>;
@@ -30,7 +32,6 @@ interface ServicePanelParts {
 
 interface PanelLayout {
    content: HTMLElement;
-   frame: HTMLElement;
    panel: HTMLElement;
 }
 
@@ -46,20 +47,16 @@ interface PanelInset {
 }
 
 const selectors = {
-   backdrop: "[data-service-backdrop]",
-   backdropCurve: "[data-service-backdrop-curve]",
-   backdropSurface: "[data-service-backdrop-surface]",
+   card: "[data-service-card]",
+   curve: "[data-service-curve]",
    content: "[data-service-content]",
-   image: "[data-service-image]",
    intro: "[data-services-intro]",
    link: "[data-service-link]",
    linkContent: "[data-service-link-content]",
    titleInset: "[data-service-title-inset]",
    titleInsetContent: "[data-service-title-inset-content]",
-   media: "[data-service-media]",
-   mediaExit: "[data-service-media-exit]",
-   mediaFrame: "[data-service-media-frame]",
    panel: "[data-service-panel]",
+   rise: "[data-service-rise]",
    title: "[data-service-title]",
 } as const;
 
@@ -74,22 +71,17 @@ const introWordFrom = {
    scale: 0.6,
 };
 const textRevealAt = 0.6;
+const riseDelay = 0.3;
 const linkOpenProperty = "--service-link-open";
 const titleInsetOpenProperty = "--service-title-inset-open";
-const imageZoom = 1.3;
 const panelRunway = 1;
-const mediaPeakScale = 0.8;
-const mediaEntryEase = "sine.out";
-const mediaExitEase = "sine.in";
-const backdropLead = 1;
-const backdropRevealDelay = 0.7;
-const backdropRiseLength = 0.8;
-const backdropRadius = 32;
-const backdropExitReach = 1;
+const cardRadius = 32;
+const cardInset = 0.04;
+const cardStartScale = 0.92;
+const coveredBlur = 16;
+const coveredBlurEase = "power1.out";
+const curveExitReach = 1;
 const touchQuery = "(hover: none) and (pointer: coarse)";
-const touchMediaStart = "top 85%";
-const touchMediaDuration = 1.2;
-const touchMediaEase = "power3.out";
 
 function splitWords(parts: SplitTextResult | undefined) {
    return parts?.words ?? [];
@@ -123,6 +115,7 @@ export function useServicesMotion(
    let panels: ServicePanelParts[] = [];
    const textTimelines = new Map<HTMLElement, gsap.core.Timeline>();
    const revealedPanels = new WeakSet<HTMLElement>();
+   const staticPanels = new WeakSet<HTMLElement>();
 
    function revealIntro(intro: HTMLElement, words: HTMLElement[]) {
       if (!words.length) return;
@@ -162,8 +155,7 @@ export function useServicesMotion(
 
    function layoutOf(panel: HTMLElement): PanelLayout | null {
       const content = panel.querySelector<HTMLElement>(selectors.content);
-      const frame = panel.querySelector<HTMLElement>(selectors.mediaFrame);
-      return content && frame ? { content, frame, panel } : null;
+      return content ? { content, panel } : null;
    }
 
    function travelOf({ content, panel }: PanelLayout): PanelTravel {
@@ -192,12 +184,12 @@ export function useServicesMotion(
       };
    }
 
-   function mediaCenteredAt(layout: PanelLayout) {
-      const { frame, panel } = layout;
+   function contentEndCenteredAt(layout: PanelLayout) {
+      const { content, panel } = layout;
 
       return scrollWhen(
          layout,
-         () => offsetWithin(frame, panel) + frame.offsetHeight / 2,
+         () => offsetWithin(content, panel) + content.offsetHeight,
          0.5,
       );
    }
@@ -235,7 +227,7 @@ export function useServicesMotion(
    }
 
    function textRevealStart(layout: PanelLayout, title: HTMLElement) {
-      if (touchMotion) {
+      if (touchMotion || staticPanels.has(layout.panel)) {
          return () =>
             title.getBoundingClientRect().top +
             window.scrollY -
@@ -271,6 +263,14 @@ export function useServicesMotion(
          ease: lineRevealEase,
          stagger: lineRevealStagger,
       });
+      const rise = panel.querySelector<HTMLElement>(selectors.rise);
+      if (rise) {
+         addWordReveal(timeline, [rise], {
+            duration: wordRevealDuration,
+            ease: wordRevealEase,
+            position: riseDelay,
+         });
+      }
       openInset(timeline, panel, {
          content: selectors.titleInsetContent,
          frame: selectors.titleInset,
@@ -330,164 +330,108 @@ export function useServicesMotion(
       context.add(() => revealText(parts, layout));
    }
 
-   function scaleMedia(layout: PanelLayout) {
-      const { frame, panel } = layout;
-      const media = panel.querySelector<HTMLElement>(selectors.media);
-      const mediaExit = panel.querySelector<HTMLElement>(selectors.mediaExit);
-      const image = panel.querySelector<HTMLElement>(selectors.image);
-      if (!media || !mediaExit) return;
-
-      const frameAt = (share: number) => () =>
-         offsetWithin(frame, panel) + frame.offsetHeight * share;
-      const centered = mediaCenteredAt(layout);
-
-      const entry = gsap
-         .timeline({
-            defaults: { ease: mediaEntryEase },
-            scrollTrigger: {
-               end: centered,
-               invalidateOnRefresh: true,
-               refreshPriority,
-               scrub: true,
-               start: scrollWhen(layout, frameAt(0), 1),
-            },
-         })
-         .fromTo(media, { scale: 0 }, { scale: mediaPeakScale }, 0);
-
-      if (image) entry.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
-
-      gsap.fromTo(
-         mediaExit,
-         { scale: 1 },
-         {
-            ease: mediaExitEase,
-            immediateRender: false,
-            scale: 0,
-            scrollTrigger: {
-               end: scrollWhen(layout, frameAt(1), 0),
-               invalidateOnRefresh: true,
-               refreshPriority,
-               scrub: true,
-               start: centered,
-            },
-         },
-      );
+   function isCard(panel: HTMLElement) {
+      return panel.dataset.serviceSurface === "dark";
    }
 
-   function revealMedia({ frame, panel }: PanelLayout) {
-      const media = panel.querySelector<HTMLElement>(selectors.media);
-      const image = panel.querySelector<HTMLElement>(selectors.image);
-      if (!media) return;
+   function pinCovered(covered: HTMLElement, card: HTMLElement) {
+      const content = covered.querySelector<HTMLElement>(selectors.content);
 
-      const timeline = gsap
-         .timeline({
-            defaults: { duration: touchMediaDuration, ease: touchMediaEase },
-            scrollTrigger: {
-               once: true,
-               refreshPriority,
-               start: touchMediaStart,
-               trigger: frame,
-            },
-         })
-         .fromTo(media, { scale: 0 }, { scale: 1 }, 0);
+      gsap.set(covered, { minHeight: "100svh" });
 
-      if (image) timeline.fromTo(image, { scale: imageZoom }, { scale: 1 }, 0);
+      const timeline = gsap.timeline({
+         defaults: { ease: coveredBlurEase },
+         scrollTrigger: {
+            end: "top top",
+            endTrigger: card,
+            invalidateOnRefresh: true,
+            pin: true,
+            pinSpacing: false,
+            refreshPriority,
+            scrub: true,
+            start: "bottom bottom",
+            trigger: covered,
+         },
+      });
+
+      if (content) {
+         timeline.fromTo(
+            content,
+            { filter: "blur(0px)", opacity: 1 },
+            { filter: `blur(${coveredBlur}px)`, opacity: 0 },
+            0,
+         );
+      }
    }
 
-   function riseBackdrop(layout: PanelLayout) {
-      const { panel } = layout;
-      const backdrop = panel.querySelector<HTMLElement>(selectors.backdrop);
-      const surface = panel.querySelector<HTMLElement>(
-         selectors.backdropSurface,
-      );
-      const title = panel.querySelector<HTMLElement>(selectors.title);
-      if (!backdrop || !surface || !title) return;
-
-      gsap.set(panel, { "--service-backdrop-lead": backdropLead });
-
-      const textStart = textRevealStart(layout, title);
-      const panelEntry = () =>
-         panel.getBoundingClientRect().top +
-         window.scrollY -
-         window.innerHeight;
-      const start = () =>
-         gsap.utils.interpolate(panelEntry(), textStart(), backdropRevealDelay);
-      const distance = () => window.innerHeight * backdropRiseLength;
-      const lead = () => -backdrop.offsetTop;
-      const halfWidth = () => surface.offsetWidth / 2;
-      const panelTopAtStart = () =>
-         panel.getBoundingClientRect().top + window.scrollY - start();
-      const viewportBottomAtStart = () =>
-         window.innerHeight - panelTopAtStart() + lead();
-      const viewportTopAtEnd = () =>
-         lead() - Math.max(0, panelTopAtStart() - distance());
+   function riseCard(panel: HTMLElement) {
+      const card = panel.querySelector<HTMLElement>(selectors.card);
+      if (!card) return;
 
       gsap.fromTo(
-         surface,
+         card,
+         { borderRadius: cardRadius, scale: cardStartScale },
          {
-            clipPath: () =>
-               `inset(${viewportBottomAtStart()}px ${halfWidth()}px ${surface.offsetHeight - viewportBottomAtStart()}px ${halfWidth()}px round ${backdropRadius}px)`,
-         },
-         {
-            clipPath: () =>
-               `inset(${viewportTopAtEnd()}px 0px 0px 0px round 0px)`,
+            borderRadius: 0,
             ease: "none",
+            scale: 1,
             scrollTrigger: {
-               end: () => start() + distance(),
+               end: "top top",
                invalidateOnRefresh: true,
                refreshPriority,
                scrub: true,
-               start,
+               start: "top bottom",
+               trigger: panel,
             },
          },
       );
    }
 
-   function curveBackdrop(layout: PanelLayout) {
+   function curveExit(layout: PanelLayout) {
       const { panel } = layout;
-      const backdrop = panel.querySelector<HTMLElement>(selectors.backdrop);
-      const curve = panel.querySelector<HTMLElement>(selectors.backdropCurve);
+      const curve = panel.querySelector<HTMLElement>(selectors.curve);
       const section = panel.parentElement;
-      if (!backdrop || !curve || !section) return;
+      if (!curve || !section) return;
 
-      const closingSpace = () =>
-         section.getBoundingClientRect().bottom -
-         panel.getBoundingClientRect().bottom;
+      const depth = () =>
+         (section.getBoundingClientRect().bottom -
+            panel.getBoundingClientRect().bottom) *
+         curveExitReach;
 
-      gsap
-         .timeline({
-            defaults: { ease: "none" },
+      gsap.fromTo(
+         curve,
+         { height: depth, scaleY: 0 },
+         {
+            ease: "none",
+            height: depth,
+            scaleY: 1,
             scrollTrigger: {
                end: "bottom top",
                invalidateOnRefresh: true,
                refreshPriority,
                scrub: true,
-               start: touchMotion ? "bottom bottom" : mediaCenteredAt(layout),
+               start: touchMotion ? "bottom bottom" : contentEndCenteredAt(layout),
                trigger: panel,
             },
-         })
-         .fromTo(curve, { scaleY: 0 }, { scaleY: 1 }, 0)
-         .fromTo(
-            backdrop,
-            { y: 0 },
-            {
-               y: () =>
-                  closingSpace() * backdropExitReach - curve.offsetHeight,
-            },
-            0,
-         );
+         },
+      );
    }
 
-   function animatePanel(parts: ServicePanelParts) {
+   function coveringCard(index: number) {
+      const next = panels[index + 1]?.panel;
+      return !touchMotion && next && isCard(next) ? next : undefined;
+   }
+
+   function animatePanel(parts: ServicePanelParts, index: number) {
       const layout = layoutOf(parts.panel);
       if (!layout) return;
 
-      if (!touchMotion) riseBackdrop(layout);
-      curveBackdrop(layout);
-      if (!touchMotion) slowContent(layout);
+      const card = coveringCard(index);
+      if (card) pinCovered(parts.panel, card);
+      if (!touchMotion && isCard(parts.panel)) riseCard(parts.panel);
+      curveExit(layout);
+      if (!touchMotion && !card) slowContent(layout);
       revealText(parts, layout);
-      if (touchMotion) revealMedia(layout);
-      else scaleMedia(layout);
    }
 
    function showAll(elements: HTMLElement[]) {
@@ -536,12 +480,17 @@ export function useServicesMotion(
                showAll([
                   ...introWords,
                   ...panels.flatMap(({ descriptionLines }) => descriptionLines),
+                  ...root.querySelectorAll<HTMLElement>(selectors.rise),
                ]);
                return;
             }
 
+            panels.forEach(({ panel }, index) => {
+               if (coveringCard(index)) staticPanels.add(panel);
+               else staticPanels.delete(panel);
+            });
             revealIntro(intro, introWords);
-            for (const panel of panels) animatePanel(panel);
+            panels.forEach(animatePanel);
          },
          scope,
       );

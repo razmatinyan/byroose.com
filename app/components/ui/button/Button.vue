@@ -158,7 +158,7 @@ useHoverRollover(rolloverTarget);
 .button-rollover-layer {
    @apply absolute -inset-px;
    border-radius: inherit;
-   transform: translateY(100%);
+   transform: translate(-100%, 100%);
 }
 
 .button-rollover-texts {
@@ -166,22 +166,15 @@ useHoverRollover(rolloverTarget);
 }
 
 .button-rollover-label {
-   --rollover-text-angle: 0deg;
-   --rollover-text-y: 0em;
    display: block;
    grid-area: 1 / 1;
-   rotate: 1 1 0.45 var(--rollover-text-angle);
-   transform-origin: 0 0;
-   translate: 0 var(--rollover-text-y) 0;
-   will-change: translate, rotate, opacity, color;
+   transform-origin: 100% 0;
+   will-change: transform, color;
 }
 
 .button-rollover-copy {
-   --rollover-text-angle: -30deg;
-   --rollover-text-y: 2em;
-   opacity: 0;
-   rotate: 1 1 0.5 var(--rollover-text-angle);
-   transform-origin: top right;
+   transform: scale(0);
+   transform-origin: 0 100%;
 }
 
 .button-rollover-icon {

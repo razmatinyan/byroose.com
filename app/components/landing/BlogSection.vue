@@ -78,7 +78,7 @@ function setCardTitleSplit(index: number, parts: SplitTextResult) {
 }
 
 .blog-panel {
-	@apply rounded-2xl bg-panel py-16 text-panel-foreground md:py-20 xl:py-24;
+	@apply rounded-2xl bg-canvas-shade py-16 text-canvas-shade-foreground md:py-20 xl:py-24;
 }
 
 .blog-heading {
